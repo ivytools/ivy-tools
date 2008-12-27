@@ -25,6 +25,6 @@
         <jar href="lib/swing-worker.jar"/>
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
     </resources>
-    <application-desc main-class="net.nike.ivybrowser.ui.MainFrame"/>
+    <application-desc main-class="com.nurflugel.ivybrowser.ui.MainFrame"/>
 </jnlp>
 

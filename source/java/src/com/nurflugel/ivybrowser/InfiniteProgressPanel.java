@@ -1,4 +1,4 @@
-package net.nike.ivybrowser;
+package com.nurflugel.ivybrowser;
 
 /**
  * 18:12 17/02/2005
