@@ -2,7 +2,7 @@ package net.nike.ivybrowser.ui;
 
 import ca.odell.glazedlists.TextFilterator;
 
-import net.nike.ivybrowser.domain.IvyRepositoryItem;
+import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
 import java.util.List;
 

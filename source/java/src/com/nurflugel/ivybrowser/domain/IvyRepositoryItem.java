@@ -1,6 +1,5 @@
-package net.nike.ivybrowser.domain;
+package com.nurflugel.ivybrowser.domain;
 
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 
