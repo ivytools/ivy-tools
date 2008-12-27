@@ -1,7 +1,7 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.ui.MainFrame;
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -22,15 +22,17 @@ public class HtmlHandler extends SwingWorker<Object, Object>
     private boolean isTest = false;
     private boolean shouldRun = true;
     private List<IvyPackage> matchingLibraries;
-    private MainFrame mainFrame;
+    private IvyBrowserMainFrame mainFrame;
+    private String ivyRepositoryPath;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
     // private String libraryName;
 
-    public HtmlHandler(MainFrame mainFrame)
+    public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath)
     {
         this.mainFrame = mainFrame;
+        this.ivyRepositoryPath = ivyRepositoryPath;
     }
 
 
@@ -51,8 +53,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 
         try
         {
-            URL repositoryUrl = new URL("http://camb2bp2:8090/svn/javaexternals/trunk/repository");
-//            URL           repositoryUrl = new URL("http://camb2bp2:8090/svn/javaexternals/trunk/testRepository");
+            URL repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();

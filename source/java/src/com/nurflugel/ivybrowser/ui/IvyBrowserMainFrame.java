@@ -8,12 +8,15 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.externalsreporter.ui.MainFrame;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 
 import javax.swing.*;
+import static javax.swing.JOptionPane.showInputDialog;
+import static javax.swing.JOptionPane.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -21,17 +24,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.Authenticator;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 
 /** Created by IntelliJ IDEA. User: dbulla Date: Apr 26, 2007 Time: 12:37:50 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
-public class MainFrame extends JFrame
+public class IvyBrowserMainFrame extends JFrame
 {
 
     /** Use serialVersionUID for interoperability. */
     private static final long     serialVersionUID = 8982188831570838035L;
     private Cursor                busyCursor       = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
     private Cursor                normalCursor     = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    private JButton               specifyButton    = new JButton("Specify Repository");
     private JButton               reparseButton    = new JButton("Reparse Repository");
     private JButton               quitButton       = new JButton("Quit");
     private JLabel                findLabel        = new JLabel("Find library:");
@@ -39,16 +44,19 @@ public class MainFrame extends JFrame
     private JTable                resultsTable     = new JTable();
     private JTextField            libraryField     = new JTextField();
     private EventList<IvyPackage> repositoryList;
+    private Preferences preferences = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
     private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
+    private static final String IVY_REPOSITORY = "IvyRepository";
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public MainFrame()
+    public IvyBrowserMainFrame()
     {
         initializeComponents();
         //this was causing problems with GlazedLists throwing NPEs
-        //com.nurflugel.ivytracker.MainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
+        //com.nurflugel.ivytracker.IvyBrowserMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
         Authenticator.setDefault(new WebAuthenticator());
+
         pack();
         setSize(800, 600);
         BuilderMainFrame.centerApp(this);
@@ -73,6 +81,7 @@ public class MainFrame extends JFrame
         holdingPanel.setLayout(layout);
         textPanel.add(findLabel);
         textPanel.add(libraryField);
+        buttonPanel.add(specifyButton);
         buttonPanel.add(reparseButton);
         buttonPanel.add(quitButton);
         holdingPanel.add(textPanel);
@@ -109,6 +118,12 @@ public class MainFrame extends JFrame
                     reparse();
                 }
             });
+        specifyButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    specifyRepository();
+                }
+            });
         libraryField.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -132,11 +147,19 @@ public class MainFrame extends JFrame
         });
     }
 
+    private void specifyRepository()
+    {
+        //todo get any stored preferences, display dialog, adn store results in preferences
+        String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
+        ivyRepositoryPath  = (String) showInputDialog(this, "What is the Ivy repository URL?", "Enter Ivy repository URL", QUESTION_MESSAGE, null,null,ivyRepositoryPath);
+        preferences.put(IVY_REPOSITORY,ivyRepositoryPath);
+    }
+
     private void reparse()
     {
 //        progressPanel.start();
-        
-        HtmlHandler handler = new HtmlHandler(this);
+        String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
+        HtmlHandler handler = new HtmlHandler(this,ivyRepositoryPath);
         handler.execute();
     }
 
@@ -213,6 +236,6 @@ public class MainFrame extends JFrame
     @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
     public static void main(String[] args)
     {
-        new MainFrame();
+        new IvyBrowserMainFrame();
     }
 }
