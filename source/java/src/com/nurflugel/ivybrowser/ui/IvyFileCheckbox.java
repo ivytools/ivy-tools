@@ -1,4 +1,4 @@
-package net.nike.ivybrowser.ui;
+package com.nurflugel.ivybrowser.ui;
 
 import java.io.File;
 

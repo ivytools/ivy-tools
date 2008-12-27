@@ -3,7 +3,7 @@ package com.nurflugel.ivyformatter.ui;
 
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivytracker.MainFrame;
-import net.nike.ivybrowser.ui.BuilderMainFrame;
+import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 
 import javax.swing.*;
 import java.awt.*;

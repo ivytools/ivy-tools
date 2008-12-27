@@ -19,8 +19,8 @@ import com.nurflugel.ivytracker.domain.IvyFileComparator;
 import com.nurflugel.ivytracker.domain.IvyFileFilterator;
 import com.nurflugel.ivytracker.handlers.HtmlHandler;
 
-import net.nike.ivybrowser.InfiniteProgressPanel;
-import net.nike.ivybrowser.ui.BuilderMainFrame;
+import com.nurflugel.ivybrowser.InfiniteProgressPanel;
+import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
