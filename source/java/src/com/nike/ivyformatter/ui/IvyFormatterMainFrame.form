@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.nike.ivyformatter.ui.IvyFormatterMainFrame">
+  <grid id="27dc6" binding="contentPane" custom-create="true" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="1cc6c">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="55831" class="javax.swing.JTextArea" binding="textArea">
+            <constraints/>
+            <properties>
+              <font name="Courier New" style="1"/>
+              <toolTipText value="Anything in this box or  the paste buffer will be used as inputy"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="a125e" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="a9880" class="javax.swing.JButton" binding="formatTextButton">
+            <constraints/>
+            <properties>
+              <text value="Format Ivy Text"/>
+              <toolTipText value="Paste text into the box or just click this button"/>
+            </properties>
+          </component>
+          <component id="5737d" class="javax.swing.JButton" binding="quitButton">
+            <constraints/>
+            <properties>
+              <text value="Quit"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

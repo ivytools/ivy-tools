@@ -1,0 +1,72 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+	<head>
+	   <title>Ivy and Build Software Installation</title>
+	</head>
+	<body bgcolor="#FFFFFF" BACKGROUND="images/Logo-web-page-background.jpg"> 
+
+			   <SCRIPT LANGUAGE="Javascript">
+				  var javawsInstalled = 0;
+                  isIE = "false";
+
+                  if (navigator.mimeTypes && navigator.mimeTypes.length)
+                  {
+                      x = navigator.mimeTypes['application/x-java-jnlp-file'];
+                      if (x) javawsInstalled = 1;
+                  }
+                  else
+                  {
+                      isIE = "true";
+                  }
+
+                  function insertLink(url, name)
+                  {
+                      if (javawsInstalled)
+                      {
+                          document.write("<a href=" + url + ">" + name + "</a>");
+                      }
+                      else
+                      {
+                          document.write("Need to install Java Web Start");
+                      }
+                  }
+			  </SCRIPT>
+
+			  <SCRIPT LANGUAGE="VBScript">
+				  on error resume next
+				  If isIE = "true" Then
+					If Not(IsObject(CreateObject("JavaWebStart.IsInstalled"))) Then
+						  javawsInstalled = 0
+					Else
+						  javawsInstalled = 1
+					End If
+				  End If
+			  </SCRIPT>
+
+		<strong><big>Enterprise Services' programs</big><p></strong>
+			To install this:<p><ul>
+        <li>Click on the link below:
+            <ul>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/ivyBrowserApp.jnlp"><b>Launch the Ivy Repository Browser application </b></a>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/ivyBuilder.jnlp"><b>Launch the Ivy Repository Builder application </b></a>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/ivyFormatterApp.jnlp"><b>Launch the Ivy Formatter application to beautify your Ivy files</b></a>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/ivyTrackerApp.jnlp"><b>Launch the Ivy Usage Tracker application to beautify your Ivy files</b></a>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/buildMaster.jnlp"><b>Launch the BuildMaster application </b></a>
+                <li><a href="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/externalsFinder.jnlp"><b>Launch the Externals Finder application </b></a>
+                <ul>
+                    <li>Note that this program requires ATT's GraphViz to be installed to generate the diagrams - you can find that <a
+                    href="http://www.graphviz.org/"><b>here</b></a></li>
+                </ul>
+            </ul>
+                <li>Accept all dialogs.
+                <li> If it asks to load a newer version of Java or WebStart, say "yes".
+                <li>Ignore the warnings about installing software on your system.  I'm using the free version of
+                Sun's WebStart architecture, and the cost of that is annoying dialogs like this for the users.
+                <li>Launch it twice from this web page and it'll install icons on to your desktop.  You won't have to visit this site again to run the appliation after that.
+                <li>You can bookmark the link and not have to go to this web page.
+                <li>You'll always have the most up-to-date version - you'll never have to reinstall or upgrade.  Java WebStart will auto upgrade your software automatically.</li>
+                <li><a href="http://www.java.com/en/download/index.jsp"><b>Use the latest version of Java - Java 6 Update 11 at http://www.java.com/en/download/index.jsp</b></a></li>
+            </ul>
+				<p>
+	</body>
+</html>

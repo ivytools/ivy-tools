@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for PictureBrowserServlet client application -->
+<jnlp
+        spec="1.0+"
+        codebase="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/"
+        href="externalsFinder.jnlp">
+    <information>
+        <title>ExternalsFinder</title>
+        <vendor>Enterprise Services Applications Engineering</vendor>
+        <homepage href="index.html"/>
+        <description>Find externals in Subversion projects</description>
+        <icon href="images/ES-64x.jpg"/>
+        <icon kind="splash" href="images/ExternalsFinder-splash.jpg"/>
+        <shortcut online="false">
+	      <desktop/>
+    	</shortcut>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
+        <jar href="lib/IvyBrowser.jar"/>
+        <jar href="lib/xstream.jar"/>
+        <jar href="lib/svnkit.jar"/>
+        <jar href="lib/swing-worker.jar"/>
+        <jar href="lib/glazedlists_jdk_1.5.jar"/>
+    </resources>
+    <application-desc main-class="com.nike.externalsreporter.ui.MainFrame"/>
+</jnlp>
+
