@@ -1,15 +1,12 @@
-package com.nike.buildmaster.handlers;
+package com.nike.externalsreporter.ui;
 
-import com.nike.buildmaster.WebAuthenticator;
-import com.nike.buildmaster.ui.buildtree.BuildableItem;
 import com.nike.common.ui.UiMainFrame;
-import com.nike.externalsreporter.ui.External;
+import com.nike.BuildableItem;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.wc.*;
-import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
 
 import java.util.ArrayList;
 import java.util.Date;

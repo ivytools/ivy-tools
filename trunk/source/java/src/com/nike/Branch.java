@@ -1,4 +1,4 @@
-package com.nike.buildmaster.projects;
+package com.nike;
 
 /** Representation of a branch.  Note that a branch can only have one tag made from it. */
 public class Branch

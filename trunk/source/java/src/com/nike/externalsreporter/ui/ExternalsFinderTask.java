@@ -1,18 +1,16 @@
 package com.nike.externalsreporter.ui;
 
-import com.nike.buildmaster.handlers.SubversionHandler;
-import com.nike.buildmaster.projects.BuildableProjects;
-import com.nike.buildmaster.ui.buildtree.BuildableItem;
 import com.nike.common.ui.UiMainFrame;
 import com.nike.common.ui.Util;
 import com.nike.externalsreporter.ui.tree.BranchNode;
-import org.jdesktop.swingworker.SwingWorker;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
+import com.nike.BuildableProjects;
+import com.nike.BuildableItem;
 
 import javax.swing.*;
 import java.util.*;
+
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.wc.SVNWCClient;
 
 
 /**
@@ -42,16 +40,17 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
 
         List<BuildableItem> list = new ArrayList<BuildableItem>();
         System.out.println("1");
-        Map<BuildableProjects, Map<String, List<External>>> dependencies =
-                new EnumMap<BuildableProjects, Map<String, List<External>>>(BuildableProjects.class);
-
-//        if (!mainFrame.isTest()|| !mainFrame.getTestDataFromFile()) {
-        addToExternalsList(dependencies);
-//        }
-        System.out.println("2");
+        //todo make this work without the enum maps, as projects are now just urls 
+//        Map<BuildableProjects, Map<String, List<External>>> dependencies =
+//                new EnumMap<BuildableProjects, Map<String, List<External>>>(BuildableProjects.class);
+//
+////        if (!mainFrame.isTest()|| !mainFrame.getTestDataFromFile()) {
+//        addToExternalsList(dependencies);
+////        }
+//        System.out.println("2");
         progressBar.setVisible(false);
         mainFrame.setNormalCursor();
-        ((MainFrame) mainFrame).processExternals(dependencies);
+//        ((MainFrame) mainFrame).processExternals(dependencies);
         System.out.println("3");
         return list;
     }

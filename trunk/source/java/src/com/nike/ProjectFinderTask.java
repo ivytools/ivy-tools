@@ -1,18 +1,13 @@
-package com.nike.buildmaster.ui;
+package com.nike;
 
-import com.nike.buildmaster.projects.Branch;
-import com.nike.buildmaster.projects.BuildableProjects;
-import com.nike.buildmaster.projects.MasterProjects;
-import com.nike.buildmaster.projects.Targets;
-import com.nike.buildmaster.ui.buildtree.BuildableItem;
 import com.nike.common.ui.UiMainFrame;
-import com.nike.common.ui.Util;
-import com.nike.externalsreporter.ui.tree.*;
-import org.jdesktop.swingworker.SwingWorker;
+import com.nike.externalsreporter.ui.tree.BranchNode;
+import com.nike.externalsreporter.ui.tree.CheckableNode;
+import com.nike.externalsreporter.ui.tree.ExternalTreeHandler;
+import com.nike.externalsreporter.ui.tree.ProjectNode;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 
@@ -40,12 +35,12 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
     protected Object doInBackground() throws Exception
     {
         System.out.println("ProjectFinderTask.doInBackground");
-        mainFrame.initializeStatusBar(0, BuildableProjects.values().length, 0, true);
-        mainFrame.setBusyCursor();
-        long startTime = new Date().getTime();
-        addToUi(MasterProjects.ATLAS, startTime);
-        addToUi(MasterProjects.OM, startTime);
-        addToUi(MasterProjects.NONE, startTime);
+//        mainFrame.initializeStatusBar(0, BuildableProjects.values().length, 0, true);
+//        mainFrame.setBusyCursor();
+//        long startTime = new Date().getTime();
+//        addToUi(MasterProjects.ATLAS, startTime);
+//        addToUi(MasterProjects.OM, startTime);
+//        addToUi(MasterProjects.NONE, startTime);
 
         progressBar.setVisible(false);
 //        treeHandler.expandAll(false);
@@ -59,32 +54,32 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
 
     private void addToUi(MasterProjects masterProject, long startTime) throws IOException
     {
-        List<BuildableProjects> projects = BuildableProjects.getProjectsForMaster(masterProject);
+        List<BuildableProjects> projects = null;//BuildableProjects.getProjectsForMaster(masterProject);
         System.out.println("ExternalsFinderTask.addToUi");
 
         HtmlParser htmlParser = new HtmlParser();
         CheckableNode currentNode;
 
-        if (masterProject == MasterProjects.NONE)
-        {
-            currentNode = treeHandler.getTopNode();
-        }
-        else
-        {
-            ProjectNode projectNode = new ProjectNode(masterProject.name());
-            currentNode = projectNode;
-            treeHandler.addItem(projectNode);
-        }
+//        if (masterProject == MasterProjects.NONE)
+//        {
+//            currentNode = treeHandler.getTopNode();
+//        }
+//        else
+//        {
+//            ProjectNode projectNode = new ProjectNode(masterProject.name());
+//            currentNode = projectNode;
+//            treeHandler.addItem(projectNode);
+//        }
 
 
         for (BuildableProjects project : projects)
         {
             int currentCount = progressBar.getValue();
-            mainFrame.addStatus("Parsing project " + project.getProjectName() + "    Time remaining: " +
-                                Util.calculateTimeRemaining(startTime, currentCount, BuildableProjects.values().length));
+//            mainFrame.addStatus("Parsing project " + project.getProjectName() + "    Time remaining: " +
+//                                Util.calculateTimeRemaining(startTime, currentCount, BuildableProjects.values().length));
 
             ProjectNode projectNode = new ProjectNode(project);
-            treeHandler.addItem(currentNode, projectNode);
+//            treeHandler.addItem(currentNode, projectNode);
 
             // list.add(projectNode);
             List<String> buildableUrls = htmlParser.getProjectBuildableUrls(project.getProjectBaseUrl(), mainFrame);
@@ -95,15 +90,15 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
                 Branch branch = new Branch(getEndingLink(buildableUrl));
                 BranchNode branchNode = new BranchNode(project, branch, showTargets);
                 projectNode.add(branchNode);
-
-                Targets[] targets = project.getBuildTargets();
-
-                for (Targets target : targets)
-                {
-                    BuildableItem buildableItem = new BuildableItem(project, target, branch);
-                    TargetNode targetNode = new TargetNode(buildableItem);
-                    branchNode.add(targetNode);
-                }
+//
+//                Targets[] targets = project.getBuildTargets();
+//
+//                for (Targets target : targets)
+//                {
+//                    BuildableItem buildableItem = new BuildableItem(project, target, branch);
+//                    TargetNode targetNode = new TargetNode(buildableItem);
+//                    branchNode.add(targetNode);
+//                }
             }
         } // end for
 

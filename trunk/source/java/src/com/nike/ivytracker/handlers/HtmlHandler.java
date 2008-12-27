@@ -2,7 +2,6 @@ package com.nike.ivytracker.handlers;
 
 import ca.odell.glazedlists.EventList;
 
-import com.nike.buildmaster.projects.BuildableProjects;
 
 import com.nike.ivytracker.MainFrame;
 import com.nike.ivytracker.domain.IvyFile;
@@ -11,7 +10,6 @@ import com.nike.ivytracker.domain.IvyFileImpl;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import org.jdesktop.swingworker.SwingWorker;
 
 import java.io.*;
 
@@ -68,7 +66,6 @@ public class HtmlHandler extends SwingWorker<Object, Object>
             allIvyFiles.addAll(ivyFilesMap.values());
         } else {
             getProjectIvyFiles(projectIvyFiles, ivyFilesMap);
-            addOtherProjectIvyFiles(projectIvyFiles, ivyFilesMap);
             findIvyPackages(allIvyFiles, ivyFilesMap);
         }
 
@@ -105,41 +102,20 @@ public class HtmlHandler extends SwingWorker<Object, Object>
         return null;
     }
 
-    /**
-     * Go through all the projects and get the ivy files for them.
+
+
+    /** Add any project in Preferences, present in dialog for confirmation, save and go.
      *
-     * @return  a list of Ivy files
-     */
+     * todo most of this!
+     *
+      */
     private void getProjectIvyFiles(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
     {
-        BuildableProjects[] buildableProjects = BuildableProjects.values();
-
-        // todo each of these can have branches and tags - but for now we're just checking trunk
-        String urlPath = null;
-
-        for (BuildableProjects project : buildableProjects) {
-
-            try {
-                String projectBaseUrl = project.getProjectBaseUrl();
-                urlPath = projectBaseUrl + "/trunk/build";
-
-                String projectName = project.getProjectName();
-                mainFrame.setStatusLabel("Examining project " + projectName);
-                getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, urlPath, projectName);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(mainFrame, "Unable to connect to host " + urlPath + "\n" + e.getMessage());
-            }
-        }
-    }
-
-    /** Add any project who aren't in the BuildableProjects enum. */
-    private void addOtherProjectIvyFiles(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
-    {
         try { 
-            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/build/", "IvyBrowser");
-            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ResourceBundler/build/", "Resource Bundler");
-            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ivy/", "Ivy");
-            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/jboss.servers/trunk/build/", "Ivy");
+            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://ivy-tools.googlecode.com/svn/trunk/build/", "IvyTools");
+//            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ResourceBundler/build/", "Resource Bundler");
+//            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ivy/", "Ivy");
+//            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/jboss.servers/trunk/build/", "Ivy");
         } catch (IOException e) {
             e.printStackTrace();
         }

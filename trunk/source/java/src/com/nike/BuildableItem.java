@@ -1,8 +1,5 @@
-package com.nike.buildmaster.ui.buildtree;
+package com.nike;
 
-import com.nike.buildmaster.projects.Branch;
-import com.nike.buildmaster.projects.BuildableProjects;
-import com.nike.buildmaster.projects.Targets;
 import com.nike.common.ui.tree.CheckableItem;
 
 

@@ -2,8 +2,8 @@ package net.nike.ivybrowser.handlers;
 
 import net.nike.ivybrowser.domain.IvyPackage;
 import net.nike.ivybrowser.ui.MainFrame;
-import org.jdesktop.swingworker.SwingWorker;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

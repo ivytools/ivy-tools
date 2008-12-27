@@ -1,9 +1,9 @@
 package com.nike.externalsreporter.ui;
 
-import com.nike.buildmaster.Os;
-import com.nike.buildmaster.WebAuthenticator;
-import com.nike.buildmaster.projects.BuildableProjects;
-import com.nike.buildmaster.ui.ProjectFinderTask;
+import com.nike.Os;
+import com.nike.WebAuthenticator;
+import com.nike.BuildableProjects;
+import com.nike.ProjectFinderTask;
 import com.nike.common.ui.UiMainFrame;
 import com.nike.common.ui.Util;
 import com.nike.common.ui.Version;

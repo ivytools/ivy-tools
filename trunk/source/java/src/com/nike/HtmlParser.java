@@ -1,15 +1,16 @@
-package com.nike.buildmaster.ui;
+package com.nike;
 
 import com.nike.common.ui.UiMainFrame;
 
-import java.io.BufferedReader;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 /** Screen scraper for looking at the projects through the Subversion repository via Apache. */

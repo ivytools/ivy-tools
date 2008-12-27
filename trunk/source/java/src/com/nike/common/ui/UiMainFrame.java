@@ -1,6 +1,6 @@
 package com.nike.common.ui;
 
-import com.nike.buildmaster.Os;
+import com.nike.Os;
 
 /** Interface so several projects can share some functionality. */
 public interface UiMainFrame

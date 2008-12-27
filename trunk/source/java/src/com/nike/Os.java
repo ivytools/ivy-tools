@@ -1,8 +1,5 @@
-package com.nike.buildmaster;
+package com.nike;
 
-import com.nike.buildmaster.projects.BuildScripts;
-import com.nike.buildmaster.projects.BuildableProjects;
-import com.nike.buildmaster.ui.buildtree.BuildableItem;
 import com.nike.externalsreporter.ui.OutputFormat;
 
 import java.io.File;
@@ -59,22 +56,22 @@ public enum Os
 
     // -------------------------- OTHER METHODS --------------------------
 
-    public String[] getCommandArgs(String path, BuildableItem buildableItem)
-    {
-        BuildableProjects project = buildableItem.getProject();
-        BuildScripts buildScript = project.getBuildScript();
-        List<String> commands = new ArrayList<String>();
-
-        commands.addAll(Arrays.asList(baseCommandArgs));
-        commands.add(getBuildCommandPath(path));
-        commands.add("-f");
-        commands.add(buildScript.getScriptName());
-        commands.add(buildableItem.getBuildTarget().toString());
-
-        String[] output = commands.toArray(new String[commands.size()]);
-
-        return output;
-    }
+//    public String[] getCommandArgs(String path, BuildableItem buildableItem)
+//    {
+//        BuildableProjects project = buildableItem.getProject();
+//        BuildScripts buildScript = project.getBuildScript();
+//        List<String> commands = new ArrayList<String>();
+//
+//        commands.addAll(Arrays.asList(baseCommandArgs));
+//        commands.add(getBuildCommandPath(path));
+//        commands.add("-f");
+//        commands.add(buildScript.getScriptName());
+//        commands.add(buildableItem.getBuildTarget().toString());
+//
+//        String[] output = commands.toArray(new String[commands.size()]);
+//
+//        return output;
+//    }
 
     public OutputFormat getOutputFormat()
     {

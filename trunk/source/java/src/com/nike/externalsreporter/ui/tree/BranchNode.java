@@ -1,7 +1,8 @@
 package com.nike.externalsreporter.ui.tree;
 
-import com.nike.buildmaster.projects.Branch;
-import com.nike.buildmaster.projects.BuildableProjects;
+
+import com.nike.BuildableProjects;
+import com.nike.Branch;
 
 import java.util.ArrayList;
 import java.util.List;
