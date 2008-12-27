@@ -26,6 +26,6 @@
         <jar href="lib/swing-worker.jar"/>
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
     </resources>
-    <application-desc main-class="com.nike.externalsreporter.ui.MainFrame"/>
+    <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>
 </jnlp>
 

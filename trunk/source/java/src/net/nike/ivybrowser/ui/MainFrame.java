@@ -7,8 +7,8 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
-import com.nike.WebAuthenticator;
-import com.nike.common.ui.Version;
+import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.Version;
 import net.nike.ivybrowser.InfiniteProgressPanel;
 import net.nike.ivybrowser.domain.IvyPackage;
 import net.nike.ivybrowser.handlers.HtmlHandler;
@@ -47,7 +47,7 @@ public class MainFrame extends JFrame
     {
         initializeComponents();
         //this was causing problems with GlazedLists throwing NPEs
-        //com.nike.ivytracker.MainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
+        //com.nurflugel.ivytracker.MainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
         Authenticator.setDefault(new WebAuthenticator());
         pack();
         setSize(800, 600);

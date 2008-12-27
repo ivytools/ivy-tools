@@ -24,6 +24,6 @@
         <jar href="lib/jtidy.jar"/>
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
     </resources>
-    <application-desc main-class="com.nike.ivyformatter.ui.IvyFormatterMainFrame"/>
+    <application-desc main-class="com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame"/>
 </jnlp>
 
