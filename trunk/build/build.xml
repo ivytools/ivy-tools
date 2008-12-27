@@ -22,7 +22,7 @@
             </fileset>
         </copy>
 
-        <signjar jar="${webstart.lib.dir}/*.jar" keypass="nikenike" keystore="cdmKeystore" alias="dbulla" storepass="nikenike"/>
+        <signjar jar="${webstart.lib.dir}/*.jar" keypass="googleRocks" keystore="build/ivyToolsKeystore" alias="IvyToolsProject" storepass="googleRocks"/>
     </target>
 
     <!--	Jar up the app for WebStart-->
