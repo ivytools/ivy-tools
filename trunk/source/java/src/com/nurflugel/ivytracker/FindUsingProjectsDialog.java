@@ -2,7 +2,7 @@ package com.nurflugel.ivytracker;
 
 import com.nurflugel.ivytracker.domain.IvyFile;
 
-import net.nike.ivybrowser.ui.BuilderMainFrame;
+import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 
 import java.awt.*;
 import java.awt.event.*;

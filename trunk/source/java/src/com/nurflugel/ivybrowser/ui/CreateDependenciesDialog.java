@@ -1,4 +1,4 @@
-package net.nike.ivybrowser.ui;
+package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
