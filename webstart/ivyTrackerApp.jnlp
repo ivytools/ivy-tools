@@ -26,6 +26,6 @@
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
         <jar href="lib/xstream.jar"/>
     </resources>
-    <application-desc main-class="com.nike.ivytracker.MainFrame"/>
+    <application-desc main-class="com.nurflugel.ivytracker.MainFrame"/>
 </jnlp>
 

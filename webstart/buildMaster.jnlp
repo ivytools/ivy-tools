@@ -26,6 +26,6 @@
         <jar href="lib/xstream.jar"/>
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
     </resources>
-    <application-desc main-class="com.nike.buildmaster.ui.MainFrame"/>
+    <application-desc main-class="com.nurflugel.buildmaster.ui.MainFrame"/>
 </jnlp>
 

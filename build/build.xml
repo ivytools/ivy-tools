@@ -49,7 +49,7 @@
         <attribute name="type" description="Minor, Point, or Major"/>
         <sequential>
             <versionupdate srcdir="${java.src.dir}"
-                classname="com.nike.common.ui.Version"
+                classname="com.nurflugellugel.common.ui.Version"
                 variablename="VERSION"
                 debug="true"
                 versionupdatetype="@{type}">
