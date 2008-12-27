@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://camb2bp2:8090/svn/javaexternals/trunk/ivy-1.4.xsl"?>
+<ivy-module version="1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://camb2bp2:8090/svn/javaexternals/trunk/ivy-1.4.xsd">
+  <!-- This is the module definition file; documentation is at http://www.jayasoft.org/ivy/doc/ivyfile. -->
+    <info organisation="com.nike" module="nike-resourcebundler" revision="snapshot">
+    <license name="Nike Internal Only"/>
+    <ivyauthor name="Douglas Bullard"/>
+    <repository name="nike-repository" url="http://camb2bp2:8090/svn/javaexternals/trunk/repository" ivys="true" artifacts="true"/>
+  </info>
+  <configurations defaultconfmapping="build,dist,test->default">
+        <conf name="build"   visibility="public"  description="Dependencies only used during the build process."/>
+        <conf name="dist"    visibility="public"  description="Dependencies that will be deployed via WebStart."/>
+        <conf name="javadoc" visibility="public"  description="Some libraries provide separate javadoc packages."/>
+        <conf name="test"    visibility="private" description="Dependencies only used during unit testing."/>
+        <conf name="source"  visibility="public"  description="Dependencies' source code packages."/>
+  </configurations>
+
+  <publications>
+        <artifact name="nike-resourcebundler-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
+        <artifact name="nike-resourcebundler-source"  type="source"  ext="zip" conf="source"/>
+  </publications>
+
+  <dependencies>
+        <dependency org="net.sf.ant-contrib"   name="ant-contrib"             rev="1.0b2"             conf="build"/>
+        <dependency org="org.jdesktop"         name="swingworker"             rev="1.1"               conf="build,dist,source,javadoc"/>
+        <dependency org="org.junit"            name="junit"                   rev="4.3.1"             conf="build,test"/>
+        <dependency org="com.nike"             name="gcdt-code-settings"      rev="20070807.00"       conf="source"/>
+        <dependency org="com.nike"             name="buildtasks"              rev="1.1-SNAPSHOT"      conf="build,source"/>
+        <dependency org="javax.help"           name="jhall"                   rev="2.0.6"             conf="build,dist"/>
+        <dependency org="ca.odell.glazedlists" name="jdk_1.5"                 rev="1.7.0"             conf="build,dist,source"/>
+        <dependency org="org.jdom"             name="jdom"                    rev="1.0"               conf="build,dist"/>
+        <dependency org="org.codehaus.xstream" name="xstream"                 rev="1.2"               conf="build,dist"/>
+        <dependency org="com.ryangrier.ant"    name="version_tool"            rev="1.1.4"             conf="build,javadoc"/>
+        <dependency org="w3c"                  name="jtidy"                   rev="04aug2000r7-dev"   conf="build,dist,source"/>
+
+  </dependencies>
+</ivy-module>
