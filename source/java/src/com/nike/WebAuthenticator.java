@@ -1,4 +1,4 @@
-package com.nike.buildmaster;
+package com.nike;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -10,8 +10,10 @@ import java.net.PasswordAuthentication;
  */
 public class WebAuthenticator extends Authenticator
 {
-    private static final String USER_NAME = "a.clearcase.b2bbuild";
-    private static final String PASSWORD = "bl00n1te";
+    //todo - prompt user if these aren't set, Google doesn't require authentication, but other guys will, and this shouldn't be
+    // hard-coded.  Put this into Preferences, keyed under the base URL or something...
+    private static final String USER_NAME = "user_name";
+    private static final String PASSWORD = "password";
 
     @Override
     public PasswordAuthentication getPasswordAuthentication()

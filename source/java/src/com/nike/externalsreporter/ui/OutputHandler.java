@@ -1,7 +1,7 @@
 package com.nike.externalsreporter.ui;
 
-import com.nike.buildmaster.Os;
-import com.nike.buildmaster.projects.BuildableProjects;
+import com.nike.Os;
+import com.nike.BuildableProjects;
 import com.nike.common.ui.Util;
 
 import javax.swing.*;

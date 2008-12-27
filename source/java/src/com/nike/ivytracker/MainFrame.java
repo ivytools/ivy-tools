@@ -9,7 +9,7 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
-import com.nike.buildmaster.WebAuthenticator;
+import com.nike.WebAuthenticator;
 
 import com.nike.common.ui.Version;
 

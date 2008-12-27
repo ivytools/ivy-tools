@@ -914,7 +914,7 @@
   </component>
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
-    <option name="state" value="project:///Users/douglasbullard/Documents/JavaStuff/Google_Code/IvyTools/trunk/IvyBrowser.ipr" />
+    <option name="state" value="https://ivy-tools.googlecode.com/svn/trunk/IvyBrowser.ipr" />
   </component>
   <component name="ProjectModuleManager">
     <modules>
@@ -956,6 +956,7 @@
       </map>
     </option>
     <option name="myVersion" value="124" />
+    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="TeamCityRootDirectoryHolder">
     <option name="myRelativeRootDirectory" />
