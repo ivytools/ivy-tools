@@ -50,7 +50,7 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
 //        System.out.println("2");
         progressBar.setVisible(false);
         mainFrame.setNormalCursor();
-//        ((MainFrame) mainFrame).processExternals(dependencies);
+//        ((IvyBrowserMainFrame) mainFrame).processExternals(dependencies);
         System.out.println("3");
         return list;
     }
