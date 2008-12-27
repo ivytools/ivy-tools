@@ -1,6 +1,6 @@
 package net.nike.ivybrowser.ui;
 
-import net.nike.ivybrowser.domain.IvyRepositoryItem;
+import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
 import javax.swing.*;
 

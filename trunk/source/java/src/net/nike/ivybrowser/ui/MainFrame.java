@@ -10,7 +10,7 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.Version;
 import net.nike.ivybrowser.InfiniteProgressPanel;
-import net.nike.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 import net.nike.ivybrowser.handlers.HtmlHandler;
 
 import javax.swing.*;

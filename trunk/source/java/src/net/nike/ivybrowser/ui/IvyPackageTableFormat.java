@@ -2,7 +2,7 @@ package net.nike.ivybrowser.ui;
 
 import ca.odell.glazedlists.gui.TableFormat;
 
-import net.nike.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 7:12:02 PM To change this template use File | Settings | File Templates. */

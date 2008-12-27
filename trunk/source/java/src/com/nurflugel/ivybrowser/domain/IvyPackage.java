@@ -1,6 +1,6 @@
-package net.nike.ivybrowser.domain;
+package com.nurflugel.ivybrowser.domain;
 
-import net.nike.ivybrowser.domain.IvyFile;
+import com.nurflugel.ivybrowser.domain.IvyFile;
 
 import java.net.URL;
 

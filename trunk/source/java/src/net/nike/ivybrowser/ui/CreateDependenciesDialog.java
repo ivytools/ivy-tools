@@ -7,7 +7,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
-import net.nike.ivybrowser.domain.IvyRepositoryItem;
+import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
 import javax.swing.*;
 import java.awt.*;

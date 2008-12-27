@@ -1,6 +1,6 @@
 package net.nike.ivybrowser.ui;
 
-import net.nike.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 
 import java.util.List;
 

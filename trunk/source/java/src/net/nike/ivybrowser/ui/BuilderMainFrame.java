@@ -2,7 +2,7 @@ package net.nike.ivybrowser.ui;
 
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivytracker.MainFrame;
-import net.nike.ivybrowser.domain.IvyRepositoryItem;
+import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import net.nike.ivybrowser.handlers.FileHandler;
 
 import javax.swing.*;
