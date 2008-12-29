@@ -4,6 +4,7 @@ import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.BuildableProjects;
 import com.nurflugel.ProjectFinderTask;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
@@ -214,7 +215,7 @@ public class MainFrame extends JFrame implements UiMainFrame
         try
         {
             initializeComponents();
-            com.nurflugel.ivytracker.MainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+            IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
 
             setSize(600, 1000);
             Util.center(this);

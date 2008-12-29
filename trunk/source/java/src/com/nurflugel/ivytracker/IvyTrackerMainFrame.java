@@ -47,7 +47,7 @@ import javax.swing.table.TableColumnModel;
  */
 @SuppressWarnings({"CallToPrintStackTrace", "UseOfSystemOutOrSystemErr", "IOResourceOpenedButNotSafelyClosed", "CallToSystemExit",
                    "OverlyBroadCatchBlock"})
-public class MainFrame extends JFrame
+public class IvyTrackerMainFrame extends JFrame
 {
     private static final long serialVersionUID = 8982188831570838035L;
     private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
@@ -81,7 +81,7 @@ public class MainFrame extends JFrame
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public MainFrame()
+    public IvyTrackerMainFrame()
     {
         initializeComponents();
         setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
@@ -360,7 +360,7 @@ public class MainFrame extends JFrame
     @SuppressWarnings({"ResultOfObjectAllocationIgnored"})
     public static void main(String[] args)
     {
-        MainFrame frame = new MainFrame();
+        IvyTrackerMainFrame frame = new IvyTrackerMainFrame();
     }
 
 

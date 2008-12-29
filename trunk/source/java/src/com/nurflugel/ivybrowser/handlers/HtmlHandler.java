@@ -4,10 +4,7 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -74,6 +71,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 
                 if (hasLink)
                 {
+                    System.out.println("packageLine = " + packageLine);
                     String orgName = getContents(packageLine);
                     List<IvyPackage> somePackages = findModules(repositoryUrl, orgName);
                     ivyPackages.addAll(somePackages);
@@ -140,7 +138,14 @@ public class HtmlHandler extends SwingWorker<Object, Object>
             if (isLibrary)
             {
                 String moduleName = getContents(moduleLine);
-                findVersions(repositoryUrl, orgName, moduleName, ivyPackages);
+                try
+                {
+                    findVersions(repositoryUrl, orgName, moduleName, ivyPackages);
+                }
+                catch (FileNotFoundException e)
+                {
+                    System.out.println("Had problem parsing package "+orgName+" "+moduleName);
+                }
             }
 
             moduleLine = reader.readLine();

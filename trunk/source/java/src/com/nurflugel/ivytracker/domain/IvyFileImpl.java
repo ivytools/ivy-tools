@@ -2,7 +2,7 @@ package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.EventList;
 
-import com.nurflugel.ivytracker.MainFrame;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -25,11 +25,11 @@ public class IvyFileImpl implements IvyFile
     private String           org;
     private String           module;
     private String           version;
-    private static MainFrame mainFrame;
+    private static IvyTrackerMainFrame mainFrame;
     private int              count;
 
 
-    public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap, MainFrame mainFrame, EventList<IvyFile> repositoryList)
+    public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap, IvyTrackerMainFrame mainFrame, EventList<IvyFile> repositoryList)
     {
         this.org       = org;
         this.module    = module;
