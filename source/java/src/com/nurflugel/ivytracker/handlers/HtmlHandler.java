@@ -3,7 +3,7 @@ package com.nurflugel.ivytracker.handlers;
 import ca.odell.glazedlists.EventList;
 
 
-import com.nurflugel.ivytracker.MainFrame;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import com.nurflugel.ivytracker.domain.IvyFileImpl;
 
@@ -35,14 +35,14 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 
     // private boolean isTest = false;
     private boolean            shouldRun      = true;
-    private MainFrame          mainFrame;
+    private IvyTrackerMainFrame mainFrame;
     private URL                startingUrl;
     private EventList<IvyFile> repositoryList;
     private Set<String> missingIvyFiles;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public HtmlHandler(MainFrame mainFrame, URL startingUrl, EventList<IvyFile> repositoryList, Set<String> missingIvyFiles)
+    public HtmlHandler(IvyTrackerMainFrame mainFrame, URL startingUrl, EventList<IvyFile> repositoryList, Set<String> missingIvyFiles)
     {
         this.mainFrame      = mainFrame;
         this.startingUrl    = startingUrl;

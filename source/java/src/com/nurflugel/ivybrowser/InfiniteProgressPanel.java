@@ -7,6 +7,7 @@ package com.nurflugel.ivybrowser;
  */
 
 import java.awt.*;
+import static java.awt.RenderingHints.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
@@ -196,9 +197,9 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
             ? barsCount
             : 14;
 
-        hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        hints = new RenderingHints(KEY_RENDERING, VALUE_RENDER_QUALITY);
+        hints.put(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+        hints.put(KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_ON);
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -294,7 +295,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
         animation = new Thread(new Animator(true));
         System.out.println("Starting animation");
         animation.start();
-        System.out.println("Donw with animation");
+        System.out.println("Done with animation");
     }
 
     /** Builds the circular shape and returns the result as an array of <code>Area</code>. Each <code>Area</code> is one of the bars composing the shape. */
@@ -302,6 +303,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
     {
         Area[]         ticker     = new Area[barsCount];
         Point2D.Double center     = new Point2D.Double(((double) getWidth() / 2), ((double) getHeight() / 2));
+        System.out.println("center = " + center);
         double         fixedAngle = 2.0 * Math.PI / ((double) barsCount);
 
         for (double i = 0.0; i < (double) barsCount; i++) {

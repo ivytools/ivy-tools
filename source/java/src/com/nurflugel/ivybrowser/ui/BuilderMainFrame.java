@@ -1,7 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.common.ui.Version;
-import com.nurflugel.ivytracker.MainFrame;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.handlers.FileHandler;
 
@@ -41,7 +41,7 @@ public class BuilderMainFrame extends JFrame
         setTitle("IvyBuild v. " + Version.VERSION);
         setContentPane(contentsPanel);
         addListeners();
-        MainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
 
         centerApp(this);
         preferences = Preferences.userNodeForPackage(BuilderMainFrame.class);

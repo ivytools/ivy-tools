@@ -27,7 +27,13 @@ public class IvyFile
 
         try {
             SAXBuilder builder = new SAXBuilder();
-            URL        url     = new URL("http", "camb2bp2",8090, versionUrl.getFile() + "/" + ivyFile);
+            String protocol = versionUrl.getProtocol();
+            int portNumber = versionUrl.getPort();
+            String host = versionUrl.getHost();
+            String port=(portNumber==-1)?"":":"+portNumber;
+            String dirPath = versionUrl.getPath();
+            String path= protocol+"://"+ host+port + dirPath +"/"+ ivyFile;
+            URL        url     = new URL(path);
             Document   doc     = builder.build(url);
             Element    root    = doc.getRootElement();
             Element    child1  = root.getChild("dependencies");

@@ -7,12 +7,11 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
-import com.nurflugel.WebAuthenticator;
-import com.nurflugel.externalsreporter.ui.MainFrame;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
+import com.nurflugel.WebAuthenticator;
 
 import javax.swing.*;
 import static javax.swing.JOptionPane.showInputDialog;
@@ -47,29 +46,32 @@ public class IvyBrowserMainFrame extends JFrame
     private Preferences preferences = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
     private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     private static final String IVY_REPOSITORY = "IvyRepository";
+    private JPanel mainPanel;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
     public IvyBrowserMainFrame()
     {
         initializeComponents();
+        pack();
+        setSize(800, 600);
+        BuilderMainFrame.centerApp(this);
         //this was causing problems with GlazedLists throwing NPEs
         //com.nurflugel.ivytracker.IvyBrowserMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
         Authenticator.setDefault(new WebAuthenticator());
 
-        pack();
-        setSize(800, 600);
-        BuilderMainFrame.centerApp(this);
         libraryField.setEnabled(false);
         setVisible(true);
+         reparse();
     }
 
     private void initializeComponents()
     {
 
+        mainPanel = new JPanel(new BorderLayout(0, 0));
         setGlassPane(progressPanel);
-        JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
+
         libraryField.setPreferredSize(new Dimension(200, 25));
         setTitle("Ivy Repository Browser v. " + Version.VERSION);
 
@@ -95,7 +97,6 @@ public class IvyBrowserMainFrame extends JFrame
         addListeners();
         setCursor(busyCursor);
 
-        reparse();
     }
 
     private void addListeners()
@@ -122,6 +123,7 @@ public class IvyBrowserMainFrame extends JFrame
                 public void actionPerformed(ActionEvent e)
                 {
                     specifyRepository();
+                    reparse();
                 }
             });
         libraryField.addActionListener(new ActionListener() {
@@ -157,10 +159,13 @@ public class IvyBrowserMainFrame extends JFrame
 
     private void reparse()
     {
-//        progressPanel.start();
+        progressPanel.start();
         String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
+        if(ivyRepositoryPath.length()>0){
         HtmlHandler handler = new HtmlHandler(this,ivyRepositoryPath);
         handler.execute();
+//        handler.doInBackground();}
+        }
     }
 
     private void filterTable()
