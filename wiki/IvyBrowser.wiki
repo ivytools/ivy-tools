@@ -1,4 +1,4 @@
 *IvyBrowser* is a tool used to cruise your web-based Ivy repository.  This tool can be used to:
   *  Find a specific library, selecting by org, package,  library name, or even version number  (i.e, "apache", "commons", "commons-lang", "1.3")
   * Create the line to add to your ivy repository
-    * Example: <dependency org="com.ryangrier.ant"  name="version_tool"  rev="1.1.4"  conf="build,dist-ear,source,javadoc"/>
+    * Example: {{{<dependency org="com.ryangrier.ant"  name="version_tool"  rev="1.1.4"  conf="build,dist-ear,source,javadoc"/>}}}
