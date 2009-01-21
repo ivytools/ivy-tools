@@ -1,4 +1,4 @@
-#summary Introduction to IvyTools
+
 
 = Introduction =
 
