@@ -1,6 +1,5 @@
 @echo off
 setlocal enableextensions
-subst d: c:\
 REM If JTPL_ROOT is not already set, let's try a couple reasonable defaults before erroring out.
 set APP_ROOT=%~dp0
 REM Remove the trailing backslash (for cleaner derivatives):
