@@ -34,7 +34,7 @@
 
     <target name="configure" depends="-init"/>
 
-    <target name="noversion" description="Call this target to do a distribugte without changing the version number.  For example, 'build noversion distribute'">
+    <target name="noversion" description="Call this target to do a distribute without changing the version number.  For example, 'build noversion distribute'">
 		<echo>We're NOT incremention the major, minor, or point versions for this build.</echo>
 		<property name="version.done" value="true"/>
 	</target>
@@ -49,7 +49,7 @@
         <attribute name="type" description="Minor, Point, or Major"/>
         <sequential>
             <versionupdate srcdir="${java.src.dir}"
-                classname="com.nurflugellugel.common.ui.Version"
+                classname="com.nurflugel.common.ui.Version"
                 variablename="VERSION"
                 debug="true"
                 versionupdatetype="@{type}">
