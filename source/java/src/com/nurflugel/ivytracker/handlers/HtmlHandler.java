@@ -6,6 +6,7 @@ import ca.odell.glazedlists.EventList;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import com.nurflugel.ivytracker.domain.IvyFileImpl;
+import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVY_REPOSITORY;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.*;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 
@@ -39,6 +41,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
     private URL                startingUrl;
     private EventList<IvyFile> repositoryList;
     private Set<String> missingIvyFiles;
+    private static final String PROJECT_IVY_FILES = "PROJECT_IVY_FILES";
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -111,14 +114,34 @@ public class HtmlHandler extends SwingWorker<Object, Object>
       */
     private void getProjectIvyFiles(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
     {
-        try { 
-            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://ivy-tools.googlecode.com/svn/trunk/build/", "IvyTools");
+        //todo - get list from text box...
+        try {
+            Preferences preferences = mainFrame.getPreferences();
+            String projectFilesString = preferences.get(PROJECT_IVY_FILES, "");
+                projectFilesString=getProjectIvyFilesFromDialog(projectFilesString);
+                preferences.put(PROJECT_IVY_FILES,projectFilesString);
+            List<ProjectIvyFile> projectIvyFilesss=getProjectIvyFilesFromTextBlock(projectIvyFiles);
+            for (ProjectIvyFile projectIvyFiless : projectIvyFilesss)
+            {
+                getIvyFileFromUrl(ivyFilesMap,projectIvyFiles,projectIvyFiless.getPathToIvyFile(),projectIvyFiless.getProjectName());
+            }
+//            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://ivy-tools.googlecode.com/svn/trunk/build/", "IvyTools");
 //            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ResourceBundler/build/", "Resource Bundler");
 //            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/ivy/", "Ivy");
 //            getIvyFileFromUrl(ivyFilesMap, projectIvyFiles, "http://camb2bp2:8090/svn/jboss.servers/trunk/build/", "Ivy");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<ProjectIvyFile> getProjectIvyFilesFromTextBlock(List<IvyFile> projectIvyFiles)
+    {
+        return null;
+    }
+
+    private String getProjectIvyFilesFromDialog(String projectFilesString)
+    {
+        return null;
     }
 
     private void getIvyFileFromUrl(Map<String, IvyFile> ivyFilesMap, List<IvyFile> projectIvyFiles, String urlPath, String projectName) throws IOException
@@ -193,6 +216,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
             URL           repositoryUrl = startingUrl;
             URLConnection urlConnection = repositoryUrl.openConnection();
             urlConnection.setAllowUserInteraction(true);
+            urlConnection.setConnectTimeout(10000);
             urlConnection.connect();
 
             InputStream    in          = urlConnection.getInputStream();
@@ -237,6 +261,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
         URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
         URLConnection urlConnection = moduleUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
+        urlConnection.setConnectTimeout(10000);
         urlConnection.connect();
 
         InputStream    in         = urlConnection.getInputStream();
@@ -262,6 +287,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
         URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
         URLConnection urlConnection = versionUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
+        urlConnection.setConnectTimeout(10000);
         urlConnection.connect();
 
         InputStream    in          = urlConnection.getInputStream();
@@ -291,6 +317,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
         URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
         URLConnection urlConnection = versionUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
+        urlConnection.setConnectTimeout(10000);
         urlConnection.connect();
 
         InputStream    in          = urlConnection.getInputStream();
