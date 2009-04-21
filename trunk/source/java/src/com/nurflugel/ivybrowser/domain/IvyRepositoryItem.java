@@ -8,6 +8,12 @@ import org.jdom.output.XMLOutputter;
 
 import java.io.*;
 
+import java.nio.ByteBuffer;
+
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -21,7 +27,10 @@ import java.util.List;
 public class IvyRepositoryItem
 {
 
-    /** this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where more than one jar or zip file is in the ivy repository, represented by this ivy file. */
+    /**
+     * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where
+     * more than one jar or zip file is in the ivy repository, represented by this ivy file.
+     */
     private List<File>              libraryFiles;
     private String                  moduleName;
     private String                  orgName;
@@ -32,10 +41,7 @@ public class IvyRepositoryItem
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public IvyRepositoryItem(String orgName,
-                             String moduleName,
-                             String rev,
-                             File   repositoryDir)
+    public IvyRepositoryItem(String orgName, String moduleName, String rev, File repositoryDir)
     {
         this.repositoryDir = repositoryDir;
         this.orgName       = orgName;
@@ -70,13 +76,79 @@ public class IvyRepositoryItem
     {
 
         try {
-            File dirPath = createParentDirs();
+            File   dirPath       = createParentDirs();
+            File[] existingFiles = dirPath.listFiles();
+
+            for (File existingFile : existingFiles) {
+                existingFile.delete();
+            }
+
             writeLibraryFiles(dirPath);
             writeIvyFile(dirPath);
+            writeChecksumFiles(dirPath);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
+
+    /** For every entry in the dir, create a checksum (md5 and sha1). */
+    private void writeChecksumFiles(File dirPath) throws NoSuchAlgorithmException, IOException
+    {
+        File[] files = dirPath.listFiles();
+
+        for (File file : files) {
+            writeChecksum("MD5", file);
+            writeChecksum("SHA1", file);
+        }
+    }
+
+    private void writeChecksum(String algorithym, File file) throws NoSuchAlgorithmException, IOException
+    {
+        MessageDigest md = MessageDigest.getInstance(algorithym);
+        InputStream   is = new FileInputStream(file);
+
+        BufferedInputStream bis        = new BufferedInputStream(is);
+        int                 bufferSize = 512;
+        byte[]              bytes      = new byte[bufferSize];
+        md.reset();
+
+        DigestInputStream dis = new DigestInputStream(is, md);
+
+        while (dis.read(bytes, 0, bufferSize) != -1) { }
+
+        dis.close();
+        is.close();
+
+        byte[] digest  = md.digest();
+        String hexHash = createDigestString(digest);
+        System.out.println(algorithym + " " + file + " digest = " + hexHash);
+
+        FileWriter fw = new FileWriter(file.getAbsolutePath() + "."+algorithym.toLowerCase());
+        fw.write(hexHash);
+        fw.close();
+    }
+
+    private static final int BYTE_MASK = 0xFF;
+
+    private String createDigestString(byte[] fileDigestBytes)
+    {
+        StringBuilder checksumSb = new StringBuilder();
+
+        for (byte fileDigestByte : fileDigestBytes) {
+            String hexStr = Integer.toHexString(BYTE_MASK & fileDigestByte);
+
+            if (hexStr.length() < 2) {
+                checksumSb.append("0");
+            }
+
+            checksumSb.append(hexStr);
+        }
+
+        return checksumSb.toString();
+    }
+
 
     private File createParentDirs()
     {
@@ -121,8 +193,7 @@ public class IvyRepositoryItem
         return returnString;
     }
 
-    public void copyFile(File in,
-                         File out) throws IOException
+    public void copyFile(File in, File out) throws IOException
     {
         FileInputStream  fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
@@ -210,6 +281,5 @@ public class IvyRepositoryItem
         this.libraryFiles = files;
     }
 
-    @Override
-    public String toString() { return orgName + " " + moduleName + " " + rev; }
+    @Override public String toString() { return orgName + " " + moduleName + " " + rev; }
 }

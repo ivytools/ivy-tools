@@ -17,6 +17,9 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 
 import java.awt.*;
+import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
 import java.awt.event.*;
 
 import java.net.Authenticator;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
+import static javax.swing.BoxLayout.*;
 import static javax.swing.JOptionPane.*;
 import static javax.swing.JOptionPane.showInputDialog;
 import javax.swing.table.TableCellRenderer;
@@ -37,13 +41,14 @@ import javax.swing.table.TableColumnModel;
 public class IvyBrowserMainFrame extends JFrame
 {
     private static final long     serialVersionUID = 8982188831570838035L;
-    private Cursor                busyCursor       = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-    private Cursor                normalCursor     = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    private Cursor                busyCursor       = getPredefinedCursor(Cursor.WAIT_CURSOR);
+    private Cursor                normalCursor     = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     private JButton               specifyButton    = new JButton("Specify Repository");
     private JButton               reparseButton    = new JButton("Reparse Repository");
     private JButton               quitButton       = new JButton("Quit");
     private JLabel                findLabel        = new JLabel("Find library:");
     private JLabel                statusLabel      = new JLabel();
+    private JCheckBox              parseOnOpenCheckbox=new JCheckBox("Parse Repository on Open"); 
 //    private JLabel                statusLabel      = new JLabel("Please wait while the repository is scanned...");
     private JTable                resultsTable     = new JTable();
     private JTextField            libraryField     = new JTextField();
@@ -51,7 +56,7 @@ public class IvyBrowserMainFrame extends JFrame
     private InfiniteProgressPanel progressPanel    = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     public static final String   IVY_REPOSITORY   = "IvyRepository";
     private EventList<IvyPackage> repositoryList;
-    private JPanel                mainPanel;
+    private static final String PARSE_ON_OPEN = "parseOnOpen";
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -69,13 +74,15 @@ public class IvyBrowserMainFrame extends JFrame
         libraryField.setEnabled(false);
         setVisible(true);
         //todo commented out for Curtis
-//        reparse();
+        boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
+        if(parseOnOpen)
+        reparse();
     }
 
     private void initializeComponents()
     {
 
-        mainPanel = new JPanel(new BorderLayout(0, 0));
+        JPanel mainPanel = new JPanel(new BorderLayout(0, 0));
         setGlassPane(progressPanel);
         setContentPane(mainPanel);
 
@@ -85,13 +92,14 @@ public class IvyBrowserMainFrame extends JFrame
         JPanel    textPanel    = new JPanel();
         JPanel    buttonPanel  = new JPanel();
         JPanel    holdingPanel = new JPanel();
-        BoxLayout layout       = new BoxLayout(holdingPanel, BoxLayout.Y_AXIS);
+        BoxLayout layout       = new BoxLayout(holdingPanel, Y_AXIS);
 
         holdingPanel.setLayout(layout);
         textPanel.add(findLabel);
         textPanel.add(libraryField);
         buttonPanel.add(specifyButton);
         buttonPanel.add(reparseButton);
+        buttonPanel.add(parseOnOpenCheckbox);
         buttonPanel.add(quitButton);
         holdingPanel.add(textPanel);
         holdingPanel.add(buttonPanel);
@@ -102,7 +110,6 @@ public class IvyBrowserMainFrame extends JFrame
         mainPanel.add(statusLabel, BorderLayout.SOUTH);
 
         addListeners();
-
     }
 
     private void addListeners()
@@ -151,6 +158,13 @@ public class IvyBrowserMainFrame extends JFrame
                     System.exit(0);
                 }
             });
+        parseOnOpenCheckbox.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                preferences.putBoolean(PARSE_ON_OPEN, parseOnOpenCheckbox.isSelected());
+            }
+        });
     }
 
     public static String specifyRepository(Preferences appPreferences)
