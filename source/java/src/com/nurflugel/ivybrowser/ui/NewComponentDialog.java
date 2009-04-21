@@ -1,15 +1,23 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
+import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
 
-import javax.swing.*;
 import java.awt.*;
+import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import static java.awt.event.KeyEvent.*;
+
 import java.io.File;
+
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import javax.swing.*;
+import static javax.swing.JFileChooser.*;
+import static javax.swing.JComponent.*;
 
 
 @SuppressWarnings({"AssignmentToCollectionOrArrayFieldFromParameter", "MethodParameterNamingConvention"})
@@ -36,9 +44,7 @@ public class NewComponentDialog extends JDialog
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages,
-                              File repositoryDir,
-                              Preferences preferences)
+    public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)
     {
         this.ivyPackages = ivyPackages;
         this.repositoryDir = repositoryDir;
@@ -57,7 +63,7 @@ public class NewComponentDialog extends JDialog
 
         LayoutManager fboxLayout = new BoxLayout(filesPanel, BoxLayout.Y_AXIS);
         filesPanel.setLayout(fboxLayout);
-        BuilderMainFrame.centerApp(this);
+        centerApp(this);
 
     }
 
@@ -94,7 +100,7 @@ public class NewComponentDialog extends JDialog
             {
                 onCancel();
             }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         orgField.addKeyListener(new KeyAdapter()
         {
             @Override
@@ -150,6 +156,7 @@ public class NewComponentDialog extends JDialog
 
                 dependenciesPanel.invalidate();
                 invalidate();
+
                 Dimension size = getSize();
                 pack();
                 setSize(size);
@@ -210,7 +217,7 @@ public class NewComponentDialog extends JDialog
 
         String ivyLine = newItem.getIvyLine();
         StringSelection text = new StringSelection(ivyLine);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(text, null);
+        getDefaultToolkit().getSystemClipboard().setContents(text, null);
         JOptionPane.showMessageDialog(null, "Line to paste into your ivy file (already copied into the paste buffer):\n" + ivyLine);
     }
 
@@ -260,12 +267,12 @@ public class NewComponentDialog extends JDialog
 
         chooser.setDialogTitle("Pick files to add to the component");
 
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setFileSelectionMode(FILES_ONLY);
         chooser.setMultiSelectionEnabled(true);
 
         int returnVal = chooser.showDialog(this, "Add files to Ivy");
 
-        if (returnVal == JFileChooser.APPROVE_OPTION)
+        if (returnVal == APPROVE_OPTION)
         { // add any selected files to the map of files - this eliminates dupes
 
             File[] selectedFiles = chooser.getSelectedFiles();
@@ -288,7 +295,7 @@ public class NewComponentDialog extends JDialog
             }
 
             pack();
-            BuilderMainFrame.centerApp(this);
+            centerApp(this);
         }
     }
 
