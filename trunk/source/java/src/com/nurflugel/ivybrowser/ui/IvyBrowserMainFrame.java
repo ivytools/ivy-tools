@@ -14,16 +14,17 @@ import com.nurflugel.common.ui.Version;
 
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 
 import java.awt.*;
-import static java.awt.Cursor.*;
-import static java.awt.Cursor.*;
+import static java.awt.BorderLayout.*;
 import static java.awt.Cursor.*;
 import java.awt.event.*;
 
 import java.net.Authenticator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -40,23 +41,24 @@ import javax.swing.table.TableColumnModel;
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
 public class IvyBrowserMainFrame extends JFrame
 {
-    private static final long     serialVersionUID = 8982188831570838035L;
-    private Cursor                busyCursor       = getPredefinedCursor(Cursor.WAIT_CURSOR);
-    private Cursor                normalCursor     = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-    private JButton               specifyButton    = new JButton("Specify Repository");
-    private JButton               reparseButton    = new JButton("Reparse Repository");
-    private JButton               quitButton       = new JButton("Quit");
-    private JLabel                findLabel        = new JLabel("Find library:");
-    private JLabel                statusLabel      = new JLabel();
-    private JCheckBox              parseOnOpenCheckbox=new JCheckBox("Parse Repository on Open"); 
-//    private JLabel                statusLabel      = new JLabel("Please wait while the repository is scanned...");
-    private JTable                resultsTable     = new JTable();
-    private JTextField            libraryField     = new JTextField();
-    private Preferences           preferences      = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
-    private InfiniteProgressPanel progressPanel    = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
-    public static final String   IVY_REPOSITORY   = "IvyRepository";
+    private static final long     serialVersionUID    = 8982188831570838035L;
+    private Cursor                busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
+    private Cursor                normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    private JButton               specifyButton       = new JButton("Specify Repository");
+    private JButton               reparseButton       = new JButton("Reparse Repository");
+    private JButton               quitButton          = new JButton("Quit");
+    private JLabel                findLabel           = new JLabel("Find library:");
+    private JLabel                statusLabel         = new JLabel();
+    private JCheckBox             parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open");
+    private JTable                resultsTable        = new JTable();
+    private JTextField            libraryField        = new JTextField();
+    private Preferences           preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
+    private InfiniteProgressPanel progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
+    public static final String    IVY_REPOSITORY      = "IvyRepository";
     private EventList<IvyPackage> repositoryList;
-    private static final String PARSE_ON_OPEN = "parseOnOpen";
+    private static final String   PARSE_ON_OPEN       = "parseOnOpen";
+    private JScrollPane           scrollPane;
+    private JPanel                holdingPanel;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -73,10 +75,13 @@ public class IvyBrowserMainFrame extends JFrame
 
         libraryField.setEnabled(false);
         setVisible(true);
-        //todo commented out for Curtis
+
         boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
-        if(parseOnOpen)
-        reparse();
+        parseOnOpenCheckbox.setSelected(parseOnOpen);
+
+        if (parseOnOpen) {
+            reparse();
+        }
     }
 
     private void initializeComponents()
@@ -104,10 +109,11 @@ public class IvyBrowserMainFrame extends JFrame
         holdingPanel.add(textPanel);
         holdingPanel.add(buttonPanel);
 
-        JScrollPane scrollPane = new JScrollPane(resultsTable);
-        holdingPanel.add(scrollPane);
-        mainPanel.add(holdingPanel, BorderLayout.CENTER);
-        mainPanel.add(statusLabel, BorderLayout.SOUTH);
+        scrollPane        = new JScrollPane(resultsTable);
+        this.holdingPanel = holdingPanel;
+        this.holdingPanel.add(scrollPane);
+        mainPanel.add(holdingPanel, CENTER);
+        mainPanel.add(statusLabel, SOUTH);
 
         addListeners();
     }
@@ -115,7 +121,7 @@ public class IvyBrowserMainFrame extends JFrame
     private void addListeners()
     {
         libraryField.addKeyListener(new KeyAdapter() {
-                public void keyReleased(KeyEvent e)
+                @Override public void keyReleased(KeyEvent e)
                 {
                     filterTable();
                 }
@@ -146,7 +152,7 @@ public class IvyBrowserMainFrame extends JFrame
                 }
             });
         resultsTable.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e)
+                @Override public void mousePressed(MouseEvent e)
                 {
                     showIvyLine(e);
                 }
@@ -158,13 +164,13 @@ public class IvyBrowserMainFrame extends JFrame
                     System.exit(0);
                 }
             });
-        parseOnOpenCheckbox.addActionListener(new ActionListener(){
+        parseOnOpenCheckbox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                preferences.putBoolean(PARSE_ON_OPEN, parseOnOpenCheckbox.isSelected());
-            }
-        });
+                public void actionPerformed(ActionEvent actionEvent)
+                {
+                    preferences.putBoolean(PARSE_ON_OPEN, parseOnOpenCheckbox.isSelected());
+                }
+            });
     }
 
     public static String specifyRepository(Preferences appPreferences)
@@ -172,24 +178,34 @@ public class IvyBrowserMainFrame extends JFrame
         String ivyRepositoryPath = appPreferences.get(IVY_REPOSITORY, "");
         ivyRepositoryPath = (String) showInputDialog(null, "What is the Ivy repository URL?", "Enter Ivy repository URL", QUESTION_MESSAGE, null, null, ivyRepositoryPath);
         appPreferences.put(IVY_REPOSITORY, ivyRepositoryPath);
+
         return ivyRepositoryPath;
     }
 
     private void reparse()
     {
         setCursor(busyCursor);
-        
+
+        // resultsTable.setVisible(false);
+        holdingPanel.remove(scrollPane);
         progressPanel.start();
 
         String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
 
-        if (ivyRepositoryPath.length() > 0) {
-            HtmlHandler handler = new HtmlHandler(this, ivyRepositoryPath);
-            handler.execute();
+        if (ivyRepositoryPath.length() > 0) { // List<IvyPackage> list = new ArrayList<IvyPackage>();
+            repositoryList = new BasicEventList<IvyPackage>();
 
-            // handler.doInBackground();}
+            // repositoryList.addAll(list);
+            BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList);
+
+             handler.execute();
+//            handler.doInBackground();
+
+            // resultsTable.setVisible(true);
+            holdingPanel.add(scrollPane);
         }
     }
+
 
     private void filterTable()
     {
@@ -217,12 +233,23 @@ public class IvyBrowserMainFrame extends JFrame
 
     // -------------------------- OTHER METHODS --------------------------
 
-    public void populateTable(List<IvyPackage> list)
+    // public void populateTable(List<IvyPackage> list)
+    public void populateTable()
     {
 
-        repositoryList = new BasicEventList<IvyPackage>();
-        repositoryList.addAll(list);
+        // repositoryList = new BasicEventList<IvyPackage>();
+        // repositoryList.addAll(list);
         filterTable();
+
+        // progressPanel.stop();
+    }
+
+    public void stopProgressPanel()
+    {
+
+        // repositoryList = new BasicEventList<IvyPackage>();
+        // repositoryList.addAll(list);
+        // filterTable();
         progressPanel.stop();
     }
 
@@ -265,5 +292,16 @@ public class IvyBrowserMainFrame extends JFrame
     public static void main(String[] args)
     {
         new IvyBrowserMainFrame();
+    }
+
+    public void addIvyPackage(IvyPackage localPackage)
+    {
+
+        try {
+            repositoryList.getReadWriteLock().writeLock().lock();
+            repositoryList.add(localPackage);
+        } finally {
+            repositoryList.getReadWriteLock().writeLock().unlock();
+        }
     }
 }
