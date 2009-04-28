@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="http://ant-script-visualizer.googlecode.com/svn/repository/ivy-1.4.xsl"?>
+<?xml-stylesheet type="text/xsl" href="http://www.nurflugel.com/Home/repository/ivy-2.1.0-rc1.xsl"?>
 <ivy-module version="1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:noNamespaceSchemaLocation="http://ant-script-visualizer.googlecode.com/svn/repository/ivy-1.4.xsd">
+            xsi:noNamespaceSchemaLocation="http://www.nurflugel.com/Home/repository/ivy-2.1.0-rc1.xsd">
   <!-- This is the module definition file; documentation is at http://www.jayasoft.org/ivy/doc/ivyfile. -->
     <info organisation="com.nurflugel" module="ivy-tools" revision="snapshot">
     <license name="Apache"/>
     <ivyauthor name="Douglas Bullard"/>
-    <repository name="asv-repository" url="http://ant-script-visualizer.googlecode.com/svn/repository" ivys="true" artifacts="true"/>
+    <repository name="asv-repository" url="http://www.nurflugel.com/Home/repository" ivys="true" artifacts="true"/>
   </info>
   <configurations defaultconfmapping="build,dist,test->default">
         <conf name="build"   visibility="public"  description="Dependencies only used during the build process."/>
@@ -28,12 +28,14 @@
         <!--<dependency org="com.nurflugellugel"             name="gcdt-code-settings"      rev="20070807.00"       conf="source"/>-->
         <!--<dependency org="com.nurflugellugel"             name="buildtasks"              rev="1.1-SNAPSHOT"      conf="build,source"/>-->
         <dependency org="javax.help"           name="jhall"                   rev="2.0.6"             conf="build,dist"/>
-        <dependency org="ca.odell.glazedlists" name="jdk_1.5"                 rev="1.7.0"             conf="build,dist,source"/>
+        <dependency org="ca.odell.glazedlists" name="jdk_1.5"                 rev="1.8.0"             conf="build,dist,source"/>
         <dependency org="org.jdom"             name="jdom"                    rev="1.0"               conf="build,dist"/>
         <dependency org="org.codehaus.xstream" name="xstream"                 rev="1.2"               conf="build,dist"/>
         <dependency org="com.ryangrier.ant"    name="version_tool"            rev="1.1.4"             conf="build,javadoc"/>
-        <dependency org="org.tmate"            name="svnkit"                  rev="1.2.0.4949"             conf="build,javadoc"/>
+        <dependency org="org.tmate"            name="svnkit"                  rev="1.2.0.4949"        conf="build,javadoc"/>
         <dependency org="w3c"                  name="jtidy"                   rev="04aug2000r7-dev"   conf="build,dist,source"/>
+        <dependency org="com.nurflugel"        name="buildtasks"              rev="1.0-SNAPSHOT"      conf="build"/>
+        <dependency org="org.apache"           name="commons-lang"            rev="2.4"               conf="build,dist"/>
 
   </dependencies>
 </ivy-module>

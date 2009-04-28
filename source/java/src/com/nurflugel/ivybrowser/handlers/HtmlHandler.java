@@ -3,38 +3,36 @@ package com.nurflugel.ivybrowser.handlers;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
-import javax.swing.*;
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.*;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.*;
 
-@SuppressWarnings({"CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr"})
-public class HtmlHandler extends SwingWorker<Object, Object>
+
+@SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
+public class HtmlHandler extends BaseWebHandler
 {
-    private boolean isTest = false;
-    private boolean shouldRun = true;
-    private List<IvyPackage> matchingLibraries;
-    private IvyBrowserMainFrame mainFrame;
-    private String ivyRepositoryPath;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
     // private String libraryName;
 
-    public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath)
+    public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages)
     {
-        this.mainFrame = mainFrame;
-        this.ivyRepositoryPath = ivyRepositoryPath;
+        super(mainFrame, ivyPackages, ivyRepositoryPath);
     }
 
 
-    @Override
-    public Object doInBackground()
+    @Override public Object doInBackground()
     {
         findIvyPackages();
         mainFrame.showNormal();
@@ -44,107 +42,109 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 
     // -------------------------- OTHER METHODS --------------------------
 
-    public List<IvyPackage> findIvyPackages()
+    @Override public void findIvyPackages()
     {
-        List<IvyPackage> ivyPackages = new ArrayList<IvyPackage>();
+        System.out.println("ivyRepositoryPath = " + ivyRepositoryPath);
 
-        try
-        {
-            URL repositoryUrl = new URL(ivyRepositoryPath);
+        try {
+            URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
-            InputStream in = urlConnection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String packageLine = reader.readLine();
-            int i = 0;
+            InputStream    in          = urlConnection.getInputStream();
+            BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
+            String         packageLine = reader.readLine();
+            int            i           = 0;
 
-            while (packageLine != null)
-            {
-                boolean hasLink = packageLine.contains("href") && !packageLine.contains("..");
+            while (packageLine != null) {
+                String  lowerLine  = packageLine.toLowerCase();
+                boolean hasDirLink = isDirLink(lowerLine);
 
-                if (packageLine.contains("</ul>"))
-                {
+                if (lowerLine.contains("</ul>")) {
                     break;
                 }
 
-                if (hasLink)
-                {
+                if (hasDirLink) {
                     System.out.println("packageLine = " + packageLine);
-                    String orgName = getContents(packageLine);
-                    List<IvyPackage> somePackages = findModules(repositoryUrl, orgName);
-                    ivyPackages.addAll(somePackages);
 
-                    // if left in, this populates the display real time
-                    // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
-                    if (!shouldRun || (isTest && (i++ > 4)))
-                    {
-                        break;
+                    String orgName = getContents(packageLine);
+
+                    if (!orgName.equalsIgnoreCase("/Home/") && !orgName.contains("Parent Directory")) {
+                        findModules(repositoryUrl, orgName);
+                        mainFrame.populateTable();
+
+                        // if left in, this populates the display real time
+                        // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
+                        if (!shouldRun || (isTest && (i++ > 4))) {
+                            break;
+                        }
                     }
                 }
 
                 packageLine = reader.readLine();
-            }
+            } // end while
 
             reader.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        matchingLibraries = ivyPackages;
 
-        // todo just add to the table model, and then the UI will refersh on the fly
-        mainFrame.populateTable(ivyPackages);
-
-        return ivyPackages;
+        mainFrame.stopProgressPanel();
     }
 
-    private String getContents(String packageLine)
+    private boolean isDirLink(String lowerLine)
     {
-        int index = packageLine.indexOf("\"");
+        boolean isHref     = lowerLine.contains("href");
+        boolean isUp       = lowerLine.contains("..");
+        boolean isPre      = lowerLine.startsWith("<pre");
+        boolean isDir      = lowerLine.contains("[dir]");
+        boolean hasDirLink = isHref && !isUp && !isPre && isDir;
 
-        String result = packageLine.substring(index + 1);
-        index = result.indexOf("/");
-        result = result.substring(0, index);
-        index = result.indexOf("\"");
+        return hasDirLink;
+    }
 
-        if (index > -1)
-        {
-            result = result.substring(0, index);
+    @Override protected String getContents(String packageLine)
+    {
+        String newText;
+
+        if (packageLine.contains("<A HREF=\"")) {
+            newText = substringAfter(packageLine, "<A HREF=\"");
+        } else {
+            newText = substringAfter(packageLine, "<a href=\"");
         }
+
+        String result = substringBefore(newText, "\">");
 
         return result;
     }
 
-    private List<IvyPackage> findModules(URL repositoryUrl, String orgName) throws IOException
+    @Override protected void findModules(URL repositoryUrl, String orgName) throws IOException
     {
-        List<IvyPackage> ivyPackages = new ArrayList<IvyPackage>();
-        URL moduleUrl = new URL(repositoryUrl + "/" + orgName);
+
+        URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
         URLConnection urlConnection = moduleUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream in = urlConnection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String moduleLine = reader.readLine();
+        InputStream    in         = urlConnection.getInputStream();
+        BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
+        String         moduleLine = reader.readLine();
 
-        while (moduleLine != null)
-        {
-            boolean isLibrary = moduleLine.contains("<li") && !moduleLine.contains("..");
+        while (moduleLine != null) {
+            boolean isLibrary = isDirLink(moduleLine.toLowerCase());
 
-            if (isLibrary)
-            {
+            if (isLibrary) {
                 String moduleName = getContents(moduleLine);
-                try
-                {
-                    findVersions(repositoryUrl, orgName, moduleName, ivyPackages);
-                }
-                catch (FileNotFoundException e)
-                {
-                    System.out.println("Had problem parsing package "+orgName+" "+moduleName);
+
+                if (!moduleName.contains("Parent Directory") && !moduleName.contains("/Home/")) {
+
+                    try {
+                        findVersions(repositoryUrl, orgName, moduleName);
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Had problem parsing package " + orgName + " " + moduleName);
+                    }
                 }
             }
 
@@ -152,218 +152,34 @@ public class HtmlHandler extends SwingWorker<Object, Object>
         }
 
         reader.close();
-
-        return ivyPackages;
     }
 
-    private void findVersions(URL repositoryUrl, String orgName, String moduleName, List<IvyPackage> ivyPackages) throws IOException
+    @Override protected boolean hasVersion(String versionLine)
     {
-        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
-        URLConnection urlConnection = versionUrl.openConnection();
-        urlConnection.setAllowUserInteraction(true);
-        urlConnection.connect();
+        boolean hasVersion;
 
-        InputStream in = urlConnection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String versionLine = reader.readLine();
-
-        while (versionLine != null)
-        {
-            boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
-
-            if (hasVersion)
-            {
-                String version = getContents(versionLine);
-                mainFrame.setStatusLabel("Parsing " + moduleName + " version " + version);
-                findVersionedLibrary(repositoryUrl, orgName, moduleName, version, ivyPackages);
-            }
-
-            versionLine = reader.readLine();
+        if (versionLine.contains("<li")) {
+            hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
+        } else {
+            hasVersion = versionLine.contains("<A HREF") && versionLine.contains("[DIR]") && !versionLine.contains("..");
         }
 
-        reader.close();
+        return hasVersion;
     }
 
-    @SuppressWarnings({"OverlyComplexBooleanExpression"})
-    private void findVersionedLibrary(URL repositoryUrl, String orgName, String moduleName, String version,
-                                      List<IvyPackage> ivyPackages) throws IOException
+
+    @Override protected boolean shouldProcessVersionedLibraryLine(String line)
     {
-        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
-        URLConnection urlConnection = versionUrl.openConnection();
-        urlConnection.setAllowUserInteraction(true);
-        urlConnection.connect();
+        boolean shouldProcess;
 
-        InputStream in = urlConnection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String versionLine = reader.readLine();
-        List<IvyPackage> localPackages = new ArrayList<IvyPackage>();
-        String ivyFile = null;
-        Map<String, IvyPackage> jars = new HashMap<String, IvyPackage>();
-
-        while (versionLine != null)
-        {
-            boolean shouldProcess = versionLine.contains("<li") && !versionLine.contains("..") && !versionLine.contains("md5") &&
-                                    !versionLine.contains("sha1");
-
-            if (shouldProcess)
-            {
-                boolean isSource = versionLine.contains("-src") || versionLine.contains("-source");
-                boolean isJavadoc = versionLine.contains("-javadoc");
-                boolean isLibraryFile = versionLine.contains(".jar") && !isSource && !isJavadoc;
-                boolean isIvyFile = versionLine.contains(".ivy.xml");
-
-                String library = getContents(versionLine);
-
-                if (isLibraryFile)
-                {
-                    int index = library.indexOf(version);
-
-                    if (index > -1)
-                    {
-                        library = library.substring(0, index - 1);
-                    }
-
-                    library = library.replaceAll(".jar", "");
-
-                    IvyPackage ivyPackage = new IvyPackage(orgName, moduleName, version, library);
-                    jars.put(library, ivyPackage);
-                    localPackages.add(ivyPackage);
-                }
-                else if (isIvyFile)
-                {
-                    ivyFile = getContents(versionLine);
-                    library = library.replaceAll(".xml", "");
-
-                    IvyPackage ivyPackage = new IvyPackage(orgName, moduleName, version, library);
-                    localPackages.add(ivyPackage);
-                }
-                else // it's a javadoc or source
-                {
-
-                    if (library.contains(".jar"))
-                    {
-                        library = library.replaceAll(".jar", "");
-                    }
-
-                    if (library.contains(".zip"))
-                    {
-                        library = library.replaceAll(".zip", "");
-                    }
-
-                    if (library.contains("-" + version))
-                    {
-                        library = library.replaceAll("-" + version, "");
-                    }
-
-                    if (isSource)
-                    {
-
-                        if (library.contains("-src"))
-                        {
-                            library = library.replaceAll("-src", "");
-                        }
-
-                        if (library.contains("-sources"))
-                        {
-                            library = library.replaceAll("-sources", "");
-                        }
-
-                        if (library.contains("-source"))
-                        {
-                            library = library.replaceAll("-source", "");
-                        }
-
-                        IvyPackage ivyPackage = jars.get(library);
-
-                        if (ivyPackage != null)
-                        {
-                            ivyPackage.setHasSourceCode(true);
-                        }
-                    }
-
-                    if (isJavadoc)
-                    {
-
-                        if (library.contains("-javadocs"))
-                        {
-                            library = library.replaceAll("-javadocs", "");
-                        }
-
-                        if (library.contains("-javadoc"))
-                        {
-                            library = library.replaceAll("-javadoc", "");
-                        }
-
-                        IvyPackage ivyPackage = jars.get(library);
-
-                        if (ivyPackage != null)
-                        {
-                            ivyPackage.setHasJavaDocs(true);
-                        }
-                    }
-                } // end if-else
-            } // end if
-
-            versionLine = reader.readLine();
-        } // end while
-
-        reader.close();
-
-        if ((ivyFile != null))
-        {
-
-            for (IvyPackage localPackage : localPackages)
-            {
-                localPackage.setIvyFile(ivyFile);
-                localPackage.setVersionUrl(versionUrl);
-            }
+        if (line.contains("<li")) {
+            shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
+        } else {
+            shouldProcess = line.contains("A HREF") && !line.contains("[DIR]") && !line.contains("<PRE>") && !line.contains("Parent Directory") && !line.contains("sha1") && !line.contains("md5");
         }
 
-        // remove ivy package if there are any jars existing
-        if (isAnythingOtherThanIvy(localPackages))
-        {
-            removeIvyFile(localPackages, ivyFile);
-        }
-
-        ivyPackages.addAll(localPackages);
+        return shouldProcess;
     }
 
-    private void removeIvyFile(List<IvyPackage> localPackages, String ivyFile)
-    {
 
-        for (IvyPackage localPackage : localPackages)
-        {
-
-            if (localPackage.getLibrary().endsWith(".ivy"))
-            {
-                localPackages.remove(localPackage);
-
-                return;
-            }
-        }
-    }
-
-    private boolean isAnythingOtherThanIvy(List<IvyPackage> localPackages)
-    {
-
-        for (IvyPackage localPackage : localPackages)
-        {
-
-            String library = localPackage.getLibrary();
-            if (library != null)
-            {
-                if (!library.endsWith(".ivy"))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public List<IvyPackage> getMatchingLibraries()
-    {
-        return matchingLibraries;
-    }
 }
