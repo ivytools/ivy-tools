@@ -3,46 +3,53 @@ package com.nurflugel.ivybrowser.handlers;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
 
-
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates.
- */
+/** Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates. */
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
     protected IvyBrowserMainFrame mainFrame;
-    protected boolean             isTest            = false;
-    protected boolean             shouldRun         = true;
-    protected String              ivyRepositoryPath;
-    protected List<IvyPackage>    ivyPackages;
+    protected boolean isTest = false;
+    protected boolean shouldRun = true;
+    protected String ivyRepositoryPath;
+    protected List<IvyPackage> ivyPackages;
 
     protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath)
     {
-        this.mainFrame         = mainFrame;
-        this.ivyPackages       = ivyPackages;
+        this.mainFrame = mainFrame;
+        this.ivyPackages = ivyPackages;
         this.ivyRepositoryPath = ivyRepositoryPath;
     }
+
+    @Override
+    public Object doInBackground()
+    {
+        findIvyPackages();
+        mainFrame.showNormal();
+
+        return null;
+    }
+
 
     protected void removeIvyFile(List<IvyPackage> localPackages, String ivyFile)
     {
 
-        for (IvyPackage localPackage : localPackages) {
+        for (IvyPackage localPackage : localPackages)
+        {
 
-            if (localPackage.getLibrary().endsWith(".ivy")) {
+            if (localPackage.getLibrary().endsWith(".ivy"))
+            {
                 localPackages.remove(localPackage);
 
                 return;
@@ -53,13 +60,18 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     protected boolean isAnythingOtherThanIvy(List<IvyPackage> localPackages)
     {
 
-        for (IvyPackage localPackage : localPackages) {
+        for (IvyPackage localPackage : localPackages)
+        {
 
             String library = localPackage.getLibrary();
 
-            if (library != null) {
+            if (library != null)
+            {
 
-                if (!library.endsWith(".ivy")) { return true; }
+                if (!library.endsWith(".ivy"))
+                {
+                    return true;
+                }
             }
         }
 
@@ -70,33 +82,37 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     protected void findVersionedLibrary(URL repositoryUrl, String orgName, String moduleName, String version) throws IOException
     {
-        URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
+        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
         URLConnection urlConnection = versionUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream             in            = urlConnection.getInputStream();
-        BufferedReader          reader        = new BufferedReader(new InputStreamReader(in));
-        String                  line          = reader.readLine();
-        List<IvyPackage>        localPackages = new ArrayList<IvyPackage>();
-        String                  ivyFile       = null;
-        Map<String, IvyPackage> jars          = new HashMap<String, IvyPackage>();
+        InputStream in = urlConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line = reader.readLine();
+        List<IvyPackage> localPackages = new ArrayList<IvyPackage>();
+        String ivyFile = null;
+        Map<String, IvyPackage> jars = new HashMap<String, IvyPackage>();
 
-        while (line != null) {
+        while (line != null)
+        {
             boolean shouldProcess = shouldProcessVersionedLibraryLine(line);
 
-            if (shouldProcess) {
-                boolean isSource      = line.contains("-src") || line.contains("-source");
-                boolean isJavadoc     = line.contains("-javadoc");
+            if (shouldProcess)
+            {
+                boolean isSource = line.contains("-src") || line.contains("-source");
+                boolean isJavadoc = line.contains("-javadoc");
                 boolean isLibraryFile = line.contains(".jar") && !isSource && !isJavadoc;
-                boolean isIvyFile     = line.contains(".ivy.xml");
+                boolean isIvyFile = line.contains(".ivy.xml");
 
                 String library = getContents(line);
 
-                if (isLibraryFile) {
+                if (isLibraryFile)
+                {
                     int index = library.indexOf(version);
 
-                    if (index > -1) {
+                    if (index > -1)
+                    {
                         library = library.substring(0, index - 1);
                     }
 
@@ -105,61 +121,76 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
                     IvyPackage ivyPackage = new IvyPackage(orgName, moduleName, version, library);
                     jars.put(library, ivyPackage);
                     localPackages.add(ivyPackage);
-                } else if (isIvyFile) {
+                }
+                else if (isIvyFile)
+                {
                     ivyFile = getContents(line);
                     library = library.replaceAll(".xml", "");
 
                     IvyPackage ivyPackage = new IvyPackage(orgName, moduleName, version, library);
                     localPackages.add(ivyPackage);
-                } else // it's a javadoc or source
+                }
+                else // it's a javadoc or source
                 {
 
-                    if (library.contains(".jar")) {
+                    if (library.contains(".jar"))
+                    {
                         library = library.replaceAll(".jar", "");
                     }
 
-                    if (library.contains(".zip")) {
+                    if (library.contains(".zip"))
+                    {
                         library = library.replaceAll(".zip", "");
                     }
 
-                    if (library.contains("-" + version)) {
+                    if (library.contains("-" + version))
+                    {
                         library = library.replaceAll("-" + version, "");
                     }
 
-                    if (isSource) {
+                    if (isSource)
+                    {
 
-                        if (library.contains("-src")) {
+                        if (library.contains("-src"))
+                        {
                             library = library.replaceAll("-src", "");
                         }
 
-                        if (library.contains("-sources")) {
+                        if (library.contains("-sources"))
+                        {
                             library = library.replaceAll("-sources", "");
                         }
 
-                        if (library.contains("-source")) {
+                        if (library.contains("-source"))
+                        {
                             library = library.replaceAll("-source", "");
                         }
 
                         IvyPackage ivyPackage = jars.get(library);
 
-                        if (ivyPackage != null) {
+                        if (ivyPackage != null)
+                        {
                             ivyPackage.setHasSourceCode(true);
                         }
                     }
 
-                    if (isJavadoc) {
+                    if (isJavadoc)
+                    {
 
-                        if (library.contains("-javadocs")) {
+                        if (library.contains("-javadocs"))
+                        {
                             library = library.replaceAll("-javadocs", "");
                         }
 
-                        if (library.contains("-javadoc")) {
+                        if (library.contains("-javadoc"))
+                        {
                             library = library.replaceAll("-javadoc", "");
                         }
 
                         IvyPackage ivyPackage = jars.get(library);
 
-                        if (ivyPackage != null) {
+                        if (ivyPackage != null)
+                        {
                             ivyPackage.setHasJavaDocs(true);
                         }
                     }
@@ -171,20 +202,24 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
         reader.close();
 
-        if ((ivyFile != null)) {
+        if ((ivyFile != null))
+        {
 
-            for (IvyPackage localPackage : localPackages) {
+            for (IvyPackage localPackage : localPackages)
+            {
                 localPackage.setIvyFile(ivyFile);
                 localPackage.setVersionUrl(versionUrl);
             }
         }
 
         // remove ivy package if there are any jars existing
-        if (isAnythingOtherThanIvy(localPackages)) {
+        if (isAnythingOtherThanIvy(localPackages))
+        {
             removeIvyFile(localPackages, ivyFile);
         }
 
-        for (IvyPackage localPackage : localPackages) {
+        for (IvyPackage localPackage : localPackages)
+        {
             mainFrame.addIvyPackage(localPackage);
         }
         // ivyPackages.addAll(localPackages);
@@ -194,19 +229,21 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     protected void findVersions(URL repositoryUrl, String orgName, String moduleName) throws IOException
     {
-        URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
+        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
         URLConnection urlConnection = versionUrl.openConnection();
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream    in          = urlConnection.getInputStream();
-        BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-        String         versionLine = reader.readLine();
+        InputStream in = urlConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String versionLine = reader.readLine();
 
-        while (versionLine != null) {
+        while (versionLine != null)
+        {
             boolean hasVersion = hasVersion(versionLine);
 
-            if (hasVersion && !versionLine.contains("Parent Directory")) {
+            if (hasVersion && !versionLine.contains("Parent Directory"))
+            {
                 String version = getContents(versionLine);
 
 
@@ -222,6 +259,8 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
 
     protected abstract boolean hasVersion(String versionLine);
+
     protected abstract void findModules(URL repositoryUrl, String orgName) throws IOException;
+
     public abstract void findIvyPackages();
 }
