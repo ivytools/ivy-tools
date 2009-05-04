@@ -2,14 +2,14 @@
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
         spec="1.0+"
-        codebase="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/"
+        codebase="http://www.nurflugel.com/webstart/IvyTools/"
         href="ivyFormatterApp.jnlp">
     <information>
         <title>IvyFormatter</title>
         <vendor>Enterprise Services Applications Engineering</vendor>
         <homepage href="index.html"/>
         <description>Ivy Formatter</description>
-        <icon href="images/ES-64x.jpg"/>
+        <icon href="images/IvyFormatter-small.png"/>
         <icon kind="splash" href="images/IvyFormatter-splash.jpg"/>
         <shortcut online="false">
 	      <desktop/>
@@ -21,8 +21,9 @@
     <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
+        <jar href="lib/commons-lang.jar"/>
         <jar href="lib/jtidy.jar"/>
-        <jar href="lib/glazedlists_jdk_1.5.jar"/>
+        <jar href="lib/glazedlists.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame"/>
 </jnlp>
