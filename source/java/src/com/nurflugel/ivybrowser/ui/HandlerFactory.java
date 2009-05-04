@@ -1,23 +1,30 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
+import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:45:52 PM To change this template use File | Settings | File Templates.
- */
+/** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
 {
-    private HandlerFactory() { }
+    private static final boolean IS_WEB_REPOSITORY = true;
+
+    private HandlerFactory()
+    {
+    }
 
     public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList)
     {
-
-        // todo make this a factory to return the Subversion web dav handler by figuring out which one is which...
-        return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        if (IS_WEB_REPOSITORY)
+        {
+            return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        }
+        else
+        {
+            return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        }
     }
 }
