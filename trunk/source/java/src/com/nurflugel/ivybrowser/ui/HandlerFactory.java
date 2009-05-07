@@ -1,30 +1,62 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
+
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import java.net.URL;
+import java.net.URLConnection;
+
 
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
 {
-    private static final boolean IS_WEB_REPOSITORY = true;
+    // private static  boolean isSubversionRepository;
 
-    private HandlerFactory()
-    {
-    }
+    private HandlerFactory() { }
 
     public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList)
     {
-        if (IS_WEB_REPOSITORY)
-        {
-            return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
+
+        if (isSubversionRepository) { return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList); }
+        else { return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList); }
+    }
+
+    private static boolean isSubversionRepository(String ivyRepositoryPath)
+    {
+
+        try {
+            URL           repositoryUrl = new URL(ivyRepositoryPath);
+            URLConnection urlConnection = repositoryUrl.openConnection();
+            urlConnection.setAllowUserInteraction(true);
+            urlConnection.connect();
+
+            InputStream    in     = urlConnection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String         line   = reader.readLine();
+            int            i      = 0;
+
+            while (line != null) {
+                boolean isSubversion = line.contains("Powered by") && line.contains("Subversion");
+
+                if (isSubversion) { return true; }
+
+                line = reader.readLine();
+            }
+
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        else
-        {
-            return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
-        }
+
+        return false;
     }
 }
