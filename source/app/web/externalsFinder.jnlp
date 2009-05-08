@@ -2,7 +2,7 @@
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
         spec="1.0+"
-        codebase="http://camb2bp2:8090/svn/javaexternals/trunk/maintenance/IvyBrowser/webstart/"
+        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="externalsFinder.jnlp">
     <information>
         <title>ExternalsFinder</title>
