@@ -2,7 +2,7 @@
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
         spec="1.0+"
-        codebase="http://www.nurflugel.com/webstart/IvyTools/"
+        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="ivyBuilder.jnlp">
     <information>
         <title>IvyBuilder</title>
