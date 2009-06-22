@@ -3,7 +3,6 @@ package com.nurflugel.externalsreporter.ui.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 20, 2008 Time: 6:17:21 PM To change this template use File | Settings | File
  * Templates.
@@ -17,8 +16,7 @@ public class TopNode extends CheckableNode
         super(s);
     }
 
-
-    public void add(CheckableNode node)
+    @Override public void add(CheckableNode node)
     {
         if (node instanceof ProjectNode)
         {
@@ -26,10 +24,8 @@ public class TopNode extends CheckableNode
         }
     }
 
-    @Override
-    public int indexOf(Object child)
+    @Override public int indexOf(Object child)
     {
-
         if (child instanceof ProjectNode)
         {
             return projects.indexOf(child);
@@ -38,10 +34,8 @@ public class TopNode extends CheckableNode
         return -1;
     }
 
-    @Override
-    public List<? extends CheckableNode> getChildren()
+    @Override public List<? extends CheckableNode> getChildren()
     {
         return projects;
     }
-
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-
 public class IvyRepositoryHtmlTableModel implements TableModel
 {
     static final int         FILE        = 3;
@@ -20,36 +19,44 @@ public class IvyRepositoryHtmlTableModel implements TableModel
     private String[]         columnNames = { "Org", "Module", "Revision", "File", "Source?", "Javadocs?" };
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
     public IvyRepositoryHtmlTableModel(List<IvyPackage> list)
     {
         this.list = list;
     }
-
     // ------------------------ INTERFACE METHODS ------------------------
 
-
     // --------------------- Interface TableModel ---------------------
+    public int getRowCount()
+    {
+        return list.size();
+    }
 
+    public int getColumnCount()
+    {
+        return columnNames.length;
+    }
 
-    public int getRowCount() { return list.size(); }
+    public String getColumnName(int columnIndex)
+    {
+        return columnNames[columnIndex];
+    }
 
-    public int getColumnCount() { return columnNames.length; }
+    public Class getColumnClass(int c)
+    {
+        return getValueAt(0, c).getClass();
+    }
 
-    public String getColumnName(int columnIndex) { return columnNames[columnIndex]; }
+    public boolean isCellEditable(int rowIndex, int columnIndex)
+    {
+        return false;
+    }
 
-    public Class getColumnClass(int c) { return getValueAt(0, c).getClass(); }
-
-    public boolean isCellEditable(int rowIndex,
-                                  int columnIndex) { return false; }
-
-    public Object getValueAt(int rowIndex,
-                             int columnIndex)
+    public Object getValueAt(int rowIndex, int columnIndex)
     {
         IvyPackage ivyPackage = list.get(rowIndex);
 
-        switch (columnIndex) {
-
+        switch (columnIndex)
+        {
             case ORG:
                 return ivyPackage.getOrgName();
 
@@ -70,15 +77,21 @@ public class IvyRepositoryHtmlTableModel implements TableModel
         }
     }
 
-    public void setValueAt(Object aValue,
-                           int    rowIndex,
-                           int    columnIndex) { }
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+    {
+    }
 
-    public void addTableModelListener(TableModelListener l) { }
+    public void addTableModelListener(TableModelListener l)
+    {
+    }
 
-    public void removeTableModelListener(TableModelListener l) { }
+    public void removeTableModelListener(TableModelListener l)
+    {
+    }
 
     // -------------------------- OTHER METHODS --------------------------
-
-    public IvyPackage getItemAt(int row) { return list.get(row); }
+    public IvyPackage getItemAt(int row)
+    {
+        return list.get(row);
+    }
 }

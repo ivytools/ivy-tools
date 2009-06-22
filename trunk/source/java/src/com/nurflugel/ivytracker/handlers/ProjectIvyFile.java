@@ -12,7 +12,13 @@ public class ProjectIvyFile
         this.projectName   = projectName;
     }
 
-    public String getPathToIvyFile() { return pathToIvyFile; }
+    public String getPathToIvyFile()
+    {
+        return pathToIvyFile;
+    }
 
-    public String getProjectName() { return projectName; }
+    public String getProjectName()
+    {
+        return projectName;
+    }
 }

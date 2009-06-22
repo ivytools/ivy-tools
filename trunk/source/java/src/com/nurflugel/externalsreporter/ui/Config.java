@@ -1,8 +1,8 @@
 package com.nurflugel.externalsreporter.ui;
 
 import java.io.File;
-import java.util.prefs.Preferences;
 
+import java.util.prefs.Preferences;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 21, 2008 Time: 6:50:22 PM To change this template use File | Settings | File
@@ -10,18 +10,18 @@ import java.util.prefs.Preferences;
  */
 public class Config
 {
-    public static final String DOT_EXECUTABLE = "dotExecutable";
-    public static final String IMAGE_DIR = "imageDir";
-    private static final String VERSION = "version";
-    private Preferences preferences;
-    private String dotExecutablePath;
-    private String imageDir;
+    public static final String  DOT_EXECUTABLE    = "dotExecutable";
+    public static final String  IMAGE_DIR         = "imageDir";
+    private static final String VERSION           = "version";
+    private Preferences         preferences;
+    private String              dotExecutablePath;
+    private String              imageDir;
 
     public Config()
     {
-        preferences = Preferences.userNodeForPackage(MainFrame.class);
+        preferences       = Preferences.userNodeForPackage(MainFrame.class);
         dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
-        imageDir = preferences.get(IMAGE_DIR, "");
+        imageDir          = preferences.get(IMAGE_DIR, "");
     }
 
     public void saveSettings()

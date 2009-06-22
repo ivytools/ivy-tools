@@ -2,7 +2,6 @@ package com.nurflugel.externalsreporter.ui.tree;
 
 import java.util.List;
 
-
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 20, 2008 Time: 4:55:12 PM To change this template use File | Settings | File
  * Templates.
@@ -10,7 +9,7 @@ import java.util.List;
 public abstract class CheckableNode
 {
     private boolean isSelected = false;
-    private String name;
+    private String  name;
 
     protected CheckableNode(String name)
     {
@@ -39,8 +38,7 @@ public abstract class CheckableNode
         return isSelected;
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
         return name;
     }

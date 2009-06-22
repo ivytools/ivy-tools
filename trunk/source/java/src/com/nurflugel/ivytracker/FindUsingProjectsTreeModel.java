@@ -11,7 +11,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Nov 28, 2008 Time: 10:43:35 PM To change this template use File | Settings | File Templates. */
 public class FindUsingProjectsTreeModel implements TreeModel
 {
@@ -24,12 +23,15 @@ public class FindUsingProjectsTreeModel implements TreeModel
         this.ivyFilesMap = Collections.unmodifiableMap(ivyFilesMap);
     }
 
-    public Object getRoot() { return ivyFile; }
+    public Object getRoot()
+    {
+        return ivyFile;
+    }
 
     public Object getChild(Object o, int i)
     {
-
-        if (o instanceof IvyFile) {
+        if (o instanceof IvyFile)
+        {
             List<IvyFile> usingIvyFiles = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
 
             return usingIvyFiles.get(i);
@@ -43,12 +45,14 @@ public class FindUsingProjectsTreeModel implements TreeModel
         String        key      = childIvyFile.getKey();
         List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
 
-        for (IvyFile file : ivyFilesMap.values()) {
+        for (IvyFile file : ivyFilesMap.values())
+        {
             List<String> dependencies = file.getDependencies();
 
-            for (String dependency : dependencies) {
-
-                if (dependency.equals(key)) {
+            for (String dependency : dependencies)
+            {
+                if (dependency.equals(key))
+                {
                     ivyFiles.add(file);
 
                     break;
@@ -61,46 +65,59 @@ public class FindUsingProjectsTreeModel implements TreeModel
 
     public int getChildCount(Object o)
     {
-
-        if (o instanceof IvyFile) { return findAllIvyFilesUsingThisAsDependency((IvyFile) o).size(); }
+        if (o instanceof IvyFile)
+        {
+            return findAllIvyFilesUsingThisAsDependency((IvyFile) o).size();
+        }
 
         return 0;
     }
 
     public boolean isLeaf(Object o)
     {
-
-        if (o instanceof IvyFile) { return findAllIvyFilesUsingThisAsDependency((IvyFile) o).isEmpty(); }
+        if (o instanceof IvyFile)
+        {
+            return findAllIvyFilesUsingThisAsDependency((IvyFile) o).isEmpty();
+        }
 
         return false;
     }
 
-    public void valueForPathChanged(TreePath treePath, Object o) { }
+    public void valueForPathChanged(TreePath treePath, Object o)
+    {
+    }
 
     public int getIndexOfChild(Object o, Object o1)
     {
-
-        if (o instanceof IvyFile) {
+        if (o instanceof IvyFile)
+        {
             List<IvyFile> files = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
             int           i     = 0;
 
-            for (IvyFile file : files) {
-
-                if (o1 instanceof IvyFile) {
+            for (IvyFile file : files)
+            {
+                if (o1 instanceof IvyFile)
+                {
                     IvyFile childFile = (IvyFile) o1;
 
-                    if (file.getKey().equals(childFile.getKey())) { return i; }
+                    if (file.getKey().equals(childFile.getKey()))
+                    {
+                        return i;
+                    }
                 }
 
                 i++;
             }
-
         }
 
         return 0;
     }
 
-    public void addTreeModelListener(TreeModelListener treeModelListener) { }
+    public void addTreeModelListener(TreeModelListener treeModelListener)
+    {
+    }
 
-    public void removeTreeModelListener(TreeModelListener treeModelListener) { }
+    public void removeTreeModelListener(TreeModelListener treeModelListener)
+    {
+    }
 }

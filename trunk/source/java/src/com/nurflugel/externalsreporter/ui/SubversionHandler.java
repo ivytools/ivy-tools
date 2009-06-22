@@ -1,7 +1,9 @@
 package com.nurflugel.externalsreporter.ui;
 
-import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.BuildableItem;
+
+import com.nurflugel.common.ui.UiMainFrame;
+
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -12,13 +14,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 /** Handler for all the Subversion tasks. */
-@SuppressWarnings({"CallToPrintStackTrace", "UseOfSystemOutOrSystemErr"})
+@SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class SubversionHandler
 {
     private SVNClientManager clientManager;
-    private UiMainFrame mainFrame;
+    private UiMainFrame      mainFrame;
 
     public SubversionHandler(UiMainFrame mainFrame)
     {
@@ -37,41 +38,41 @@ public class SubversionHandler
         /*
          * Creates an instance of SVNClientManager providing authentication information (name, password) and an options driver
          */
-        clientManager = null;//todo fix for SVN 1.5!!!
-//        clientManager = SVNClientManager.newInstance(options, WebAuthenticator.getUsername(), WebAuthenticator.getPassword());
+        clientManager = null;  // todo fix for SVN 1.5!!!
 
+        // clientManager = SVNClientManager.newInstance(options, WebAuthenticator.getUsername(), WebAuthenticator.getPassword());
     }
 
     /** Make a tag of the buildable item. */
     public SVNURL makeTag(BuildableItem item)
     {
         String baseUrl = item.getProject().getProjectBaseUrl();
-        long start = new Date().getTime();
+        long   start   = new Date().getTime();
 
         try
         {
             SVNURL repositryUrl = SVNURL.parseURIEncoded(baseUrl);
-            SVNURL fromUrl = repositryUrl.appendPath(item.getBranch().getPath(), false);
-            SVNURL tagUrl = repositryUrl.appendPath("tags/" + item.getBranch().getTagName(), false);
+            SVNURL fromUrl      = repositryUrl.appendPath(item.getBranch().getPath(), false);
+            SVNURL tagUrl       = repositryUrl.appendPath("tags/" + item.getBranch().getTagName(), false);
+
             try
             {
                 long committedRevision = copy(fromUrl, tagUrl, "tagging '" + fromUrl + "' to '" + tagUrl + "'").getNewRevision();
-                long duration = new Date().getTime() - start;
+                long duration          = new Date().getTime() - start;
 
                 if (mainFrame != null)
                 {
-                    mainFrame.addStatus("Created a tag: " + tagUrl + " with revision " + committedRevision + ",  duration: " +
-                                        (duration / 1000) + " seconds");
+                    mainFrame.addStatus("Created a tag: " + tagUrl + " with revision " + committedRevision + ",  duration: " + (duration / 1000) + " seconds");
                 }
 
                 return tagUrl;
-
             }
             catch (SVNException e)
             {
                 String message = "Error making tag\n" + e.getErrorMessage();
 
                 mainFrame.showSevereError(message, e);
+
                 return tagUrl;
             }
         }
@@ -104,26 +105,28 @@ public class SubversionHandler
      *
      * commitMessage - a commit log message since URL->URL copying is immediately committed to a repository.
      */
-    private SVNCommitInfo copy(SVNURL srcURL, SVNURL dstURL, String commitMessage) throws SVNException
+    private SVNCommitInfo copy(SVNURL srcURL, SVNURL dstURL, String commitMessage)
+                        throws SVNException
     {
         // SVNRevision.HEAD means the latest revision. Returns SVNCommitInfo containing information on the new revision committed (revision number, etc.)
         boolean failWhenDestExists = true;
-        boolean isMove = false;
+        boolean isMove             = false;
 
-//        return clientManager.getCopyClient().doCopy(srcURL, HEAD, dstURL, isMove, failWhenDestExists, commitMessage);
-        return null;//todo fix for SVN 1.5!!!
+        // return clientManager.getCopyClient().doCopy(srcURL, HEAD, dstURL, isMove, failWhenDestExists, commitMessage);
+        return null;  // todo fix for SVN 1.5!!!
     }
 
     /** Get any externals used in this URL's project. */
-    public List<External> getExternals(String buildableUrl, SVNWCClient wcClient) throws SVNException
+    public List<External> getExternals(String buildableUrl, SVNWCClient wcClient)
+                                throws SVNException
     {
-        List<External> theMap = new ArrayList<External>();
+        List<External>  theMap          = new ArrayList<External>();
+        SVNURL          url             = SVNURL.parseURIDecoded(buildableUrl);
+        String          propertyName    = "svn:externals";
+        long            start           = new Date().getTime();
+        SVNPropertyData svnPropertyData = null;  // todo fix for SVN 1.5!!!
 
-        SVNURL url = SVNURL.parseURIDecoded(buildableUrl);
-        String propertyName = "svn:externals";
-        long start = new Date().getTime();
-        SVNPropertyData svnPropertyData = null;//todo fix for SVN 1.5!!!
-//        SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, propertyName, HEAD, HEAD, false);
+        // SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, propertyName, HEAD, HEAD, false);
         long time = (new Date().getTime()) - start;
 
         System.out.println("time to get external = " + (((float) time) / 1000.0f) + " seconds");
@@ -131,20 +134,20 @@ public class SubversionHandler
         if (svnPropertyData != null)
         {
             System.out.println("buildableUrl = " + buildableUrl);
-//todo fix for SVN 1.5!!!
-//            String value = svnPropertyData.getValue();
-//            String[] values = value.split("\n");
-//
-//            for (String line : values)
-//            {
-//                String[] externalLine = line.split(" ");
-//                String dir = externalLine[0];
-//                line = line.substring(dir.length());
-//                line = line.substring(line.lastIndexOf(" ") + 1);
-//
-//                External external = new External(dir, line);
-//                theMap.add(external);
-//            }
+            // todo fix for SVN 1.5!!!
+            // String value = svnPropertyData.getValue();
+            // String[] values = value.split("\n");
+            //
+            // for (String line : values)
+            // {
+            // String[] externalLine = line.split(" ");
+            // String dir = externalLine[0];
+            // line = line.substring(dir.length());
+            // line = line.substring(line.lastIndexOf(" ") + 1);
+            //
+            // External external = new External(dir, line);
+            // theMap.add(external);
+            // }
         }
         else
         {
@@ -154,11 +157,8 @@ public class SubversionHandler
         return theMap;
     }
 
-
     public SVNWCClient getWcClient()
     {
         return clientManager.getWCClient();
     }
-
-
 }

@@ -1,9 +1,9 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
-import com.nurflugel.common.ui.tree.CheckableItem;
-import com.nurflugel.BuildableProjects;
 import com.nurflugel.Branch;
+import com.nurflugel.BuildableProjects;
 
+import com.nurflugel.common.ui.tree.CheckableItem;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 31, 2008 Time: 3:20:22 PM To change this template use File | Settings | File
@@ -12,25 +12,21 @@ import com.nurflugel.Branch;
 public class ProjectBranchItem implements CheckableItem
 {
     private BuildableProjects project;
-    private boolean selected;
-    private Branch branch;
+    private boolean           selected;
+    private Branch            branch;
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
-    public ProjectBranchItem(BuildableProjects project,
-                             Branch branch)
+    public ProjectBranchItem(BuildableProjects project, Branch branch)
     {
         this.project = project;
-        this.branch = branch;
+        this.branch  = branch;
     }
 
     // -------------------------- OTHER METHODS --------------------------
-
     public Branch getBranch()
     {
         return branch;
     }
-
 
     public BuildableProjects getProject()
     {
@@ -47,40 +43,43 @@ public class ProjectBranchItem implements CheckableItem
         this.selected = selected;
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
         return branch.getName();
     }
 
-    @Override
-    @SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject"})
+    @Override @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
     public boolean equals(Object o)
     {
         if (this == o)
         {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
+
+        if ((o == null) || (getClass() != o.getClass()))
         {
             return false;
         }
 
         ProjectBranchItem that = (ProjectBranchItem) o;
 
-        if (branch != null ? !branch.equals(that.branch) : that.branch != null)
+        if ((branch != null) ? (!branch.equals(that.branch))
+                : (that.branch != null))
         {
             return false;
         }
-        return project == that.project;
 
+        return project == that.project;
     }
 
-    @Override
-    public int hashCode()
+    @Override public int hashCode()
     {
-        int result = (project != null ? project.hashCode() : 0);
-        result = 31 * result + (branch != null ? branch.hashCode() : 0);
+        int result = ((project != null) ? project.hashCode()
+                      : 0);
+
+        result = (31 * result) + ((branch != null) ? branch.hashCode()
+                                  : 0);
+
         return result;
     }
 }

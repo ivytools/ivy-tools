@@ -4,22 +4,21 @@ import ca.odell.glazedlists.gui.TableFormat;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
-
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 7:12:02 PM To change this template use File | Settings | File Templates. */
 public class IvyRepositoryItemTableFormat implements TableFormat
 {
     // ------------------------ INTERFACE METHODS ------------------------
 
-
     // --------------------- Interface TableFormat ---------------------
-
-    public int getColumnCount() { return 3; }
+    public int getColumnCount()
+    {
+        return 3;
+    }
 
     public String getColumnName(int i)
     {
-
-        switch (i) {
-
+        switch (i)
+        {
             case 0:
                 return "Org";
 
@@ -34,13 +33,12 @@ public class IvyRepositoryItemTableFormat implements TableFormat
         }
     }
 
-    public Object getColumnValue(Object o,
-                                 int    i)
+    public Object getColumnValue(Object o, int i)
     {
         IvyRepositoryItem dependency = (IvyRepositoryItem) o;
 
-        switch (i) {
-
+        switch (i)
+        {
             case 0:
                 return dependency.getOrg();
 

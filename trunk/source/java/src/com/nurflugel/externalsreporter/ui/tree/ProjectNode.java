@@ -5,12 +5,11 @@ import com.nurflugel.BuildableProjects;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /** Representation of a project - may contain other projects, or just branches, but not both. */
 public class ProjectNode extends CheckableNode
 {
     private BuildableProjects buildableProject;
-    private List<BranchNode> branches = new ArrayList<BranchNode>();
+    private List<BranchNode>  branches    = new ArrayList<BranchNode>();
     private List<ProjectNode> subProjects = new ArrayList<ProjectNode>();
 
     public ProjectNode(BuildableProjects buildableProject)
@@ -24,8 +23,7 @@ public class ProjectNode extends CheckableNode
         super(buildableProject);
     }
 
-    @SuppressWarnings({"ChainOfInstanceofChecks"})
-    @Override
+    @Override @SuppressWarnings({ "ChainOfInstanceofChecks" })
     public int indexOf(Object child)
     {
         int index = 0;
@@ -58,8 +56,7 @@ public class ProjectNode extends CheckableNode
         return -1;
     }
 
-    @Override
-    public List<? extends CheckableNode> getChildren()
+    @Override public List<? extends CheckableNode> getChildren()
     {
         if (branches.isEmpty())
         {
@@ -71,7 +68,7 @@ public class ProjectNode extends CheckableNode
         }
     }
 
-    public void add(CheckableNode node)
+    @Override public void add(CheckableNode node)
     {
         if (node instanceof BranchNode)
         {

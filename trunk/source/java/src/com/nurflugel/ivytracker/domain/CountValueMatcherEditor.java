@@ -13,27 +13,30 @@ public class CountValueMatcherEditor implements Matcher<IvyFile>
 
     public CountValueMatcherEditor(JRadioButton showAllLibrariesRadioButton, JRadioButton showOnlyUsedLibrariesRadioButton, JRadioButton showOnlyUnusedLibrariesRadioButton)
     {
-
-        this.showAllLibrariesRadioButton = showAllLibrariesRadioButton;
-        this.showOnlyUsedLibrariesRadioButton = showOnlyUsedLibrariesRadioButton;
+        this.showAllLibrariesRadioButton        = showAllLibrariesRadioButton;
+        this.showOnlyUsedLibrariesRadioButton   = showOnlyUsedLibrariesRadioButton;
         this.showOnlyUnusedLibrariesRadioButton = showOnlyUnusedLibrariesRadioButton;
     }
 
     public boolean matches(IvyFile item)
     {
         int count = item.getCount();
+
         if (showAllLibrariesRadioButton.isSelected())
         {
             return true;
         }
-        if (showOnlyUnusedLibrariesRadioButton.isSelected() && count == 0)
+
+        if (showOnlyUnusedLibrariesRadioButton.isSelected() && (count == 0))
         {
             return true;
         }
-        if (showOnlyUsedLibrariesRadioButton.isSelected() && count > 0)
+
+        if (showOnlyUsedLibrariesRadioButton.isSelected() && (count > 0))
         {
             return true;
         }
+
         return false;
     }
 }

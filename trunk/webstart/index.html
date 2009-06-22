@@ -6,41 +6,34 @@
 	<body bgcolor="#FFFFFF" BACKGROUND="images/Logo-web-page-background.jpg">
  <script src="http://java.com/js/deployJava.js"></script>
 		<strong><big>Ivy Tools</big><p></strong>
-			To install this:<p><ul>
-        <li>Click on the link below:
-            <ul>
-                <li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyBrowserApp.jnlp"><b>Launch the Ivy Repository Browser application </b></a>
-                     <script>
+			These Ivy tools are all Java WebStart applications.  To install them, click on one of the links below:<p><ul>
+        <table>
+            <tr><td><b>Ivy Browser</b>:  Search an Ivy repository for libraries, packages, and versions by key words: </td>
+                <td><script>
                         var url = "http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyBrowserApp.jnlp";
                         deployJava.createWebStartLaunchButton(url);
                     </script>
-                <li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyBuilder.jnlp"><b>Launch the Ivy Repository Builder application </b></a>
-                    <script>
-                       var url = "http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyBuilder.jnlp";
-                       deployJava.createWebStartLaunchButton(url);
-                   </script>
-                <li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyFormatterApp.jnlp"><b>Launch the Ivy Formatter application to beautify your Ivy files</b></a>
-                    <script>
-                       var url = "http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyFormatterApp.jnlp";
-                       deployJava.createWebStartLaunchButton(url);
-                   </script>
-                <!--<li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyTrackerApp.jnlp"><b>Launch the Ivy Usage Tracker application to beautify your Ivy files</b></a>-->
-                <!--<li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/buildMaster.jnlp"><b>Launch the BuildMaster application </b></a>-->
-                <!--<li><a href="http://ivy-tools.googlecode.com/svn/trunk/webstart/externalsFinder.jnlp"><b>Launch the Externals Finder application </b></a>-->
-                <!--<ul>-->
-                    <!--<li>Note that this program requires ATT's GraphViz to be installed to generate the diagrams - you can find that <a-->
-                            <!--href="http://www.graphviz.org/"><b>here</b></a></li>-->
-                <!--</ul>-->
-            <!--</ul>-->
-                <!--<li>Accept all dialogs.-->
-                <!--<li> If it asks to load a newer version of Java or WebStart, say "yes".-->
-                <!--<li>Ignore the warnings about installing software on your system.  I'm using the free version of-->
-                <!--Sun's WebStart architecture, and the cost of that is annoying dialogs like this for the users.-->
-                <!--<li>Launch it twice from this web page and it'll install icons on to your desktop.  You won't have to visit this site again to run the appliation after that.-->
-                <!--<li>You can bookmark the link and not have to go to this web page.-->
-                <!--<li>You'll always have the most up-to-date version - you'll never have to reinstall or upgrade.  Java WebStart will auto upgrade your software automatically.</li>-->
-                <!--<li><a href="http://www.java.com/en/download/index.jsp"><b>Use the latest version of Java - Java 6 Update 11 at http://www.java.com/en/download/index.jsp</b></a></li>-->
-            <!--</ul>-->
+                </td>
+            </tr>
+            <tr/>
+            <tr/>
+            <tr><td width="50%"><b>Ivy Builder</b>: Add items to an Ivy repository - prepare the directory, add the jar files, input the dependencies, generate the XML, and generate the checksums. </td>
+                <td><script>
+                        var url = "http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyBuilder.jnlp";
+                        deployJava.createWebStartLaunchButton(url);
+                    </script>
+                </td>
+            </tr>
+            <tr/>
+            <tr/>
+            <tr><td><b>Ivy Formatter</b>: Format your Ivy (or XML) files, so they're nice and tidy. </td>
+                <td><script>
+                        var url = "http://ivy-tools.googlecode.com/svn/trunk/webstart/ivyFormatterApp.jnlp";
+                        deployJava.createWebStartLaunchButton(url);
+                    </script>
+                </td>
+            </tr>
+        </table>
 				<p>
 	</body>
 </html>

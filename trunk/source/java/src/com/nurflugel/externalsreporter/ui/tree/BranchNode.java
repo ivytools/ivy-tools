@@ -1,37 +1,33 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
-
-import com.nurflugel.BuildableProjects;
 import com.nurflugel.Branch;
+import com.nurflugel.BuildableProjects;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /** Representation of a branch, which can contain targets. */
 public class BranchNode extends CheckableNode
 {
     private BuildableProjects project;
-    private boolean showTargets;
-    private List<TargetNode> targets = new ArrayList<TargetNode>();
-    private Branch branch;
+    private boolean           showTargets;
+    private List<TargetNode>  targets = new ArrayList<TargetNode>();
+    private Branch            branch;
 
     public BranchNode(BuildableProjects project, Branch branch, boolean showTargets)
     {
         super(branch.getName());
-        this.branch = branch;
-        this.project = project;
+        this.branch      = branch;
+        this.project     = project;
         this.showTargets = showTargets;
     }
 
-    @Override
-    public int indexOf(Object child)
+    @Override public int indexOf(Object child)
     {
         int index = 0;
 
         for (TargetNode target : targets)
         {
-
             if (target.equals(child))
             {
                 return index;
@@ -43,24 +39,20 @@ public class BranchNode extends CheckableNode
         return -1;
     }
 
-    @Override
-    public boolean isLeaf()
+    @Override public boolean isLeaf()
     {
         return !showTargets;
     }
 
-    @Override
-    public void add(CheckableNode targetNode)
+    @Override public void add(CheckableNode targetNode)
     {
-
         if (targetNode instanceof TargetNode)
         {
             targets.add(((TargetNode) targetNode));
         }
     }
 
-    @Override
-    public List<? extends CheckableNode> getChildren()
+    @Override public List<? extends CheckableNode> getChildren()
     {
         return targets;
     }
@@ -73,10 +65,10 @@ public class BranchNode extends CheckableNode
     public String getBranchUrl()
     {
         String url = project.getProjectBaseUrl();
+
         url = url + "/" + getName();
 
         return url;
-
     }
 
     public Branch getBranch()

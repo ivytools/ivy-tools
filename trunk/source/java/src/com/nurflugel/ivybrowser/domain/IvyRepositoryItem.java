@@ -8,8 +8,6 @@ import org.jdom.output.XMLOutputter;
 
 import java.io.*;
 
-import java.nio.ByteBuffer;
-
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,12 +19,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-
 /** This is the representation of an Ivy package as found on the file system, NOT in the Subversion repository over HTML. */
 @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter", "CallToPrintStackTrace" })
 public class IvyRepositoryItem
 {
-
     /**
      * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where
      * more than one jar or zip file is in the ivy repository, represented by this ivy file.
@@ -40,7 +36,6 @@ public class IvyRepositoryItem
     private DateFormat              dateFormat = new SimpleDateFormat("yyyyMMDDHHmmss");
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
     public IvyRepositoryItem(String orgName, String moduleName, String rev, File repositoryDir)
     {
         this.repositoryDir = repositoryDir;
@@ -50,18 +45,35 @@ public class IvyRepositoryItem
     }
 
     // -------------------------- OTHER METHODS --------------------------
+    public List<IvyRepositoryItem> getDependencies()
+    {
+        return Collections.unmodifiableList(dependencies);
+    }
 
-    public List<IvyRepositoryItem> getDependencies() { return Collections.unmodifiableList(dependencies); }
+    public String getIvyLine()
+    {
+        return "maint clean mirror " + orgName + " " + moduleName + " " + rev;
+    }
 
-    public String getIvyLine() { return "maint clean mirror " + orgName + " " + moduleName + " " + rev; }
+    public List<File> getLibraryFiles()
+    {
+        return Collections.unmodifiableList(libraryFiles);
+    }
 
-    public List<File> getLibraryFiles() { return Collections.unmodifiableList(libraryFiles); }
+    public String getModule()
+    {
+        return moduleName;
+    }
 
-    public String getModule() { return moduleName; }
+    public String getOrg()
+    {
+        return orgName;
+    }
 
-    public String getOrg() { return orgName; }
-
-    public String getRev() { return rev; }
+    public String getRev()
+    {
+        return rev;
+    }
 
     /** gets a timestamp of the format yyyymmddhhmmss. */
     private String getTimestamp()
@@ -74,58 +86,73 @@ public class IvyRepositoryItem
     /** Create the new entry - ivy xml file, properly named libraries, dirs, subdirs, etc. */
     public void saveToDisk()
     {
-
-        try {
+        try
+        {
             File   dirPath       = createParentDirs();
             File[] existingFiles = dirPath.listFiles();
 
-            for (File existingFile : existingFiles) {
+            for (File existingFile : existingFiles)
+            {
                 existingFile.delete();
             }
 
             writeLibraryFiles(dirPath);
             writeIvyFile(dirPath);
             writeChecksumFiles(dirPath);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e)
+        {
             e.printStackTrace();
         }
     }
 
     /** For every entry in the dir, create a checksum (md5 and sha1). */
-    private void writeChecksumFiles(File dirPath) throws NoSuchAlgorithmException, IOException
+    private void writeChecksumFiles(File dirPath)
+                             throws NoSuchAlgorithmException, IOException
     {
         File[] files = dirPath.listFiles();
 
-        for (File file : files) {
-            writeChecksum("MD5", file);
-            writeChecksum("SHA1", file);
+        for (File file : files)
+        {
+            if (!file.isDirectory())
+            {
+                writeChecksum("MD5", file);
+                writeChecksum("SHA1", file);
+            }
         }
     }
 
-    private void writeChecksum(String algorithym, File file) throws NoSuchAlgorithmException, IOException
+    private void writeChecksum(String algorythym, File file)
+                        throws NoSuchAlgorithmException, IOException
     {
-        MessageDigest md = MessageDigest.getInstance(algorithym);
-        InputStream   is = new FileInputStream(file);
-
+        MessageDigest       md         = MessageDigest.getInstance(algorythym);
+        InputStream         is         = new FileInputStream(file);
         BufferedInputStream bis        = new BufferedInputStream(is);
         int                 bufferSize = 512;
         byte[]              bytes      = new byte[bufferSize];
+
         md.reset();
 
         DigestInputStream dis = new DigestInputStream(is, md);
 
-        while (dis.read(bytes, 0, bufferSize) != -1) { }
+        while (dis.read(bytes, 0, bufferSize) != -1)
+        {
+        }
 
         dis.close();
         is.close();
 
         byte[] digest  = md.digest();
         String hexHash = createDigestString(digest);
-        System.out.println(algorithym + " " + file + " digest = " + hexHash);
 
-        FileWriter fw = new FileWriter(file.getAbsolutePath() + "."+algorithym.toLowerCase());
+        System.out.println(algorythym + " " + file + " digest = " + hexHash);
+
+        FileWriter fw = new FileWriter(file.getAbsolutePath() + "." + algorythym.toLowerCase());
+
         fw.write(hexHash);
         fw.close();
     }
@@ -136,10 +163,12 @@ public class IvyRepositoryItem
     {
         StringBuilder checksumSb = new StringBuilder();
 
-        for (byte fileDigestByte : fileDigestBytes) {
+        for (byte fileDigestByte : fileDigestBytes)
+        {
             String hexStr = Integer.toHexString(BYTE_MASK & fileDigestByte);
 
-            if (hexStr.length() < 2) {
+            if (hexStr.length() < 2)
+            {
                 checksumSb.append("0");
             }
 
@@ -149,29 +178,32 @@ public class IvyRepositoryItem
         return checksumSb.toString();
     }
 
-
     private File createParentDirs()
     {
         File orgNameDir = new File(repositoryDir, orgName);
+
         orgNameDir.mkdir();
 
         File moduleDir = new File(orgNameDir, moduleName);
+
         moduleDir.mkdir();
 
-
         File revDir = new File(moduleDir, rev);
+
         revDir.mkdir();
 
         return revDir;
     }
 
     /** copy all the library files to their new location, with the proper version appended. */
-    private void writeLibraryFiles(File dirPath) throws IOException
+    private void writeLibraryFiles(File dirPath)
+                            throws IOException
     {
-
-        for (File libraryFile : libraryFiles) {
+        for (File libraryFile : libraryFiles)
+        {
             String fileName      = getVersionedFileName(libraryFile);
             File   versionedFile = new File(dirPath, fileName);
+
             copyFile(libraryFile, versionedFile);
         }
     }
@@ -182,25 +214,31 @@ public class IvyRepositoryItem
         String returnString;
         int    index        = fullName.lastIndexOf(".");
 
-        if (index == -1) {
+        if (index == -1)
+        {
             returnString = fullName + "-" + rev;
-        } else {
+        }
+        else
+        {
             String foreString = fullName.substring(0, index);
             String aftString  = fullName.substring(index);
+
             returnString = foreString + "-" + rev + aftString;
         }
 
         return returnString;
     }
 
-    public void copyFile(File in, File out) throws IOException
+    public void copyFile(File in, File out)
+                  throws IOException
     {
         FileInputStream  fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
         byte[]           buf = new byte[1024];
         int              i;
 
-        while ((i = fis.read(buf)) != -1) {
+        while ((i = fis.read(buf)) != -1)
+        {
             fos.write(buf, 0, i);
         }
 
@@ -213,6 +251,7 @@ public class IvyRepositoryItem
     private void writeIvyFile(File dirPath)
     {
         Element root = new Element("ivy-module");
+
         root.setAttribute("version", "1.0");
 
         Element infoElement           = new Element("info").setAttribute("organisation", orgName).setAttribute("module", moduleName).setAttribute("revision", rev).setAttribute("status", "release").setAttribute("publication", getTimestamp()).setAttribute("default", "true");
@@ -222,19 +261,26 @@ public class IvyRepositoryItem
         Element docElement            = new Element("conf").setAttribute("name", "javadoc").setAttribute("visibility", "public");
         Element publicationsElement   = new Element("publications");
 
-        for (File libraryFile : libraryFiles) {
+        for (File libraryFile : libraryFiles)
+        {
             String  fullName        = libraryFile.getName();
             int     index           = fullName.lastIndexOf(".");
             String  extension       = fullName.substring(index + 1);
             String  foreString      = fullName.substring(0, index);
             Element artifactElement = new Element("artifact").setAttribute("name", foreString);
+
             artifactElement.setAttribute("type", extension).setAttribute("ext", extension);
 
-            if (fullName.contains("src") || fullName.contains("source")) {
+            if (fullName.contains("src") || fullName.contains("source"))
+            {
                 artifactElement.setAttribute("conf", "source");
-            } else if (fullName.contains("doc") || fullName.contains("javadoc")) {
+            }
+            else if (fullName.contains("doc") || fullName.contains("javadoc"))
+            {
                 artifactElement.setAttribute("conf", "javadoc");
-            } else {
+            }
+            else
+            {
                 artifactElement.setAttribute("conf", "default");
             }
 
@@ -243,12 +289,15 @@ public class IvyRepositoryItem
 
         Element dependenciesElement = new Element("dependencies");
 
-        for (IvyRepositoryItem item : dependencies) {
+        for (IvyRepositoryItem item : dependencies)
+        {
             Element dependencyElement = new Element("dependency").setAttribute("org", item.getOrg()).setAttribute("name", item.getModule()).setAttribute("rev", item.getRev()).setAttribute("conf", "default");
+
             dependenciesElement.addContent(dependencyElement);
         }
 
         Document doc = new Document(root);
+
         root.addContent(infoElement);
         root.addContent(configurationsElement);
         configurationsElement.addContent(defaultElement);
@@ -262,11 +311,15 @@ public class IvyRepositoryItem
         Format       prettyFormat = Format.getPrettyFormat();
         XMLOutputter outp         = new XMLOutputter(prettyFormat);
 
-        try {
+        try
+        {
             OutputStream fileStream = new FileOutputStream(ivyFile);
+
             outp.output(doc, fileStream);
             fileStream.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -281,5 +334,8 @@ public class IvyRepositoryItem
         this.libraryFiles = files;
     }
 
-    @Override public String toString() { return orgName + " " + moduleName + " " + rev; }
+    @Override public String toString()
+    {
+        return orgName + " " + moduleName + " " + rev;
+    }
 }

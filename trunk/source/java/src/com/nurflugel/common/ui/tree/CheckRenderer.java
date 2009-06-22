@@ -1,21 +1,21 @@
 package com.nurflugel.common.ui.tree;
 
-
 import com.nurflugel.externalsreporter.ui.tree.CheckableNode;
 import com.nurflugel.externalsreporter.ui.tree.ProjectNode;
 import com.nurflugel.externalsreporter.ui.tree.TopNode;
 
+import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
-import java.awt.*;
 
 /** Renderer for the tree nodes */
 public class CheckRenderer extends JPanel implements TreeCellRenderer
 {
-    private static final long serialVersionUID = 4777763047200461024L;
-    private JCheckBox check = new JCheckBox();
-    private TreeLabel label = new TreeLabel();
-    private boolean showProjectCheckboxes;
+    private static final long serialVersionUID      = 4777763047200461024L;
+    private JCheckBox         check                 = new JCheckBox();
+    private TreeLabel         label                 = new TreeLabel();
+    private boolean           showProjectCheckboxes;
 
     public CheckRenderer(boolean showProjectCheckboxes)
     {
@@ -27,11 +27,11 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
         // label.setForeground(UIManager.getColor("Tree.textForeground"));
     }
 
-    @SuppressWarnings({"ReturnOfThis"})
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row,
-                                                  boolean hasFocus)
+    @SuppressWarnings({ "ReturnOfThis" })
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row, boolean hasFocus)
     {
         String stringValue = tree.convertValueToText(value, isSelected, expanded, leaf, row, hasFocus);
+
         setEnabled(tree.isEnabled());
         check.setSelected(((CheckableNode) value).isSelected());
         label.setFont(tree.getFont());
@@ -55,7 +55,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
             label.setIcon(UIManager.getIcon("Tree.closedIcon"));
         }
 
-        if (value instanceof TopNode || (value instanceof ProjectNode && !showProjectCheckboxes))
+        if ((value instanceof TopNode) || ((value instanceof ProjectNode) && !showProjectCheckboxes))
         {
             check.setVisible(false);
         }
@@ -63,31 +63,27 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
         return this;
     }
 
-    @Override
-    public Dimension getPreferredSize()
+    @Override public Dimension getPreferredSize()
     {
         Dimension checkboxDimension = getCheckboxDimension();
-        Dimension labelDimension = label.getPreferredSize();
+        Dimension labelDimension    = label.getPreferredSize();
 
-        return new Dimension(checkboxDimension.width + labelDimension.width, ((checkboxDimension.height < labelDimension.height)
-                                                                              ? labelDimension.height
+        return new Dimension(checkboxDimension.width + labelDimension.width, ((checkboxDimension.height < labelDimension.height) ? labelDimension.height
                                                                               : checkboxDimension.height));
     }
 
     private Dimension getCheckboxDimension()
     {
-        return check.isVisible()
-               ? check.getPreferredSize()
+        return check.isVisible() ? check.getPreferredSize()
                : new Dimension(0, 0);
     }
 
-    @Override
-    public void doLayout()
+    @Override public void doLayout()
     {
         Dimension checkboxDimension = getCheckboxDimension();
-        Dimension labelDimension = label.getPreferredSize();
-        int checkboxHeight = 0;
-        int labelHeight = 0;
+        Dimension labelDimension    = label.getPreferredSize();
+        int       checkboxHeight    = 0;
+        int       labelHeight       = 0;
 
         if (checkboxDimension.height < labelDimension.height)
         {
@@ -115,5 +111,4 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
     //
     // super.setBackground(color);
     // }
-
 }
