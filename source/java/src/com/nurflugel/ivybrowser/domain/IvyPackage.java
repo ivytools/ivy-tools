@@ -1,8 +1,8 @@
 package com.nurflugel.ivybrowser.domain;
 
 import java.net.URL;
-import java.util.List;
 
+import java.util.List;
 
 /** Representation of . */
 public class IvyPackage implements Comparable<IvyPackage>
@@ -19,32 +19,25 @@ public class IvyPackage implements Comparable<IvyPackage>
     private String moduleName;
     private String orgName;
     private String version;
-    private URL versionUrl;
+    private URL    versionUrl;
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
-    public IvyPackage(String orgName,
-                      String moduleName,
-                      String version)
+    public IvyPackage(String orgName, String moduleName, String version)
     {
-        this.orgName = orgName;
+        this.orgName    = orgName;
         this.moduleName = moduleName;
-        this.version = version;
+        this.version    = version;
     }
 
-    public IvyPackage(String orgName,
-                      String moduleName,
-                      String version,
-                      String library)
+    public IvyPackage(String orgName, String moduleName, String version, String library)
     {
-        this.orgName = orgName;
+        this.orgName    = orgName;
         this.moduleName = moduleName;
-        this.version = version;
-        this.library = library;
+        this.version    = version;
+        this.library    = library;
     }
 
     // -------------------------- OTHER METHODS --------------------------
-
     public List<IvyPackage> getDependencies()
     {
         IvyFile file = new IvyFile(versionUrl, ivyFile);
@@ -107,10 +100,8 @@ public class IvyPackage implements Comparable<IvyPackage>
         this.versionUrl = versionUrl;
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
-
         if (library == null)
         {
             return orgName + " " + moduleName + " " + version;
@@ -125,7 +116,6 @@ public class IvyPackage implements Comparable<IvyPackage>
     {
         return orgName + " " + moduleName + " " + version;
     }
-
 
     public int compareTo(IvyPackage ivyPackage)
     {

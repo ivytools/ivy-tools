@@ -2,59 +2,55 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+
 import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.apache.commons.lang.StringUtils.substringBefore;
 
 import java.io.*;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.List;
 
-
-@SuppressWarnings({"CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression"})
+@SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
 public class HtmlHandler extends BaseWebHandler
 {
-
     // --------------------------- CONSTRUCTORS ---------------------------
-
     // private String libraryName;
-
     public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages)
     {
         super(mainFrame, ivyPackages, ivyRepositoryPath);
     }
 
-
-//    @Override public Object doInBackground()
-//    {
-//        findIvyPackages();
-//        mainFrame.showNormal();
-//
-//        return null;
-//    }
-
+    // @Override public Object doInBackground()
+    // {
+    // findIvyPackages();
+    // mainFrame.showNormal();
+    //
+    // return null;
+    // }
     // -------------------------- OTHER METHODS --------------------------
-
-    @Override
-    public void findIvyPackages()
+    @Override public void findIvyPackages()
     {
         System.out.println("ivyRepositoryPath = " + ivyRepositoryPath);
 
         try
         {
-            URL repositoryUrl = new URL(ivyRepositoryPath);
+            URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
+
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
-            InputStream in = urlConnection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String packageLine = reader.readLine();
-            int i = 0;
+            InputStream    in          = urlConnection.getInputStream();
+            BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
+            String         packageLine = reader.readLine();
+            int            i           = 0;
 
             while (packageLine != null)
             {
-                String lowerLine = packageLine.toLowerCase();
+                String  lowerLine  = packageLine.toLowerCase();
                 boolean hasDirLink = isDirLink(lowerLine);
 
                 if (lowerLine.contains("</ul>"))
@@ -83,7 +79,7 @@ public class HtmlHandler extends BaseWebHandler
                 }
 
                 packageLine = reader.readLine();
-            } // end while
+            }  // end while
 
             reader.close();
         }
@@ -92,23 +88,21 @@ public class HtmlHandler extends BaseWebHandler
             e.printStackTrace();
         }
 
-
         mainFrame.stopProgressPanel();
     }
 
     private boolean isDirLink(String lowerLine)
     {
-        boolean isHref = lowerLine.contains("href");
-        boolean isUp = lowerLine.contains("..");
-        boolean isPre = lowerLine.startsWith("<pre");
-        boolean isDir = lowerLine.contains("[dir]");
+        boolean isHref     = lowerLine.contains("href");
+        boolean isUp       = lowerLine.contains("..");
+        boolean isPre      = lowerLine.startsWith("<pre");
+        boolean isDir      = lowerLine.contains("[dir]");
         boolean hasDirLink = isHref && !isUp && !isPre && isDir;
 
         return hasDirLink;
     }
 
-    @Override
-    protected String getContents(String packageLine)
+    @Override protected String getContents(String packageLine)
     {
         String newText;
 
@@ -126,18 +120,18 @@ public class HtmlHandler extends BaseWebHandler
         return result;
     }
 
-    @Override
-    protected void findModules(URL repositoryUrl, String orgName) throws IOException
+    @Override protected void findModules(URL repositoryUrl, String orgName)
+                                  throws IOException
     {
-
-        URL moduleUrl = new URL(repositoryUrl + "/" + orgName);
+        URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
         URLConnection urlConnection = moduleUrl.openConnection();
+
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream in = urlConnection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String moduleLine = reader.readLine();
+        InputStream    in         = urlConnection.getInputStream();
+        BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
+        String         moduleLine = reader.readLine();
 
         while (moduleLine != null)
         {
@@ -149,7 +143,6 @@ public class HtmlHandler extends BaseWebHandler
 
                 if (!moduleName.contains("Parent Directory") && !moduleName.contains("/Home/"))
                 {
-
                     try
                     {
                         findVersions(repositoryUrl, orgName, moduleName);
@@ -167,8 +160,7 @@ public class HtmlHandler extends BaseWebHandler
         reader.close();
     }
 
-    @Override
-    protected boolean hasVersion(String versionLine)
+    @Override protected boolean hasVersion(String versionLine)
     {
         boolean hasVersion;
 
@@ -184,9 +176,7 @@ public class HtmlHandler extends BaseWebHandler
         return hasVersion;
     }
 
-
-    @Override
-    protected boolean shouldProcessVersionedLibraryLine(String line)
+    @Override protected boolean shouldProcessVersionedLibraryLine(String line)
     {
         boolean shouldProcess;
 
@@ -201,6 +191,4 @@ public class HtmlHandler extends BaseWebHandler
 
         return shouldProcess;
     }
-
-
 }

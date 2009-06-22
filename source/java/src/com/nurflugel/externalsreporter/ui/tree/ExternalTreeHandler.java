@@ -1,32 +1,32 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
-
 import com.nurflugel.common.ui.tree.CheckRenderer;
 import com.nurflugel.common.ui.tree.NodeSelectionListener;
+
+import java.awt.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 31, 2008 Time: 11:17:28 AM To change this template use File | Settings | File
  * Templates.
  */
-@SuppressWarnings({"UseOfSystemOutOrSystemErr"})
+@SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class ExternalTreeHandler
 {
-    @SuppressWarnings({"CollectionDeclaredAsConcreteClass", "UseOfObsoleteCollectionType"})
-    private JTree tree;
+    @SuppressWarnings({ "CollectionDeclaredAsConcreteClass", "UseOfObsoleteCollectionType" })
+    private JTree              tree;
     private ExternalsTreeModel treeModel;
 
     public ExternalTreeHandler(boolean showProjectCheckboxes)
     {
         treeModel = new ExternalsTreeModel();
-        tree = new JTree(treeModel);
+        tree      = new JTree(treeModel);
         tree.setBackground(new Color(230, 230, 230));
         tree.setCellRenderer(new CheckRenderer(showProjectCheckboxes));
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -34,15 +34,13 @@ public class ExternalTreeHandler
         tree.addMouseListener(new NodeSelectionListener(tree));
     }
 
-
     /**
      * If expand is true, expands all nodes in the tree. Otherwise, collapses all nodes in the tree. In all cases, leave the first node
      * (root) expanded
      */
     public void expandAll(boolean expand)
     {
-        Object root = treeModel.getRoot();
-
+        Object   root     = treeModel.getRoot();
         TreePath treePath = new TreePath(root);
 
         // Traverse tree from rootNode
@@ -52,19 +50,17 @@ public class ExternalTreeHandler
 
     private void expandAll(TreePath parent, boolean expand)
     {
-
         // Traverse children
-        Object lastComponent = parent.getLastPathComponent();
-        CheckableNode node = (CheckableNode) lastComponent;
-
-        List<? extends CheckableNode> childern = node.getChildren();
+        Object                        lastComponent = parent.getLastPathComponent();
+        CheckableNode                 node          = (CheckableNode) lastComponent;
+        List<? extends CheckableNode> childern      = node.getChildren();
 
         if (childern.size() >= 0)
         {
-
             for (CheckableNode child : childern)
             {
                 TreePath path = parent.pathByAddingChild(child);
+
                 expandAll(path, expand);
             }
         }
@@ -88,16 +84,15 @@ public class ExternalTreeHandler
     private List<ProjectNode> getProjects(boolean isChecked)
     {
         List<ProjectNode> projects = new ArrayList<ProjectNode>();
-        TopNode root = (TopNode) treeModel.getRoot();
-        recursiveGetCheckedProjects(projects, root, isChecked);
+        TopNode           root     = (TopNode) treeModel.getRoot();
 
+        recursiveGetCheckedProjects(projects, root, isChecked);
 
         return projects;
     }
 
     private void recursiveGetCheckedProjects(List<ProjectNode> projects, CheckableNode root, boolean isChecked)
     {
-
         if ((!isChecked || root.isSelected()) && (root instanceof ProjectNode))
         {
             projects.add(((ProjectNode) root));
@@ -118,8 +113,8 @@ public class ExternalTreeHandler
 
     private List<BranchNode> getBranches(boolean isChecked)
     {
-        List<BranchNode> branchNodes = new ArrayList<BranchNode>();
-        List<ProjectNode> projects = getProjects(false);
+        List<BranchNode>  branchNodes = new ArrayList<BranchNode>();
+        List<ProjectNode> projects    = getProjects(false);
 
         for (ProjectNode project : projects)
         {
@@ -127,7 +122,6 @@ public class ExternalTreeHandler
 
             for (BranchNode branchNode : list)
             {
-
                 if (!isChecked || branchNode.isSelected())
                 {
                     branchNodes.add(branchNode);
@@ -146,7 +140,6 @@ public class ExternalTreeHandler
     private List<TargetNode> getTargets(boolean isChecked)
     {
         List<TargetNode> targetNodes = new ArrayList<TargetNode>();
-
         List<BranchNode> branchNodes = getBranches(false);
 
         for (BranchNode branchNode : branchNodes)
@@ -169,7 +162,6 @@ public class ExternalTreeHandler
     {
         return tree;
     }
-
 
     public void addItem(ProjectNode item)
     {

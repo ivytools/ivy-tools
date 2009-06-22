@@ -21,11 +21,9 @@ import java.util.prefs.Preferences;
 
 import javax.swing.*;
 
-
 /** Created by IntelliJ IDEA. User: dbulla Date: Jan 18, 2008 Time: 9:36:34 PM To change this template use File | Settings | File Templates. */
 public class BuilderMainFrame extends JFrame
 {
-
     /** Use serialVersionUID for interoperability. */
     private static final long       serialVersionUID      = 3060125117710119253L;
     private static final String     REPOSITORY_LOCATION   = "repositoryLocation";
@@ -40,14 +38,12 @@ public class BuilderMainFrame extends JFrame
     private Preferences             preferences;
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
     public BuilderMainFrame()
     {
         setTitle("IvyBuild v. " + Version.VERSION);
         setContentPane(contentsPanel);
         addListeners();
         IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-
         centerApp(this);
         preferences = Preferences.userNodeForPackage(BuilderMainFrame.class);
         loadPreferences();
@@ -59,25 +55,29 @@ public class BuilderMainFrame extends JFrame
 
     private void addListeners()
     {
-        setIvyReposButton.addActionListener(new ActionListener() {
+        setIvyReposButton.addActionListener(new ActionListener()
+            {
                 public void actionPerformed(ActionEvent e)
                 {
                     findRepositoryDir();
                 }
             });
-        addNewComponentButton.addActionListener(new ActionListener() {
+        addNewComponentButton.addActionListener(new ActionListener()
+            {
                 public void actionPerformed(ActionEvent e)
                 {
                     addNewComponent();
                 }
             });
-        quitButton.addActionListener(new ActionListener() {
+        quitButton.addActionListener(new ActionListener()
+            {
                 public void actionPerformed(ActionEvent e)
                 {
                     doQuitAction();
                 }
             });
-        addWindowListener(new WindowAdapter() {
+        addWindowListener(new WindowAdapter()
+            {
                 @Override public void windowClosing(WindowEvent e)
                 {
                     super.windowClosing(e);
@@ -96,22 +96,24 @@ public class BuilderMainFrame extends JFrame
     private void findRepositoryDir()
     {
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select the repository dir");
 
+        chooser.setDialogTitle("Select the repository dir");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         int returnVal = chooser.showDialog(this, "Use this directory");
 
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-
-
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            File   file    = chooser.getSelectedFile();
             String dirName = file.getName();
 
-            if (dirName.equals("repository")) {
+            if (dirName.equals("repository"))
+            {
                 repositoryDir = file;
                 ivyReposLabel.setText(file.getAbsolutePath());
-            } else {
+            }
+            else
+            {
                 JOptionPane.showConfirmDialog(this, "The dir must be named \"repository\"");
             }
         }
@@ -124,13 +126,14 @@ public class BuilderMainFrame extends JFrame
     private void addNewComponent()
     {
         NewComponentDialog dialog = new NewComponentDialog(ivyPackages, repositoryDir, preferences);
+
         dialog.setVisible(true);
     }
 
     private void savePreferences()
     {
-
-        if (repositoryDir != null) {
+        if (repositoryDir != null)
+        {
             preferences.put(REPOSITORY_LOCATION, repositoryDir.getAbsolutePath());
         }
     }
@@ -139,10 +142,12 @@ public class BuilderMainFrame extends JFrame
     {
         String dirName = preferences.get(REPOSITORY_LOCATION, null);
 
-        if (dirName != null) {
+        if (dirName != null)
+        {
             File dir = new File(dirName);
 
-            if (dir.exists() && dir.isDirectory()) {
+            if (dir.exists() && dir.isDirectory())
+            {
                 repositoryDir = dir;
                 ivyReposLabel.setText(repositoryDir.getAbsolutePath());
             }
@@ -151,8 +156,8 @@ public class BuilderMainFrame extends JFrame
 
     public static void centerApp(Object object)
     {
-
-        if (object instanceof Component) {
+        if (object instanceof Component)
+        {
             Component comp           = (Component) object;
             Toolkit   defaultToolkit = Toolkit.getDefaultToolkit();
             Dimension screenSize     = defaultToolkit.getScreenSize();
@@ -167,30 +172,31 @@ public class BuilderMainFrame extends JFrame
     {
         ivyPackages = new ArrayList<IvyRepositoryItem>();
 
-        if (repositoryDir != null) {
+        if (repositoryDir != null)
+        {
             FileHandler fileHandler = new FileHandler(this, repositoryDir, ivyPackages);
+
             fileHandler.execute();
         }
     }
 
     // -------------------------- OTHER METHODS --------------------------
-
     public void setStatusLabel(String text)
     {
         statusLabel.setText(text);
     }
 
-    public void showNormal() { }
+    public void showNormal()
+    {
+    }
 
     // --------------------------- main() method ---------------------------
-
     public static void main(String[] args)
     {
         BuilderMainFrame builderMainFrame = new BuilderMainFrame();
     }
 
     {
-
         // GUI initializer generated by IntelliJ IDEA GUI Designer
         // >>> IMPORTANT!! <<<
         // DO NOT EDIT OR ADD ANY CODE HERE!
@@ -208,9 +214,11 @@ public class BuilderMainFrame extends JFrame
         contentsPanel.setLayout(new GridBagLayout());
 
         final JPanel panel1 = new JPanel();
+
         panel1.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc;
+
         gbc           = new GridBagConstraints();
         gbc.gridx     = 0;
         gbc.gridy     = 0;
@@ -222,6 +230,7 @@ public class BuilderMainFrame extends JFrame
         panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Ivy repository"));
 
         final JLabel label1 = new JLabel();
+
         label1.setText("Ivy repositry is located at:");
         gbc        = new GridBagConstraints();
         gbc.gridx  = 0;
@@ -239,6 +248,7 @@ public class BuilderMainFrame extends JFrame
         panel1.add(ivyReposLabel, gbc);
 
         final JPanel panel2 = new JPanel();
+
         panel2.setLayout(new GridBagLayout());
         gbc           = new GridBagConstraints();
         gbc.gridx     = 0;
@@ -257,6 +267,7 @@ public class BuilderMainFrame extends JFrame
         panel2.add(setIvyReposButton, gbc);
 
         final JPanel panel3 = new JPanel();
+
         panel3.setLayout(new GridBagLayout());
         gbc           = new GridBagConstraints();
         gbc.gridx     = 0;
@@ -295,5 +306,8 @@ public class BuilderMainFrame extends JFrame
     /**
      * @noinspection  ALL
      */
-    public JComponent $$$getRootComponent$$$() { return contentsPanel; }
+    public JComponent $$$getRootComponent$$$()
+    {
+        return contentsPanel;
+    }
 }

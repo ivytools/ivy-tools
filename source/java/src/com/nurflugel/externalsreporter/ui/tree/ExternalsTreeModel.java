@@ -1,24 +1,22 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 20, 2008 Time: 8:59:07 AM To change this template use File | Settings | File
  * Templates.
  */
-@SuppressWarnings({"ChainOfInstanceofChecks", "UseOfSystemOutOrSystemErr"})
+@SuppressWarnings({ "ChainOfInstanceofChecks", "UseOfSystemOutOrSystemErr" })
 public class ExternalsTreeModel implements TreeModel
 {
-    private TopNode root;
-
+    private TopNode                 root;
     private List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
-
 
     public ExternalsTreeModel()
     {
@@ -72,10 +70,8 @@ public class ExternalsTreeModel implements TreeModel
         fireTreeStructureChanged(item);
     }
 
-
     public void addItems(List<ProjectNode> list)
     {
-
         for (ProjectNode projectNode : list)
         {
             root.add(projectNode);
@@ -85,14 +81,13 @@ public class ExternalsTreeModel implements TreeModel
     /** The only event raised by this model is TreeStructureChanged with the root as path, i.e. the whole tree has changed. */
     protected void fireTreeStructureChanged(Object node)
     {
-        TreeModelEvent e = new TreeModelEvent(this, new Object[]{node});
+        TreeModelEvent e = new TreeModelEvent(this, new Object[] { node });
 
         for (TreeModelListener tml : treeModelListeners)
         {
             tml.treeStructureChanged(e);
         }
     }
-
 
     /** Returns the root of the tree. */
     public Object getRoot()

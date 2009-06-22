@@ -14,28 +14,35 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
 {
     // private static  boolean isSubversionRepository;
-
-    private HandlerFactory() { }
+    private HandlerFactory()
+    {
+    }
 
     public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList)
     {
         boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
 
-        if (isSubversionRepository) { return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList); }
-        else { return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList); }
+        if (isSubversionRepository)
+        {
+            return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        }
+        else
+        {
+            return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+        }
     }
 
     private static boolean isSubversionRepository(String ivyRepositoryPath)
     {
-
-        try {
+        try
+        {
             URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
+
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
@@ -44,16 +51,22 @@ public class HandlerFactory
             String         line   = reader.readLine();
             int            i      = 0;
 
-            while (line != null) {
+            while (line != null)
+            {
                 boolean isSubversion = line.contains("Powered by") && line.contains("Subversion");
 
-                if (isSubversion) { return true; }
+                if (isSubversion)
+                {
+                    return true;
+                }
 
                 line = reader.readLine();
             }
 
             reader.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
 

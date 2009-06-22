@@ -31,7 +31,7 @@ public class Branch
         this.tagName = tagName;
     }
 
-    public String toString()
+    @Override public String toString()
     {
         return name;
     }
@@ -39,7 +39,6 @@ public class Branch
     /** Gets the path of the branch relative to the reposlitory root. */
     public String getPath()
     {
-
         if (name.equals("trunk"))
         {
             return name;

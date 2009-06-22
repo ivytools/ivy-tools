@@ -1,16 +1,16 @@
 package com.nurflugel.common.ui.tree;
 
-import javax.swing.*;
 import java.awt.*;
+
+import javax.swing.*;
 
 /** Extension of label that gives a little border space around it, and has the idea of being selected or not. */
 class TreeLabel extends JLabel
 {
-
     /** Use serialVersionUID for interoperability. */
     private static final long serialVersionUID = -5147458747018926490L;
-    private boolean isSelected;
-    private boolean hasFocus;
+    private boolean           isSelected;
+    private boolean           hasFocus;
 
     // @Override public void setBackground(Color color)
     // {
@@ -20,7 +20,6 @@ class TreeLabel extends JLabel
     //
     // super.setBackground(color);
     // }
-
     // @Override public void paint(Graphics g)
     // {
     // String str = getText();
@@ -54,9 +53,7 @@ class TreeLabel extends JLabel
     //
     // super.paint(g);
     // }
-
-    @Override
-    public Dimension getPreferredSize()
+    @Override public Dimension getPreferredSize()
     {
         Dimension retDimension = super.getPreferredSize();
 

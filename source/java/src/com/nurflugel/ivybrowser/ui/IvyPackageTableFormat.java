@@ -4,7 +4,6 @@ import ca.odell.glazedlists.gui.TableFormat;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 
-
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 7:12:02 PM To change this template use File | Settings | File Templates. */
 public class IvyPackageTableFormat implements TableFormat
 {
@@ -16,24 +15,27 @@ public class IvyPackageTableFormat implements TableFormat
     static final int JAVADOCS    = 5;
     private String[] columnNames = { "Org", "Module", "Revision", "File", "Source?", "Javadocs?" };
 
-    public int getColumnCount() { return 6; }
+    public int getColumnCount()
+    {
+        return 6;
+    }
 
     public String getColumnName(int i)
     {
-
-        if ((i >= 0) && (i < columnNames.length)) { return columnNames[i]; }
+        if ((i >= 0) && (i < columnNames.length))
+        {
+            return columnNames[i];
+        }
 
         throw new IllegalStateException();
-
     }
 
-    public Object getColumnValue(Object o,
-                                 int    i)
+    public Object getColumnValue(Object o, int i)
     {
         IvyPackage ivyPackage = (IvyPackage) o;
 
-        switch (i) {
-
+        switch (i)
+        {
             case ORG:
                 return ivyPackage.getOrgName();
 
