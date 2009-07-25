@@ -27,22 +27,17 @@ import java.util.List;
 
 import javax.swing.*;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Jul 28, 2008 Time: 5:57:02 PM To change this template use File | Settings | File
- * Templates.
- */
-@SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
+/** Created by IntelliJ IDEA. User: douglasbullard Date: Jul 28, 2008 Time: 5:57:02 PM To change this template use File | Settings | File Templates. */
+@SuppressWarnings({"UseOfSystemOutOrSystemErr"})
 public class IvyFormatterMainFrame extends JFrame
 {
-    /**
-     * Use serialVersionUID for interoperability.
-     */
-    private static final long   serialVersionUID = -6797243387476820162L;
-    private JButton             formatTextButton;
-    private JButton             quitButton;
-    private JTextArea           textArea;
-    private JPanel              contentPane      = new JPanel();
-    private static final String NEW_LINE         = "\n";
+    /** Use serialVersionUID for interoperability. */
+    private static final long serialVersionUID = -6797243387476820162L;
+    private JButton formatTextButton;
+    private JButton quitButton;
+    private JTextArea textArea;
+    private JPanel contentPane = new JPanel();
+    private static final String NEW_LINE = "\n";
 
     public IvyFormatterMainFrame()
     {
@@ -51,27 +46,28 @@ public class IvyFormatterMainFrame extends JFrame
         setTitle("Ivy Beautifier v. " + Version.VERSION);
         IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         formatTextButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
             {
-                public void actionPerformed(ActionEvent event)
-                {
-                    formatText();
-                }
-            });
+                formatText();
+            }
+        });
         quitButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
             {
-                public void actionPerformed(ActionEvent event)
-                {
-                    System.exit(0);
-                }
-            });
+                System.exit(0);
+            }
+        });
         addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
             {
-                @Override public void windowClosing(WindowEvent e)
-                {
-                    super.windowClosing(e);
-                    System.exit(0);
-                }
-            });
+                super.windowClosing(e);
+                System.exit(0);
+            }
+        });
         pack();
         setSize(1000, 1000);
         BuilderMainFrame.centerApp(this);
@@ -117,17 +113,19 @@ public class IvyFormatterMainFrame extends JFrame
         // tidy.set
         tidy.setXmlTags(true);
 
-        InputStream  inputStream  = new ByteArrayInputStream(text.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(text.getBytes());
         OutputStream outputStream = new ByteArrayOutputStream();
 
         tidy.parse(inputStream, outputStream);  // run tidy, providing an input and output stream
         text = outputStream.toString();
 
-        // text = text.replaceAll("\r\n", "\n");
+        //now, fix any wierdness so we get the format we want
         text = text.replaceAll("~~", "\n\n");
         text = text.replaceAll("\r\n", "\n");
         text = text.replaceAll("\n\n", "\n");
         text = text.replaceAll("\n\n", "\n");
+        text = text.replaceAll("-&gt;", "->");
+        text = text.replaceAll("\n</dependency>", "\n        </dependency>");
 
         String[] lines = text.split(NEW_LINE);
 
@@ -145,7 +143,7 @@ public class IvyFormatterMainFrame extends JFrame
     // <artifact name="nurflugel-resourcebundler-source" type="source" ext="zip" conf="source"/>
     private void formatPublications(String[] lines)
     {
-        List<Integer> confLines = getAffectedLines(lines, new String[] { "<artifact", "name" });
+        List<Integer> confLines = getAffectedLines(lines, new String[]{"<artifact", "name"});
 
         indent(confLines, lines, 8);
         alignLinesOnWord(confLines, lines, "name=");
@@ -155,13 +153,12 @@ public class IvyFormatterMainFrame extends JFrame
     }
 
     /**
-     * <exclude org="org.springframework" name="spring-dao"/>. <p/> <p><exclude org="org.springframework" name="spring-hibernate2"/></p>
-     * <p/> <p><exclude org="org.springframework" name="spring-ibatis"/></p> <p/> <p><exclude org="org.springframework"
-     * name="spring-jca"/>.</p>
+     * <exclude org="org.springframework" name="spring-dao"/>. <p/> <p><exclude org="org.springframework" name="spring-hibernate2"/></p> <p/> <p><exclude org="org.springframework"
+     * name="spring-ibatis"/></p> <p/> <p><exclude org="org.springframework" name="spring-jca"/>.</p>
      */
     private void formatExcludeLines(String[] lines)
     {
-        List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<exclude" });
+        List<Integer> dependencyLines = getAffectedLines(lines, new String[]{"<exclude"});
 
         indent(dependencyLines, lines, 12);
         alignLinesOnWord(dependencyLines, lines, "org=");
@@ -171,7 +168,7 @@ public class IvyFormatterMainFrame extends JFrame
     private List<Integer> getAffectedLines(String[] lines, String[] keyWords)
     {
         List<Integer> contentLines = new ArrayList<Integer>();
-        int           i            = 0;
+        int i = 0;
 
         for (String line : lines)
         {
@@ -198,13 +195,10 @@ public class IvyFormatterMainFrame extends JFrame
         return contentLines;
     }
 
-    /**
-     * <dependency org="org.jdesktop" name="swingworker" rev="1.1" conf="build,dist,source,javadoc"/>. <p/> <p><dependency org="org.junit"
-     * name="junit" rev="4.3.1" conf="build,test"/>.</p>
-     */
+    /** <dependency org="org.jdesktop" name="swingworker" rev="1.1" conf="build,dist,source,javadoc"/>. <p/> <p><dependency org="org.junit" name="junit" rev="4.3.1" conf="build,test"/>.</p> */
     private void formatDependencyLines(String[] lines)
     {
-        List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<dependency", "org" });
+        List<Integer> dependencyLines = getAffectedLines(lines, new String[]{"<dependency", "org"});
 
         indent(dependencyLines, lines, 8);
         alignLinesOnWord(dependencyLines, lines, "name=");
@@ -213,12 +207,12 @@ public class IvyFormatterMainFrame extends JFrame
     }
 
     /**
-     * Align everything line. <p/> <p><conf name="build" visibility="public" description="Dependencies only used during the build
-     * process."/></p> <p/> <p><conf name="dist" visibility="public" description="Dependencies that will be deployed via WebStart."/>.</p>
+     * Align everything line. <p/> <p><conf name="build" visibility="public" description="Dependencies only used during the build process."/></p> <p/> <p><conf name="dist" visibility="public"
+     * description="Dependencies that will be deployed via WebStart."/>.</p>
      */
     private void formatConfLines(String[] lines)
     {
-        List<Integer> confLines = getAffectedLines(lines, new String[] { "<conf", "name" });
+        List<Integer> confLines = getAffectedLines(lines, new String[]{"<conf", "name"});
 
         indent(confLines, lines, 8);
         alignLinesOnWord(confLines, lines, "visibility=");
@@ -243,9 +237,7 @@ public class IvyFormatterMainFrame extends JFrame
         return builder.toString();
     }
 
-    /**
-     * Strip off any leading space and indent with the number of spaces needed.
-     */
+    /** Strip off any leading space and indent with the number of spaces needed. */
     private void indent(List<Integer> confLines, String[] lines, int numberOfLeadingSpaces)
     {
         String spaces = getLeadingSpaces(numberOfLeadingSpaces);
@@ -253,7 +245,6 @@ public class IvyFormatterMainFrame extends JFrame
         for (Integer confLine : confLines)
         {
             String line = lines[confLine].trim();
-
             lines[confLine] = spaces + line;
         }
     }
@@ -272,9 +263,7 @@ public class IvyFormatterMainFrame extends JFrame
         return spaces;
     }
 
-    /**
-     * go through all of the lines and make sure they line up for the given work.
-     */
+    /** go through all of the lines and make sure they line up for the given work. */
     private void alignLinesOnWord(List<Integer> confLines, String[] lines, String alignmentWord)
     {
         // iterate through lines, get highest index.
@@ -282,8 +271,8 @@ public class IvyFormatterMainFrame extends JFrame
 
         for (Integer confLine : confLines)
         {
-            String line  = lines[confLine];
-            int    index = line.indexOf(alignmentWord);
+            String line = lines[confLine];
+            int index = line.indexOf(alignmentWord);
 
             maxIndex = Math.max(maxIndex, index);
         }
@@ -291,8 +280,8 @@ public class IvyFormatterMainFrame extends JFrame
         // now go through them again and pad them out
         for (Integer confLine : confLines)
         {
-            String line  = lines[confLine];
-            int    index = line.indexOf(alignmentWord);
+            String line = lines[confLine];
+            int index = line.indexOf(alignmentWord);
 
             if (index > 0)
             {
@@ -314,9 +303,7 @@ public class IvyFormatterMainFrame extends JFrame
     }
 
     /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
      *
      * @noinspection ALL
      */
@@ -324,30 +311,26 @@ public class IvyFormatterMainFrame extends JFrame
     {
         createUIComponents();
         contentPane.setLayout(new GridBagLayout());
-
-        final JScrollPane  scrollPane1 = new JScrollPane();
+        final JScrollPane scrollPane1 = new JScrollPane();
         GridBagConstraints gbc;
-
-        gbc           = new GridBagConstraints();
-        gbc.gridx     = 0;
-        gbc.gridy     = 0;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.gridwidth = 4;
-        gbc.weightx   = 1.0;
-        gbc.weighty   = 1.0;
-        gbc.fill      = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(scrollPane1, gbc);
         textArea = new JTextArea();
         textArea.setFont(new Font("Courier New", Font.BOLD, textArea.getFont().getSize()));
         textArea.setToolTipText("Anything in this box or  the paste buffer will be used as inputy");
         scrollPane1.setViewportView(textArea);
-
         final JPanel panel1 = new JPanel();
-
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc       = new GridBagConstraints();
+        gbc = new GridBagConstraints();
         gbc.gridx = 3;
         gbc.gridy = 1;
-        gbc.fill  = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(panel1, gbc);
         formatTextButton = new JButton();
         formatTextButton.setText("Format Ivy Text");
@@ -358,9 +341,7 @@ public class IvyFormatterMainFrame extends JFrame
         panel1.add(quitButton);
     }
 
-    /**
-     * @noinspection ALL
-     */
+    /** @noinspection ALL */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;
