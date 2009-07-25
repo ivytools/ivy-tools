@@ -9,6 +9,7 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 
 import com.nurflugel.common.ui.Version;
 
@@ -61,12 +62,14 @@ public class IvyBrowserMainFrame extends JFrame
     public IvyBrowserMainFrame()
     {
         initializeComponents();
+        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        
         pack();
         setSize(800, 600);
         BuilderMainFrame.centerApp(this);
 
         // this was causing problems with GlazedLists throwing NPEs
-        // com.nurflugel.ivytracker.IvyBrowserMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
+//         com.nurflugel.ivytracker.IvyBrowserMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
         Authenticator.setDefault(new WebAuthenticator());
         libraryField.setEnabled(false);
         setVisible(true);
@@ -226,11 +229,14 @@ public class IvyBrowserMainFrame extends JFrame
     private void showIvyLine(MouseEvent e)
     {
         int             row        = resultsTable.getSelectedRow();
+        if(row >-1){
         EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
         IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
         IvyLineDialog   dialog     = new IvyLineDialog(ivyFile);
 
         dialog.setVisible(true);
+        }else{
+            System.out.println("No row selected...");        }
     }
 
     // -------------------------- OTHER METHODS --------------------------
