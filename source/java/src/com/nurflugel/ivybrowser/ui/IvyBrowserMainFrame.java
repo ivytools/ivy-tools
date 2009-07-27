@@ -9,13 +9,14 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
 import com.nurflugel.WebAuthenticator;
-import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 
 import com.nurflugel.common.ui.Version;
 
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
@@ -62,20 +63,19 @@ public class IvyBrowserMainFrame extends JFrame
     public IvyBrowserMainFrame()
     {
         initializeComponents();
-        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-        
+        // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         pack();
         setSize(800, 600);
         BuilderMainFrame.centerApp(this);
 
         // this was causing problems with GlazedLists throwing NPEs
-//         com.nurflugel.ivytracker.IvyBrowserMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",this);
+        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         Authenticator.setDefault(new WebAuthenticator());
         libraryField.setEnabled(false);
         setVisible(true);
 
-        // boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
-        boolean parseOnOpen = false;
+        boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
+        // boolean parseOnOpen = false;
 
         parseOnOpenCheckbox.setSelected(parseOnOpen);
 
@@ -174,7 +174,9 @@ public class IvyBrowserMainFrame extends JFrame
             {
                 public void actionPerformed(ActionEvent actionEvent)
                 {
-                    preferences.putBoolean(PARSE_ON_OPEN, parseOnOpenCheckbox.isSelected());
+                    boolean isSelected = parseOnOpenCheckbox.isSelected();
+
+                    preferences.putBoolean(PARSE_ON_OPEN, isSelected);
                 }
             });
     }
@@ -228,15 +230,20 @@ public class IvyBrowserMainFrame extends JFrame
 
     private void showIvyLine(MouseEvent e)
     {
-        int             row        = resultsTable.getSelectedRow();
-        if(row >-1){
-        EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
-        IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-        IvyLineDialog   dialog     = new IvyLineDialog(ivyFile);
+        int row = resultsTable.getSelectedRow();
 
-        dialog.setVisible(true);
-        }else{
-            System.out.println("No row selected...");        }
+        if (row > -1)
+        {
+            EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
+            IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
+            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile);
+
+            dialog.setVisible(true);
+        }
+        else
+        {
+            System.out.println("No row selected...");
+        }
     }
 
     // -------------------------- OTHER METHODS --------------------------
