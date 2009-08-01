@@ -2,9 +2,7 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
+import com.nurflugel.ivybrowser.handlers.tasks.HtmlHandlerTask;
 
 import java.io.*;
 
@@ -12,10 +10,19 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.List;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import static java.util.concurrent.TimeUnit.MINUTES;
+
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 
 @SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
 public class HtmlHandler extends BaseWebHandler
 {
+
+
     // --------------------------- CONSTRUCTORS ---------------------------
     // private String libraryName;
     public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages)
@@ -37,6 +44,7 @@ public class HtmlHandler extends BaseWebHandler
 
         try
         {
+            Date startTime=new Date();
             URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
 
@@ -46,7 +54,8 @@ public class HtmlHandler extends BaseWebHandler
             InputStream    in          = urlConnection.getInputStream();
             BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
             String         packageLine = reader.readLine();
-            int            i           = 0;
+            ExecutorService threadPool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
 
             while (packageLine != null)
             {
@@ -66,12 +75,13 @@ public class HtmlHandler extends BaseWebHandler
 
                     if (!orgName.equalsIgnoreCase("/Home/") && !orgName.contains("Parent Directory"))
                     {
-                        findModules(repositoryUrl, orgName);
-                        mainFrame.populateTable();
+                        HtmlHandlerTask task=new HtmlHandlerTask(mainFrame, this, repositoryUrl, orgName);
+                        threadPool.execute(task);
+
 
                         // if left in, this populates the display real time
                         // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
-                        if (!shouldRun || (isTest && (i++ > 4)))
+                        if (!shouldRun || (isTest ))
                         {
                             break;
                         }
@@ -82,27 +92,25 @@ public class HtmlHandler extends BaseWebHandler
             }  // end while
 
             reader.close();
+             threadPool.shutdown();
+            //block until all threads are done, or until time limit is reached
+            threadPool.awaitTermination(5, MINUTES);
+             mainFrame.filterTable();
+            System.out.println("ivyPackages = " + ivyPackages.size());
+            Date endTime=new Date();
+            float duration = endTime.getTime() - startTime.getTime();
+            System.out.println("HtmlHandler Duration: "+duration/1000.0);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
 
+
         mainFrame.stopProgressPanel();
     }
 
-    private boolean isDirLink(String lowerLine)
-    {
-        boolean isHref     = lowerLine.contains("href");
-        boolean isUp       = lowerLine.contains("..");
-        boolean isPre      = lowerLine.startsWith("<pre");
-        boolean isDir      = lowerLine.contains("[dir]");
-        boolean hasDirLink = isHref && !isUp && !isPre && isDir;
-
-        return hasDirLink;
-    }
-
-    @Override protected String getContents(String packageLine)
+     public String getContents(String packageLine)
     {
         String newText;
 
@@ -120,47 +128,7 @@ public class HtmlHandler extends BaseWebHandler
         return result;
     }
 
-    @Override protected void findModules(URL repositoryUrl, String orgName)
-                                  throws IOException
-    {
-        URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
-        URLConnection urlConnection = moduleUrl.openConnection();
-
-        urlConnection.setAllowUserInteraction(true);
-        urlConnection.connect();
-
-        InputStream    in         = urlConnection.getInputStream();
-        BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
-        String         moduleLine = reader.readLine();
-
-        while (moduleLine != null)
-        {
-            boolean isLibrary = isDirLink(moduleLine.toLowerCase());
-
-            if (isLibrary)
-            {
-                String moduleName = getContents(moduleLine);
-
-                if (!moduleName.contains("Parent Directory") && !moduleName.contains("/Home/"))
-                {
-                    try
-                    {
-                        findVersions(repositoryUrl, orgName, moduleName);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        System.out.println("Had problem parsing package " + orgName + " " + moduleName);
-                    }
-                }
-            }
-
-            moduleLine = reader.readLine();
-        }
-
-        reader.close();
-    }
-
-    @Override protected boolean hasVersion(String versionLine)
+    protected boolean hasVersion(String versionLine)
     {
         boolean hasVersion;
 
@@ -176,7 +144,7 @@ public class HtmlHandler extends BaseWebHandler
         return hasVersion;
     }
 
-    @Override protected boolean shouldProcessVersionedLibraryLine(String line)
+    protected boolean shouldProcessVersionedLibraryLine(String line)
     {
         boolean shouldProcess;
 
@@ -191,4 +159,5 @@ public class HtmlHandler extends BaseWebHandler
 
         return shouldProcess;
     }
+   
 }
