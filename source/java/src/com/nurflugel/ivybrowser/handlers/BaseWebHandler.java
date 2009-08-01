@@ -27,6 +27,8 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     protected String              ivyRepositoryPath;
     protected List<IvyPackage>    ivyPackages;
 
+    public static final int NUMBER_OF_THREADS = 5;
+    
     protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath)
     {
         this.mainFrame         = mainFrame;
@@ -42,7 +44,18 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
         return null;
     }
 
-    protected void removeIvyFile(List<IvyPackage> localPackages, String ivyFile)
+        public boolean isDirLink(String lowerLine)
+    {
+        boolean isHref     = lowerLine.contains("href");
+        boolean isUp       = lowerLine.contains("..");
+        boolean isPre      = lowerLine.startsWith("<pre");
+        boolean isDir      = lowerLine.contains("[dir]");
+        boolean hasDirLink = isHref && !isUp && !isPre && isDir;
+
+        return hasDirLink;
+    }
+
+    protected void removeIvyFile(List<IvyPackage> localPackages)
     {
         for (IvyPackage localPackage : localPackages)
         {
@@ -209,19 +222,19 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
         // remove ivy package if there are any jars existing
         if (isAnythingOtherThanIvy(localPackages))
         {
-            removeIvyFile(localPackages, ivyFile);
+            removeIvyFile(localPackages);
         }
 
-        for (IvyPackage localPackage : localPackages)
-        {
-            mainFrame.addIvyPackage(localPackage);
-        }
-        // ivyPackages.addAll(localPackages);
+//        for (IvyPackage localPackage : localPackages)
+//        {
+//            mainFrame.addIvyPackage(localPackage);
+//        }
+         ivyPackages.addAll(localPackages);
     }
 
     protected abstract boolean shouldProcessVersionedLibraryLine(String line);
 
-    protected void findVersions(URL repositoryUrl, String orgName, String moduleName)
+    public void findVersions(URL repositoryUrl, String orgName, String moduleName)
                          throws IOException
     {
         URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
@@ -253,9 +266,9 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
 
     protected abstract boolean hasVersion(String versionLine);
-
-    protected abstract void findModules(URL repositoryUrl, String orgName)
-                                 throws IOException;
-
+//
+//    protected abstract void findModules(URL repositoryUrl, String orgName)
+//                                 throws IOException;
+//
     public abstract void findIvyPackages();
 }

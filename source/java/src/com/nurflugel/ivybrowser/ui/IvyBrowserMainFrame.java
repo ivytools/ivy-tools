@@ -27,6 +27,9 @@ import java.awt.event.*;
 import java.net.Authenticator;
 
 import java.util.prefs.Preferences;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
@@ -54,7 +57,9 @@ public class IvyBrowserMainFrame extends JFrame
     private Preferences           preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
     private InfiniteProgressPanel progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     public static final String    IVY_REPOSITORY      = "IvyRepository";
-    private EventList<IvyPackage> repositoryList;
+//    private final EventList<IvyPackage> repositoryList=new BasicEventList<IvyPackage>();
+
+    private  List<IvyPackage> repositoryList=Collections.synchronizedList(new ArrayList<IvyPackage>());
     private static final String   PARSE_ON_OPEN       = "parseOnOpen";
     private JScrollPane           scrollPane;
     private JPanel                holdingPanel;
@@ -203,7 +208,7 @@ public class IvyBrowserMainFrame extends JFrame
 
         if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
         {
-            repositoryList = new BasicEventList<IvyPackage>();
+            repositoryList.clear();
 
             // repositoryList.addAll(list);
             BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList);
@@ -216,9 +221,10 @@ public class IvyBrowserMainFrame extends JFrame
         }
     }
 
-    private void filterTable()
+    public void filterTable()
     {
-        SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(repositoryList);
+        EventList<IvyPackage> eventList=new BasicEventList<IvyPackage>(repositoryList);
+        SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(eventList);
         TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
         FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
         EventTableModel<IvyPackage> tableModel                 = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
@@ -228,6 +234,7 @@ public class IvyBrowserMainFrame extends JFrame
         TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
     }
 
+    @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
     private void showIvyLine(MouseEvent e)
     {
         int row = resultsTable.getSelectedRow();
@@ -247,15 +254,7 @@ public class IvyBrowserMainFrame extends JFrame
     }
 
     // -------------------------- OTHER METHODS --------------------------
-    // public void populateTable(List<IvyPackage> list)
-    public void populateTable()
-    {
-        // repositoryList = new BasicEventList<IvyPackage>();
-        // repositoryList.addAll(list);
-        filterTable();
 
-        // progressPanel.stop();
-    }
 
     public void stopProgressPanel()
     {
@@ -309,16 +308,20 @@ public class IvyBrowserMainFrame extends JFrame
         new IvyBrowserMainFrame();
     }
 
-    public void addIvyPackage(IvyPackage localPackage)
-    {
-        try
-        {
-            repositoryList.getReadWriteLock().writeLock().lock();
-            repositoryList.add(localPackage);
-        }
-        finally
-        {
-            repositoryList.getReadWriteLock().writeLock().unlock();
-        }
-    }
+//    public synchronized void addIvyPackage(IvyPackage localPackage)
+//    public  void addIvyPackage(IvyPackage localPackage)
+//    {
+////        synchronized (repositoryList)
+////        {
+//            try
+//            {
+//                repositoryList.getReadWriteLock().writeLock().lock();
+//                repositoryList.add(localPackage);
+//            }
+//            finally
+//            {
+//                repositoryList.getReadWriteLock().writeLock().unlock();
+//            }
+////        }
+//    }
 }
