@@ -82,7 +82,7 @@ public class IvyBrowserMainFrame extends JFrame
 
         boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
 
-        parseOnOpen = false;
+//        parseOnOpen = false;
         parseOnOpenCheckbox.setSelected(parseOnOpen);
 
         if (parseOnOpen)
