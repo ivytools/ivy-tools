@@ -2,6 +2,7 @@ package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
+import static javax.swing.BoxLayout.*;
 import static javax.swing.JComponent.*;
 
 public class IvyLineDialog extends JDialog
@@ -33,20 +35,17 @@ public class IvyLineDialog extends JDialog
     {
         this.ivyPackage        = ivyPackage;
         this.ivyRepositoryPath = ivyRepositoryPath;
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        LayoutManager textboxLayout = new BoxLayout(ivyTextPanel, BoxLayout.Y_AXIS);
+        LayoutManager textboxLayout = new BoxLayout(ivyTextPanel, Y_AXIS);
+        LayoutManager boxLayout     = new BoxLayout(dependenciesPanel, Y_AXIS);
+        LayoutManager filesLayout   = new BoxLayout(includedFilesPanel, Y_AXIS);
 
         ivyTextPanel.setLayout(textboxLayout);
-
-        LayoutManager boxLayout = new BoxLayout(dependenciesPanel, BoxLayout.Y_AXIS);
-
         dependenciesPanel.setLayout(boxLayout);
-
-        LayoutManager filesLayout = new BoxLayout(includedFilesPanel, BoxLayout.Y_AXIS);
-
         includedFilesPanel.setLayout(filesLayout);
         addListeners();
         createText();
@@ -60,7 +59,7 @@ public class IvyLineDialog extends JDialog
             setSize(requestedSize.width, screenSize.height);
         }
 
-        BuilderMainFrame.centerApp(this);
+        centerApp(this);
     }
 
     private void createText()
@@ -180,7 +179,7 @@ public class IvyLineDialog extends JDialog
 
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ivyLine, null);
         pack();
-        BuilderMainFrame.centerApp(this);
+        centerApp(this);
     }
 
     private void addListeners()
