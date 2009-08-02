@@ -1,15 +1,18 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import static java.awt.event.KeyEvent.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import static javax.swing.JComponent.*;
 
 public class IvyLineDialog extends JDialog
 {
@@ -21,11 +24,14 @@ public class IvyLineDialog extends JDialog
     private JCheckBox forceThisVersionCheckBox;
     private JPanel dependenciesPanel;
     private JPanel ivyTextPanel;
+    private JPanel includedFilesPanel;
     private IvyPackage ivyPackage;
+    private String ivyRepositoryPath;
 
-    public IvyLineDialog(IvyPackage ivyPackage)
+    public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath)
     {
         this.ivyPackage = ivyPackage;
+        this.ivyRepositoryPath = ivyRepositoryPath;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -37,6 +43,12 @@ public class IvyLineDialog extends JDialog
         LayoutManager boxLayout = new BoxLayout(dependenciesPanel, BoxLayout.Y_AXIS);
 
         dependenciesPanel.setLayout(boxLayout);
+
+        LayoutManager filesLayout = new BoxLayout(includedFilesPanel, BoxLayout.Y_AXIS);
+
+        includedFilesPanel.setLayout(filesLayout);
+
+
         addListeners();
         createText();
         pack();
@@ -78,8 +90,25 @@ public class IvyLineDialog extends JDialog
                 dependenciesPanel.add(checkBox);
             }
         }
+        populateIncludedJarsPanel();
 
         updatePastedText();
+    }
+
+    private void populateIncludedJarsPanel()
+    {
+        String orgName = ivyPackage.getOrgName();
+        String moduleName = ivyPackage.getModuleName();
+        String version = ivyPackage.getVersion();
+
+        BaseWebHandler handler = HandlerFactory.getHandler(null, ivyRepositoryPath, null);
+        List<String> includedFiles = handler.findIncludedFiles(ivyRepositoryPath, orgName, moduleName, version);
+        for (String includedFile : includedFiles)
+        {
+            Label fileLabel = new Label(includedFile);
+            includedFilesPanel.add(fileLabel);
+        }
+
     }
 
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
@@ -115,7 +144,7 @@ public class IvyLineDialog extends JDialog
 
         if (excludedPackages.isEmpty())
         {
-            text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion() + "\"  conf=\"dist-ear" + sourceTag +
+            text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion() + "\"  conf=\"build,dist-war,test" + sourceTag +
                    javadocTag + "\"" + forceText + "/>";
             ivyTextPanel.add(new JLabel(text));
             pasteText.append(text);
@@ -178,7 +207,7 @@ public class IvyLineDialog extends JDialog
             {
                 onCancel();
             }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         forceThisVersionCheckBox.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -209,7 +238,7 @@ public class IvyLineDialog extends JDialog
         ivyPackage.setHasSourceCode(true);
 
         // ivyPackage.setDependencies();
-        IvyLineDialog dialog = new IvyLineDialog(ivyPackage);
+        IvyLineDialog dialog = new IvyLineDialog(ivyPackage, "something");
 
         dialog.pack();
         dialog.setVisible(true);
@@ -328,6 +357,17 @@ public class IvyLineDialog extends JDialog
         dependenciesPanel.setToolTipText("If any of these are unchecked, that dependency will not be brought in.  Use with caution!");
         scrollPane1.setViewportView(dependenciesPanel);
         dependenciesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Dependencies to include"));
+        final JScrollPane scrollPane2 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        contentPane.add(scrollPane2, gbc);
+        includedFilesPanel = new JPanel();
+        includedFilesPanel.setLayout(new BorderLayout(0, 0));
+        includedFilesPanel.setToolTipText("These jars come across from Ivy into your unversioned/lib dirs");
+        scrollPane2.setViewportView(includedFilesPanel);
+        includedFilesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Included files:"));
     }
 
     /** @noinspection ALL */

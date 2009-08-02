@@ -18,6 +18,8 @@ import java.util.Map;
 
 import javax.swing.*;
 
+import org.apache.commons.lang.StringUtils;
+
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates. */
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
@@ -160,47 +162,12 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
                     if (isSource)
                     {
-                        if (library.contains("-src"))
-                        {
-                            library = library.replaceAll("-src", "");
-                        }
-
-                        if (library.contains("-sources"))
-                        {
-                            library = library.replaceAll("-sources", "");
-                        }
-
-                        if (library.contains("-source"))
-                        {
-                            library = library.replaceAll("-source", "");
-                        }
-
-                        IvyPackage ivyPackage = jars.get(library);
-
-                        if (ivyPackage != null)
-                        {
-                            ivyPackage.setHasSourceCode(true);
-                        }
+                        library = handleSources(jars.get(library), library);
                     }
 
                     if (isJavadoc)
                     {
-                        if (library.contains("-javadocs"))
-                        {
-                            library = library.replaceAll("-javadocs", "");
-                        }
-
-                        if (library.contains("-javadoc"))
-                        {
-                            library = library.replaceAll("-javadoc", "");
-                        }
-
-                        IvyPackage ivyPackage = jars.get(library);
-
-                        if (ivyPackage != null)
-                        {
-                            ivyPackage.setHasJavaDocs(true);
-                        }
+                        handleJavadocs(jars.get(library), library);
                     }
                 }  // end if-else
             }  // end if
@@ -230,6 +197,49 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 //            mainFrame.addIvyPackage(localPackage);
 //        }
          ivyPackages.addAll(localPackages);
+    }
+
+    private void handleJavadocs(IvyPackage ivyPackage, String library)
+    {
+        if (library.contains("-javadocs"))
+        {
+            library = library.replaceAll("-javadocs", "");
+        }
+
+        if (library.contains("-javadoc"))
+        {
+            library = library.replaceAll("-javadoc", "");
+        }
+
+
+        if (ivyPackage != null)
+        {
+            ivyPackage.setHasJavaDocs(true);
+        }
+    }
+
+    private String handleSources(IvyPackage ivyPackage, String library)
+    {
+        if (library.contains("-src"))
+        {
+            library = library.replaceAll("-src", "");
+        }
+
+        if (library.contains("-sources"))
+        {
+            library = library.replaceAll("-sources", "");
+        }
+
+        if (library.contains("-source"))
+        {
+            library = library.replaceAll("-source", "");
+        }
+
+        if (ivyPackage != null)
+        {
+            ivyPackage.setHasSourceCode(true);
+        }
+        return library;
     }
 
     protected abstract boolean shouldProcessVersionedLibraryLine(String line);
@@ -271,4 +281,52 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 //                                 throws IOException;
 //
     public abstract void findIvyPackages();
+
+       public List<String> findIncludedFiles(String repositoryUrl, String orgName, String moduleName, String version)
+
+    {
+        List<String> includedFiles=new ArrayList<String>();
+        try
+        {
+            URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
+            URLConnection urlConnection = versionUrl.openConnection();
+
+            urlConnection.setAllowUserInteraction(true);
+            urlConnection.connect();
+
+            InputStream             in            = urlConnection.getInputStream();
+            BufferedReader          reader        = new BufferedReader(new InputStreamReader(in));
+            String                  line          = reader.readLine();
+
+            while (line != null)
+            {
+                boolean shouldProcess = shouldProcessIncludedFileLine(line);
+
+                if (shouldProcess)
+                {
+                    includedFiles.add(parseFile(line));
+                }
+                line          = reader.readLine();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return includedFiles;
+    }
+
+    /** Parse the file name out of the html line
+     */
+    private String parseFile(String line)
+    {
+        String trimmedLine = line.trim();
+        String parsedLine = StringUtils.substringAfter(trimmedLine,"A HREF=\"");
+        parsedLine = StringUtils.substringBefore(parsedLine, "\"");
+        String size = StringUtils.substringAfterLast(trimmedLine," ");
+        
+        return parsedLine+"   "+size;
+    }
+
+    protected abstract boolean shouldProcessIncludedFileLine(String line);
 }

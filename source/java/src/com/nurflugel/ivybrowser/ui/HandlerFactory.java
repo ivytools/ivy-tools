@@ -50,7 +50,6 @@ public class HandlerFactory
             InputStream    in     = urlConnection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String         line   = reader.readLine();
-            int            i      = 0;
 
             while (line != null)
             {
