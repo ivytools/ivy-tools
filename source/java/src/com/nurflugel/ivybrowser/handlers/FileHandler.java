@@ -3,11 +3,9 @@ package com.nurflugel.ivybrowser.handlers;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 
-import java.io.File;
-
-import java.util.List;
-
 import javax.swing.*;
+import java.io.File;
+import java.util.List;
 
 @SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "AssignmentToCollectionOrArrayFieldFromParameter" })
 public class FileHandler extends SwingWorker<Object, Object>

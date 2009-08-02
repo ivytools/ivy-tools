@@ -19,7 +19,6 @@ import java.util.List;
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
 {
-    // private static  boolean isSubversionRepository;
     private HandlerFactory()
     {
     }

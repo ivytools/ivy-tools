@@ -1,43 +1,32 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import com.nurflugel.ivybrowser.handlers.tasks.HtmlHandlerTask;
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
-import org.apache.commons.lang.StringUtils;
-
 @SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
 public class HtmlHandler extends BaseWebHandler
 {
-
-
     // --------------------------- CONSTRUCTORS ---------------------------
-    // private String libraryName;
     public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages)
     {
         super(mainFrame, ivyPackages, ivyRepositoryPath);
     }
 
-    // @Override public Object doInBackground()
-    // {
-    // findIvyPackages();
-    // mainFrame.showNormal();
-    //
-    // return null;
-    // }
     // -------------------------- OTHER METHODS --------------------------
     @Override public void findIvyPackages()
     {
@@ -45,18 +34,17 @@ public class HtmlHandler extends BaseWebHandler
 
         try
         {
-            Date startTime=new Date();
+            Date          startTime     = new Date();
             URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
 
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
-            InputStream    in          = urlConnection.getInputStream();
-            BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-            String         packageLine = reader.readLine();
-            ExecutorService threadPool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
+            InputStream     in          = urlConnection.getInputStream();
+            BufferedReader  reader      = new BufferedReader(new InputStreamReader(in));
+            String          packageLine = reader.readLine();
+            ExecutorService threadPool  = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
             while (packageLine != null)
             {
@@ -76,13 +64,13 @@ public class HtmlHandler extends BaseWebHandler
 
                     if (!orgName.equalsIgnoreCase("/Home/") && !orgName.contains("Parent Directory"))
                     {
-                        HtmlHandlerTask task=new HtmlHandlerTask(mainFrame, this, repositoryUrl, orgName);
-                        threadPool.execute(task);
+                        HtmlHandlerTask task = new HtmlHandlerTask(mainFrame, this, repositoryUrl, orgName);
 
+                        threadPool.execute(task);
 
                         // if left in, this populates the display real time
                         // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
-                        if (!shouldRun || (isTest ))
+                        if (!shouldRun || (isTest))
                         {
                             break;
                         }
@@ -93,33 +81,35 @@ public class HtmlHandler extends BaseWebHandler
             }  // end while
 
             reader.close();
-             threadPool.shutdown();
-            //block until all threads are done, or until time limit is reached
+            threadPool.shutdown();
+
+            // block until all threads are done, or until time limit is reached
             threadPool.awaitTermination(5, MINUTES);
-             mainFrame.filterTable();
+            mainFrame.filterTable();
             System.out.println("ivyPackages = " + ivyPackages.size());
-            Date endTime=new Date();
+
+            Date  endTime  = new Date();
             float duration = endTime.getTime() - startTime.getTime();
-            System.out.println("HtmlHandler Duration: "+duration/1000.0);
+
+            System.out.println("HtmlHandler Duration: " + (duration / 1000.0));
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
 
-
         mainFrame.stopProgressPanel();
     }
 
-    @Override
-    protected boolean shouldProcessIncludedFileLine(String line)
+    @Override protected boolean shouldProcessIncludedFileLine(String line)
     {
-        boolean isIvyFile = line.contains("ivy.xml");
+        boolean isIvyFile   = line.contains("ivy.xml");
         boolean isValidLine = shouldProcessVersionedLibraryLine(line);
+
         return isValidLine && !isIvyFile;
     }
 
-    public String getContents(String packageLine)
+    @Override public String getContents(String packageLine)
     {
         String newText;
 
@@ -137,7 +127,7 @@ public class HtmlHandler extends BaseWebHandler
         return result;
     }
 
-    protected boolean hasVersion(String versionLine)
+    @Override protected boolean hasVersion(String versionLine)
     {
         boolean hasVersion;
 
@@ -153,7 +143,7 @@ public class HtmlHandler extends BaseWebHandler
         return hasVersion;
     }
 
-    protected boolean shouldProcessVersionedLibraryLine(String line)
+    @Override protected boolean shouldProcessVersionedLibraryLine(String line)
     {
         boolean shouldProcess;
 
@@ -182,5 +172,4 @@ public class HtmlHandler extends BaseWebHandler
 
         return parsedLine + "   " + size;
     }
-
 }

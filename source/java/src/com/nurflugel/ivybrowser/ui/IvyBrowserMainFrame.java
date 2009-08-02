@@ -21,9 +21,8 @@ import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
+import static java.awt.Cursor.*;
 import static java.awt.Cursor.getPredefinedCursor;
-import static java.awt.Cursor.*;
-import static java.awt.Cursor.*;
 import java.awt.event.*;
 
 import java.net.Authenticator;
@@ -59,7 +58,6 @@ public class IvyBrowserMainFrame extends JFrame
     private Preferences           preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
     private InfiniteProgressPanel progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     public static final String    IVY_REPOSITORY      = "IvyRepository";
-    // private final EventList<IvyPackage> repositoryList=new BasicEventList<IvyPackage>();
     private List<IvyPackage>      repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
     private static final String   PARSE_ON_OPEN       = "parseOnOpen";
     private JScrollPane           scrollPane;
@@ -70,8 +68,6 @@ public class IvyBrowserMainFrame extends JFrame
     public IvyBrowserMainFrame()
     {
         initializeComponents();
-
-        // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         pack();
         setSize(800, 600);
         BuilderMainFrame.centerApp(this);
@@ -84,7 +80,7 @@ public class IvyBrowserMainFrame extends JFrame
 
         boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
 
-//        parseOnOpen = false;
+        // parseOnOpen = false;
         parseOnOpenCheckbox.setSelected(parseOnOpen);
 
         if (parseOnOpen)
@@ -212,13 +208,9 @@ public class IvyBrowserMainFrame extends JFrame
         {
             repositoryList.clear();
 
-            // repositoryList.addAll(list);
             BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList);
 
             handler.execute();
-            // handler.doInBackground();
-
-            // resultsTable.setVisible(true);
             holdingPanel.add(scrollPane);
         }
     }
@@ -244,9 +236,11 @@ public class IvyBrowserMainFrame extends JFrame
         if (row > -1)
         {
             setCursor(Cursor.WAIT_CURSOR);
+
             EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
             IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
             IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath);
+
             setCursor(Cursor.DEFAULT_CURSOR);
             dialog.setVisible(true);
         }
@@ -255,12 +249,10 @@ public class IvyBrowserMainFrame extends JFrame
             System.out.println("No row selected...");
         }
     }
+
     // -------------------------- OTHER METHODS --------------------------
     public void stopProgressPanel()
     {
-        // repositoryList = new BasicEventList<IvyPackage>();
-        // repositoryList.addAll(list);
-        // filterTable();
         progressPanel.stop();
     }
 
@@ -307,21 +299,4 @@ public class IvyBrowserMainFrame extends JFrame
     {
         new IvyBrowserMainFrame();
     }
-
-    // public synchronized void addIvyPackage(IvyPackage localPackage)
-    // public  void addIvyPackage(IvyPackage localPackage)
-    // {
-    ////        synchronized (repositoryList)
-    ////        {
-    // try
-    // {
-    // repositoryList.getReadWriteLock().writeLock().lock();
-    // repositoryList.add(localPackage);
-    // }
-    // finally
-    // {
-    // repositoryList.getReadWriteLock().writeLock().unlock();
-    // }
-    ////        }
-    // }
 }
