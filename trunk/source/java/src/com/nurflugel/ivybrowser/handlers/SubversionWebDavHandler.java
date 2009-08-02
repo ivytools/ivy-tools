@@ -2,16 +2,13 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -112,36 +109,7 @@ public class SubversionWebDavHandler extends BaseWebHandler
 
         return result;
     }
-    //
-    // @Override protected void findModules(URL repositoryUrl, String orgName)
-    // throws IOException
-    // {
-    // URL              moduleUrl     = new URL(repositoryUrl + "/" + orgName);
-    // URLConnection    urlConnection = moduleUrl.openConnection();
-    //
-    // urlConnection.setAllowUserInteraction(true);
-    // urlConnection.connect();
-    //
-    // InputStream    in         = urlConnection.getInputStream();
-    // BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
-    // String         moduleLine = reader.readLine();
-    //
-    // while (moduleLine != null)
-    // {
-    // boolean isLibrary = hasVersion(moduleLine);
-    //
-    // if (isLibrary)
-    // {
-    // String moduleName = getContents(moduleLine);
-    //
-    // findVersions(repositoryUrl, orgName, moduleName);
-    // }
-    //
-    // moduleLine = reader.readLine();
-    // }
-    //
-    // reader.close();
-    // }
+
     @Override protected boolean hasVersion(String versionLine)
     {
         boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
@@ -164,8 +132,7 @@ public class SubversionWebDavHandler extends BaseWebHandler
         return isValidLine && !isIvyFile;
     }
 
-    /** Parse the file name out of the html line
-    */
+    /** Parse the file name out of the html line */
     @Override protected String parseIncludedFileInfo(String line, String version)
     {
         String trimmedLine = line.trim();

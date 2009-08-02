@@ -1,47 +1,34 @@
 package com.nurflugel.ivybrowser.handlers.tasks;
 
-import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 
 @SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
-public class HtmlHandlerTask implements Runnable// extends BaseWebHandler
+public class HtmlHandlerTask implements Runnable
 {
     private IvyBrowserMainFrame mainFrame;
-//    private String ivyRepositoryPath;
-//    private List<IvyPackage> ivyPackages;
-    private HtmlHandler htmlHandler;
-    private URL repositoryUrl;
-    private String orgName;
+    private HtmlHandler         htmlHandler;
+    private URL                 repositoryUrl;
+    private String              orgName;
 
     // --------------------------- CONSTRUCTORS ---------------------------
-    // private String libraryName;
     public HtmlHandlerTask(IvyBrowserMainFrame mainFrame, HtmlHandler htmlHandler, URL repositoryUrl, String orgName)
     {
-//        super(mainFrame, ivyPackages, ivyRepositoryPath);
-        this.mainFrame = mainFrame;
-//        this.ivyRepositoryPath = ivyRepositoryPath;
-//        this.ivyPackages = ivyPackages;
-        this.htmlHandler = htmlHandler;
+        this.mainFrame     = mainFrame;
+        this.htmlHandler   = htmlHandler;
         this.repositoryUrl = repositoryUrl;
-        this.orgName = orgName;
+        this.orgName       = orgName;
     }
 
-     public void run()
+    public void run()
     {
         try
         {
             findModules();
-            // mainFrame.filterTable();
-            
         }
         catch (IOException e)
         {
@@ -49,27 +36,8 @@ public class HtmlHandlerTask implements Runnable// extends BaseWebHandler
         }
     }
 
-
-
-//    protected String getContents(String packageLine)
-//    {
-//        String newText;
-//
-//        if (packageLine.contains("<A HREF=\""))
-//        {
-//            newText = substringAfter(packageLine, "<A HREF=\"");
-//        }
-//        else
-//        {
-//            newText = substringAfter(packageLine, "<a href=\"");
-//        }
-//
-//        String result = substringBefore(newText, "\">");
-//
-//        return result;
-//    }
-
-    public void findModules() throws IOException
+    public void findModules()
+                     throws IOException
     {
         URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
         URLConnection urlConnection = moduleUrl.openConnection();
@@ -107,7 +75,4 @@ public class HtmlHandlerTask implements Runnable// extends BaseWebHandler
 
         reader.close();
     }
-
-
-
 }
