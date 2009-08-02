@@ -22,6 +22,8 @@ import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Cursor.getPredefinedCursor;
+import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
 import java.awt.event.*;
 
 import java.net.Authenticator;
@@ -241,10 +243,11 @@ public class IvyBrowserMainFrame extends JFrame
 
         if (row > -1)
         {
+            setCursor(Cursor.WAIT_CURSOR);
             EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
             IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
             IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath);
-
+            setCursor(Cursor.DEFAULT_CURSOR);
             dialog.setVisible(true);
         }
         else

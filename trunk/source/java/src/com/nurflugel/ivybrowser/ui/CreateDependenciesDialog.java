@@ -18,17 +18,17 @@ import java.util.List;
 
 import javax.swing.*;
 
-@SuppressWarnings({ "RefusedBequest" })
+@SuppressWarnings({"RefusedBequest"})
 public class CreateDependenciesDialog extends JDialog
 {
     /** Use serialVersionUID for interoperability. */
-    private static final long            serialVersionUID  = -6948838156489928491L;
-    private JPanel                       contentPane;
-    private JButton                      buttonOK;
-    private JButton                      buttonCancel;
-    private JTable                       dependenciesTable;
-    private JTextField                   selectionText;
-    private JPanel                       dependenciesPanel;
+    private static final long serialVersionUID = -6948838156489928491L;
+    private JPanel contentPane;
+    private JButton buttonOK;
+    private JButton buttonCancel;
+    private JTable dependenciesTable;
+    private JTextField selectionText;
+    private JPanel dependenciesPanel;
     private EventList<IvyRepositoryItem> ivyPackages;
 
     // --------------------------- CONSTRUCTORS ---------------------------
@@ -54,48 +54,51 @@ public class CreateDependenciesDialog extends JDialog
     private void addListeners()
     {
         buttonOK.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
             {
-                public void actionPerformed(ActionEvent e)
-                {
-                    onOK();
-                }
-            });
+                onOK();
+            }
+        });
         buttonCancel.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
             {
-                public void actionPerformed(ActionEvent e)
-                {
-                    onCancel();
-                }
-            });
+                onCancel();
+            }
+        });
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
             {
-                @Override public void windowClosing(WindowEvent e)
-                {
-                    onCancel();
-                }
-            });
+                onCancel();
+            }
+        });
         contentPane.registerKeyboardAction(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
             {
-                public void actionPerformed(ActionEvent e)
-                {
-                    onCancel();
-                }
-            }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         selectionText.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyReleased(KeyEvent e)
             {
-                @Override public void keyReleased(KeyEvent e)
-                {
-                    filterTable();
-                }
-            });
+                filterTable();
+            }
+        });
         dependenciesTable.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
             {
-                @Override public void mouseClicked(MouseEvent e)
-                {
-                    selectItem();
-                }
-            });
+                selectItem();
+            }
+        });
 
         // todo - add cell renderer to change colors of rows as cursor passes over them.
         // dependenciesTable.addMouseMotionListener(new MouseMotionAdapter() {
@@ -124,13 +127,13 @@ public class CreateDependenciesDialog extends JDialog
         dependenciesPanel.removeAll();
 
         // get the items from the table
-        EventTableModel tableModel   = (EventTableModel) dependenciesTable.getModel();
-        int[]           selectedRows = dependenciesTable.getSelectedRows();
+        EventTableModel tableModel = (EventTableModel) dependenciesTable.getModel();
+        int[] selectedRows = dependenciesTable.getSelectedRows();
 
         for (int selectedRow : selectedRows)
         {
-            Object                    o        = tableModel.getElementAt(selectedRow);
-            IvyRepositoryItem         item     = (IvyRepositoryItem) o;
+            Object o = tableModel.getElementAt(selectedRow);
+            IvyRepositoryItem item = (IvyRepositoryItem) o;
             IvyRepositoryItemCheckbox checkbox = new IvyRepositoryItemCheckbox(item);
 
             dependenciesPanel.add(checkbox);
@@ -140,12 +143,12 @@ public class CreateDependenciesDialog extends JDialog
         dependenciesPanel.revalidate();
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     private void filterTable()
     {
-        SortedList<IvyRepositoryItem>      sortedDependencies = new SortedList<IvyRepositoryItem>(ivyPackages, new IvyRepositoryItemComparator());
-        FilterList<IvyRepositoryItem>      filteredPackages   = new FilterList<IvyRepositoryItem>(sortedDependencies, new TextComponentMatcherEditor(selectionText, new IvyRepositoryItemFilterator()));
-        EventTableModel<IvyRepositoryItem> tableModel         = new EventTableModel<IvyRepositoryItem>(filteredPackages, new IvyRepositoryItemTableFormat());
+        SortedList<IvyRepositoryItem> sortedDependencies = new SortedList<IvyRepositoryItem>(ivyPackages, new IvyRepositoryItemComparator());
+        FilterList<IvyRepositoryItem> filteredPackages = new FilterList<IvyRepositoryItem>(sortedDependencies, new TextComponentMatcherEditor(selectionText, new IvyRepositoryItemFilterator()));
+        EventTableModel<IvyRepositoryItem> tableModel = new EventTableModel<IvyRepositoryItem>(filteredPackages, new IvyRepositoryItemTableFormat());
 
         dependenciesTable.setModel(tableModel);
 
@@ -159,8 +162,8 @@ public class CreateDependenciesDialog extends JDialog
     // -------------------------- OTHER METHODS --------------------------
     public List<IvyRepositoryItem> getDependancies()
     {
-        Object[]                selectedObjects = dependenciesPanel.getComponents();
-        List<IvyRepositoryItem> dependencies    = new ArrayList<IvyRepositoryItem>();
+        Object[] selectedObjects = dependenciesPanel.getComponents();
+        List<IvyRepositoryItem> dependencies = new ArrayList<IvyRepositoryItem>();
 
         for (Object selectedObject : selectedObjects)
         {
@@ -189,9 +192,9 @@ public class CreateDependenciesDialog extends JDialog
     }
 
     {
-        // GUI initializer generated by IntelliJ IDEA GUI Designer
-        // >>> IMPORTANT!! <<<
-        // DO NOT EDIT OR ADD ANY CODE HERE!
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
         $$$setupUI$$$();
     }
 
@@ -204,22 +207,16 @@ public class CreateDependenciesDialog extends JDialog
     {
         contentPane = new JPanel();
         contentPane.setLayout(new GridBagLayout());
-
         final JPanel panel1 = new JPanel();
-
         panel1.setLayout(new BorderLayout(0, 0));
-
         GridBagConstraints gbc;
-
-        gbc           = new GridBagConstraints();
-        gbc.gridx     = 0;
-        gbc.gridy     = 3;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
-        gbc.fill      = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(panel1, gbc);
-
         final JPanel panel2 = new JPanel();
-
         panel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panel1.add(panel2, BorderLayout.EAST);
         buttonOK = new JButton();
@@ -228,56 +225,48 @@ public class CreateDependenciesDialog extends JDialog
         buttonCancel = new JButton();
         buttonCancel.setText("Cancel");
         panel2.add(buttonCancel);
-
         final JPanel panel3 = new JPanel();
-
         panel3.setLayout(new GridBagLayout());
-        gbc           = new GridBagConstraints();
-        gbc.gridx     = 0;
-        gbc.gridy     = 1;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.gridwidth = 2;
-        gbc.weighty   = 1.0;
-        gbc.fill      = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(panel3, gbc);
-
         final JScrollPane scrollPane1 = new JScrollPane();
-
-        gbc         = new GridBagConstraints();
-        gbc.gridx   = 1;
-        gbc.gridy   = 0;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill    = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         panel3.add(scrollPane1, gbc);
         dependenciesTable = new JTable();
         scrollPane1.setViewportView(dependenciesTable);
         selectionText = new JTextField();
-        gbc           = new GridBagConstraints();
-        gbc.gridx     = 1;
-        gbc.gridy     = 0;
-        gbc.weightx   = 1.0;
-        gbc.anchor    = GridBagConstraints.WEST;
-        gbc.fill      = GridBagConstraints.HORIZONTAL;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(selectionText, gbc);
-
         final JLabel label1 = new JLabel();
-
         label1.setText("Type here to narrow selection:");
-        gbc        = new GridBagConstraints();
-        gbc.gridx  = 0;
-        gbc.gridy  = 0;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         contentPane.add(label1, gbc);
-
         final JScrollPane scrollPane2 = new JScrollPane();
-
         scrollPane2.setVerticalScrollBarPolicy(20);
-        gbc           = new GridBagConstraints();
-        gbc.gridx     = 0;
-        gbc.gridy     = 2;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         gbc.gridwidth = 2;
-        gbc.weighty   = 1.0;
-        gbc.fill      = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(scrollPane2, gbc);
         dependenciesPanel = new JPanel();
         dependenciesPanel.setLayout(new GridBagLayout());
