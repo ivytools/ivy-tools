@@ -3,6 +3,8 @@ package com.nurflugel.ivybrowser.handlers;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,8 +12,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -26,24 +28,24 @@ public class SubversionWebDavHandler extends BaseWebHandler
     }
 
     // -------------------------- OTHER METHODS --------------------------
-    @SuppressWarnings({"CallToPrintStackTrace", "UseOfSystemOutOrSystemErr"})
-    @Override public void findIvyPackages()
+    @Override @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
+    public void findIvyPackages()
     {
         System.out.println("ivyRepositoryPath = " + ivyRepositoryPath);
 
         try
         {
-            Date startTime=new Date();
+            Date          startTime     = new Date();
             URL           repositoryUrl = new URL(ivyRepositoryPath);
             URLConnection urlConnection = repositoryUrl.openConnection();
 
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
-            InputStream    in          = urlConnection.getInputStream();
-            BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-            String         packageLine = reader.readLine();
-            ExecutorService threadPool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            InputStream     in          = urlConnection.getInputStream();
+            BufferedReader  reader      = new BufferedReader(new InputStreamReader(in));
+            String          packageLine = reader.readLine();
+            ExecutorService threadPool  = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
             while (packageLine != null)
             {
@@ -56,14 +58,14 @@ public class SubversionWebDavHandler extends BaseWebHandler
 
                 if (hasLink)
                 {
-                    String orgName = getContents(packageLine);
+                    String                      orgName = getContents(packageLine);
+                    SubversionWebDavHandlerTask task    = new SubversionWebDavHandlerTask(repositoryUrl, orgName, this);
 
-                    SubversionWebDavHandlerTask task = new SubversionWebDavHandlerTask(repositoryUrl, orgName, this);
                     threadPool.execute(task);
 
                     // if left in, this populates the display real time
                     // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
-                    if (!shouldRun || (isTest ))
+                    if (!shouldRun || (isTest))
                     {
                         break;
                     }
@@ -74,13 +76,16 @@ public class SubversionWebDavHandler extends BaseWebHandler
 
             reader.close();
             threadPool.shutdown();
-            //block until all threads are done, or until time limit is reached
+
+            // block until all threads are done, or until time limit is reached
             threadPool.awaitTermination(5, MINUTES);
-             mainFrame.filterTable();
+            mainFrame.filterTable();
             System.out.println("ivyPackages = " + ivyPackages.size());
-            Date endTime=new Date();
+
+            Date  endTime  = new Date();
             float duration = endTime.getTime() - startTime.getTime();
-            System.out.println("SubversionWebDavHandler Duration: "+duration/1000.0);
+
+            System.out.println("SubversionWebDavHandler Duration: " + (duration / 1000.0));
         }
         catch (Exception e)
         {
@@ -107,37 +112,36 @@ public class SubversionWebDavHandler extends BaseWebHandler
 
         return result;
     }
-//
-//    @Override protected void findModules(URL repositoryUrl, String orgName)
-//                                  throws IOException
-//    {
-//        URL              moduleUrl     = new URL(repositoryUrl + "/" + orgName);
-//        URLConnection    urlConnection = moduleUrl.openConnection();
-//
-//        urlConnection.setAllowUserInteraction(true);
-//        urlConnection.connect();
-//
-//        InputStream    in         = urlConnection.getInputStream();
-//        BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
-//        String         moduleLine = reader.readLine();
-//
-//        while (moduleLine != null)
-//        {
-//            boolean isLibrary = hasVersion(moduleLine);
-//
-//            if (isLibrary)
-//            {
-//                String moduleName = getContents(moduleLine);
-//
-//                findVersions(repositoryUrl, orgName, moduleName);
-//            }
-//
-//            moduleLine = reader.readLine();
-//        }
-//
-//        reader.close();
-//    }
-
+    //
+    // @Override protected void findModules(URL repositoryUrl, String orgName)
+    // throws IOException
+    // {
+    // URL              moduleUrl     = new URL(repositoryUrl + "/" + orgName);
+    // URLConnection    urlConnection = moduleUrl.openConnection();
+    //
+    // urlConnection.setAllowUserInteraction(true);
+    // urlConnection.connect();
+    //
+    // InputStream    in         = urlConnection.getInputStream();
+    // BufferedReader reader     = new BufferedReader(new InputStreamReader(in));
+    // String         moduleLine = reader.readLine();
+    //
+    // while (moduleLine != null)
+    // {
+    // boolean isLibrary = hasVersion(moduleLine);
+    //
+    // if (isLibrary)
+    // {
+    // String moduleName = getContents(moduleLine);
+    //
+    // findVersions(repositoryUrl, orgName, moduleName);
+    // }
+    //
+    // moduleLine = reader.readLine();
+    // }
+    //
+    // reader.close();
+    // }
     @Override protected boolean hasVersion(String versionLine)
     {
         boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
@@ -152,11 +156,24 @@ public class SubversionWebDavHandler extends BaseWebHandler
         return shouldProcess;
     }
 
-      @Override
-    protected boolean shouldProcessIncludedFileLine(String line)
+    @Override protected boolean shouldProcessIncludedFileLine(String line)
     {
-        boolean isIvyFile = line.contains("ivy.xml");
+        boolean isIvyFile   = line.contains("ivy.xml");
         boolean isValidLine = shouldProcessVersionedLibraryLine(line);
-        return isValidLine && isIvyFile;
+
+        return isValidLine && !isIvyFile;
+    }
+
+    /** Parse the file name out of the html line
+    */
+    @Override protected String parseIncludedFileInfo(String line, String version)
+    {
+        String trimmedLine = line.trim();
+        String parsedLine  = StringUtils.substringAfter(trimmedLine, "\"");
+
+        parsedLine = StringUtils.substringBefore(parsedLine, "\"");
+        parsedLine = StringUtils.remove(parsedLine, version);
+
+        return parsedLine;
     }
 }

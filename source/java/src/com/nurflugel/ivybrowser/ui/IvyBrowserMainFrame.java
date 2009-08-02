@@ -26,10 +26,10 @@ import java.awt.event.*;
 
 import java.net.Authenticator;
 
-import java.util.prefs.Preferences;
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
@@ -51,38 +51,38 @@ public class IvyBrowserMainFrame extends JFrame
     private JButton               quitButton          = new JButton("Quit");
     private JLabel                findLabel           = new JLabel("Find library:");
     private JLabel                statusLabel         = new JLabel();
-    private JCheckBox             parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open");
+    private JCheckBox             parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
     private JTable                resultsTable        = new JTable();
     private JTextField            libraryField        = new JTextField();
     private Preferences           preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
     private InfiniteProgressPanel progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     public static final String    IVY_REPOSITORY      = "IvyRepository";
-//    private final EventList<IvyPackage> repositoryList=new BasicEventList<IvyPackage>();
-
-    private  List<IvyPackage> repositoryList=Collections.synchronizedList(new ArrayList<IvyPackage>());
+    // private final EventList<IvyPackage> repositoryList=new BasicEventList<IvyPackage>();
+    private List<IvyPackage>      repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
     private static final String   PARSE_ON_OPEN       = "parseOnOpen";
     private JScrollPane           scrollPane;
     private JPanel                holdingPanel;
-    private String ivyRepositoryPath;
+    private String                ivyRepositoryPath;
 
     // --------------------------- CONSTRUCTORS ---------------------------
     public IvyBrowserMainFrame()
     {
         initializeComponents();
+
         // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         pack();
         setSize(800, 600);
         BuilderMainFrame.centerApp(this);
 
         // this was causing problems with GlazedLists throwing NPEs
-//        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         Authenticator.setDefault(new WebAuthenticator());
         libraryField.setEnabled(false);
         setVisible(true);
 
         boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
-        // boolean parseOnOpen = false;
 
+        parseOnOpen = false;
         parseOnOpenCheckbox.setSelected(parseOnOpen);
 
         if (parseOnOpen)
@@ -204,7 +204,6 @@ public class IvyBrowserMainFrame extends JFrame
         // resultsTable.setVisible(false);
         holdingPanel.remove(scrollPane);
         progressPanel.start();
-
         ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "http://www.nurflugel.com/Home/repository/");
 
         if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
@@ -224,7 +223,7 @@ public class IvyBrowserMainFrame extends JFrame
 
     public void filterTable()
     {
-        EventList<IvyPackage> eventList=new BasicEventList<IvyPackage>(repositoryList);
+        EventList<IvyPackage>       eventList                  = new BasicEventList<IvyPackage>(repositoryList);
         SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(eventList);
         TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
         FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
@@ -235,7 +234,7 @@ public class IvyBrowserMainFrame extends JFrame
         TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
     }
 
-    @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
+    @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
     private void showIvyLine(MouseEvent e)
     {
         int row = resultsTable.getSelectedRow();
@@ -244,7 +243,7 @@ public class IvyBrowserMainFrame extends JFrame
         {
             EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
             IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile,ivyRepositoryPath);
+            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath);
 
             dialog.setVisible(true);
         }
@@ -253,10 +252,7 @@ public class IvyBrowserMainFrame extends JFrame
             System.out.println("No row selected...");
         }
     }
-
     // -------------------------- OTHER METHODS --------------------------
-
-
     public void stopProgressPanel()
     {
         // repositoryList = new BasicEventList<IvyPackage>();
@@ -309,20 +305,20 @@ public class IvyBrowserMainFrame extends JFrame
         new IvyBrowserMainFrame();
     }
 
-//    public synchronized void addIvyPackage(IvyPackage localPackage)
-//    public  void addIvyPackage(IvyPackage localPackage)
-//    {
-////        synchronized (repositoryList)
-////        {
-//            try
-//            {
-//                repositoryList.getReadWriteLock().writeLock().lock();
-//                repositoryList.add(localPackage);
-//            }
-//            finally
-//            {
-//                repositoryList.getReadWriteLock().writeLock().unlock();
-//            }
-////        }
-//    }
+    // public synchronized void addIvyPackage(IvyPackage localPackage)
+    // public  void addIvyPackage(IvyPackage localPackage)
+    // {
+    ////        synchronized (repositoryList)
+    ////        {
+    // try
+    // {
+    // repositoryList.getReadWriteLock().writeLock().lock();
+    // repositoryList.add(localPackage);
+    // }
+    // finally
+    // {
+    // repositoryList.getReadWriteLock().writeLock().unlock();
+    // }
+    ////        }
+    // }
 }

@@ -17,6 +17,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.apache.commons.lang.StringUtils.substringBefore;
+import org.apache.commons.lang.StringUtils;
 
 @SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod", "OverlyComplexBooleanExpression" })
 public class HtmlHandler extends BaseWebHandler
@@ -167,5 +168,19 @@ public class HtmlHandler extends BaseWebHandler
 
         return shouldProcess;
     }
-   
+
+    /** Parse the file name out of the html line
+    */
+    @Override protected String parseIncludedFileInfo(String line, String version)
+    {
+        String trimmedLine = line.trim();
+        String parsedLine  = StringUtils.substringAfter(trimmedLine, "A HREF=\"");
+
+        parsedLine = StringUtils.substringBefore(parsedLine, "\"");
+
+        String size = StringUtils.substringAfterLast(trimmedLine, " ");
+
+        return parsedLine + "   " + size;
+    }
+
 }
