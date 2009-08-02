@@ -63,6 +63,7 @@ public class IvyBrowserMainFrame extends JFrame
     private static final String   PARSE_ON_OPEN       = "parseOnOpen";
     private JScrollPane           scrollPane;
     private JPanel                holdingPanel;
+    private String ivyRepositoryPath;
 
     // --------------------------- CONSTRUCTORS ---------------------------
     public IvyBrowserMainFrame()
@@ -74,7 +75,7 @@ public class IvyBrowserMainFrame extends JFrame
         BuilderMainFrame.centerApp(this);
 
         // this was causing problems with GlazedLists throwing NPEs
-        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+//        IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
         Authenticator.setDefault(new WebAuthenticator());
         libraryField.setEnabled(false);
         setVisible(true);
@@ -204,7 +205,7 @@ public class IvyBrowserMainFrame extends JFrame
         holdingPanel.remove(scrollPane);
         progressPanel.start();
 
-        String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "http://www.nurflugel.com/Home/repository/");
+        ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "http://www.nurflugel.com/Home/repository/");
 
         if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
         {
@@ -243,7 +244,7 @@ public class IvyBrowserMainFrame extends JFrame
         {
             EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
             IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile);
+            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile,ivyRepositoryPath);
 
             dialog.setVisible(true);
         }

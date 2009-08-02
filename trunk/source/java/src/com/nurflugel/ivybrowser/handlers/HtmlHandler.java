@@ -110,7 +110,15 @@ public class HtmlHandler extends BaseWebHandler
         mainFrame.stopProgressPanel();
     }
 
-     public String getContents(String packageLine)
+    @Override
+    protected boolean shouldProcessIncludedFileLine(String line)
+    {
+        boolean isIvyFile = line.contains("ivy.xml");
+        boolean isValidLine = shouldProcessVersionedLibraryLine(line);
+        return isValidLine && !isIvyFile;
+    }
+
+    public String getContents(String packageLine)
     {
         String newText;
 
