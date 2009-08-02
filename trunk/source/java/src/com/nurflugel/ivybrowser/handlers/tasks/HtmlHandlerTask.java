@@ -40,7 +40,8 @@ public class HtmlHandlerTask implements Runnable// extends BaseWebHandler
         try
         {
             findModules();
-//            mainFrame.filterTable();
+            // mainFrame.filterTable();
+            
         }
         catch (IOException e)
         {

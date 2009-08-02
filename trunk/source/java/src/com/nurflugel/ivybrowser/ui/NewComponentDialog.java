@@ -20,33 +20,33 @@ import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
 
-@SuppressWarnings({"AssignmentToCollectionOrArrayFieldFromParameter", "MethodParameterNamingConvention"})
+@SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter", "MethodParameterNamingConvention" })
 public class NewComponentDialog extends JDialog
 {
     /** Use serialVersionUID for interoperability. */
-    private static final long serialVersionUID = 2069426482124193511L;
-    private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
-    private JTextField orgField;
-    private JTextField moduleField;
-    private JTextField revField;
-    private JButton addFilesToComponentButton;
-    private JButton addDependenciesToComponentButton;
-    private JPanel dependenciesPanel;
-    private JPanel filesPanel;
-    private List<IvyRepositoryItem> ivyPackages = new ArrayList<IvyRepositoryItem>();
-    private File repositoryDir;
-    private Preferences preferences;
-    private Map<String, IvyFileCheckbox> filesMap = new TreeMap<String, IvyFileCheckbox>();
-    private Map<String, IvyRepositoryItemCheckbox> dependenciesMap = new TreeMap<String, IvyRepositoryItemCheckbox>();
+    private static final long                      serialVersionUID                 = 2069426482124193511L;
+    private JPanel                                 contentPane;
+    private JButton                                buttonOK;
+    private JButton                                buttonCancel;
+    private JTextField                             orgField;
+    private JTextField                             moduleField;
+    private JTextField                             revField;
+    private JButton                                addFilesToComponentButton;
+    private JButton                                addDependenciesToComponentButton;
+    private JPanel                                 dependenciesPanel;
+    private JPanel                                 filesPanel;
+    private List<IvyRepositoryItem>                ivyPackages                      = new ArrayList<IvyRepositoryItem>();
+    private File                                   repositoryDir;
+    private Preferences                            preferences;
+    private Map<String, IvyFileCheckbox>           filesMap                         = new TreeMap<String, IvyFileCheckbox>();
+    private Map<String, IvyRepositoryItemCheckbox> dependenciesMap                  = new TreeMap<String, IvyRepositoryItemCheckbox>();
 
     // --------------------------- CONSTRUCTORS ---------------------------
     public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)
     {
-        this.ivyPackages = ivyPackages;
+        this.ivyPackages   = ivyPackages;
         this.repositoryDir = repositoryDir;
-        this.preferences = preferences;
+        this.preferences   = preferences;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -68,78 +68,74 @@ public class NewComponentDialog extends JDialog
     private void addListeners()
     {
         buttonOK.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
             {
-                onOK();
-            }
-        });
+                public void actionPerformed(ActionEvent e)
+                {
+                    onOK();
+                }
+            });
         buttonCancel.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
             {
-                onCancel();
-            }
-        });
+                public void actionPerformed(ActionEvent e)
+                {
+                    onCancel();
+                }
+            });
         addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
             {
-                onCancel();
-            }
-        });
+                @Override public void windowClosing(WindowEvent e)
+                {
+                    onCancel();
+                }
+            });
         contentPane.registerKeyboardAction(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
             {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                public void actionPerformed(ActionEvent e)
+                {
+                    onCancel();
+                }
+            }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         orgField.addKeyListener(new KeyAdapter()
-        {
-            @Override
-            public void keyTyped(KeyEvent e)
             {
-                enableButtons();
-            }
-        });
+                @Override public void keyTyped(KeyEvent e)
+                {
+                    enableButtons();
+                }
+            });
         moduleField.addKeyListener(new KeyAdapter()
-        {
-            @Override
-            public void keyTyped(KeyEvent e)
             {
-                enableButtons();
-            }
-        });
+                @Override public void keyTyped(KeyEvent e)
+                {
+                    enableButtons();
+                }
+            });
         revField.addKeyListener(new KeyAdapter()
-        {
-            @Override
-            public void keyTyped(KeyEvent e)
             {
-                enableButtons();
-            }
-        });
+                @Override public void keyTyped(KeyEvent e)
+                {
+                    enableButtons();
+                }
+            });
         addFilesToComponentButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
             {
-                addFilesToComponent();
-            }
-        });
+                public void actionPerformed(ActionEvent e)
+                {
+                    addFilesToComponent();
+                }
+            });
         addDependenciesToComponentButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
             {
-                addDependencies();
-            }
-        });
+                public void actionPerformed(ActionEvent e)
+                {
+                    addDependencies();
+                }
+            });
     }
 
     private void addDependencies()
     {
         CreateDependenciesDialog dependenciesDialog = new CreateDependenciesDialog(ivyPackages);
-        List<IvyRepositoryItem> dependencies = dependenciesDialog.getDependancies();
+        List<IvyRepositoryItem>  dependencies       = dependenciesDialog.getDependancies();
 
         for (IvyRepositoryItem dependency : dependencies)
         {
@@ -169,13 +165,13 @@ public class NewComponentDialog extends JDialog
 
     private void onOK()
     {
-        IvyRepositoryItem newItem = new IvyRepositoryItem(orgField.getText(), moduleField.getText(), revField.getText(), repositoryDir);
+        IvyRepositoryItem       newItem      = new IvyRepositoryItem(orgField.getText(), moduleField.getText(), revField.getText(), repositoryDir);
         List<IvyRepositoryItem> dependencies = new ArrayList<IvyRepositoryItem>();
 
         for (Component component : dependenciesPanel.getComponents())
         {
-            IvyRepositoryItemCheckbox checkbox = (IvyRepositoryItemCheckbox) component;
-            IvyRepositoryItem ivyRepositoryItem = checkbox.getItem();
+            IvyRepositoryItemCheckbox checkbox          = (IvyRepositoryItemCheckbox) component;
+            IvyRepositoryItem         ivyRepositoryItem = checkbox.getItem();
 
             dependencies.add(ivyRepositoryItem);
         }
@@ -218,8 +214,8 @@ public class NewComponentDialog extends JDialog
         newItem.saveToDisk();
         ivyPackages.add(newItem);
 
-        String ivyLine = newItem.getIvyLine();
-        StringSelection text = new StringSelection(ivyLine);
+        String          ivyLine = newItem.getIvyLine();
+        StringSelection text    = new StringSelection(ivyLine);
 
         getDefaultToolkit().getSystemClipboard().setContents(text, null);
         JOptionPane.showMessageDialog(null, "Line to paste into your ivy file (already copied into the paste buffer):\n" + ivyLine);
@@ -239,12 +235,12 @@ public class NewComponentDialog extends JDialog
         addDependenciesToComponentButton.setEnabled(isOkToSave);
     }
 
-    @SuppressWarnings({"OverlyComplexBooleanExpression"})
+    @SuppressWarnings({ "OverlyComplexBooleanExpression" })
     private boolean isOkToSave()
     {
-        String org = orgField.getText();
+        String org    = orgField.getText();
         String module = moduleField.getText();
-        String rev = revField.getText();
+        String rev    = revField.getText();
 
         return (org != null) && (org.length() > 0) && (module != null) && (module.length() > 0) && (rev != null) && (rev.length() > 0);
     }
@@ -305,7 +301,7 @@ public class NewComponentDialog extends JDialog
     }
 
     // --------------------------- main() method ---------------------------
-    @SuppressWarnings({"CallToSystemExit"})
+    @SuppressWarnings({ "CallToSystemExit" })
     public static void main(String[] args)
     {
         NewComponentDialog dialog = new NewComponentDialog(new ArrayList<IvyRepositoryItem>(), new File("dibble"), null);
@@ -316,9 +312,9 @@ public class NewComponentDialog extends JDialog
     }
 
     {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
+        // GUI initializer generated by IntelliJ IDEA GUI Designer
+        // >>> IMPORTANT!! <<<
+        // DO NOT EDIT OR ADD ANY CODE HERE!
         $$$setupUI$$$();
     }
 
@@ -331,112 +327,132 @@ public class NewComponentDialog extends JDialog
     {
         contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(0, 0));
+
         final JPanel panel1 = new JPanel();
+
         panel1.setLayout(new GridBagLayout());
         contentPane.add(panel1, BorderLayout.CENTER);
         panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Component Properties"));
+
         final JLabel label1 = new JLabel();
+
         label1.setText("Org:");
+
         GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+
+        gbc        = new GridBagConstraints();
+        gbc.gridx  = 0;
+        gbc.gridy  = 0;
         gbc.anchor = GridBagConstraints.EAST;
         panel1.add(label1, gbc);
-        orgField = new JTextField();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
+        orgField    = new JTextField();
+        gbc         = new GridBagConstraints();
+        gbc.gridx   = 1;
+        gbc.gridy   = 0;
         gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor  = GridBagConstraints.WEST;
+        gbc.fill    = GridBagConstraints.HORIZONTAL;
         panel1.add(orgField, gbc);
+
         final JLabel label2 = new JLabel();
+
         label2.setText("Module:");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc        = new GridBagConstraints();
+        gbc.gridx  = 0;
+        gbc.gridy  = 1;
         gbc.anchor = GridBagConstraints.EAST;
         panel1.add(label2, gbc);
         moduleField = new JTextField();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc         = new GridBagConstraints();
+        gbc.gridx   = 1;
+        gbc.gridy   = 1;
         gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor  = GridBagConstraints.WEST;
+        gbc.fill    = GridBagConstraints.HORIZONTAL;
         panel1.add(moduleField, gbc);
+
         final JLabel label3 = new JLabel();
+
         label3.setText("Rev:");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc        = new GridBagConstraints();
+        gbc.gridx  = 0;
+        gbc.gridy  = 2;
         gbc.anchor = GridBagConstraints.EAST;
         panel1.add(label3, gbc);
-        revField = new JTextField();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 2;
+        revField    = new JTextField();
+        gbc         = new GridBagConstraints();
+        gbc.gridx   = 1;
+        gbc.gridy   = 2;
         gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor  = GridBagConstraints.WEST;
+        gbc.fill    = GridBagConstraints.HORIZONTAL;
         panel1.add(revField, gbc);
+
         final JPanel panel2 = new JPanel();
+
         panel2.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc           = new GridBagConstraints();
+        gbc.gridx     = 0;
+        gbc.gridy     = 3;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill      = GridBagConstraints.BOTH;
         panel1.add(panel2, gbc);
         addFilesToComponentButton = new JButton();
         addFilesToComponentButton.setEnabled(false);
         addFilesToComponentButton.setText("Add files to component");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc         = new GridBagConstraints();
+        gbc.gridx   = 0;
+        gbc.gridy   = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill    = GridBagConstraints.HORIZONTAL;
         panel2.add(addFilesToComponentButton, gbc);
         addDependenciesToComponentButton = new JButton();
         addDependenciesToComponentButton.setEnabled(false);
         addDependenciesToComponentButton.setText("Add dependencies to component");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc         = new GridBagConstraints();
+        gbc.gridx   = 0;
+        gbc.gridy   = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill    = GridBagConstraints.HORIZONTAL;
         panel2.add(addDependenciesToComponentButton, gbc);
+
         final JScrollPane scrollPane1 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 4;
+
+        gbc           = new GridBagConstraints();
+        gbc.gridx     = 0;
+        gbc.gridy     = 4;
         gbc.gridwidth = 2;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty   = 1.0;
+        gbc.fill      = GridBagConstraints.BOTH;
         panel1.add(scrollPane1, gbc);
         filesPanel = new JPanel();
         filesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         scrollPane1.setViewportView(filesPanel);
         filesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Files to be added"));
+
         final JScrollPane scrollPane2 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 5;
+
+        gbc           = new GridBagConstraints();
+        gbc.gridx     = 0;
+        gbc.gridy     = 5;
         gbc.gridwidth = 2;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty   = 1.0;
+        gbc.fill      = GridBagConstraints.BOTH;
         panel1.add(scrollPane2, gbc);
         dependenciesPanel = new JPanel();
         dependenciesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         scrollPane2.setViewportView(dependenciesPanel);
         dependenciesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Dependencies"));
+
         final JPanel panel3 = new JPanel();
+
         panel3.setLayout(new BorderLayout(0, 0));
         contentPane.add(panel3, BorderLayout.SOUTH);
+
         final JPanel panel4 = new JPanel();
+
         panel4.setLayout(new BorderLayout(0, 0));
         panel3.add(panel4, BorderLayout.EAST);
         buttonOK = new JButton();
