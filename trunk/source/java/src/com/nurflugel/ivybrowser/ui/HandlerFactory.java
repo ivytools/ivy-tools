@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.List;
+import java.util.Map;
 
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
@@ -23,17 +24,18 @@ public class HandlerFactory
     {
     }
 
-    public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, List<IvyPackage> repositoryList)
+    public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, List<IvyPackage> repositoryList,
+                                            Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
     {
         boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
 
         if (isSubversionRepository)
         {
-            return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+            return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList,packageMap);
         }
         else
         {
-            return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList);
+            return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList,packageMap);
         }
     }
 

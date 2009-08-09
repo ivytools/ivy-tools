@@ -1,4 +1,6 @@
-package com.nurflugel.ivybrowser.handlers;
+package com.nurflugel.ivybrowser.handlers.tasks;
+
+import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;

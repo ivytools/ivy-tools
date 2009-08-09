@@ -1,6 +1,7 @@
 package com.nurflugel.ivybrowser.handlers.tasks;
 
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class HtmlHandlerTask implements Runnable
         this.mainFrame     = mainFrame;
         this.htmlHandler   = htmlHandler;
         this.repositoryUrl = repositoryUrl;
-        this.orgName       = orgName;
+        this.orgName       = BaseWebHandler.stripSlash(orgName);
     }
 
     public void run()

@@ -1,8 +1,24 @@
 <?xml version="1.0"?>
-<!DOCTYPE  project  [
-        ]>
 <project name="ivyBrowser" basedir=".." default="help">
 
     <import file="master-build/master-webstart-build.xml"/>
+
+
+    <target name="compile" depends="-generate" unless="nocompile" description="Compiles all the Java code in the project. If you override this target, be sure to include the dependency on '-generate' and the call to super.compile. Calling Ant with -Dnocompile=t will skip compiling for speedier deployments.">
+        <echo>
+            Using classpath ${lib.build}/javac2.jar,${lib.build}/asm.jar for taskdef
+        </echo>
+
+        <path id="classpath.javac2">
+                <pathelement location="${lib.build}/javac2.jar"/>
+                <pathelement location="${lib.build}/asm.jar"/>
+                <pathelement location="${lib.build}/asm-commons.jar"/>
+                <pathelement location="${lib.build}/jdom.jar"/>
+            </path>
+        <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="classpath.javac2"/>
+
+        <echo level="verbose">Target::ivyBrowser.compile</echo>
+        <super.compile useJavac2="true"/>
+    </target>
     
 </project>
