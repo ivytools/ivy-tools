@@ -27,8 +27,7 @@ import java.awt.event.*;
 
 import java.net.Authenticator;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -39,6 +38,7 @@ import static javax.swing.JOptionPane.showInputDialog;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableModel;
 
 /** Created by IntelliJ IDEA. User: dbulla Date: Apr 26, 2007 Time: 12:37:50 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
@@ -59,6 +59,7 @@ public class IvyBrowserMainFrame extends JFrame
     private InfiniteProgressPanel progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
     public static final String    IVY_REPOSITORY      = "IvyRepository";
     private List<IvyPackage>      repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
+    private Map<String,Map<String,Map<String,IvyPackage>>>  packageMap=Collections.synchronizedMap(new HashMap<String,Map<String,Map<String,IvyPackage>>> ());
     private static final String   PARSE_ON_OPEN       = "parseOnOpen";
     private JScrollPane           scrollPane;
     private JPanel                holdingPanel;
@@ -207,8 +208,9 @@ public class IvyBrowserMainFrame extends JFrame
         if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
         {
             repositoryList.clear();
+            packageMap.clear();
 
-            BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList);
+            BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList,packageMap);
 
             handler.execute();
             holdingPanel.add(scrollPane);
@@ -217,6 +219,7 @@ public class IvyBrowserMainFrame extends JFrame
 
     public void filterTable()
     {
+        resultsTable.setModel(new DefaultTableModel());
         EventList<IvyPackage>       eventList                  = new BasicEventList<IvyPackage>(repositoryList);
         SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(eventList);
         TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
@@ -239,7 +242,7 @@ public class IvyBrowserMainFrame extends JFrame
 
             EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
             IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath);
+            IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath,this);
 
             setCursor(Cursor.DEFAULT_CURSOR);
             dialog.setVisible(true);
@@ -298,5 +301,10 @@ public class IvyBrowserMainFrame extends JFrame
     public static void main(String[] args)
     {
         new IvyBrowserMainFrame();
+    }
+
+    public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
+    {
+        return packageMap;
     }
 }

@@ -2,6 +2,7 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -19,9 +21,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class SubversionWebDavHandler extends BaseWebHandler
 {
     // --------------------------- CONSTRUCTORS ---------------------------
-    public SubversionWebDavHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages)
+    public SubversionWebDavHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
     {
-        super(mainFrame, ivyPackages, ivyRepositoryPath);
+        super(mainFrame, ivyPackages, ivyRepositoryPath,packageMap);
     }
 
     // -------------------------- OTHER METHODS --------------------------
@@ -93,7 +95,8 @@ public class SubversionWebDavHandler extends BaseWebHandler
         mainFrame.stopProgressPanel();
     }
 
-    @Override protected String getContents(String packageLine)
+    @Override
+    public String getContents(String packageLine)
     {
         int    index  = packageLine.indexOf("\"");
         String result = packageLine.substring(index + 1);
@@ -110,7 +113,8 @@ public class SubversionWebDavHandler extends BaseWebHandler
         return result;
     }
 
-    @Override protected boolean hasVersion(String versionLine)
+    @Override
+    public boolean hasVersion(String versionLine)
     {
         boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
 

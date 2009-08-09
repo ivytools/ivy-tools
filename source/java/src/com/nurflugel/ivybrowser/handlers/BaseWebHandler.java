@@ -10,29 +10,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates. */
+@SuppressWarnings({"ProtectedField"})
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
     protected IvyBrowserMainFrame mainFrame;
-    protected boolean             isTest            = false;
-    protected boolean             shouldRun         = true;
-    protected String              ivyRepositoryPath;
-    protected List<IvyPackage>    ivyPackages;
-    public static final int       NUMBER_OF_THREADS = 5;
+    protected boolean isTest = false;
+    protected boolean shouldRun = true;
+    protected String ivyRepositoryPath;
+    private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
+    protected List<IvyPackage> ivyPackages;
+    public static final int NUMBER_OF_THREADS = 5;
 
-    protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath)
+    protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
     {
-        this.mainFrame         = mainFrame;
-        this.ivyPackages       = ivyPackages;
+        this.mainFrame = mainFrame;
+        this.ivyPackages = ivyPackages;
         this.ivyRepositoryPath = ivyRepositoryPath;
+        this.packageMap = packageMap;
     }
 
-    @Override public Object doInBackground()
+    @Override
+    public Object doInBackground()
     {
         findIvyPackages();
         mainFrame.showNormal();
@@ -42,10 +43,10 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     public boolean isDirLink(String lowerLine)
     {
-        boolean isHref     = lowerLine.contains("href");
-        boolean isUp       = lowerLine.contains("..");
-        boolean isPre      = lowerLine.startsWith("<pre");
-        boolean isDir      = lowerLine.contains("[dir]");
+        boolean isHref = lowerLine.contains("href");
+        boolean isUp = lowerLine.contains("..");
+        boolean isPre = lowerLine.startsWith("<pre");
+        boolean isDir = lowerLine.contains("[dir]");
         boolean hasDirLink = isHref && !isUp && !isPre && isDir;
 
         return hasDirLink;
@@ -85,20 +86,20 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     protected abstract String getContents(String packageLine);
 
     protected void findVersionedLibrary(URL repositoryUrl, String orgName, String moduleName, String version)
-                                 throws IOException
+            throws IOException
     {
-        URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
+        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
         URLConnection urlConnection = versionUrl.openConnection();
 
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream             in            = urlConnection.getInputStream();
-        BufferedReader          reader        = new BufferedReader(new InputStreamReader(in));
-        String                  line          = reader.readLine();
-        List<IvyPackage>        localPackages = new ArrayList<IvyPackage>();
-        String                  ivyFile       = null;
-        Map<String, IvyPackage> jars          = new HashMap<String, IvyPackage>();
+        InputStream in = urlConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line = reader.readLine();
+        List<IvyPackage> localPackages = new ArrayList<IvyPackage>();
+        String ivyFile = null;
+        Map<String, IvyPackage> jars = new HashMap<String, IvyPackage>();
 
         while (line != null)
         {
@@ -106,11 +107,11 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
             if (shouldProcess)
             {
-                boolean isSource      = line.contains("-src") || line.contains("-source");
-                boolean isJavadoc     = line.contains("-javadoc");
+                boolean isSource = line.contains("-src") || line.contains("-source");
+                boolean isJavadoc = line.contains("-javadoc");
                 boolean isLibraryFile = line.contains(".jar") && !isSource && !isJavadoc;
-                boolean isIvyFile     = line.contains(".ivy.xml");
-                String  library       = getContents(line);
+                boolean isIvyFile = line.contains(".ivy.xml");
+                String library = getContents(line);
 
                 if (isLibraryFile)
                 {
@@ -190,19 +191,60 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
         // {
         // mainFrame.addIvyPackage(localPackage);
         // }
+        addPackages(localPackages);
+    }
+
+    private void addPackages(List<IvyPackage> localPackages)
+    {
         ivyPackages.addAll(localPackages);
+        for (IvyPackage localPackage : localPackages)
+        {
+            addPackage(localPackage);
+        }
+    }
+
+    private void addPackage(IvyPackage ivyPackage)
+    {
+        String orgName = stripSlash(ivyPackage.getOrgName());
+        String moduleName = stripSlash(ivyPackage.getModuleName());
+        String version = stripSlash(ivyPackage.getVersion());
+        
+        Map<String, Map<String, IvyPackage>> orgMap = packageMap.get(orgName);
+        if (orgMap == null)
+        {
+            orgMap = Collections.synchronizedMap(new HashMap<String, Map<String, IvyPackage>>());
+            packageMap.put(orgName, orgMap);
+        }
+        Map<String,  IvyPackage> moduleMap = orgMap.get(moduleName);
+        if (moduleMap == null)
+        {
+            moduleMap = Collections.synchronizedMap(new HashMap<String,  IvyPackage>());
+            orgMap.put(moduleName, moduleMap);
+        }
+        IvyPackage thePackage = moduleMap.get(version);
+        if (thePackage == null)
+        {
+                moduleMap.put(version,ivyPackage);
+        }
+
+    }
+
+    public static String stripSlash(String text)
+    {
+        return text.replaceAll("/","");
     }
 
     private void handleJavadocs(IvyPackage ivyPackage, String library)
     {
-        if (library.contains("-javadocs"))
+        String library1 = library;
+        if (library1.contains("-javadocs"))
         {
-            library = library.replaceAll("-javadocs", "");
+            library1 = library1.replaceAll("-javadocs", "");
         }
 
-        if (library.contains("-javadoc"))
+        if (library1.contains("-javadoc"))
         {
-            library = library.replaceAll("-javadoc", "");
+            library1 = library1.replaceAll("-javadoc", "");
         }
 
         if (ivyPackage != null)
@@ -213,19 +255,20 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     private String handleSources(IvyPackage ivyPackage, String library)
     {
-        if (library.contains("-src"))
+        String library1 = library;
+        if (library1.contains("-src"))
         {
-            library = library.replaceAll("-src", "");
+            library1 = library1.replaceAll("-src", "");
         }
 
-        if (library.contains("-sources"))
+        if (library1.contains("-sources"))
         {
-            library = library.replaceAll("-sources", "");
+            library1 = library1.replaceAll("-sources", "");
         }
 
-        if (library.contains("-source"))
+        if (library1.contains("-source"))
         {
-            library = library.replaceAll("-source", "");
+            library1 = library1.replaceAll("-source", "");
         }
 
         if (ivyPackage != null)
@@ -233,23 +276,23 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
             ivyPackage.setHasSourceCode(true);
         }
 
-        return library;
+        return library1;
     }
 
     protected abstract boolean shouldProcessVersionedLibraryLine(String line);
 
     public void findVersions(URL repositoryUrl, String orgName, String moduleName)
-                      throws IOException
+            throws IOException
     {
-        URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
+        URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
         URLConnection urlConnection = versionUrl.openConnection();
 
         urlConnection.setAllowUserInteraction(true);
         urlConnection.connect();
 
-        InputStream    in          = urlConnection.getInputStream();
-        BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-        String         versionLine = reader.readLine();
+        InputStream in = urlConnection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String versionLine = reader.readLine();
 
         while (versionLine != null)
         {
@@ -260,7 +303,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
                 String version = getContents(versionLine);
 
                 mainFrame.setStatusLabel("Parsing " + moduleName + " version " + version);
-                findVersionedLibrary(repositoryUrl, orgName, moduleName, version);
+                findVersionedLibrary(repositoryUrl, stripSlash(orgName), stripSlash(moduleName), stripSlash(version));
             }
 
             versionLine = reader.readLine();
@@ -283,15 +326,15 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
         try
         {
-            URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
+            URL versionUrl = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
             URLConnection urlConnection = versionUrl.openConnection();
 
             urlConnection.setAllowUserInteraction(true);
             urlConnection.connect();
 
-            InputStream    in     = urlConnection.getInputStream();
+            InputStream in = urlConnection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String         line   = reader.readLine();
+            String line = reader.readLine();
 
             while (line != null)
             {
@@ -313,8 +356,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
         return includedFiles;
     }
 
-    /** Parse the file name out of the html line
-     */
+    /** Parse the file name out of the html line */
     protected abstract String parseIncludedFileInfo(String line, String version);
 
     protected abstract boolean shouldProcessIncludedFileLine(String line);
