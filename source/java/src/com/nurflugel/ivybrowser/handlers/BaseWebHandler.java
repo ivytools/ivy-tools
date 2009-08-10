@@ -4,25 +4,26 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import static javax.swing.JFileChooser.*;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.List;
+import java.awt.*;
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({"ProtectedField"})
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
     protected IvyBrowserMainFrame mainFrame;
-    protected boolean isTest = false;
+    protected boolean isTest;
     protected boolean shouldRun = true;
     protected String ivyRepositoryPath;
     private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
     protected List<IvyPackage> ivyPackages;
     public static final int NUMBER_OF_THREADS = 5;
+    private static final int BLOCK_SIZE = 1024;
 
     protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
     {
@@ -208,30 +209,30 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
         String orgName = stripSlash(ivyPackage.getOrgName());
         String moduleName = stripSlash(ivyPackage.getModuleName());
         String version = stripSlash(ivyPackage.getVersion());
-        
+
         Map<String, Map<String, IvyPackage>> orgMap = packageMap.get(orgName);
         if (orgMap == null)
         {
             orgMap = Collections.synchronizedMap(new HashMap<String, Map<String, IvyPackage>>());
             packageMap.put(orgName, orgMap);
         }
-        Map<String,  IvyPackage> moduleMap = orgMap.get(moduleName);
+        Map<String, IvyPackage> moduleMap = orgMap.get(moduleName);
         if (moduleMap == null)
         {
-            moduleMap = Collections.synchronizedMap(new HashMap<String,  IvyPackage>());
+            moduleMap = Collections.synchronizedMap(new HashMap<String, IvyPackage>());
             orgMap.put(moduleName, moduleMap);
         }
         IvyPackage thePackage = moduleMap.get(version);
         if (thePackage == null)
         {
-                moduleMap.put(version,ivyPackage);
+            moduleMap.put(version, ivyPackage);
         }
 
     }
 
     public static String stripSlash(String text)
     {
-        return text.replaceAll("/","");
+        return text.replaceAll("/", "");
     }
 
     private void handleJavadocs(IvyPackage ivyPackage, String library)
@@ -360,4 +361,47 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     protected abstract String parseIncludedFileInfo(String line, String version);
 
     protected abstract boolean shouldProcessIncludedFileLine(String line);
+
+    public void downloadFile(Label fileLabel, String orgName, String moduleName, String version)
+    {
+        try
+        {
+            String text = fileLabel.getText().split(" ")[0];
+
+            URL fileUrl = new URL(ivyRepositoryPath + "/" + orgName + "/" + moduleName + "/" + version + "/" + text);
+            JFileChooser fileChooser = new JFileChooser("Save file as...");
+            //todo get dir preference from Preferences, save if changed
+            String previousSaveDir = mainFrame.getPreferredSaveDir();
+            File suggestedFile = null;
+            if (previousSaveDir == null)
+            {
+                suggestedFile = new File(text);
+            }
+            else
+            {
+                suggestedFile = new File(previousSaveDir, text);
+            }
+            fileChooser.setSelectedFile(suggestedFile);
+            int returnVal = fileChooser.showSaveDialog(mainFrame);
+            if (returnVal == APPROVE_OPTION)
+            {
+                File selectedFile = fileChooser.getSelectedFile();
+                mainFrame.setPreferredSaveDir(selectedFile.getParent());
+                BufferedInputStream in = new BufferedInputStream(fileUrl.openStream());
+                FileOutputStream fos = new FileOutputStream(selectedFile);
+                BufferedOutputStream bout = new BufferedOutputStream(fos, BLOCK_SIZE);
+                byte[] data = new byte[BLOCK_SIZE];
+                while (in.read(data, 0, BLOCK_SIZE) >= 0)
+                {
+                    bout.write(data);
+                }
+                bout.close();
+                in.close();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

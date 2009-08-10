@@ -30,6 +30,7 @@ import java.net.Authenticator;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.io.File;
 
 import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
@@ -64,6 +65,7 @@ public class IvyBrowserMainFrame extends JFrame
     private JScrollPane           scrollPane;
     private JPanel                holdingPanel;
     private String                ivyRepositoryPath;
+    private static final String SAVE_DIR = "saveDir";
 
     // --------------------------- CONSTRUCTORS ---------------------------
     public IvyBrowserMainFrame()
@@ -306,5 +308,16 @@ public class IvyBrowserMainFrame extends JFrame
     public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
     {
         return packageMap;
+    }
+
+    public String getPreferredSaveDir()
+    {
+        return preferences.get(SAVE_DIR,null);
+
+    }
+
+    public void setPreferredSaveDir(String dir)
+    {
+        preferences.put(SAVE_DIR,dir);
     }
 }
