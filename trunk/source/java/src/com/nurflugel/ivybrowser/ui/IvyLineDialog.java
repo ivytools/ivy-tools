@@ -98,7 +98,7 @@ public class IvyLineDialog extends JDialog
                     public void mouseClicked(MouseEvent mouseEvent)
                     {
                         setCursor(getPredefinedCursor(WAIT_CURSOR));
-                        // get package from lookup of org module rev in hashtable
+                        // get package from look up of org module rev in hashtable
                         IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
                         IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
                         lineDialog.setVisible(true);
@@ -135,11 +135,11 @@ public class IvyLineDialog extends JDialog
 
     private void populateIncludedJarsPanel()
     {
-        String orgName = ivyPackage.getOrgName();
-        String moduleName = ivyPackage.getModuleName();
-        String version = ivyPackage.getVersion();
+        final String orgName = ivyPackage.getOrgName();
+        final String moduleName = ivyPackage.getModuleName();
+        final String version = ivyPackage.getVersion();
 
-        BaseWebHandler handler = HandlerFactory.getHandler(null, ivyRepositoryPath, null, mainFrame.getPackageMap());
+        final BaseWebHandler handler = HandlerFactory.getHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
         List<String> includedFiles = handler.findIncludedFiles(ivyRepositoryPath, orgName, moduleName, version);
 
         Collections.sort(includedFiles);
@@ -147,10 +147,19 @@ public class IvyLineDialog extends JDialog
 
         for (String includedFile : includedFiles)
         {
-            Label fileLabel = new Label(includedFile);
+            final Label fileLabel = new Label(includedFile);
 
             includedFilesPanel.add(fileLabel);
             height += fileLabel.getPreferredSize().height;
+            fileLabel.addMouseListener(new MouseAdapter()
+            {
+                /** download the file  */
+                @Override
+                public void mouseClicked(MouseEvent mouseEvent)
+                {
+                    handler.downloadFile(fileLabel, orgName, moduleName, version);
+                }
+            });
         }
         height += 15;
         Dimension newSize = new Dimension(includedFilesPanel.getWidth(), height);
@@ -158,6 +167,7 @@ public class IvyLineDialog extends JDialog
         includedFilesPanel.setMinimumSize(newSize);
         includedFilesPanel.setPreferredSize(newSize);
     }
+
 
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
     private void updatePastedText()
