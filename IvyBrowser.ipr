@@ -575,9 +575,6 @@
         <inspection_tool class="RedundantImport" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="RedundantMethodOverride" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="RedundantSuppression" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="RefusedBequest" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreEmptySuperMethods" value="false" />
-        </inspection_tool>
         <inspection_tool class="ReplaceAssignmentWithOperatorAssignment" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreLazyOperators" value="true" />
           <option name="ignoreObscureOperators" value="false" />
@@ -930,8 +927,10 @@
         <w>Html</w>
         <w>Renderer</w>
         <w>Versioned</w>
+        <w>hashtable</w>
         <w>javadoc</w>
         <w>nurflugel</w>
+        <w>reparse</w>
         <w>textbox</w>
       </words>
     </dictionary>
