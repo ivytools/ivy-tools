@@ -41,6 +41,7 @@ public class IvyFormatterMainFrame extends JFrame
 
     public IvyFormatterMainFrame()
     {
+//        $$$setupUI$$$();
         $$$setupUI$$$();
         setContentPane(contentPane);
         setTitle("Ivy Beautifier v. " + Version.VERSION);

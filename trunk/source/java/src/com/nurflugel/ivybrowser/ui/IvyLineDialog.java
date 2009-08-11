@@ -83,6 +83,7 @@ public class IvyLineDialog extends JDialog
             for (final IvyPackage dependency : dependencies)
             {
                 IvyPackageCheckbox checkBox = new IvyPackageCheckbox(dependency);
+                checkBox.setToolTipText("Right-click to bring up another window of this item's dependencies");
 
                 checkBox.addActionListener(new ActionListener()
                 {
@@ -147,7 +148,8 @@ public class IvyLineDialog extends JDialog
 
         for (String includedFile : includedFiles)
         {
-            final Label fileLabel = new Label(includedFile);
+            final JLabel fileLabel = new JLabel(includedFile);
+            fileLabel.setToolTipText("Click to download this file");
 
             includedFilesPanel.add(fileLabel);
             height += fileLabel.getPreferredSize().height;

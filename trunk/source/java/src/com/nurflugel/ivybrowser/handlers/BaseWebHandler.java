@@ -362,10 +362,12 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     protected abstract boolean shouldProcessIncludedFileLine(String line);
 
-    public void downloadFile(Label fileLabel, String orgName, String moduleName, String version)
+    public void downloadFile(JLabel fileLabel, String orgName, String moduleName, String version)
     {
         try
         {
+            //dgbtodo - this is apparently not getting the version number appended in teh webdav impl - does the
+            //web impl show the version number??
             String text = fileLabel.getText().split(" ")[0];
 
             URL fileUrl = new URL(ivyRepositoryPath + "/" + orgName + "/" + moduleName + "/" + version + "/" + text);
