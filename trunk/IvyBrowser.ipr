@@ -586,7 +586,7 @@
         </inspection_tool>
         <inspection_tool class="ReturnOfDateField" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ReturnThis" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="RuntimeExec" enabled="true" level="ERROR" enabled_by_default="true" />
+        <inspection_tool class="RuntimeExec" enabled="false" level="ERROR" enabled_by_default="false" />
         <inspection_tool class="SafeLock" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="SerialPersistentFieldsWithWrongSignature" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -927,15 +927,16 @@
         <w>Html</w>
         <w>Renderer</w>
         <w>Versioned</w>
+        <w>conf</w>
         <w>hashtable</w>
         <w>javadoc</w>
         <w>nurflugel</w>
         <w>reparse</w>
         <w>textbox</w>
+        <w>wierdness</w>
       </words>
     </dictionary>
   </component>
-  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
     <option name="state" value="https://ivy-tools.googlecode.com/svn/trunk/IvyBrowser.ipr" />
   </component>
