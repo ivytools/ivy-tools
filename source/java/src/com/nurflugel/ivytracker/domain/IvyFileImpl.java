@@ -1,19 +1,13 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,139 +17,142 @@ import java.util.Map;
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyFileImpl implements IvyFile
 {
-    private List<String>               dependencies = new ArrayList<String>();
-    private String                     org;
-    private String                     module;
-    private String                     version;
-    private static IvyTrackerMainFrame mainFrame;
-    private int                        count;
+  private List<String>               dependencies = new ArrayList<String>();
+  private String                     org;
+  private String                     module;
+  private String                     version;
+  private static IvyTrackerMainFrame mainFrame;
+  private int                        count;
 
-    public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap, IvyTrackerMainFrame mainFrame, EventList<IvyFile> repositoryList)
+  public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap,
+                     IvyTrackerMainFrame mainFrame, EventList<IvyFile> repositoryList)
+  {
+    this.org       = org;
+    this.module    = module;
+    this.version   = version;
+    this.mainFrame = mainFrame;
+    addToFiles(org, module, version, ivyFilesMap, ivyFiles, this, repositoryList);
+
+    try
     {
-        this.org       = org;
-        this.module    = module;
-        this.version   = version;
-        this.mainFrame = mainFrame;
-        addToFiles(org, module, version, ivyFilesMap, ivyFiles, this, repositoryList);
+      SAXBuilder builder = new SAXBuilder();
+      Document   doc     = builder.build(url);
+      Element    root    = doc.getRootElement();
+      Element    child1  = root.getChild("dependencies");
 
-        try
+      if (child1 != null)
+      {
+        List children = child1.getChildren("dependency");
+
+        for (Object child : children)
         {
-            SAXBuilder builder = new SAXBuilder();
-            Document   doc     = builder.build(url);
-            Element    root    = doc.getRootElement();
-            Element    child1  = root.getChild("dependencies");
+          Element childElement = (Element) child;
+          String  childOrg     = childElement.getAttribute("org").getValue();
+          String  childName    = childElement.getAttribute("name").getValue();
+          String  childRev     = childElement.getAttribute("rev").getValue();
+          String  dependency   = getKey(childOrg, childName, childRev);
+          String  text         = "    " + dependency;
 
-            if (child1 != null)
-            {
-                List children = child1.getChildren("dependency");
+          System.out.println(text);
+          mainFrame.setStatusLabel(text);
 
-                for (Object child : children)
-                {
-                    Element childElement = (Element) child;
-                    String  childOrg     = childElement.getAttribute("org").getValue();
-                    String  childName    = childElement.getAttribute("name").getValue();
-                    String  childRev     = childElement.getAttribute("rev").getValue();
-                    String  dependency   = getKey(childOrg, childName, childRev);
-                    String  text         = "    " + dependency;
-
-                    System.out.println(text);
-                    mainFrame.setStatusLabel(text);
-
-                    if (!dependencies.contains(dependency))
-                    {
-                        dependencies.add(dependency);
-                    }
-                }
-            }
+          if (!dependencies.contains(dependency))
+          {
+            dependencies.add(dependency);
+          }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (JDOMException e)
-        {
-            e.printStackTrace();
-        }
+      }
     }
-
-    private IvyFile addToFiles(String org, String module, String version, Map<String, IvyFile> ivyFilesMap, Collection<IvyFile> ivyFiles, IvyFile ivyFile, EventList<IvyFile> repositoryList)
+    catch (IOException e)
     {
-        String key = getKey(org, module, version);
-
-        // see if we've already got this file in the map
-        IvyFile testFile = ivyFilesMap.get(key);
-
-        System.out.println(key);
-        mainFrame.setStatusLabel(key);
-
-        IvyFile returnValue;
-
-        if (testFile == null)  // we dont' have it?  Add it..
-        {
-            ivyFiles.add(ivyFile);
-            ivyFilesMap.put(key, ivyFile);
-            returnValue = ivyFile;
-        }
-        else  // we do have it?  Fine, return what we already have...
-        {
-            returnValue = testFile;
-        }
-
-        if (!repositoryList.contains(returnValue))
-        {
-            repositoryList.add(returnValue);
-        }
-
-        return returnValue;
+      e.printStackTrace();
     }
-
-    public static String getKey(String org, String module, String version)
+    catch (JDOMException e)
     {
-        return org + ":" + module + ":" + version;
+      e.printStackTrace();
     }
+  }
 
-    public String getKey()
+  private IvyFile addToFiles(String org, String module, String version, Map<String, IvyFile> ivyFilesMap, Collection<IvyFile> ivyFiles,
+                             IvyFile ivyFile, EventList<IvyFile> repositoryList)
+  {
+    String key = getKey(org, module, version);
+
+    // see if we've already got this file in the map
+    IvyFile testFile = ivyFilesMap.get(key);
+
+    System.out.println(key);
+    mainFrame.setStatusLabel(key);
+
+    IvyFile returnValue;
+
+    if (testFile == null)  // we dont' have it?  Add it..
     {
-        return getKey(org, module, version);
+      ivyFiles.add(ivyFile);
+      ivyFilesMap.put(key, ivyFile);
+      returnValue = ivyFile;
     }
-
-    public List<String> getDependencies()
+    else                   // we do have it?  Fine, return what we already have...
     {
-        return dependencies;
+      returnValue = testFile;
     }
 
-    public String getOrg()
+    if (!repositoryList.contains(returnValue))
     {
-        return org;
+      repositoryList.add(returnValue);
     }
 
-    public String getModule()
-    {
-        return module;
-    }
+    return returnValue;
+  }
 
-    public String getVersion()
-    {
-        return version;
-    }
+  public static String getKey(String org, String module, String version)
+  {
+    return org + ":" + module + ":" + version;
+  }
 
-    public void touch()
-    {
-        String text = "Touching " + getKey();
+  public String getKey()
+  {
+    return getKey(org, module, version);
+  }
 
-        System.out.println(text);
+  public List<String> getDependencies()
+  {
+    return dependencies;
+  }
 
-        // mainFrame.setStatusLabel(text);
-        count++;
-    }
+  public String getOrg()
+  {
+    return org;
+  }
 
-    public int getCount()
-    {
-        return count;
-    }
+  public String getModule()
+  {
+    return module;
+  }
 
-    @Override public String toString()
-    {
-        return org + " " + module + " " + version + " " + count;
-    }
+  public String getVersion()
+  {
+    return version;
+  }
+
+  public void touch()
+  {
+    String text = "Touching " + getKey();
+
+    System.out.println(text);
+
+    // mainFrame.setStatusLabel(text);
+    count++;
+  }
+
+  public int getCount()
+  {
+    return count;
+  }
+
+  @Override
+  public String toString()
+  {
+    return org + " " + module + " " + version + " " + count;
+  }
 }

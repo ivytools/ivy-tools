@@ -2,82 +2,85 @@ package com.nurflugel.externalsreporter.ui.tree;
 
 import com.nurflugel.Branch;
 import com.nurflugel.BuildableProjects;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /** Representation of a branch, which can contain targets. */
 public class BranchNode extends CheckableNode
 {
-    private BuildableProjects project;
-    private boolean           showTargets;
-    private List<TargetNode>  targets = new ArrayList<TargetNode>();
-    private Branch            branch;
+  private BuildableProjects project;
+  private boolean           showTargets;
+  private List<TargetNode>  targets = new ArrayList<TargetNode>();
+  private Branch            branch;
 
-    public BranchNode(BuildableProjects project, Branch branch, boolean showTargets)
+  public BranchNode(BuildableProjects project, Branch branch, boolean showTargets)
+  {
+    super(branch.getName());
+    this.branch      = branch;
+    this.project     = project;
+    this.showTargets = showTargets;
+  }
+
+  @Override
+  public int indexOf(Object child)
+  {
+    int index = 0;
+
+    for (TargetNode target : targets)
     {
-        super(branch.getName());
-        this.branch      = branch;
-        this.project     = project;
-        this.showTargets = showTargets;
+      if (target.equals(child))
+      {
+        return index;
+      }
+
+      index++;
     }
 
-    @Override public int indexOf(Object child)
+    return -1;
+  }
+
+  @Override
+  public boolean isLeaf()
+  {
+    return !showTargets;
+  }
+
+  @Override
+  public void add(CheckableNode targetNode)
+  {
+    if (targetNode instanceof TargetNode)
     {
-        int index = 0;
-
-        for (TargetNode target : targets)
-        {
-            if (target.equals(child))
-            {
-                return index;
-            }
-
-            index++;
-        }
-
-        return -1;
+      targets.add(((TargetNode) targetNode));
     }
+  }
 
-    @Override public boolean isLeaf()
-    {
-        return !showTargets;
-    }
+  @Override
+  public List<? extends CheckableNode> getChildren()
+  {
+    return targets;
+  }
 
-    @Override public void add(CheckableNode targetNode)
-    {
-        if (targetNode instanceof TargetNode)
-        {
-            targets.add(((TargetNode) targetNode));
-        }
-    }
+  public List<TargetNode> getTargets()
+  {
+    return targets;
+  }
 
-    @Override public List<? extends CheckableNode> getChildren()
-    {
-        return targets;
-    }
+  public String getBranchUrl()
+  {
+    String url = project.getProjectBaseUrl();
 
-    public List<TargetNode> getTargets()
-    {
-        return targets;
-    }
+    url = url + "/" + getName();
 
-    public String getBranchUrl()
-    {
-        String url = project.getProjectBaseUrl();
+    return url;
+  }
 
-        url = url + "/" + getName();
+  public Branch getBranch()
+  {
+    return branch;
+  }
 
-        return url;
-    }
-
-    public Branch getBranch()
-    {
-        return branch;
-    }
-
-    public BuildableProjects getProject()
-    {
-        return project;
-    }
+  public BuildableProjects getProject()
+  {
+    return project;
+  }
 }

@@ -3,7 +3,9 @@ package com.nurflugel.ivygrapher;
 /** Enum for the various types of output. */
 public enum OutputFormat
 {
-  SVG("SVG", "svg", ".svg"), PNG("PNG", "png", ".png"), PDF("PDF", "epdf", ".pdf");
+  SVG("SVG", "svg", ".svg"),
+  PNG("PNG", "png", ".png"),
+  PDF("PDF", "epdf", ".pdf");
 
   private final String displayLabel;  // for debug only
   private final String extension;     // for debug only

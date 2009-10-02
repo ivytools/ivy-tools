@@ -2,75 +2,78 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
-
-import javax.swing.*;
 import java.io.File;
 import java.util.List;
+import javax.swing.*;
 
-@SuppressWarnings({ "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "AssignmentToCollectionOrArrayFieldFromParameter" })
+@SuppressWarnings({
+                    "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr",
+                    "AssignmentToCollectionOrArrayFieldFromParameter"
+                  })
 public class FileHandler extends SwingWorker<Object, Object>
 {
-    private List<IvyRepositoryItem> ivyPackages;
-    private BuilderMainFrame        mainFrame;
-    private File                    repositoryDir;
+  private List<IvyRepositoryItem> ivyPackages;
+  private BuilderMainFrame        mainFrame;
+  private File                    repositoryDir;
 
-    // --------------------------- CONSTRUCTORS ---------------------------
-    public FileHandler(BuilderMainFrame mainFrame, File repositoryDir, List<IvyRepositoryItem> ivyPackages)
+  // --------------------------- CONSTRUCTORS ---------------------------
+  public FileHandler(BuilderMainFrame mainFrame, File repositoryDir, List<IvyRepositoryItem> ivyPackages)
+  {
+    this.mainFrame     = mainFrame;
+    this.ivyPackages   = ivyPackages;
+    this.repositoryDir = repositoryDir;
+  }
+
+  // ------------------------ INTERFACE METHODS ------------------------
+  // --------------------- Interface Runnable ---------------------
+  @Override
+  public Object doInBackground()
+  {
+    findAllIvyPackages();
+    mainFrame.showNormal();
+
+    return null;
+  }
+
+  // -------------------------- OTHER METHODS --------------------------
+  public void findAllIvyPackages()
+  {
+    File[] orgDirs = repositoryDir.listFiles();
+
+    for (File orgDir : orgDirs)
     {
-        this.mainFrame     = mainFrame;
-        this.ivyPackages   = ivyPackages;
-        this.repositoryDir = repositoryDir;
+      if (orgDir.isDirectory() && !orgDir.getName().equals(".svn"))
+      {
+        findModules(orgDir);
+      }
     }
+  }
 
-    // ------------------------ INTERFACE METHODS ------------------------
-    // --------------------- Interface Runnable ---------------------
-    @Override public Object doInBackground()
+  private void findModules(File orgDir)
+  {
+    File[] moduleDirs = orgDir.listFiles();
+
+    for (File moduleDir : moduleDirs)
     {
-        findAllIvyPackages();
-        mainFrame.showNormal();
-
-        return null;
+      if (moduleDir.isDirectory() && !moduleDir.getName().equals(".svn"))
+      {
+        findRevs(orgDir, moduleDir);
+      }
     }
+  }
 
-    // -------------------------- OTHER METHODS --------------------------
-    public void findAllIvyPackages()
+  private void findRevs(File orgDir, File moduleDir)
+  {
+    File[] revDirs = moduleDir.listFiles();
+
+    for (File revDir : revDirs)
     {
-        File[] orgDirs = repositoryDir.listFiles();
+      if (revDir.isDirectory() && !revDir.getName().equals(".svn"))
+      {
+        IvyRepositoryItem ivyPackage = new IvyRepositoryItem(orgDir.getName(), moduleDir.getName(), revDir.getName(), repositoryDir);
 
-        for (File orgDir : orgDirs)
-        {
-            if (orgDir.isDirectory() && !orgDir.getName().equals(".svn"))
-            {
-                findModules(orgDir);
-            }
-        }
+        ivyPackages.add(ivyPackage);
+      }
     }
-
-    private void findModules(File orgDir)
-    {
-        File[] moduleDirs = orgDir.listFiles();
-
-        for (File moduleDir : moduleDirs)
-        {
-            if (moduleDir.isDirectory() && !moduleDir.getName().equals(".svn"))
-            {
-                findRevs(orgDir, moduleDir);
-            }
-        }
-    }
-
-    private void findRevs(File orgDir, File moduleDir)
-    {
-        File[] revDirs = moduleDir.listFiles();
-
-        for (File revDir : revDirs)
-        {
-            if (revDir.isDirectory() && !revDir.getName().equals(".svn"))
-            {
-                IvyRepositoryItem ivyPackage = new IvyRepositoryItem(orgDir.getName(), moduleDir.getName(), revDir.getName(), repositoryDir);
-
-                ivyPackages.add(ivyPackage);
-            }
-        }
-    }
+  }
 }

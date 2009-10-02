@@ -2,84 +2,85 @@ package com.nurflugel.externalsreporter.ui.tree;
 
 import com.nurflugel.Branch;
 import com.nurflugel.BuildableProjects;
-
 import com.nurflugel.common.ui.tree.CheckableItem;
 
 /**
- * Created by IntelliJ IDEA. User: douglasbullard Date: May 31, 2008 Time: 3:20:22 PM To change this template use File | Settings | File
- * Templates.
+ * Created by IntelliJ IDEA. User: douglasbullard Date: May 31, 2008 Time: 3:20:22 PM To change this template use File | Settings | File Templates.
  */
 public class ProjectBranchItem implements CheckableItem
 {
-    private BuildableProjects project;
-    private boolean           selected;
-    private Branch            branch;
+  private BuildableProjects project;
+  private boolean           selected;
+  private Branch            branch;
 
-    // --------------------------- CONSTRUCTORS ---------------------------
-    public ProjectBranchItem(BuildableProjects project, Branch branch)
+  // --------------------------- CONSTRUCTORS ---------------------------
+  public ProjectBranchItem(BuildableProjects project, Branch branch)
+  {
+    this.project = project;
+    this.branch  = branch;
+  }
+
+  // -------------------------- OTHER METHODS --------------------------
+  public Branch getBranch()
+  {
+    return branch;
+  }
+
+  public BuildableProjects getProject()
+  {
+    return project;
+  }
+
+  public boolean isSelected()
+  {
+    return selected;
+  }
+
+  public void setSelected(boolean selected)
+  {
+    this.selected = selected;
+  }
+
+  @Override
+  public String toString()
+  {
+    return branch.getName();
+  }
+
+  @Override
+  @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
+  public boolean equals(Object o)
+  {
+    if (this == o)
     {
-        this.project = project;
-        this.branch  = branch;
+      return true;
     }
 
-    // -------------------------- OTHER METHODS --------------------------
-    public Branch getBranch()
+    if ((o == null) || (getClass() != o.getClass()))
     {
-        return branch;
+      return false;
     }
 
-    public BuildableProjects getProject()
+    ProjectBranchItem that = (ProjectBranchItem) o;
+
+    if ((branch != null) ? (!branch.equals(that.branch))
+                         : (that.branch != null))
     {
-        return project;
+      return false;
     }
 
-    public boolean isSelected()
-    {
-        return selected;
-    }
+    return project == that.project;
+  }
 
-    public void setSelected(boolean selected)
-    {
-        this.selected = selected;
-    }
+  @Override
+  public int hashCode()
+  {
+    int result = ((project != null) ? project.hashCode()
+                                    : 0);
 
-    @Override public String toString()
-    {
-        return branch.getName();
-    }
+    result = (31 * result) + ((branch != null) ? branch.hashCode()
+                                               : 0);
 
-    @Override @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-
-        if ((o == null) || (getClass() != o.getClass()))
-        {
-            return false;
-        }
-
-        ProjectBranchItem that = (ProjectBranchItem) o;
-
-        if ((branch != null) ? (!branch.equals(that.branch))
-                : (that.branch != null))
-        {
-            return false;
-        }
-
-        return project == that.project;
-    }
-
-    @Override public int hashCode()
-    {
-        int result = ((project != null) ? project.hashCode()
-                      : 0);
-
-        result = (31 * result) + ((branch != null) ? branch.hashCode()
-                                  : 0);
-
-        return result;
-    }
+    return result;
+  }
 }

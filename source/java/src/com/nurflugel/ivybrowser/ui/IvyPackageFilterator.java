@@ -1,9 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.TextFilterator;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-
 import java.util.List;
 
 /**
@@ -12,13 +10,13 @@ import java.util.List;
 @SuppressWarnings({ "unchecked" })
 public class IvyPackageFilterator implements TextFilterator
 {
-    public void getFilterStrings(List list, Object o)
-    {
-        IvyPackage item = (IvyPackage) o;
+  public void getFilterStrings(List list, Object o)
+  {
+    IvyPackage item = (IvyPackage) o;
 
-        list.add(item.getModuleName());
-        list.add(item.getVersion());
-        list.add(item.getLibrary());
-        list.add(item.getOrgName());
-    }
+    list.add(item.getModuleName());
+    list.add(item.getVersion());
+    list.add(item.getLibrary());
+    list.add(item.getOrgName());
+  }
 }
