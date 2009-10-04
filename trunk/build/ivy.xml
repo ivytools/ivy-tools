@@ -10,7 +10,8 @@
     <ivyauthor name="Douglas Bullard" />
     <repository name="asv-repository" url="http://www.nurflugel.com/Home/repository" ivys="true" artifacts="true" />
   </info>
-  <configurations defaultconfmapping="build,dist,test->default">
+  <configurations defaultconfmapping="dibble,build,dist,test->default">
+        <conf name="dibble"   visibility="public"  description="Dependencies only used during the build process." />
         <conf name="build"   visibility="public"  description="Dependencies only used during the build process." />
         <conf name="dist"    visibility="public"  description="Dependencies that will be deployed via WebStart." />
         <conf name="javadoc" visibility="public"  description="Some libraries provide separate javadoc packages." />
@@ -36,5 +37,11 @@
         <dependency org="com.intellij"         name="javac2"       rev="8.1.3"           conf="build" />
         <dependency org="org.objectweb.asm"    name="asm"          rev="3.1"             conf="build" />
         <dependency org="org.jdom"             name="jdom"         rev="1.0"             conf="build" />
+
+        <dependency org="org.apache"           name="commons-dbcp"  rev="1.2.1"          conf="dibble" />
+        <!--<dependency org="org.apache"           name="commons-collections"   rev="3.2"    conf="dibble" />-->
+        <!--<dependency org="org.apache"           name="commons-pool"  rev="1.0.1"          conf="dibble" />-->
+        <dependency org="org.jdom"             name="jdom"          rev="1.0"            conf="dibble" />
+
   </dependencies>
 </ivy-module>
