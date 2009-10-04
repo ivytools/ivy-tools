@@ -25,491 +25,452 @@ import static com.nurflugel.ivygrapher.OutputFormat.*;
 import static com.nurflugel.ivygrapher.NodeOrder.*;
 
 /** Engine for the Ivy Grapher. */
-@SuppressWarnings({ "CallToPrintStackTrace" })
+@SuppressWarnings({"CallToPrintStackTrace"})
 public class IvyGrapher
 {
-  private File[]              filesToGraph;
-  private String              lastVisitedDir;
-  private Preferences         preferences       = Preferences.userNodeForPackage(IvyGrapher.class);
-  private static final String DIR               = "dir";
-  private Os                  os;
-  private OutputFormat        outputFormat;
-  private NodeOrder           nodeOrder;
-  private JFrame              frame;
-  private JPanel              mainPanel;
-  private JButton             helpButton;
-  private JButton             selectFilesButton;
-  private JButton             findDotButton;
-  private JButton             quitButton;
-  private JRadioButton        tbButton;
-  private JRadioButton        btButton;
-  private JRadioButton        rlButton;
-  private JRadioButton        lrButton;
-  private JCheckBox           deleteDotButton;
-  private JRadioButton        pngButton;
-  private JRadioButton        pdfButtton;
-  private JRadioButton        svgButton;
-  private static final String DOT_EXECUTABLE    = "dotExecutable";
-  private String              dotExecutablePath;
-  private Cursor              normalCursor      = getPredefinedCursor(DEFAULT_CURSOR);
-  private Cursor              busyCursor        = getPredefinedCursor(WAIT_CURSOR);
+    private File[] filesToGraph;
+    private String lastVisitedDir;
+    private Preferences preferences = Preferences.userNodeForPackage(IvyGrapher.class);
+    private static final String DIR = "dir";
+    private Os os;
+    private OutputFormat outputFormat;
+    private NodeOrder nodeOrder;
+    private JFrame frame;
+    private JPanel mainPanel;
+    private JButton helpButton;
+    private JButton selectFilesButton;
+    private JButton findDotButton;
+    private JButton quitButton;
+    private JRadioButton tbButton;
+    private JRadioButton btButton;
+    private JRadioButton rlButton;
+    private JRadioButton lrButton;
+    private JCheckBox deleteDotButton;
+    private JRadioButton pngButton;
+    private JRadioButton pdfButtton;
+    private JRadioButton svgButton;
+    private static final String DOT_EXECUTABLE = "dotExecutable";
+    private String dotExecutablePath;
+    private Cursor normalCursor = getPredefinedCursor(DEFAULT_CURSOR);
+    private Cursor busyCursor = getPredefinedCursor(WAIT_CURSOR);
 
-  public IvyGrapher(String[] args)
-  {
-    String fileName = null;
-
-    if (args.length > 0)
+    public IvyGrapher(String[] args)
     {
-      List<File> files = new ArrayList<File>();
+        String fileName = null;
 
-      for (String arg : args)
-      {
-        files.add(new File(arg));
-      }
+        if (args.length > 0)
+        {
+            List<File> files = new ArrayList<File>();
 
-      filesToGraph = files.toArray(new File[files.size()]);
+            for (String arg : args)
+            {
+                files.add(new File(arg));
+            }
+
+            filesToGraph = files.toArray(new File[files.size()]);
+        }
+
+        os = Os.findOs(System.getProperty("os.name"));
+        preferences = Preferences.userNodeForPackage(IvyGrapher.class);
+        frame = new JFrame();
+        os.setLookAndFeel(frame);
+
+        // setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", frame);
+        initializeUi();
+        frame.setContentPane(mainPanel);
+        frame.pack();
+        center(frame);
+        frame.setVisible(true);
+        // setDefaultDotLocation();
     }
 
-    os          = Os.findOs(System.getProperty("os.name"));
-    preferences = Preferences.userNodeForPackage(IvyGrapher.class);
-    frame       = new JFrame();
-    os.setLookAndFeel(frame);
-
-    // setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", frame);
-    initializeUi();
-    frame.setContentPane(mainPanel);
-    frame.pack();
-    center(frame);
-    frame.setVisible(true);
-    // setDefaultDotLocation();
-  }
-
-  private void doQuitAction()
-  {
-    preferences.put("outputFormat", outputFormat.getDisplayLabel());
-    preferences.put("nodeOrder", nodeOrder.toString());
-    preferences.putBoolean("deleteDotFiles", deleteDotButton.isSelected());
-    preferences.put("dotLocation", dotExecutablePath);
-    System.exit(0);
-  }
-
-  private void getOutputFormat()
-  {
-    String text = preferences.get("outputFormat", PDF.getDisplayLabel());
-
-    if (os != Os.OS_X)
+    private void doQuitAction()
     {
-      text = PNG.toString();
+        preferences.put("outputFormat", outputFormat.getDisplayLabel());
+        preferences.put("nodeOrder", nodeOrder.toString());
+        preferences.putBoolean("deleteDotFiles", deleteDotButton.isSelected());
+        preferences.put("dotLocation", dotExecutablePath);
+        System.exit(0);
     }
 
-    outputFormat = OutputFormat.valueOf(text);
-  }
-
-  private void initializeUi()
-  {
-    getOutputFormat();
-    getNodeOrdering();
-    getMiscInfo();
-    getDotLocation();
-    addActionListeners();
-  }
-
-  private void getDotLocation()
-  {
-    dotExecutablePath = preferences.get("dotLocation", os.getDefaultDotPath());
-  }
-
-  private void getMiscInfo()
-  {
-    boolean deleteDotFiles = preferences.getBoolean("deleteDotFiles", true);
-
-    deleteDotButton.setSelected(deleteDotFiles);
-  }
-
-  private void getNodeOrdering()
-  {
-    String text = preferences.get("nodeOrder", TOP_TO_BOTTOM.toString());
-
-    nodeOrder = NodeOrder.find(text);
-  }
-
-  private void addActionListeners()
-  {
-    quitButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          doQuitAction();
-        }
-      });
-    findDotButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          findDotLocation();
-        }
-      });
-
-    selectFilesButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          createGraph();
-        }
-      });
-    pngButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          outputFormat = PNG;
-        }
-      });
-    pdfButtton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          outputFormat = PDF;
-        }
-      });
-    svgButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          outputFormat = SVG;
-        }
-      });
-    tbButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          nodeOrder = TOP_TO_BOTTOM;
-        }
-      });
-    btButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          nodeOrder = BOTTOM_TO_TOP;
-        }
-      });
-    rlButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          nodeOrder = RIGHT_TO_LEFT;
-        }
-      });
-    lrButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          nodeOrder = LEFT_TO_RIGHT;
-        }
-      });
-  }
-
-  private void findDotLocation()
-  {
-    dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
-
-    if ((dotExecutablePath == null) || (dotExecutablePath.length() == 0))
+    private void getOutputFormat()
     {
-      dotExecutablePath = os.getDefaultDotPath();
+        String text = preferences.get("outputFormat", PDF.getDisplayLabel());
+
+        if (os != Os.OS_X)
+        {
+            text = PNG.toString();
+        }
+
+        outputFormat = OutputFormat.valueOf(text);
     }
 
-    // Create a file chooser
-    NoDotDialog dialog            = new NoDotDialog(dotExecutablePath);
-    File        dotExecutableFile = dialog.getFile();
-
-    if (dotExecutableFile != null)
+    private void initializeUi()
     {
-      dotExecutablePath = dotExecutableFile.getAbsolutePath();
-      preferences.put(DOT_EXECUTABLE, dotExecutablePath);
+        getOutputFormat();
+        getNodeOrdering();
+        getMiscInfo();
+        getDotLocation();
+        addActionListeners();
     }
-    else
+
+    private void getDotLocation()
     {
-      showMessageDialog(frame, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
-      doQuitAction();
+        dotExecutablePath = preferences.get("dotLocation", os.getDefaultDotPath());
     }
-  }
 
-  public static void main(String[] args)
-  {
-    IvyGrapher grapher = new IvyGrapher(args);
-
-    // grapher.createGraph();
-  }
-
-  private void createGraph()
-  {
-    try
+    private void getMiscInfo()
     {
-      JFileChooser chooser = new JFileChooser();
+        boolean deleteDotFiles = preferences.getBoolean("deleteDotFiles", true);
 
-      chooser.setDialogTitle("Select the Ivy file");
+        deleteDotButton.setSelected(deleteDotFiles);
+    }
 
-      String dirName = preferences.get(DIR, null);
+    private void getNodeOrdering()
+    {
+        String text = preferences.get("nodeOrder", TOP_TO_BOTTOM.toString());
 
-      if (dirName != null)
-      {
-        File lastDir = new File(dirName);
+        nodeOrder = NodeOrder.find(text);
+    }
 
-        chooser.setCurrentDirectory(lastDir);
-        chooser.setFileHidingEnabled(false);
-      }
-
-      chooser.setFileSelectionMode(FILES_ONLY);
-      chooser.setMultiSelectionEnabled(true);
-      chooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
-
-      int returnVal = chooser.showDialog(null, "Use these files");
-
-      if (returnVal == APPROVE_OPTION)
-      {
-        filesToGraph = chooser.getSelectedFiles();
-
-        if (filesToGraph.length > 0)
+    private void addActionListeners()
+    {
+        quitButton.addActionListener(new ActionListener()
         {
-          dirName = filesToGraph[0].getParent();
-          preferences.put(DIR, dirName);
-        }
-      }
-
-      frame.setCursor(busyCursor);
-
-      XmlHandler xmlHandler = new XmlHandler();
-
-      if (filesToGraph != null)
-      {
-        for (File fileToGraph : filesToGraph)
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                doQuitAction();
+            }
+        });
+        findDotButton.addActionListener(new ActionListener()
         {
-          xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected());
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                findDotLocation();
+            }
+        });
+
+        selectFilesButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                createGraph();
+            }
+        });
+        pngButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                outputFormat = PNG;
+            }
+        });
+        pdfButtton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                outputFormat = PDF;
+            }
+        });
+        svgButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                outputFormat = SVG;
+            }
+        });
+        tbButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                nodeOrder = TOP_TO_BOTTOM;
+            }
+        });
+        btButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                nodeOrder = BOTTOM_TO_TOP;
+            }
+        });
+        rlButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                nodeOrder = RIGHT_TO_LEFT;
+            }
+        });
+        lrButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                nodeOrder = LEFT_TO_RIGHT;
+            }
+        });
+    }
+
+    private void findDotLocation()
+    {
+        dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
+
+        if ((dotExecutablePath == null) || (dotExecutablePath.length() == 0))
+        {
+            dotExecutablePath = os.getDefaultDotPath();
         }
-      }
 
-      frame.setCursor(normalCursor);
+        // Create a file chooser
+        NoDotDialog dialog = new NoDotDialog(dotExecutablePath);
+        File dotExecutableFile = dialog.getFile();
+
+        if (dotExecutableFile != null)
+        {
+            dotExecutablePath = dotExecutableFile.getAbsolutePath();
+            preferences.put(DOT_EXECUTABLE, dotExecutablePath);
+        }
+        else
+        {
+            showMessageDialog(frame, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
+            doQuitAction();
+        }
     }
-    catch (JDOMException e)
+
+    public static void main(String[] args)
     {
-      e.printStackTrace();
+        IvyGrapher grapher = new IvyGrapher(args);
+
+        // grapher.createGraph();
     }
-    catch (IOException e)
+
+    private void createGraph()
     {
-      e.printStackTrace();
+        try
+        {
+            JFileChooser chooser = new JFileChooser();
+
+            chooser.setDialogTitle("Select the Ivy file");
+
+            String dirName = preferences.get(DIR, null);
+
+            if (dirName != null)
+            {
+                File lastDir = new File(dirName);
+
+                chooser.setCurrentDirectory(lastDir);
+                chooser.setFileHidingEnabled(false);
+            }
+
+            chooser.setFileSelectionMode(FILES_ONLY);
+            chooser.setMultiSelectionEnabled(true);
+            chooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
+
+            int returnVal = chooser.showDialog(null, "Use these files");
+
+            if (returnVal == APPROVE_OPTION)
+            {
+                filesToGraph = chooser.getSelectedFiles();
+
+                if (filesToGraph.length > 0)
+                {
+                    dirName = filesToGraph[0].getParent();
+                    preferences.put(DIR, dirName);
+                }
+            }
+
+            frame.setCursor(busyCursor);
+
+            XmlHandler xmlHandler = new XmlHandler();
+
+            if (filesToGraph != null)
+            {
+                for (File fileToGraph : filesToGraph)
+                {
+                    xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected());
+                }
+            }
+
+            frame.setCursor(normalCursor);
+        }
+        catch (JDOMException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
-  }
 
-  {
-    // GUI initializer generated by IntelliJ IDEA GUI Designer
-    // >>> IMPORTANT!! <<<
-    // DO NOT EDIT OR ADD ANY CODE HERE!
-    $$$setupUI$$$();
-  }
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
 
-  /**
-   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
-   *
-   * @noinspection  ALL
-   */
-  private void $$$setupUI$$$()
-  {
-    mainPanel = new JPanel();
-    mainPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 4, new Insets(0, 0, 0, 0), -1, -1));
-    helpButton = new JButton();
-    helpButton.setText("Help");
-    mainPanel.add(helpButton,
-                  new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                   false));
-    selectFilesButton = new JButton();
-    selectFilesButton.setText("Select Ivy report(s) to visualize...");
-    mainPanel.add(selectFilesButton,
-                  new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                   false));
-    findDotButton = new JButton();
-    findDotButton.setText("Find Dot...");
-    mainPanel.add(findDotButton,
-                  new com.intellij.uiDesigner.core.GridConstraints(1, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                   false));
-    quitButton = new JButton();
-    quitButton.setText("Quit");
-    mainPanel.add(quitButton,
-                  new com.intellij.uiDesigner.core.GridConstraints(1, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                   false));
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$()
+    {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        helpButton = new JButton();
+        helpButton.setEnabled(false);
+        helpButton.setText("Help");
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(helpButton, gbc);
+        selectFilesButton = new JButton();
+        selectFilesButton.setText("Select Ivy report(s) to visualize...");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(selectFilesButton, gbc);
+        findDotButton = new JButton();
+        findDotButton.setText("Find Dot...");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(findDotButton, gbc);
+        quitButton = new JButton();
+        quitButton.setText("Quit");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(quitButton, gbc);
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(panel1, gbc);
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel1.add(panel2, gbc);
+        panel2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Output format"));
+        pngButton = new JRadioButton();
+        pngButton.setText("PNG");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel2.add(pngButton, gbc);
+        pdfButtton = new JRadioButton();
+        pdfButtton.setSelected(true);
+        pdfButtton.setText("PDF (OS X Only)");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel2.add(pdfButtton, gbc);
+        svgButton = new JRadioButton();
+        svgButton.setText("SVG");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel2.add(svgButton, gbc);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel1.add(panel3, gbc);
+        panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Misc Options"));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel3.add(panel4, gbc);
+        panel4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Node Ordering"));
+        tbButton = new JRadioButton();
+        tbButton.setSelected(true);
+        tbButton.setText("Top-to-bottom");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel4.add(tbButton, gbc);
+        btButton = new JRadioButton();
+        btButton.setText("Bottom-to-top");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel4.add(btButton, gbc);
+        rlButton = new JRadioButton();
+        rlButton.setText("Right-to-left");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel4.add(rlButton, gbc);
+        lrButton = new JRadioButton();
+        lrButton.setText("Left-to-right");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel4.add(lrButton, gbc);
+        deleteDotButton = new JCheckBox();
+        deleteDotButton.setSelected(true);
+        deleteDotButton.setText("Delete .dot files on exit");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel3.add(deleteDotButton, gbc);
+        ButtonGroup buttonGroup;
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(tbButton);
+        buttonGroup.add(btButton);
+        buttonGroup.add(rlButton);
+        buttonGroup.add(lrButton);
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(pngButton);
+        buttonGroup.add(pdfButtton);
+        buttonGroup.add(svgButton);
+    }
 
-    final JPanel panel1 = new JPanel();
-
-    panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
-    mainPanel.add(panel1,
-                  new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                   com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                   | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
-                                                                   null, 0, false));
-
-    final JPanel panel2 = new JPanel();
-
-    panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
-    panel1.add(panel2,
-               new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null,
-                                                                0, false));
-    panel2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Output format"));
-    pngButton = new JRadioButton();
-    pngButton.setText("PNG");
-    panel2.add(pngButton,
-               new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-
-    final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-
-    panel2.add(spacer1,
-               new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null,
-                                                                0, false));
-    pdfButtton = new JRadioButton();
-    pdfButtton.setSelected(true);
-    pdfButtton.setText("PDF (OS X Only)");
-    panel2.add(pdfButtton,
-               new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-    svgButton = new JRadioButton();
-    svgButton.setText("SVG");
-    panel2.add(svgButton,
-               new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-
-    final JPanel panel3 = new JPanel();
-
-    panel3.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-    panel1.add(panel3,
-               new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null,
-                                                                0, false));
-    panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Misc Options"));
-
-    final JPanel panel4 = new JPanel();
-
-    panel4.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
-    panel3.add(panel4,
-               new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null,
-                                                                0, false));
-    panel4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Node Ordering"));
-    tbButton = new JRadioButton();
-    tbButton.setSelected(true);
-    tbButton.setText("Top-to-bottom");
-    panel4.add(tbButton,
-               new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-
-    final com.intellij.uiDesigner.core.Spacer spacer2 = new com.intellij.uiDesigner.core.Spacer();
-
-    panel4.add(spacer2,
-               new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null,
-                                                                0, false));
-    btButton = new JRadioButton();
-    btButton.setText("Bottom-to-top");
-    panel4.add(btButton,
-               new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-    rlButton = new JRadioButton();
-    rlButton.setText("Right-to-left");
-    panel4.add(rlButton,
-               new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-    lrButton = new JRadioButton();
-    lrButton.setText("Left-to-right");
-    panel4.add(lrButton,
-               new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-    deleteDotButton = new JCheckBox();
-    deleteDotButton.setSelected(true);
-    deleteDotButton.setText("Delete .dot files on exit");
-    panel3.add(deleteDotButton,
-               new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST,
-                                                                com.intellij.uiDesigner.core.GridConstraints.FILL_NONE,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
-                                                                | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW,
-                                                                com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                                                                false));
-
-    ButtonGroup buttonGroup;
-
-    buttonGroup = new ButtonGroup();
-    buttonGroup.add(tbButton);
-    buttonGroup.add(btButton);
-    buttonGroup.add(rlButton);
-    buttonGroup.add(lrButton);
-    buttonGroup = new ButtonGroup();
-    buttonGroup.add(pngButton);
-    buttonGroup.add(pdfButtton);
-    buttonGroup.add(svgButton);
-  }
-
-  /** @noinspection  ALL */
-  public JComponent $$$getRootComponent$$$()
-  {
-    return mainPanel;
-  }
+    /** @noinspection ALL */
+    public JComponent $$$getRootComponent$$$()
+    {
+        return mainPanel;
+    }
 }
