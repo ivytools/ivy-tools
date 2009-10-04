@@ -2,45 +2,33 @@ package com.nurflugel.ivygrapher;
 
 import com.apple.eio.FileManager;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
+import com.nurflugel.Os;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Sep 30, 2009 Time: 8:09:58 AM To change this template use File | Settings | File Templates.
- */
+/** Outputs the .dot file to GraphViz's "dot" - this converts it into the desired format (PDF, PNG, etc). */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class GraphVizHandler
 {
   // public static final Logger logger                = LogFactory.getLogger(GraphVizHandler.class);
-  public static final String NEW_LINE = "\n";
-  protected static final String CLOSING_LINE_DOTGRAPH = "}";
-  protected static final String OPENING_LINE_DOTGRAPH = "digraph G {\nnode [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];\n"
-                                                        + "edge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=TB;\n\n"
-                                                        + "concentrate=false;\n";
-  private static final String   DOT_EXECUTABLE        = "dotExecutable";
-  protected static final String OPENING_LINE_SUBGRAPH = "subgraph ";
-  private String                os                    = System.getProperty("os.name");
-  private Preferences           preferences;
+  public static final String NEW_LINE            = "\n";
 
-  public GraphVizHandler(Preferences preferences)
-  {
-    this.preferences = preferences;
-  }
+  private NodeOrder          nodeOrder;
+  private Os                 os;
+  private OutputFormat       outputFormat;
+  private String             dotExecutablePath;
+  private boolean            deleteDotFileOnExit;
 
-  /** @return  true if the OS is OS X */
-  private boolean isOsX()
+  public GraphVizHandler(NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath, boolean deleteDotFileOnExit)
   {
-    return os.toLowerCase().startsWith("mac os");
-  }
-
-  /** @return  true if the OS is Windoze */
-  private boolean isWindows()
-  {
-    return (os.toLowerCase().startsWith("windows"));
+    this.nodeOrder           = nodeOrder;
+    this.os                  = os;
+    this.outputFormat        = outputFormat;
+    this.dotExecutablePath   = dotExecutablePath;
+    this.deleteDotFileOnExit = deleteDotFileOnExit;
   }
 
   public File generateDotFile(File xmlFile, Module ivyModule, Map<String, Module> moduleMap) throws IOException
@@ -54,13 +42,17 @@ public class GraphVizHandler
     DataOutputStream out          = new DataOutputStream(outputStream);
 
     // open a new .dot file
-    write(out, OPENING_LINE_DOTGRAPH);
+    String openingLine = "digraph G {\nnode [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];\n"
+                         + "edge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=" + nodeOrder.getOrder() + ";\n\n"
+                         + "concentrate=false;\n";
+
+    write(out, openingLine);
 
     writeDotFileTargetDeclarations(ivyModule, moduleMap, out);
 
     writeDotDependencies(moduleMap, out, ivyModule);
 
-    write(out, CLOSING_LINE_DOTGRAPH);
+    write(out, "}");
 
     outputStream.close();
 
@@ -149,17 +141,6 @@ public class GraphVizHandler
   @SuppressWarnings({ "OverlyLongMethod" })
   public void processDotFile(File dotFile)
   {
-    OutputFormat outputFormat;
-
-    if (isOsX())
-    {
-      outputFormat = PDF;
-    }
-    else
-    {
-      outputFormat = PNG;
-    }
-
     try
     {
       String outputFileName = getOutputFileName(dotFile, outputFormat.getExtension());
@@ -175,7 +156,7 @@ public class GraphVizHandler
       }
 
       String   outputFormatName = outputFormat.getType();
-      String[] command          = { findDotExecutablePath(), "-T" + outputFormatName, dotFilePath, "-o" + outputFilePath };
+      String[] command          = { dotExecutablePath, "-T" + outputFormatName, dotFilePath, "-o" + outputFilePath };
 
       // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
 
@@ -190,7 +171,7 @@ public class GraphVizHandler
 
       List<String> commandList = new ArrayList<String>();
 
-      if (isOsX())
+      if (os == Os.OS_X)
       {
         // This method doesn't work
         // calling FileManager to open the URL works, if we replace spaces with %20
@@ -203,7 +184,7 @@ public class GraphVizHandler
       }
       else
       {
-        if (isWindows())
+        if (os == Os.WINDOWS)
         {
           commandList.add("cmd.exe");
           commandList.add("/c");
@@ -216,31 +197,16 @@ public class GraphVizHandler
         runtime.exec(command);
       }
 
-      dotFile.deleteOnExit();
+      if (deleteDotFileOnExit)
+      {
+        dotFile.deleteOnExit();
+      }
     }
     catch (Exception e)
     {  // todo handle error
 
       // logger.error(e);
     }
-  }
-
-  /**
-   * @param   commands  dibble
-   *
-   * @return  dibble
-   */
-  private String concatenate(String[] commands)
-  {
-    StringBuilder stringBuffer = new StringBuilder();
-
-    for (String command : commands)
-    {
-      stringBuffer.append(" ");
-      stringBuffer.append(command);
-    }
-
-    return stringBuffer.toString();
   }
 
   /** Takes someting like build.dot and returns build.png. */
@@ -252,29 +218,5 @@ public class GraphVizHandler
     results = results.substring(0, index) + outputExtension;
 
     return results;
-  }
-
-  private String findDotExecutablePath()
-  {
-    String dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
-
-    if ((dotExecutablePath == null) || (dotExecutablePath.length() == 0))
-    {
-      if (os.startsWith("Mac OS"))
-      {
-        dotExecutablePath = "/Applications/Graphviz.app/Contents/MacOS/dot";
-      }
-      else  // if (os.toLowerCase().startsWith("windows"))
-      {
-        dotExecutablePath = "\"C:\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"";
-      }
-    }
-
-    // Create a file chooser NoDotDialog dialog            = new NoDotDialog(dotExecutablePath); File        dotExecutableFile = dialog.getFile();
-    //
-    // if (dotExecutableFile != null) { dotExecutablePath = dotExecutableFile.getAbsolutePath(); preferences.put(DOT_EXECUTABLE, dotExecutablePath); }
-    // else { JOptionPane.showMessageDialog(frame, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and
-    // try again"); System.exit(0); }
-    return dotExecutablePath;
   }
 }

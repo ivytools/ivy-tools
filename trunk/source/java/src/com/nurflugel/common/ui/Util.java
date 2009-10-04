@@ -1,5 +1,6 @@
 package com.nurflugel.common.ui;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Date;
 
@@ -66,5 +67,19 @@ public class Util
     branch = branch.replace("//", "/");
 
     return branch;
+  }
+
+  /** Sets the look and feel. */
+  public static void setLookAndFeel(String feelName, Component component)
+  {
+    try
+    {
+      UIManager.setLookAndFeel(feelName);
+      SwingUtilities.updateComponentTreeUI(component);
+    }
+    catch (Exception e)
+    {
+      System.out.println("Error setting native LAF: " + feelName + e.getMessage());
+    }
   }
 }

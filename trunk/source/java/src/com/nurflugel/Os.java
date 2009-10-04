@@ -1,7 +1,10 @@
 package com.nurflugel;
 
 import com.nurflugel.externalsreporter.ui.OutputFormat;
+import com.nurflugel.common.ui.Util;
+import javax.swing.*;
 import java.io.File;
+import java.awt.*;
 
 /** Enum of operating systems, and methods to deal with differenes between them. */
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
@@ -79,19 +82,12 @@ public enum Os
   }
 
   @SuppressWarnings({ "CallToPrintStackTrace", "OverlyBroadCatchBlock" })
-  public void setLookAndFeel()
+  public void setLookAndFeel(Component component)
   {
-    // if (lookAndFeel.length() > 0)
-    // {
-    // try
-    // {
-    // UIManager.setLookAndFeel(lookAndFeel);
-    // }
-    // catch (Exception e)
-    // {
-    // e.printStackTrace();
-    // }
-    // }
+    if (lookAndFeel.length() > 0)
+    {
+      Util.setLookAndFeel(lookAndFeel, component);
+    }
   }
 
   public String getDefaultDotPath()

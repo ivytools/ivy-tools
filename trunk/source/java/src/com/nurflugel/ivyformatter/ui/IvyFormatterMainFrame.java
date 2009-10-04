@@ -1,6 +1,7 @@
 package com.nurflugel.ivyformatter.ui;
 
 import com.nurflugel.common.ui.Version;
+import com.nurflugel.common.ui.Util;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import java.awt.*;
@@ -31,7 +32,7 @@ public class IvyFormatterMainFrame extends JFrame
     $$$setupUI$$$();
     setContentPane(contentPane);
     setTitle("Ivy Beautifier v. " + Version.VERSION);
-    IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
     formatTextButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent event)
