@@ -3,9 +3,8 @@
 <toc version="1.0">
 
     <tocitem text="Help" target="welcome" image="chapter" >
-        <tocitem text="What exactly is  the Ant Script Visualizer?" target="what"               image="topic"/>
-        <tocitem text="Using the Ant Script Visualizer"             target="using"              image="topic"/>
-        <tocitem text="What's left to do?"                          target="whatsLeft"          image="topic"/>
+        <tocitem text="What exactly is  the Ant Grapher?"           target="what"               image="topic"/>
+        <tocitem text="Using the Ant Grapher"                       target="using"              image="topic"/>
         <tocitem text="Bugs, bugs, bugs"                            target="bugs"               image="topic"/>
         <tocitem text="Contacting me"                               target="feedback"           image="topic"/>
     </tocitem>
