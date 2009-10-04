@@ -22,7 +22,7 @@
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/jdom.jar"/>
-         <jar href="lib/help.jar"/>
+        <jar href="lib/help.jar"/>
         <jar href="lib/jhall.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>

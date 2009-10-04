@@ -12,6 +12,6 @@
         <name>TOC</name>
         <label>Table Of Contents</label>
         <type>javax.help.TOCView</type>
-        <data>helpTOC.xml</data>
+        <data>ivyGrapherHelpTOC.xml</data>
     </view>
 </helpset>
