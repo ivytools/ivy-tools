@@ -3,14 +3,14 @@
 <jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
-        href="ivyFormatterApp.jnlp">
+        href="ivyGrapherApp.jnlp">
     <information>
-        <title>IvyFormatter</title>
+        <title>IvyGrapher</title>
         <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
-        <description>Ivy Formatter</description>
-        <icon href="images/IvyFormatter-small.png"/>
-        <icon kind="splash" href="images/IvyFormatter-splash.jpg"/>
+        <description>Ivy Grapher</description>
+        <icon href="images/IvyGrapher-small.png"/>
+        <icon kind="splash" href="images/IvyGrapher-splash.jpg"/>
         <shortcut online="false">
 	      <desktop/>
     	</shortcut>
@@ -21,9 +21,6 @@
     <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
-        <jar href="lib/commons-lang.jar"/>
-        <jar href="lib/jtidy.jar"/>
-        <jar href="lib/glazedlists.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>

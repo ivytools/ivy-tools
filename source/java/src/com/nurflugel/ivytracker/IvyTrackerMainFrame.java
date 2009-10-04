@@ -10,6 +10,8 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.Version;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
@@ -124,20 +126,6 @@ public class IvyTrackerMainFrame extends JFrame
           IvyBrowserMainFrame.specifyRepository(preferences);
         }
       });
-  }
-
-  /** Sets the look and feel. */
-  public static void setLookAndFeel(String feelName, Component component)
-  {
-    try
-    {
-      UIManager.setLookAndFeel(feelName);
-      SwingUtilities.updateComponentTreeUI(component);
-    }
-    catch (Exception e)
-    {
-      System.out.println("Error setting native LAF: " + feelName + e.getMessage());
-    }
   }
 
   private void initializeComponents()

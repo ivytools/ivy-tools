@@ -7,6 +7,7 @@ import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
+import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
@@ -198,14 +199,14 @@ public class MainFrame extends JFrame implements UiMainFrame
   private void go()
   {
     setCursor(busyCursor);
-    os.setLookAndFeel();
+    os.setLookAndFeel(this);
 
     try
     {
       initializeComponents();
-      IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+      setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
       setSize(600, 1000);
-      Util.center(this);
+      center(this);
       setVisible(true);
       addStatus("Finding available projects...");
 
