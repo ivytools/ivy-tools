@@ -6,6 +6,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
+import javax.help.HelpSet;
+import javax.help.HelpBroker;
+import javax.help.CSH;
+import javax.help.HelpSetException;
 import java.io.File;
 import java.io.IOException;
 import java.io.FilenameFilter;
@@ -19,6 +23,8 @@ import java.awt.event.ActionEvent;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.Cursor.DEFAULT_CURSOR;
 import static java.awt.Cursor.WAIT_CURSOR;
+import java.net.URL;
+
 import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.Os;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
@@ -53,11 +59,10 @@ public class IvyGrapher
     private String dotExecutablePath;
     private Cursor normalCursor = getPredefinedCursor(DEFAULT_CURSOR);
     private Cursor busyCursor = getPredefinedCursor(WAIT_CURSOR);
+    public static final String HELP_HS = "ivyGrapherHelp.hs";
 
     public IvyGrapher(String[] args)
     {
-        String fileName = null;
-
         if (args.length > 0)
         {
             List<File> files = new ArrayList<File>();
@@ -76,12 +81,44 @@ public class IvyGrapher
         os.setLookAndFeel(frame);
 
         // setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", frame);
+//        setNimbusLAF();
         initializeUi();
         frame.setContentPane(mainPanel);
         frame.pack();
         center(frame);
         frame.setVisible(true);
         // setDefaultDotLocation();
+    }
+
+    private void setNimbusLAF()
+    {
+        try
+        {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        }
+        catch (UnsupportedLookAndFeelException e)
+        {
+            // handle exception
+        }
+        catch (ClassNotFoundException e)
+        {
+            // handle exception
+        }
+        catch (InstantiationException e)
+        {
+            // handle exception
+        }
+        catch (IllegalAccessException e)
+        {
+            // handle exception
+        }
     }
 
     private void doQuitAction()
@@ -97,12 +134,16 @@ public class IvyGrapher
     {
         String text = preferences.get("outputFormat", PDF.getDisplayLabel());
 
-        if (os != Os.OS_X)
+        if (os != Os.OS_X && text.equals("PDF"))
         {
             text = PNG.toString();
         }
 
         outputFormat = OutputFormat.valueOf(text);
+        pdfButtton.setSelected(outputFormat == PDF);
+        pngButton.setSelected(outputFormat == PNG);
+        svgButton.setSelected(outputFormat == SVG);
+
     }
 
     private void initializeUi()
@@ -131,6 +172,10 @@ public class IvyGrapher
         String text = preferences.get("nodeOrder", TOP_TO_BOTTOM.toString());
 
         nodeOrder = NodeOrder.find(text);
+        tbButton.setSelected(nodeOrder == TOP_TO_BOTTOM);
+        btButton.setSelected(nodeOrder == BOTTOM_TO_TOP);
+        rlButton.setSelected(nodeOrder == RIGHT_TO_LEFT);
+        lrButton.setSelected(nodeOrder == LEFT_TO_RIGHT);
     }
 
     private void addActionListeners()
@@ -206,6 +251,32 @@ public class IvyGrapher
                 nodeOrder = LEFT_TO_RIGHT;
             }
         });
+        addHelpListener();
+    }
+
+    /** Add the help listener - link to the help files. */
+    private void addHelpListener()
+    {
+        ClassLoader classLoader = IvyGrapher.class.getClassLoader();
+
+        try
+        {
+            URL hsURL = HelpSet.findHelpSet(classLoader, HELP_HS);
+
+            HelpSet helpSet = new HelpSet(null, hsURL);
+            HelpBroker helpBroker = helpSet.createHelpBroker();
+            CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
+
+            helpButton.addActionListener(displayHelpFromSource);
+        }
+        catch (HelpSetException ee)
+        {  // Say what the exception really is
+            System.out.println("Exception! " + ee.getMessage());
+//      LOGGER.error("HelpSet " + ee.getMessage());
+//      LOGGER.error("HelpSet " + HELP_HS + " not found");
+
+        }
+
     }
 
     private void findDotLocation()
@@ -274,6 +345,7 @@ public class IvyGrapher
                     preferences.put(DIR, dirName);
                 }
             }
+            System.out.println("Setting busy cursor");
 
             frame.setCursor(busyCursor);
 
@@ -287,6 +359,7 @@ public class IvyGrapher
                 }
             }
 
+            System.out.println("Setting normal cursor");
             frame.setCursor(normalCursor);
         }
         catch (JDOMException e)
@@ -316,7 +389,7 @@ public class IvyGrapher
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
         helpButton = new JButton();
-        helpButton.setEnabled(false);
+        helpButton.setEnabled(true);
         helpButton.setText("Help");
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
@@ -378,7 +451,7 @@ public class IvyGrapher
         gbc.anchor = GridBagConstraints.WEST;
         panel2.add(pngButton, gbc);
         pdfButtton = new JRadioButton();
-        pdfButtton.setSelected(true);
+        pdfButtton.setSelected(false);
         pdfButtton.setText("PDF (OS X Only)");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -415,7 +488,7 @@ public class IvyGrapher
         panel3.add(panel4, gbc);
         panel4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Node Ordering"));
         tbButton = new JRadioButton();
-        tbButton.setSelected(true);
+        tbButton.setSelected(false);
         tbButton.setText("Top-to-bottom");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -448,7 +521,7 @@ public class IvyGrapher
         gbc.anchor = GridBagConstraints.WEST;
         panel4.add(lrButton, gbc);
         deleteDotButton = new JCheckBox();
-        deleteDotButton.setSelected(true);
+        deleteDotButton.setSelected(false);
         deleteDotButton.setText("Delete .dot files on exit");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;

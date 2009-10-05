@@ -13,7 +13,7 @@
           <gridbag weightx="1.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <enabled value="false"/>
+          <enabled value="true"/>
           <text value="Help"/>
         </properties>
       </component>
@@ -75,7 +75,7 @@
                   <gridbag weightx="1.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="PDF (OS X Only)"/>
                 </properties>
               </component>
@@ -112,7 +112,7 @@
                       <gridbag weightx="1.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <selected value="true"/>
+                      <selected value="false"/>
                       <text value="Top-to-bottom"/>
                     </properties>
                   </component>
@@ -151,7 +151,7 @@
                   <gridbag weightx="1.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="Delete .dot files on exit"/>
                 </properties>
               </component>
