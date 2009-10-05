@@ -19,7 +19,7 @@
        &lt;dependency org="org.jdom"             name="jdom"          rev="1.0"            conf="dibble" /&gt;<br>
 
     </code>
-    <IMG SRC="images/com.nurflugel-ivy-tools-build.png" BORDER=1 ALT="bad report example">
+    <IMG SRC="images/com.nurflugel-ivy-tools-dibble1.png" BORDER=1 ALT="bad report example">
 </P><P>
     Notice that we now have some red lines - we're calling out commons-pool 1.0.1 when commons-dbcp is requesting 1.3, and we're also requesting commons-collections 3.2 when commons-dbcp is also asking for revision 3.2.  In both cases,
     we can remove the explicit callout from our ivy file, and clean things up a bit:<br>
@@ -27,7 +27,7 @@
        &lt;dependency org="org.apache"           name="commons-dbcp"  rev="1.2.1"          conf="dibble" /&gt;<br>
        &lt;dependency org="org.jdom"             name="jdom"          rev="1.0"            conf="dibble" /&gt;<br>
     </code>
- <IMG SRC="images/com.nurflugel-ivy-tools-build-good.png" BORDER=1 ALT="good report example">
+ <IMG SRC="images/com.nurflugel-ivy-tools-dibble.png" BORDER=1 ALT="good report example">
 </P><P>
     Now we see we get the same results, but with less clutter in the Ivy file - we only need to call out two dependencies instead of four!
 </p>
