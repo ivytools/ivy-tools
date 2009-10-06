@@ -24,6 +24,8 @@
         <jar href="lib/commons-lang.jar"/>
         <jar href="lib/jtidy.jar"/>
         <jar href="lib/glazedlists.jar"/>
+        <jar href="lib/help.jar"/>
+        <jar href="lib/jhall.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>
