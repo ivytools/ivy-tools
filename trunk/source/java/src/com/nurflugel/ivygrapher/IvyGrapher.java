@@ -31,8 +31,8 @@ import static com.nurflugel.ivygrapher.OutputFormat.*;
 import static com.nurflugel.ivygrapher.NodeOrder.*;
 
 /** Engine for the Ivy Grapher. */
-@SuppressWarnings({"CallToPrintStackTrace"})
-public class IvyGrapher
+@SuppressWarnings({"CallToPrintStackTrace", "UseOfSystemOutOrSystemErr"})
+public class IvyGrapher extends JFrame
 {
     private File[] filesToGraph;
     private String lastVisitedDir;
@@ -41,7 +41,6 @@ public class IvyGrapher
     private Os os;
     private OutputFormat outputFormat;
     private NodeOrder nodeOrder;
-    private JFrame frame;
     private JPanel mainPanel;
     private JButton helpButton;
     private JButton selectFilesButton;
@@ -77,49 +76,15 @@ public class IvyGrapher
 
         os = Os.findOs(System.getProperty("os.name"));
         preferences = Preferences.userNodeForPackage(IvyGrapher.class);
-        frame = new JFrame();
-        os.setLookAndFeel(frame);
-
-        // setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", frame);
-//        setNimbusLAF();
         initializeUi();
-        frame.setContentPane(mainPanel);
-        frame.pack();
-        center(frame);
-        frame.setVisible(true);
+        setContentPane(mainPanel);
+        setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        pack();
+        center(this);
+        setVisible(true);
         // setDefaultDotLocation();
     }
 
-    private void setNimbusLAF()
-    {
-        try
-        {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        }
-        catch (UnsupportedLookAndFeelException e)
-        {
-            // handle exception
-        }
-        catch (ClassNotFoundException e)
-        {
-            // handle exception
-        }
-        catch (InstantiationException e)
-        {
-            // handle exception
-        }
-        catch (IllegalAccessException e)
-        {
-            // handle exception
-        }
-    }
 
     private void doQuitAction()
     {
@@ -134,15 +99,20 @@ public class IvyGrapher
     {
         String text = preferences.get("outputFormat", PDF.getDisplayLabel());
 
-        if (os != Os.OS_X && text.equals("PDF"))
+        if (os != Os.OS_X)
         {
-            text = PNG.getDisplayLabel();
+            pdfButtton.setEnabled(false);
+            if (text.equals("PDF"))
+            {
+                text = PNG.getDisplayLabel();
+            }
         }
 
         outputFormat = OutputFormat.valueOf(text);
         pdfButtton.setSelected(outputFormat == PDF);
         pngButton.setSelected(outputFormat == PNG);
         svgButton.setSelected(outputFormat == SVG);
+
 
     }
 
@@ -299,7 +269,7 @@ public class IvyGrapher
         }
         else
         {
-            showMessageDialog(frame, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
+            showMessageDialog(this, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
             doQuitAction();
         }
     }
@@ -347,7 +317,7 @@ public class IvyGrapher
             }
             System.out.println("Setting busy cursor");
 
-            frame.setCursor(busyCursor);
+            setCursor(busyCursor);
 
             XmlHandler xmlHandler = new XmlHandler();
 
@@ -360,7 +330,7 @@ public class IvyGrapher
             }
 
             System.out.println("Setting normal cursor");
-            frame.setCursor(normalCursor);
+            setCursor(normalCursor);
         }
         catch (JDOMException e)
         {

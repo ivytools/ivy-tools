@@ -2,8 +2,10 @@ package com.nurflugel.ivygrapher;
 
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
+import static javax.swing.JComponent.*;
 import java.awt.event.*;
 import java.awt.*;
+import static java.awt.event.KeyEvent.*;
 import java.io.File;
 
 public class NoDotDialog extends JDialog
@@ -11,7 +13,7 @@ public class NoDotDialog extends JDialog
     private JButton buttonCancel;
     private JButton useTextBoxButton;
     private JPanel contentPane;
-    private JButton openFileChooserDialogButton;
+    private JButton openFileChooserButton;
     private JTextField pathTextField;
     private File file;
 
@@ -56,7 +58,14 @@ public class NoDotDialog extends JDialog
             {
                 onCancel();
             }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        openFileChooserButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
+                onOK();
+            }
+        });
         pack();
         Util.center(this);
         setVisible(true);
@@ -147,15 +156,15 @@ public class NoDotDialog extends JDialog
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel2.add(buttonCancel, gbc);
-        openFileChooserDialogButton = new JButton();
-        openFileChooserDialogButton.setText("Open file chooser dialog");
+        openFileChooserButton = new JButton();
+        openFileChooserButton.setText("Open file chooser dialog");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add(openFileChooserDialogButton, gbc);
+        panel1.add(openFileChooserButton, gbc);
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
