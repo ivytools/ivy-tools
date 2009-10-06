@@ -14,142 +14,136 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Jul 28, 2008 Time: 5:57:02 PM To change this template use File | Settings | File Templates.
- */
-@SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
+/** Created by IntelliJ IDEA. User: douglasbullard Date: Jul 28, 2008 Time: 5:57:02 PM To change this template use File | Settings | File Templates. */
+@SuppressWarnings({"UseOfSystemOutOrSystemErr"})
 public class IvyFormatterMainFrame extends JFrame
 {
-  /** Use serialVersionUID for interoperability. */
-  private static final long serialVersionUID = -6797243387476820162L;
-  private JButton           formatTextButton;
-  private JButton           quitButton;
-  private JTextArea         textArea;
-  private JPanel            contentPane      = new JPanel();
+    /** Use serialVersionUID for interoperability. */
+    private static final long serialVersionUID = -6797243387476820162L;
+    private JButton formatTextButton;
+    private JButton quitButton;
+    private JTextArea textArea;
+    private JPanel contentPane = new JPanel();
 
-  public IvyFormatterMainFrame()
-  {
-    $$$setupUI$$$();
-    setContentPane(contentPane);
-    setTitle("Ivy Beautifier v. " + Version.VERSION);
-    Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-    formatTextButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-        {
-          formatText(textArea.getText());
-        }
-      });
-    quitButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-        {
-          System.exit(0);
-        }
-      });
-    addWindowListener(new WindowAdapter()
-      {
-        @Override
-        public void windowClosing(WindowEvent e)
-        {
-          super.windowClosing(e);
-          System.exit(0);
-        }
-      });
-    pack();
-    setSize(1000, 1000);
-    BuilderMainFrame.centerApp(this);
-    setVisible(true);
-  }
-
-  private void formatText(String ivyText)
-  {
-    String text = ivyText;
-
-    if (text.trim().length() == 0)
+    public IvyFormatterMainFrame()
     {
-      Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-
-      try
-      {
-        if ((t != null) && t.isDataFlavorSupported(stringFlavor))
+        $$$setupUI$$$();
+        setContentPane(contentPane);
+        setTitle("Ivy Beautifier v. " + Version.VERSION);
+        Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        formatTextButton.addActionListener(new ActionListener()
         {
-          text = (String) t.getTransferData(stringFlavor);
-        }
-      }
-      catch (Exception e)
-      {
-        System.out.println("e = " + e);
-      }
+            public void actionPerformed(ActionEvent event)
+            {
+                formatText(textArea.getText());
+            }
+        });
+        quitButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                System.exit(0);
+            }
+        });
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                super.windowClosing(e);
+                System.exit(0);
+            }
+        });
+        pack();
+        setSize(1000, 1000);
+        BuilderMainFrame.centerApp(this);
+        setVisible(true);
     }
 
-    text = IvyFormatterProcess.formatIvyFileText(text);
-    putLinesIntoBuffer(text);
-    textArea.setText(text);
-    JOptionPane.showMessageDialog(this, "Formatted text has been pasted into your buffer");
-  }
+    private void formatText(String ivyText)
+    {
+        String text = ivyText;
 
-  private void putLinesIntoBuffer(String text)
-  {
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(text), null);
-  }
+        if (text.trim().length() == 0)
+        {
+            Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 
-  public static void main(String[] args)
-  {
-    IvyFormatterMainFrame mainFrame = new IvyFormatterMainFrame();
-  }
+            try
+            {
+                if ((t != null) && t.isDataFlavorSupported(stringFlavor))
+                {
+                    text = (String) t.getTransferData(stringFlavor);
+                }
+            }
+            catch (Exception e)
+            {
+                System.out.println("e = " + e);
+            }
+        }
 
-  private void createUIComponents()
-  {
-    // TODO: place custom component creation code here
-  }
+        text = IvyFormatterProcess.formatIvyFileText(text);
+        putLinesIntoBuffer(text);
+        textArea.setText(text);
+        JOptionPane.showMessageDialog(this, "Formatted text has been pasted into your buffer");
+    }
 
-  /**
-   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
-   *
-   * @noinspection  ALL
-   */
-  private void $$$setupUI$$$()
-  {
-    createUIComponents();
-    contentPane.setLayout(new GridBagLayout());
+    private void putLinesIntoBuffer(String text)
+    {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(text), null);
+    }
 
-    final JScrollPane  scrollPane1 = new JScrollPane();
-    GridBagConstraints gbc;
+    public static void main(String[] args)
+    {
+        IvyFormatterMainFrame mainFrame = new IvyFormatterMainFrame();
+    }
 
-    gbc           = new GridBagConstraints();
-    gbc.gridx     = 0;
-    gbc.gridy     = 0;
-    gbc.gridwidth = 4;
-    gbc.weightx   = 1.0;
-    gbc.weighty   = 1.0;
-    gbc.fill      = GridBagConstraints.BOTH;
-    contentPane.add(scrollPane1, gbc);
-    textArea = new JTextArea();
-    textArea.setFont(new Font("Courier New", Font.BOLD, textArea.getFont().getSize()));
-    textArea.setToolTipText("Anything in this box or  the paste buffer will be used as inputy");
-    scrollPane1.setViewportView(textArea);
+    private void createUIComponents()
+    {
+        // TODO: place custom component creation code here
+    }
 
-    final JPanel panel1 = new JPanel();
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$()
+    {
+        createUIComponents();
+        contentPane.setLayout(new GridBagLayout());
+        final JScrollPane scrollPane1 = new JScrollPane();
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        contentPane.add(scrollPane1, gbc);
+        textArea = new JTextArea();
+        textArea.setFont(new Font("Courier New", Font.BOLD, textArea.getFont().getSize()));
+        textArea.setToolTipText("Anything in this box or  the paste buffer will be used as inputy");
+        scrollPane1.setViewportView(textArea);
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        contentPane.add(panel1, gbc);
+        formatTextButton = new JButton();
+        formatTextButton.setText("Format Ivy Text");
+        formatTextButton.setToolTipText("Paste text into the box or just click this button");
+        panel1.add(formatTextButton);
+        quitButton = new JButton();
+        quitButton.setText("Quit");
+        panel1.add(quitButton);
+    }
 
-    panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    gbc       = new GridBagConstraints();
-    gbc.gridx = 3;
-    gbc.gridy = 1;
-    gbc.fill  = GridBagConstraints.BOTH;
-    contentPane.add(panel1, gbc);
-    formatTextButton = new JButton();
-    formatTextButton.setText("Format Ivy Text");
-    formatTextButton.setToolTipText("Paste text into the box or just click this button");
-    panel1.add(formatTextButton);
-    quitButton = new JButton();
-    quitButton.setText("Quit");
-    panel1.add(quitButton);
-  }
-
-  /** @noinspection  ALL */
-  public JComponent $$$getRootComponent$$$()
-  {
-    return contentPane;
-  }
+    /** @noinspection ALL */
+    public JComponent $$$getRootComponent$$$()
+    {
+        return contentPane;
+    }
 }
