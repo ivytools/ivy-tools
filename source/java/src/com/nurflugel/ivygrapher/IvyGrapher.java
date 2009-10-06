@@ -139,7 +139,7 @@ public class IvyGrapher
             text = PNG.toString();
         }
 
-        outputFormat = OutputFormat.valueOf(text);
+        outputFormat = OutputFormat.valueOf(text.toUpperCase());
         pdfButtton.setSelected(outputFormat == PDF);
         pngButton.setSelected(outputFormat == PNG);
         svgButton.setSelected(outputFormat == SVG);
