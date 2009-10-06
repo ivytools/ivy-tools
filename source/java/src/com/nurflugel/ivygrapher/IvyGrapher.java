@@ -136,10 +136,10 @@ public class IvyGrapher
 
         if (os != Os.OS_X && text.equals("PDF"))
         {
-            text = PNG.toString();
+            text = PNG.getDisplayLabel();
         }
 
-        outputFormat = OutputFormat.valueOf(text.toUpperCase());
+        outputFormat = OutputFormat.valueOf(text);
         pdfButtton.setSelected(outputFormat == PDF);
         pngButton.setSelected(outputFormat == PNG);
         svgButton.setSelected(outputFormat == SVG);
