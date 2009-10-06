@@ -2,6 +2,8 @@ package com.nurflugel;
 
 import com.nurflugel.externalsreporter.ui.OutputFormat;
 import com.nurflugel.common.ui.Util;
+import static com.nurflugel.externalsreporter.ui.OutputFormat.*;
+
 import javax.swing.*;
 import java.io.File;
 import java.awt.*;
@@ -11,9 +13,9 @@ import java.awt.*;
 public enum Os
 {
   OS_X   ("Mac OS X", "build.sh", new String[] {}, "javax.swing.plaf.mac.MacLookAndFeel", "/Applications/Graphviz.app/Contents/MacOS/dot",
-          OutputFormat.PDF),
+          PDF),
   WINDOWS("Windows", "build.cmd", new String[] { "cmd.exe", "/C" }, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
-          "\"C:\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"", OutputFormat.PNG);
+          "\"C:\\Program Files\\Graphviz2.24\\bin\\dot.exe\"", PNG);
 
   private String       name;
   private String       buildCommand;
