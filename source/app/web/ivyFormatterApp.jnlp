@@ -28,6 +28,6 @@
         <jar href="lib/jdom.jar"/>
         <jar href="lib/jhall.jar"/>
     </resources>
-    <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
+    <application-desc main-class="com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame"/>
 </jnlp>
 
