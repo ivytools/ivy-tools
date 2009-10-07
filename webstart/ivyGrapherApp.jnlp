@@ -25,6 +25,7 @@
         <jar href="lib/help.jar"/>
         <extension name="help" href="lib/jhall.jar"/>
     </resources>
+    
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>
 
