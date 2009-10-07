@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for PictureBrowserServlet client application -->
-<jnlp 
+<jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="ivyGrapherApp.jnlp">
@@ -23,7 +23,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/jdom.jar"/>
         <jar href="lib/help.jar"/>
-        <extension name="help" href="help.jnlp" />
+        <extension name="help" href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>

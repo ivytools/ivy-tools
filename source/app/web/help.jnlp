@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- JNLP File for PictureBrowserServlet client application -->
+<!-- JNLP File for Java Help jar - it's already been signed by Sun -->
 <jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
@@ -8,6 +8,7 @@
         <title>Java Help</title>
         <vendor>Sun Microsystems, Inc</vendor>
     </information>
+    <offline-allowed/>
     <resources>
         <jar href="lib/jhall.jar"/>
     </resources>
