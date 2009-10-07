@@ -23,7 +23,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/jdom.jar"/>
         <jar href="lib/help.jar"/>
-        <extension name="help" href="lib/jhall.jar" download="lazy"/>
+        <extension name="help" href="help.jnlp" />
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>
