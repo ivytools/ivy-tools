@@ -16,6 +16,7 @@
 	      <desktop/>
     	</shortcut>
     </information>
+    <offline-allowed/>
     <security>
         <all-permissions/>
     </security>
@@ -25,7 +26,7 @@
         <jar href="lib/commons-lang.jar"/>
         <jar href="lib/jdom.jar"/>
         <jar href="lib/glazedlists.jar"/>
-        <extension name="help" href="lib/jhall.jar"/>
+        <extension name="help" href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivybrowser.ui.BuilderMainFrame"/>
 </jnlp>
