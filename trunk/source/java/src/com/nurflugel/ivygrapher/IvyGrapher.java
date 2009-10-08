@@ -26,6 +26,8 @@ import static java.awt.Cursor.WAIT_CURSOR;
 import java.net.URL;
 
 import static com.nurflugel.common.ui.Util.*;
+import com.nurflugel.common.ui.Version;
+import static com.nurflugel.common.ui.Version.*;
 import com.nurflugel.Os;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
 import static com.nurflugel.ivygrapher.NodeOrder.*;
@@ -79,10 +81,10 @@ public class IvyGrapher extends JFrame
         initializeUi();
         setContentPane(mainPanel);
         setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+        setTitle("Ivy Grapher v. " + VERSION);
         pack();
         center(this);
         setVisible(true);
-        // setDefaultDotLocation();
     }
 
 
@@ -123,6 +125,7 @@ public class IvyGrapher extends JFrame
         getMiscInfo();
         getDotLocation();
         addActionListeners();
+        validateDotExistance();
     }
 
     private void getDotLocation()
@@ -270,8 +273,17 @@ public class IvyGrapher extends JFrame
         else
         {
             showMessageDialog(this, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
-            doQuitAction();
         }
+        validateDotExistance();
+    }
+
+    /** Validate the existence of the DOT executatble.  No executable, no executing Graphviz... */
+    private void validateDotExistance()
+    {
+        File dot = new File(dotExecutablePath);
+        boolean exists = dot.exists();
+        selectFilesButton.setEnabled(exists);
+        selectFilesButton.setToolTipText(exists ? "Select the XML files in the .ivy  directory to graph" : "You must first find Dot on your system");
     }
 
     public static void main(String[] args)
@@ -378,6 +390,7 @@ public class IvyGrapher extends JFrame
         mainPanel.add(selectFilesButton, gbc);
         findDotButton = new JButton();
         findDotButton.setText("Find Dot...");
+        findDotButton.setToolTipText("Locate Dot on your system");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 1;
@@ -402,6 +415,7 @@ public class IvyGrapher extends JFrame
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(panel1, gbc);
+        panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();

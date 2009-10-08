@@ -17,12 +17,12 @@
 BODY { color: rgb(0,0,0);}
 </STYLE>
 </HEAD>
-<BODY NOF="(MB=(ZeroMargins, 0, 0, 0, 0), L=(usingantscriptvisualizerLayout, 1037, 6008))" STYLE="background-color: rgb(255,255,255); background-image: url('../assets/images/wing1.jpg');" TOPMARGIN=0 LEFTMARGIN=0 MARGINWIDTH=0 MARGINHEIGHT=0>
+<BODY  STYLE="background-color: rgb(255,255,255); background-image: url('../assets/images/wing1.jpg');" >
 <P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Ivy Grapher</SPAN></B></P>
 <P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: medium;">Using Ivy Grapher</SPAN></B></P>
 <SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
 
-    If you fired up the program, and accepted all the defaults, and then pointed it at the Ivy repoprt for this application (located in the .ivy directory, check your Ivy settings), you'd get something like the following: <BR>
+    If you fired up the program, and accepted all the defaults, and then pointed it at the Ivy report for this application (Ivy generates these every time it's run, theyr'e located in the .ivy directory, check your Ivy settings), you'd get something like the following: <BR>
     <IMG SRC="../assets/images/com.nurflugel-ivy-tools-build.png" BORDER=1 ALT="">
 
 <P>
@@ -59,7 +59,7 @@ Note the revisions that are listed.  You'll see the revision of what was actuall
 
    When the program is started, you get a frame in the center of your screen:<br>
  <IMG SRC="../assets/images/app.png" BORDER=1 ALT="">
-</P><P>
+<P>
     There are several choices for output - PNG, PDF (only available on OS X, sorry!), and SVG.  
 </P><P>
     By default, the program cleans up after itself, and removes the tempory .dot files used by Graphviz.  Uncheck this box if you want to save them.
@@ -70,8 +70,10 @@ Note the revisions that are listed.  You'll see the revision of what was actuall
 </P><P>
     One last thing - you need AT&T's GraphViz to make the magic work.  Go to <a href="http://www.graphviz.org/">http://www.graphviz.org/</a> to download the app.  There are versions available for almost
     every platform.  I've included default locations for Windows and OS X.  In any case, if you install it somewhere other then the default location for your platform, you'll need to use the
-    "Find Dot" button to tell the app where it it.
-</P><P>
+    "Find Dot" button to tell the app where it is:<br>
+
+ <IMG SRC="../assets/images/findDot.png" BORDER=1 ALT="">
+    <P>
     When the program is run, it'll automatically generate the images using GraphViz's libraries, then open the image for viewing in both Windows and OS x.
 </P><P>
     Enjoy!
