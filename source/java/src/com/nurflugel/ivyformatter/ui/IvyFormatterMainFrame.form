@@ -32,6 +32,12 @@
         <properties/>
         <border type="none"/>
         <children>
+          <component id="a2557" class="javax.swing.JButton" binding="helpButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Help"/>
+            </properties>
+          </component>
           <component id="a9880" class="javax.swing.JButton" binding="formatTextButton">
             <constraints/>
             <properties>

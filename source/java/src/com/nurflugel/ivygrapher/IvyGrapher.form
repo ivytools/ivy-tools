@@ -33,6 +33,7 @@
         </constraints>
         <properties>
           <text value="Find Dot..."/>
+          <toolTipText value="Locate Dot on your system"/>
         </properties>
       </component>
       <component id="9a01b" class="javax.swing.JButton" binding="quitButton">
@@ -50,7 +51,7 @@
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties/>
-        <border type="none"/>
+        <border type="empty"/>
         <children>
           <grid id="abb66" layout-manager="GridBagLayout">
             <constraints>
