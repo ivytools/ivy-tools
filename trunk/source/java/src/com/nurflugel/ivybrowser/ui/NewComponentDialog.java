@@ -218,7 +218,7 @@ public class NewComponentDialog extends JDialog
         StringSelection text = new StringSelection(ivyLine);
 
         getDefaultToolkit().getSystemClipboard().setContents(text, null);
-        JOptionPane.showMessageDialog(null, "Line to paste into your ivy file (already copied into the paste buffer):\n" + ivyLine);
+        JOptionPane.showMessageDialog(null, "Files and checksums generated, maint line copied into \nthe paste buffer (if you wish to run it):\n" + ivyLine);
     }
 
     private void onCancel()

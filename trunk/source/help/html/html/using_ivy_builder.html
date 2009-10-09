@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META NAME="Author" CONTENT="Douglas Bullard">
+<META NAME="Generator" CONTENT="NetObjects Fusion 7 for Windows">
+<META NAME="Keywords" CONTENT="Nurflugel, Ant, GraphViz">
+<TITLE>using_ant_script_visualizer</TITLE>
+<!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
+
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/style.css">
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/site.css">
+<STYLE>
+:link { color: rgb(0,51,204);}
+:visited { color: rgb(153,0,153);}
+:active { color: rgb(255,0,0);}
+BODY { color: rgb(0,0,0);}
+</STYLE>
+</HEAD>
+<BODY  STYLE="background-color: rgb(255,255,255); background-image: url('../assets/images/wing1.jpg');" >
+<P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Ivy Builder</SPAN></B></P>
+<P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: large;">Using Ivy Builder</SPAN></B></P>
+<SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
+
+    If you fired up the program, you should see the following: <BR>
+    <IMG SRC="../assets/images/builder/01-openingScreen.png" BORDER=1 ALT="">
+
+<P>
+The first time you run the app, you will see "not selected yet" for the the location of the Ivy repository.  For the program to work properly, you need to tell it where the Ivy repository is
+    on this machine.<p>
+    
+Unlike the IvyBrowser tool (which works by scanning the repository over HTTP), we need to insert things into it, so we need full access to  the repository.  In my case, that means a checkout of the
+    repository onto my local box.
+    <P>
+    If you haven't specified the repository location, the "Add new component" button will be disabled, and you can't proceed.  So, click on the "Select Ivy Repository" button, and select the "repository"
+    directory which is the root of the Ivy repository.  Now the fun begins!
+    <p>
+    <p>
+
+    <span style="font-size: x-large"><b>Adding a new Component</b></span><p>
+    
+    
+    This is what it's all about.  Click on the "Add new component" button, and you'll get the component properties dialog:<BR>
+     <IMG SRC="../assets/images/builder/02-newComponentDialog.png" BORDER=1 ALT="">
+
+<P>
+Enter the values for the org, module, and revision you're going to add:<br>
+     <IMG SRC="../assets/images/builder/03-populatedComponentDialog.png" BORDER=1 ALT="">
+<P>
+Now it's time to select which files go into this library.  You want to have all version numbers stripped off of your libraries - if you've downloadded
+    commons-lang-3.2.jar, make sure it's called commons-lang.jar.  The version numbers are specified in the rev textbox. <p>
+
+    Click on the "Add files to component" button.  
+
+    You can select jars, zip, text, pretty much anything with an extension (Ivy really doesn't like files with no extension).  Jars/zips with -src, -source, or -sources after the main name
+    are assumed to be source jars, jars/zips with -javadoc or -javadocs are assumed to be javadocs.  So, in the previous example, if you selected commons-lang.jar, commons-lang-src.jar, and commons-lang-javadocs.jar,
+    all three would be imported into Ivy and assumed to be linked.<p>
+
+    In this example, we're just going to pick "ImageBrowser.jar"<br>
+     <IMG SRC="../assets/images/builder/04-pickFiles.png" BORDER=1 ALT="">
+<P>
+    We see that the jar we've selected has been added to the dialog.  You can click the "Add files to component" button as many times as you want to keep adding stuff (sometimes source jars or docs are in
+    different directories, so you'd need more than one selection).<br>
+     <IMG SRC="../assets/images/builder/05-pickFilesResult.png" BORDER=1 ALT="">
+    <P>
+
+    Notice that there is a checkbox next to the selection.  If you uncheck this, the file won't be added.  This is so if you are grabbing a bunch of files and make a mistake, you can just "undo'
+    the bad item and leave the others selected.<P>
+
+    Now it's time to add any dependencies, if any.  If there are none, you just click the "Save" button.  But, if you do need to add one or more dependencies, click on the "Add dependencies to component"
+    button.  Another dialog comes up, showing the contents of the Ivy repository:<br>
+     <IMG SRC="../assets/images/builder/06-selectDependencies.png" BORDER=1 ALT=""><p>
+    You can either scroll through the list, and select one or more items, but I find it much faster to type a filter in the text box, and narrow the selection down a bit:<br>
+     <IMG SRC="../assets/images/builder/07-selectedDependencies.png" BORDER=1 ALT=""><p>
+
+    Like the files, you can uncheck the checkboxes if you've grabbed a wrong one.  Clicking on the "OK" button adds the dependencies to the list, and you can click on the "Add dependencies to component"
+    many times to add dependencies.  I find it easier to group dependencies this way.  Notice that main dialog also lets you unselect items you didn't really want.<br>
+
+     <IMG SRC="../assets/images/builder/08-popoulatedDialog.png" BORDER=1 ALT=""><p>
+    
+    Now, we're ready to click the "Save" button.  Doing so saves the files to your repository, and generates the XML file and checksums.  It also pastes a line into your paste buffer if you'd
+    like to run the "maint" script command to do that yourself (I generally don't - I like having more control over what's brought in)<br>
+     <IMG SRC="../assets/images/builder/10-finalDialog.png" BORDER=1 ALT=""><p>
+
+        That's it!  All you need to do is commit if you're using Ivy over Subversion.  If you're using vanilla HTTP, you're all done.<p>
+
+    Wasn't that easy?
+    
+   </Span>
+   </BODY>
+</HTML>
+ 
