@@ -4,10 +4,12 @@ import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
 import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.*;
 import java.awt.*;
 import java.awt.event.*;
+import static java.awt.event.KeyEvent.*;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
+import static javax.swing.KeyStroke.getKeyStroke;
 
 public class FindIvyRepositoryDialog extends JDialog
 {
@@ -85,7 +87,7 @@ public class FindIvyRepositoryDialog extends JDialog
         {
           onCancel();
         }
-      }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+      }, getKeyStroke(VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
   }
 
   private void onOK()

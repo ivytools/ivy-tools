@@ -14,7 +14,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.net.URL;
 import javax.swing.*;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import javax.help.HelpSet;
+import javax.help.HelpBroker;
+import javax.help.CSH;
+import javax.help.HelpSetException;
 
 /** Created by IntelliJ IDEA. User: dbulla Date: Jan 18, 2008 Time: 9:36:34 PM To change this template use File | Settings | File Templates. */
 public class BuilderMainFrame extends JFrame
@@ -28,9 +34,11 @@ public class BuilderMainFrame extends JFrame
     private JPanel contentsPanel;
     private JButton quitButton;
     private JLabel statusLabel;
+    private JButton helpButton;
     private File repositoryDir;
     private List<IvyRepositoryItem> ivyPackages = new ArrayList<IvyRepositoryItem>();
     private Preferences preferences;
+    private static final String REPOSITORY = "repository";
 
     // --------------------------- CONSTRUCTORS ---------------------------
     public BuilderMainFrame()
@@ -80,6 +88,25 @@ public class BuilderMainFrame extends JFrame
                 doQuitAction();
             }
         });
+        ClassLoader classLoader = BuilderMainFrame.class.getClassLoader();
+
+        try
+        {
+            URL hsURL = HelpSet.findHelpSet(classLoader, "ivyBuilderHelp.hs");
+
+            HelpSet helpSet = new HelpSet(null, hsURL);
+            HelpBroker helpBroker = helpSet.createHelpBroker();
+            CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
+
+            helpButton.addActionListener(displayHelpFromSource);
+        }
+        catch (HelpSetException ee)
+        {  // Say what the exception really is
+            System.out.println("Exception! " + ee.getMessage());
+//      LOGGER.error("HelpSet " + ee.getMessage());
+//      LOGGER.error("HelpSet " + HELP_HS + " not found");
+
+        }
     }
 
     private void doQuitAction()
@@ -103,17 +130,18 @@ public class BuilderMainFrame extends JFrame
             File file = chooser.getSelectedFile();
             String dirName = file.getName();
 
-            if (dirName.equals("repository"))
+            if (dirName.equals(REPOSITORY))
             {
                 repositoryDir = file;
                 ivyReposLabel.setText(file.getAbsolutePath());
             }
             else
             {
-                JOptionPane.showConfirmDialog(this, "The dir must be named \"repository\"");
+                showConfirmDialog(this, "The dir must be named \"" + REPOSITORY + "\"");
             }
         }
 
+        validateIvyRepositoryLocation(ivyReposLabel.getText());
         pack();
         centerApp(this);
         findFiles();
@@ -138,6 +166,13 @@ public class BuilderMainFrame extends JFrame
     {
         String dirName = preferences.get(REPOSITORY_LOCATION, null);
 
+        validateIvyRepositoryLocation(dirName);
+    }
+
+    private void validateIvyRepositoryLocation(String dirName)
+    {
+        addNewComponentButton.setEnabled(false);
+
         if (dirName != null)
         {
             File dir = new File(dirName);
@@ -146,6 +181,7 @@ public class BuilderMainFrame extends JFrame
             {
                 repositoryDir = dir;
                 ivyReposLabel.setText(repositoryDir.getAbsolutePath());
+                addNewComponentButton.setEnabled(true);
             }
         }
     }
@@ -219,7 +255,7 @@ public class BuilderMainFrame extends JFrame
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         contentsPanel.add(panel1, gbc);
-        panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Ivy repository"));
+        panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Ivy repository location"));
         final JLabel label1 = new JLabel();
         label1.setText("Ivy repositry is located at:");
         gbc = new GridBagConstraints();
@@ -265,6 +301,7 @@ public class BuilderMainFrame extends JFrame
         contentsPanel.add(panel3, gbc);
         addNewComponentButton = new JButton();
         addNewComponentButton.setText("Add New Component");
+        addNewComponentButton.setToolTipText("You must have a valid Ivy repository selected to press this");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -275,10 +312,17 @@ public class BuilderMainFrame extends JFrame
         quitButton.setText("Quit");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel3.add(quitButton, gbc);
+        helpButton = new JButton();
+        helpButton.setText("Help");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel3.add(helpButton, gbc);
         statusLabel = new JLabel();
         statusLabel.setText("");
         gbc = new GridBagConstraints();
