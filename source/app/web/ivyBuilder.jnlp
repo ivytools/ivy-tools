@@ -25,6 +25,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/commons-lang.jar"/>
         <jar href="lib/jdom.jar"/>
+        <jar href="lib/help.jar"/>
         <jar href="lib/glazedlists.jar"/>
         <extension name="help" href="help.jnlp"/>
     </resources>
