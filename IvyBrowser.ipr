@@ -1013,8 +1013,5 @@
     <option name="groupByConfigFiles" value="false" />
     <option name="sortedAlphabetically" value="false" />
   </component>
-  <component name="uidesigner-configuration">
-    <option name="INSTRUMENT_CLASSES" value="false" />
-  </component>
 </project>
 
