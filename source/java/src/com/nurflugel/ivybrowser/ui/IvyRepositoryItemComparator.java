@@ -10,9 +10,11 @@ import java.util.Comparator;
 public class IvyRepositoryItemComparator implements Comparator, Serializable
 {
   private static final long serialVersionUID = -8090786516649397033L;
+
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface Comparator ---------------------
+
   public int compare(Object o1, Object o2)
   {
     IvyRepositoryItem itemA   = (IvyRepositoryItem) o1;

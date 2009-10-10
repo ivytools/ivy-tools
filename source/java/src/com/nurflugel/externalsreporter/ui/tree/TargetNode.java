@@ -17,16 +17,7 @@ public class TargetNode extends CheckableNode
     this.item = item;
   }
 
-  public BuildableItem getBuildableItem()
-  {
-    return item;
-  }
-
-  @Override
-  public boolean isLeaf()
-  {
-    return true;
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   @Override
   public void add(CheckableNode node)
@@ -34,9 +25,20 @@ public class TargetNode extends CheckableNode
     throw new IllegalArgumentException("Cant add a child to a target");
   }
 
+  public BuildableItem getBuildableItem()
+  {
+    return item;
+  }
+
   @Override
   public List<? extends CheckableNode> getChildren()
   {
     return new ArrayList<TargetNode>();
+  }
+
+  @Override
+  public boolean isLeaf()
+  {
+    return true;
   }
 }

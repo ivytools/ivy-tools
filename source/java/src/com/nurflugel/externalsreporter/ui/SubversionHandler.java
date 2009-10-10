@@ -42,48 +42,7 @@ public class SubversionHandler
     // clientManager = SVNClientManager.newInstance(options, WebAuthenticator.getUsername(), WebAuthenticator.getPassword());
   }
 
-  /** Make a tag of the buildable item. */
-  public SVNURL makeTag(BuildableItem item)
-  {
-    String baseUrl = item.getProject().getProjectBaseUrl();
-    long   start   = new Date().getTime();
-
-    try
-    {
-      SVNURL repositryUrl = SVNURL.parseURIEncoded(baseUrl);
-      SVNURL fromUrl      = repositryUrl.appendPath(item.getBranch().getPath(), false);
-      SVNURL tagUrl       = repositryUrl.appendPath("tags/" + item.getBranch().getTagName(), false);
-
-      try
-      {
-        long committedRevision = copy(fromUrl, tagUrl, "tagging '" + fromUrl + "' to '" + tagUrl + "'").getNewRevision();
-        long duration          = new Date().getTime() - start;
-
-        if (mainFrame != null)
-        {
-          mainFrame.addStatus("Created a tag: " + tagUrl + " with revision " + committedRevision + ",  duration: " + (duration / 1000) + " seconds");
-        }
-
-        return tagUrl;
-      }
-      catch (SVNException e)
-      {
-        String message = "Error making tag\n" + e.getErrorMessage();
-
-        mainFrame.showSevereError(message, e);
-
-        return tagUrl;
-      }
-    }
-    catch (SVNException e)
-    {
-      String message = "Error parsing URLs\n" + e.getErrorMessage();
-
-      mainFrame.showSevereError(message, e);
-    }
-
-    return null;
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   /*
    * Duplicates srcURL to dstURL (URL->URL)in a repository remembering history. Like 'svn copy srcURL dstURL -m "some comment"' command. It's done by
@@ -164,5 +123,48 @@ public class SubversionHandler
   public SVNWCClient getWcClient()
   {
     return clientManager.getWCClient();
+  }
+
+  /** Make a tag of the buildable item. */
+  public SVNURL makeTag(BuildableItem item)
+  {
+    String baseUrl = item.getProject().getProjectBaseUrl();
+    long   start   = new Date().getTime();
+
+    try
+    {
+      SVNURL repositryUrl = SVNURL.parseURIEncoded(baseUrl);
+      SVNURL fromUrl      = repositryUrl.appendPath(item.getBranch().getPath(), false);
+      SVNURL tagUrl       = repositryUrl.appendPath("tags/" + item.getBranch().getTagName(), false);
+
+      try
+      {
+        long committedRevision = copy(fromUrl, tagUrl, "tagging '" + fromUrl + "' to '" + tagUrl + "'").getNewRevision();
+        long duration          = new Date().getTime() - start;
+
+        if (mainFrame != null)
+        {
+          mainFrame.addStatus("Created a tag: " + tagUrl + " with revision " + committedRevision + ",  duration: " + (duration / 1000) + " seconds");
+        }
+
+        return tagUrl;
+      }
+      catch (SVNException e)
+      {
+        String message = "Error making tag\n" + e.getErrorMessage();
+
+        mainFrame.showSevereError(message, e);
+
+        return tagUrl;
+      }
+    }
+    catch (SVNException e)
+    {
+      String message = "Error parsing URLs\n" + e.getErrorMessage();
+
+      mainFrame.showSevereError(message, e);
+    }
+
+    return null;
   }
 }

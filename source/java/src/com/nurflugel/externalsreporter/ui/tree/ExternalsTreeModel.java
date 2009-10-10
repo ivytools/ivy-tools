@@ -21,10 +21,14 @@ public class ExternalsTreeModel implements TreeModel
     root = new TopNode("Available Projects");
   }
 
-  /** Adds a listener for the TreeModelEvent posted after the tree changes. */
-  public void addTreeModelListener(TreeModelListener treeModelListener)
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TreeModel ---------------------
+
+  /** Returns the root of the tree. */
+  public Object getRoot()
   {
-    treeModelListeners.add(treeModelListener);
+    return root;
   }
 
   /** Returns the child of parent at index index in the parent's child array. */
@@ -39,16 +43,25 @@ public class ExternalsTreeModel implements TreeModel
     return ((CheckableNode) parent).getChildren().size();
   }
 
+  /** Returns true if node is a leaf. */
+  public boolean isLeaf(Object node)
+  {
+    return ((CheckableNode) node).isLeaf();
+  }
+
+  /** Messaged when the user has altered the value for the item identified by path to newValue. */
+  public void valueForPathChanged(TreePath treePath, Object o) {}
+
   /** Returns the index of child in parent. */
   public int getIndexOfChild(Object parent, Object child)
   {
     return ((CheckableNode) parent).indexOf(child);
   }
 
-  /** Returns true if node is a leaf. */
-  public boolean isLeaf(Object node)
+  /** Adds a listener for the TreeModelEvent posted after the tree changes. */
+  public void addTreeModelListener(TreeModelListener treeModelListener)
   {
-    return ((CheckableNode) node).isLeaf();
+    treeModelListeners.add(treeModelListener);
   }
 
   /** Removes a listener previously added with addTreeModelListener. */
@@ -57,21 +70,12 @@ public class ExternalsTreeModel implements TreeModel
     treeModelListeners.remove(treeModelListener);
   }
 
-  /** Messaged when the user has altered the value for the item identified by path to newValue. */
-  public void valueForPathChanged(TreePath treePath, Object o) {}
+  // -------------------------- OTHER METHODS --------------------------
 
   public void addItem(ProjectNode item)
   {
     root.add(item);
     fireTreeStructureChanged(item);
-  }
-
-  public void addItems(List<ProjectNode> list)
-  {
-    for (ProjectNode projectNode : list)
-    {
-      root.add(projectNode);
-    }
   }
 
   /** The only event raised by this model is TreeStructureChanged with the root as path, i.e. the whole tree has changed. */
@@ -85,15 +89,17 @@ public class ExternalsTreeModel implements TreeModel
     }
   }
 
-  /** Returns the root of the tree. */
-  public Object getRoot()
-  {
-    return root;
-  }
-
   public void addItem(CheckableNode currentNode, CheckableNode node)
   {
     currentNode.add(node);
     fireTreeStructureChanged(node);
+  }
+
+  public void addItems(List<ProjectNode> list)
+  {
+    for (ProjectNode projectNode : list)
+    {
+      root.add(projectNode);
+    }
   }
 }

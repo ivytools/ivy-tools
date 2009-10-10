@@ -30,6 +30,18 @@ public class ExternalTreeHandler
     tree.addMouseListener(new NodeSelectionListener(tree));
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  public void addItem(ProjectNode item)
+  {
+    treeModel.addItem(item);
+  }
+
+  public void addItem(CheckableNode currentNode, CheckableNode node)
+  {
+    treeModel.addItem(currentNode, node);
+  }
+
   /**
    * If expand is true, expands all nodes in the tree. Otherwise, collapses all nodes in the tree. In all cases, leave the first node (root) expanded
    */
@@ -71,6 +83,32 @@ public class ExternalTreeHandler
     }
   }
 
+  public List<BranchNode> getCheckedBranches()
+  {
+    return getBranches(true);
+  }
+
+  private List<BranchNode> getBranches(boolean isChecked)
+  {
+    List<BranchNode>  branchNodes = new ArrayList<BranchNode>();
+    List<ProjectNode> projects    = getProjects(false);
+
+    for (ProjectNode project : projects)
+    {
+      List<BranchNode> list = project.getBranches();
+
+      for (BranchNode branchNode : list)
+      {
+        if (!isChecked || branchNode.isSelected())
+        {
+          branchNodes.add(branchNode);
+        }
+      }
+    }
+
+    return branchNodes;
+  }
+
   public List<ProjectNode> getCheckedProjects()
   {
     return getProjects(true);
@@ -101,32 +139,6 @@ public class ExternalTreeHandler
     }
   }
 
-  public List<BranchNode> getCheckedBranches()
-  {
-    return getBranches(true);
-  }
-
-  private List<BranchNode> getBranches(boolean isChecked)
-  {
-    List<BranchNode>  branchNodes = new ArrayList<BranchNode>();
-    List<ProjectNode> projects    = getProjects(false);
-
-    for (ProjectNode project : projects)
-    {
-      List<BranchNode> list = project.getBranches();
-
-      for (BranchNode branchNode : list)
-      {
-        if (!isChecked || branchNode.isSelected())
-        {
-          branchNodes.add(branchNode);
-        }
-      }
-    }
-
-    return branchNodes;
-  }
-
   public List<TargetNode> getCheckedTargets()
   {
     return getTargets(true);
@@ -153,23 +165,15 @@ public class ExternalTreeHandler
     return targetNodes;
   }
 
-  public JTree getTree()
-  {
-    return tree;
-  }
-
-  public void addItem(ProjectNode item)
-  {
-    treeModel.addItem(item);
-  }
-
   public CheckableNode getTopNode()
   {
     return (CheckableNode) treeModel.getRoot();
   }
 
-  public void addItem(CheckableNode currentNode, CheckableNode node)
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public JTree getTree()
   {
-    treeModel.addItem(currentNode, node);
+    return tree;
   }
 }

@@ -20,7 +20,8 @@ public class IvyFileCheckbox extends JCheckBox
     setSelected(true);
   }
 
-  // -------------------------- OTHER METHODS --------------------------
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
   public File getFile()
   {
     return file;

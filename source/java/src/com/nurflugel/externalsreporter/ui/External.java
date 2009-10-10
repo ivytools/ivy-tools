@@ -14,6 +14,8 @@ public class External
     this.url = url;
   }
 
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
   public String getDir()
   {
     return dir;

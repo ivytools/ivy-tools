@@ -15,6 +15,20 @@ public class IvyFormatterProcess
 
   private IvyFormatterProcess() {}
 
+  // --------------------------- main() method ---------------------------
+
+  public static void main(String[] args)
+  {
+    if ((args.length == 2) && args[0].equalsIgnoreCase("-file"))
+    {
+      formatFile(args[1]);
+    }
+    else
+    {
+      System.out.println("Usage: com.nurflugel.ivyformatter.IvyFormatterProcess -file fullyQualifiedFilePath");
+    }
+  }
+
   public static void formatFile(String fileName)
   {
     if (fileName.endsWith("ivy.xml"))
@@ -31,17 +45,6 @@ public class IvyFormatterProcess
         e.printStackTrace();
       }
     }
-  }
-
-  private static void writeFile(String fileName, String text) throws IOException
-  {
-    File       outFile = new File(fileName);
-    FileWriter fw      = new FileWriter(outFile);
-    char[]     buffer  = new char[text.length()];
-
-    text.getChars(0, text.length(), buffer, 0);
-    fw.write(buffer);
-    fw.close();
   }
 
   private static String readFile(String fileName) throws IOException
@@ -111,6 +114,22 @@ public class IvyFormatterProcess
     return text;
   }
 
+  /**
+   * Align everything line.
+   *
+   * <p><conf name="build" visibility="public" description="Dependencies only used during the build process."/></p>
+   *
+   * <p><conf name="dist" visibility="public" description="Dependencies that will be deployed via WebStart."/>.</p>
+   */
+  private static void formatConfLines(String[] lines)
+  {
+    List<Integer> confLines = getAffectedLines(lines, new String[] { "<conf", "name" });
+
+    indent(confLines, lines, 8);
+    alignLinesOnWord(confLines, lines, "visibility=");
+    alignLinesOnWord(confLines, lines, "description=");
+  }
+
   // <artifact name="nurflugel-resourcebundler-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
   // <artifact name="nurflugel-resourcebundler-source" type="source" ext="zip" conf="source"/>
   private static void formatPublications(String[] lines)
@@ -122,24 +141,6 @@ public class IvyFormatterProcess
     alignLinesOnWord(confLines, lines, "type=");
     alignLinesOnWord(confLines, lines, "ext=");
     alignLinesOnWord(confLines, lines, "conf=");
-  }
-
-  /**
-   * <exclude org="org.springframework" name="spring-dao"/>.
-   *
-   * <p><exclude org="org.springframework" name="spring-hibernate2"/></p>
-   *
-   * <p><exclude org="org.springframework" name="spring-ibatis"/></p>
-   *
-   * <p><exclude org="org.springframework" name="spring-jca"/>.</p>
-   */
-  private static void formatExcludeLines(String[] lines)
-  {
-    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<exclude" });
-
-    indent(dependencyLines, lines, 12);
-    alignLinesOnWord(dependencyLines, lines, "org=");
-    alignLinesOnWord(dependencyLines, lines, "name=");
   }
 
   private static List<Integer> getAffectedLines(String[] lines, String[] keyWords)
@@ -170,50 +171,6 @@ public class IvyFormatterProcess
     }
 
     return contentLines;
-  }
-
-  /**
-   * <dependency org="org.jdesktop" name="swingworker" rev="1.1" conf="build,dist,source,javadoc"/>.
-   *
-   * <p><dependency org="org.junit" name="junit" rev="4.3.1" conf="build,test"/>.</p>
-   */
-  private static void formatDependencyLines(String[] lines)
-  {
-    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<dependency", "org" });
-
-    indent(dependencyLines, lines, 8);
-    alignLinesOnWord(dependencyLines, lines, "name=");
-    alignLinesOnWord(dependencyLines, lines, "rev=");
-    alignLinesOnWord(dependencyLines, lines, "conf=");
-  }
-
-  /**
-   * Align everything line.
-   *
-   * <p><conf name="build" visibility="public" description="Dependencies only used during the build process."/></p>
-   *
-   * <p><conf name="dist" visibility="public" description="Dependencies that will be deployed via WebStart."/>.</p>
-   */
-  private static void formatConfLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, new String[] { "<conf", "name" });
-
-    indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "visibility=");
-    alignLinesOnWord(confLines, lines, "description=");
-  }
-
-  private static String pasteLinesTogether(String[] lines)
-  {
-    StringBuilder builder = new StringBuilder();
-
-    for (String line : lines)
-    {
-      builder.append(line);
-      builder.append(NEW_LINE);
-    }
-
-    return builder.toString();
   }
 
   /** Strip off any leading space and indent with the number of spaces needed. */
@@ -272,15 +229,60 @@ public class IvyFormatterProcess
     }
   }
 
-  public static void main(String[] args)
+  /**
+   * <dependency org="org.jdesktop" name="swingworker" rev="1.1" conf="build,dist,source,javadoc"/>.
+   *
+   * <p><dependency org="org.junit" name="junit" rev="4.3.1" conf="build,test"/>.</p>
+   */
+  private static void formatDependencyLines(String[] lines)
   {
-    if ((args.length == 2) && args[0].equalsIgnoreCase("-file"))
+    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<dependency", "org" });
+
+    indent(dependencyLines, lines, 8);
+    alignLinesOnWord(dependencyLines, lines, "name=");
+    alignLinesOnWord(dependencyLines, lines, "rev=");
+    alignLinesOnWord(dependencyLines, lines, "conf=");
+  }
+
+  /**
+   * <exclude org="org.springframework" name="spring-dao"/>.
+   *
+   * <p><exclude org="org.springframework" name="spring-hibernate2"/></p>
+   *
+   * <p><exclude org="org.springframework" name="spring-ibatis"/></p>
+   *
+   * <p><exclude org="org.springframework" name="spring-jca"/>.</p>
+   */
+  private static void formatExcludeLines(String[] lines)
+  {
+    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<exclude" });
+
+    indent(dependencyLines, lines, 12);
+    alignLinesOnWord(dependencyLines, lines, "org=");
+    alignLinesOnWord(dependencyLines, lines, "name=");
+  }
+
+  private static String pasteLinesTogether(String[] lines)
+  {
+    StringBuilder builder = new StringBuilder();
+
+    for (String line : lines)
     {
-      formatFile(args[1]);
+      builder.append(line);
+      builder.append(NEW_LINE);
     }
-    else
-    {
-      System.out.println("Usage: com.nurflugel.ivyformatter.IvyFormatterProcess -file fullyQualifiedFilePath");
-    }
+
+    return builder.toString();
+  }
+
+  private static void writeFile(String fileName, String text) throws IOException
+  {
+    File       outFile = new File(fileName);
+    FileWriter fw      = new FileWriter(outFile);
+    char[]     buffer  = new char[text.length()];
+
+    text.getChars(0, text.length(), buffer, 0);
+    fw.write(buffer);
+    fw.close();
   }
 }

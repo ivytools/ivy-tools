@@ -19,14 +19,11 @@ public class Module
     this.revision     = revision;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
   public void addCaller(Module caller, String callerPreferredRev)
   {
     callers.put(caller, callerPreferredRev);
-  }
-
-  public Map<Module, String> getCallers()
-  {
-    return callers;
   }
 
   public String getKey()
@@ -42,25 +39,17 @@ public class Module
                                                                      : (revision));
   }
 
-  public String getNiceXmlKey()
-  {
-    return generateKey(organization, name);
-  }
-
-  public String getRevision()
-  {
-    return revision;
-  }
-
-  public void setRevision(String revision)
-  {
-    this.revision = revision;
-  }
+  // ------------------------ CANONICAL METHODS ------------------------
 
   @Override
   public String toString()
   {
     return getNiceXmlKey() + "_" + revision;
+  }
+
+  public String getNiceXmlKey()
+  {
+    return generateKey(organization, name);
   }
 
   @SuppressWarnings({ "ParameterHidesMemberVariable" })
@@ -72,5 +61,22 @@ public class Module
     key = key.replace("-", "_");
 
     return key;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public Map<Module, String> getCallers()
+  {
+    return callers;
+  }
+
+  public String getRevision()
+  {
+    return revision;
+  }
+
+  public void setRevision(String revision)
+  {
+    this.revision = revision;
   }
 }

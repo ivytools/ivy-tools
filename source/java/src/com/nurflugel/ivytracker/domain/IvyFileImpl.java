@@ -17,11 +17,11 @@ import java.util.Map;
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyFileImpl implements IvyFile
 {
+  private static IvyTrackerMainFrame mainFrame;
   private List<String>               dependencies = new ArrayList<String>();
   private String                     org;
   private String                     module;
   private String                     version;
-  private static IvyTrackerMainFrame mainFrame;
   private int                        count;
 
   public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap,
@@ -110,9 +110,13 @@ public class IvyFileImpl implements IvyFile
     return org + ":" + module + ":" + version;
   }
 
-  public String getKey()
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface IvyFile ---------------------
+
+  public int getCount()
   {
-    return getKey(org, module, version);
+    return count;
   }
 
   public List<String> getDependencies()
@@ -120,14 +124,19 @@ public class IvyFileImpl implements IvyFile
     return dependencies;
   }
 
-  public String getOrg()
+  public String getKey()
   {
-    return org;
+    return getKey(org, module, version);
   }
 
   public String getModule()
   {
     return module;
+  }
+
+  public String getOrg()
+  {
+    return org;
   }
 
   public String getVersion()
@@ -145,10 +154,7 @@ public class IvyFileImpl implements IvyFile
     count++;
   }
 
-  public int getCount()
-  {
-    return count;
-  }
+  // ------------------------ CANONICAL METHODS ------------------------
 
   @Override
   public String toString()

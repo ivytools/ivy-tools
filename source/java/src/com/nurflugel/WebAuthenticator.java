@@ -13,11 +13,7 @@ public class WebAuthenticator extends Authenticator
   private static final String USER_NAME = "user_name";
   private static final String PASSWORD  = "password";
 
-  @Override
-  public PasswordAuthentication getPasswordAuthentication()
-  {
-    return new PasswordAuthentication(USER_NAME, (PASSWORD.toCharArray()));
-  }
+  // -------------------------- STATIC METHODS --------------------------
 
   public static String getUsername()
   {
@@ -27,5 +23,13 @@ public class WebAuthenticator extends Authenticator
   public static String getPassword()
   {
     return PASSWORD;
+  }
+
+  // -------------------------- OTHER METHODS --------------------------
+
+  @Override
+  public PasswordAuthentication getPasswordAuthentication()
+  {
+    return new PasswordAuthentication(USER_NAME, (PASSWORD.toCharArray()));
   }
 }

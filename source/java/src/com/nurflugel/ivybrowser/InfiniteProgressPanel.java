@@ -183,9 +183,11 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
     hints.put(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     hints.put(KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_ON);
   }
+
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface MouseListener ---------------------
+
   public void mouseClicked(MouseEvent e) {}
 
   public void mousePressed(MouseEvent e) {}
@@ -195,13 +197,8 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   public void mouseEntered(MouseEvent e) {}
 
   public void mouseExited(MouseEvent e) {}
-  // -------------------------- OTHER METHODS --------------------------
 
-  /** Returns the current displayed message. */
-  public String getText()
-  {
-    return text;
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   /**
    * Interrupts the animation, whatever its state is. You can use it when you need to stop the animation without running the fade out phase. This
@@ -259,17 +256,6 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
         layout.draw(g2, (float) (width - bounds.getWidth()) / 2, (float) (maxY + layout.getLeading() + (2 * layout.getAscent())));
       }
     }  // end if
-  }
-
-  /**
-   * Changes the displayed message at runtime.
-   *
-   * @param  text  The message to be displayed. Can be null or empty.
-   */
-  public void setText(String text)
-  {
-    this.text = text;
-    repaint();
   }
 
   /** Starts the waiting animation by fading the veil in, then rotating the shapes. This method handles the visibility of the glass pane. */
@@ -345,6 +331,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
       animation.start();
     }
   }
+
   // -------------------------- INNER CLASSES --------------------------
 
   /** Animation thread. */
@@ -434,5 +421,24 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
         removeMouseListener(InfiniteProgressPanel.this);
       }
     }
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  /** Returns the current displayed message. */
+  public String getText()
+  {
+    return text;
+  }
+
+  /**
+   * Changes the displayed message at runtime.
+   *
+   * @param  text  The message to be displayed. Can be null or empty.
+   */
+  public void setText(String text)
+  {
+    this.text = text;
+    repaint();
   }
 }

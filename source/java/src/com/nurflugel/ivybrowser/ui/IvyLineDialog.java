@@ -62,6 +62,62 @@ public class IvyLineDialog extends JDialog
     centerApp(this);
   }
 
+  private void addListeners()
+  {
+    buttonOK.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          onOK();
+        }
+      });
+    buttonCancel.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          onCancel();
+        }
+      });
+    addWindowListener(new WindowAdapter()
+      {
+        @Override
+        public void windowClosing(WindowEvent e)
+        {
+          onCancel();
+        }
+      });
+
+    // call onCancel() on ESCAPE
+    contentPane.registerKeyboardAction(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          onCancel();
+        }
+      }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    forceThisVersionCheckBox.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          updatePastedText();
+        }
+      });
+
+    // call onCancel() when cross is clicked
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+  }
+
+  private void onOK()
+  {
+    getPasteText();
+    dispose();
+  }
+
+  private void onCancel()
+  {
+    dispose();
+  }
+
   private void createText()
   {
     List<IvyPackage> dependencies = ivyPackage.getDependencies();
@@ -237,61 +293,7 @@ public class IvyLineDialog extends JDialog
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ivyLine, null);
   }
 
-  private void addListeners()
-  {
-    buttonOK.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          onOK();
-        }
-      });
-    buttonCancel.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          onCancel();
-        }
-      });
-    addWindowListener(new WindowAdapter()
-      {
-        @Override
-        public void windowClosing(WindowEvent e)
-        {
-          onCancel();
-        }
-      });
-
-    // call onCancel() on ESCAPE
-    contentPane.registerKeyboardAction(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          onCancel();
-        }
-      }, KeyStroke.getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    forceThisVersionCheckBox.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          updatePastedText();
-        }
-      });
-
-    // call onCancel() when cross is clicked
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-  }
-
-  private void onOK()
-  {
-    getPasteText();
-    dispose();
-  }
-
-  private void onCancel()
-  {
-    dispose();
-  }
+  // --------------------------- main() method ---------------------------
 
   public static void main(String[] args)
   {

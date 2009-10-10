@@ -15,16 +15,14 @@ public abstract class CheckableNode
     this.name = name;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  public abstract void add(CheckableNode node);
   public abstract List<? extends CheckableNode> getChildren();
 
   public int indexOf(Object child)
   {
     return -1;
-  }
-
-  public String getName()
-  {
-    return name;
   }
 
   public boolean isLeaf()
@@ -37,13 +35,20 @@ public abstract class CheckableNode
     return isSelected;
   }
 
+  // ------------------------ CANONICAL METHODS ------------------------
+
   @Override
   public String toString()
   {
     return name;
   }
 
-  public abstract void add(CheckableNode node);
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public String getName()
+  {
+    return name;
+  }
 
   public void setSelected(boolean selected)
   {

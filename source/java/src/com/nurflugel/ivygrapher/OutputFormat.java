@@ -18,12 +18,16 @@ public enum OutputFormat
     this.extension    = extension;
   }
 
+  // ------------------------ CANONICAL METHODS ------------------------
+
   @Override
   @SuppressWarnings({ "RefusedBequest" })
   public String toString()
   {
     return "OutputFormat{" + "type='" + type + "'" + "}";
   }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public String getDisplayLabel()
   {

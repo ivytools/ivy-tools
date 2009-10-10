@@ -13,11 +13,11 @@ import static javax.swing.KeyStroke.getKeyStroke;
 
 public class FindIvyRepositoryDialog extends JDialog
 {
+  private static final String EMPTY_STRING   = "";
   private JPanel              contentPane;
   private JButton             buttonOK;
   private JButton             buttonCancel;
   private JComboBox           comboBox;
-  private static final String EMPTY_STRING   = "";
   private Preferences         appPreferences;
   private List<String>        locations;
 
@@ -119,6 +119,8 @@ public class FindIvyRepositoryDialog extends JDialog
     // add your code here if necessary
     dispose();
   }
+
+  // -------------------------- OTHER METHODS --------------------------
 
   public String getRepositoryLocation()
   {

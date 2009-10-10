@@ -24,8 +24,8 @@ public class FileHandler extends SwingWorker<Object, Object>
     this.repositoryDir = repositoryDir;
   }
 
-  // ------------------------ INTERFACE METHODS ------------------------
-  // --------------------- Interface Runnable ---------------------
+  // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public Object doInBackground()
   {
@@ -35,7 +35,6 @@ public class FileHandler extends SwingWorker<Object, Object>
     return null;
   }
 
-  // -------------------------- OTHER METHODS --------------------------
   public void findAllIvyPackages()
   {
     File[] orgDirs = repositoryDir.listFiles();

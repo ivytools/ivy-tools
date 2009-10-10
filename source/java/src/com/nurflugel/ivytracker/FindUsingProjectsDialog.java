@@ -28,13 +28,6 @@ public class FindUsingProjectsDialog extends JDialog
     BuilderMainFrame.centerApp(this);
   }
 
-  private void populateTree(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
-  {
-    TreeModel treeModel = new FindUsingProjectsTreeModel(ivyFile, ivyFilesMap);
-
-    projectsTree.setModel(treeModel);
-  }
-
   private void addListeners()
   {
     buttonOK.addActionListener(new ActionListener()
@@ -76,5 +69,12 @@ public class FindUsingProjectsDialog extends JDialog
   {
     // add your code here if necessary
     dispose();
+  }
+
+  private void populateTree(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
+  {
+    TreeModel treeModel = new FindUsingProjectsTreeModel(ivyFile, ivyFilesMap);
+
+    projectsTree.setModel(treeModel);
   }
 }

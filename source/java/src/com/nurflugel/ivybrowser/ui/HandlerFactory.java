@@ -20,7 +20,7 @@ import java.util.Map;
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 public class HandlerFactory
 {
-  private HandlerFactory() {}
+  // -------------------------- STATIC METHODS --------------------------
 
   public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, List<IvyPackage> repositoryList,
                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
@@ -76,4 +76,6 @@ public class HandlerFactory
 
     return false;
   }
+
+  private HandlerFactory() {}
 }

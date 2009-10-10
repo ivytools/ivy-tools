@@ -11,6 +11,8 @@ class TreeLabel extends JLabel
   private boolean           isSelected;
   private boolean           hasFocus;
 
+  // -------------------------- OTHER METHODS --------------------------
+
   // @Override public void setBackground(Color color)
   // {
   // if (color instanceof ColorUIResource) {
@@ -65,13 +67,15 @@ class TreeLabel extends JLabel
     return retDimension;
   }
 
-  public void setSelected(boolean isSelected)
-  {
-    this.isSelected = isSelected;
-  }
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public void setFocus(boolean hasFocus)
   {
     this.hasFocus = hasFocus;
+  }
+
+  public void setSelected(boolean isSelected)
+  {
+    this.isSelected = isSelected;
   }
 }

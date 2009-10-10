@@ -38,32 +38,32 @@ import javax.help.HelpBroker;
 import javax.help.CSH;
 import javax.help.HelpSetException;
 
-/** Created by IntelliJ IDEA. User: dbulla Date: Apr 26, 2007 Time: 12:37:50 PM To change this template use File | Settings | File Templates. */
+/** Main UI frame for the Ivy Browser. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
 public class IvyBrowserMainFrame extends JFrame
 {
-  private static final long serialVersionUID = 8982188831570838035L;
-  private Cursor busyCursor = getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor normalCursor = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private JButton specifyButton = new JButton("Specify Repository");
-  private JButton reparseButton = new JButton("Re-parse Repository");
-  private JButton quitButton = new JButton("Quit");
-  private JButton helpButton = new JButton("Help");
-  private JLabel findLabel = new JLabel("Find library:");
-  private JLabel statusLabel = new JLabel();
-  private JCheckBox parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
-  private JTable resultsTable = new JTable();
-  private JTextField libraryField = new JTextField();
-  private Preferences preferences = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
-  private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
-  public static final String IVY_REPOSITORY = "IvyRepository";
-  private List<IvyPackage> repositoryList = Collections.synchronizedList(new ArrayList<IvyPackage>());
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
-  private static final String PARSE_ON_OPEN     = "parseOnOpen";
+  private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
+  public static final String  IVY_REPOSITORY      = "IvyRepository";
+  private static final long   serialVersionUID    = 8982188831570838035L;
+  private static final String PARSE_ON_OPEN       = "parseOnOpen";
+  private static final String SAVE_DIR            = "saveDir";
+  private Cursor              busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor              normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private JButton             specifyButton       = new JButton("Specify Repository");
+  private JButton             reparseButton       = new JButton("Re-parse Repository");
+  private JButton             quitButton          = new JButton("Quit");
+  private JButton             helpButton          = new JButton("Help");
+  private JLabel              findLabel           = new JLabel("Find library:");
+  private JLabel              statusLabel         = new JLabel();
+  private JCheckBox           parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
+  private JTable              resultsTable        = new JTable();
+  private JTextField          libraryField        = new JTextField();
+  private Preferences         preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
+  private List<IvyPackage>    repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
   private JScrollPane         scrollPane;
   private JPanel              holdingPanel;
   private String              ivyRepositoryPath;
-  private static final String SAVE_DIR          = "saveDir";
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyBrowserMainFrame()
@@ -153,7 +153,7 @@ public class IvyBrowserMainFrame extends JFrame
         {
           String path = specifyRepository(preferences);
 
-          if ((path != null) || (path.length() > 0))
+          if ((path != null) && (path.length() > 0))
           {
             reparse();
           }
@@ -198,7 +198,6 @@ public class IvyBrowserMainFrame extends JFrame
     try
     {
       URL                       hsURL                 = HelpSet.findHelpSet(classLoader, "ivyBrowserHelp.hs");
-
       HelpSet                   helpSet               = new HelpSet(null, hsURL);
       HelpBroker                helpBroker            = helpSet.createHelpBroker();
       CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
@@ -225,32 +224,6 @@ public class IvyBrowserMainFrame extends JFrame
     // ivyRepositoryPath = (String) showInputDialog(null, "What is the Ivy repository URL?", "Enter Ivy repository URL", QUESTION_MESSAGE, null, null,
     // ivyRepositoryPath); appPreferences.put(IVY_REPOSITORY, ivyRepositoryPath);
     return ivyRepositoryPath;
-  }
-
-  private void reparse()
-  {
-    setCursor(busyCursor);
-
-    // resultsTable.setVisible(false);
-    holdingPanel.remove(scrollPane);
-    progressPanel.start();
-    ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
-
-    if (ivyRepositoryPath.equalsIgnoreCase(""))
-    {
-      ivyRepositoryPath = specifyRepository(preferences);
-    }
-
-    if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
-    {
-      repositoryList.clear();
-      packageMap.clear();
-
-      BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList, packageMap);
-
-      handler.execute();
-      holdingPanel.add(scrollPane);
-    }
   }
 
   public void filterTable()
@@ -290,15 +263,37 @@ public class IvyBrowserMainFrame extends JFrame
     }
   }
 
-  // -------------------------- OTHER METHODS --------------------------
-  public void stopProgressPanel()
+  private void reparse()
   {
-    progressPanel.stop();
+    setCursor(busyCursor);
+
+    // resultsTable.setVisible(false);
+    holdingPanel.remove(scrollPane);
+    progressPanel.start();
+    ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
+
+    if (ivyRepositoryPath.equalsIgnoreCase(""))
+    {
+      ivyRepositoryPath = specifyRepository(preferences);
+    }
+
+    if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
+    {
+      repositoryList.clear();
+      packageMap.clear();
+
+      BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList, packageMap);
+
+      handler.execute();
+      holdingPanel.add(scrollPane);
+    }
   }
 
-  public void setStatusLabel(String text)
+  // -------------------------- OTHER METHODS --------------------------
+
+  public String getPreferredSaveDir()
   {
-    statusLabel.setText(text);
+    return preferences.get(SAVE_DIR, null);
   }
 
   public void showNormal()
@@ -333,25 +328,33 @@ public class IvyBrowserMainFrame extends JFrame
     }
   }
 
+  public void stopProgressPanel()
+  {
+    progressPanel.stop();
+  }
+
   // --------------------------- main() method ---------------------------
+
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
   {
     new IvyBrowserMainFrame();
   }
 
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
   public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
   {
     return packageMap;
   }
 
-  public String getPreferredSaveDir()
-  {
-    return preferences.get(SAVE_DIR, null);
-  }
-
   public void setPreferredSaveDir(String dir)
   {
     preferences.put(SAVE_DIR, dir);
+  }
+
+  public void setStatusLabel(String text)
+  {
+    statusLabel.setText(text);
   }
 }

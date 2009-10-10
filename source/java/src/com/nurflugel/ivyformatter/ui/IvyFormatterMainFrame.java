@@ -37,7 +37,7 @@ public class IvyFormatterMainFrame extends JFrame
 
   public IvyFormatterMainFrame()
   {
-//     $$$setupUI$$$();
+    // $$$setupUI$$$();
     setContentPane(contentPane);
     setTitle("Ivy Formatter v. " + VERSION);
     Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
@@ -127,5 +127,4 @@ public class IvyFormatterMainFrame extends JFrame
   {
     IvyFormatterMainFrame mainFrame = new IvyFormatterMainFrame();
   }
-
 }

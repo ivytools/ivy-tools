@@ -25,6 +25,10 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
     // label.setForeground(UIManager.getColor("Tree.textForeground"));
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TreeCellRenderer ---------------------
+
   @SuppressWarnings({ "ReturnOfThis" })
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row,
                                                 boolean hasFocus)
@@ -62,22 +66,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
     return this;
   }
 
-  @Override
-  public Dimension getPreferredSize()
-  {
-    Dimension checkboxDimension = getCheckboxDimension();
-    Dimension labelDimension    = label.getPreferredSize();
-
-    return new Dimension(checkboxDimension.width + labelDimension.width,
-                         ((checkboxDimension.height < labelDimension.height) ? labelDimension.height
-                                                                             : checkboxDimension.height));
-  }
-
-  private Dimension getCheckboxDimension()
-  {
-    return check.isVisible() ? check.getPreferredSize()
-                             : new Dimension(0, 0);
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   @Override
   public void doLayout()
@@ -101,6 +90,23 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
     label.setLocation(checkboxDimension.width, labelHeight);
     label.setBounds(checkboxDimension.width, labelHeight, labelDimension.width, labelDimension.height);
     invalidate();
+  }
+
+  @Override
+  public Dimension getPreferredSize()
+  {
+    Dimension checkboxDimension = getCheckboxDimension();
+    Dimension labelDimension    = label.getPreferredSize();
+
+    return new Dimension(checkboxDimension.width + labelDimension.width,
+                         ((checkboxDimension.height < labelDimension.height) ? labelDimension.height
+                                                                             : checkboxDimension.height));
+  }
+
+  private Dimension getCheckboxDimension()
+  {
+    return check.isVisible() ? check.getPreferredSize()
+                             : new Dimension(0, 0);
   }
 
   // @Override

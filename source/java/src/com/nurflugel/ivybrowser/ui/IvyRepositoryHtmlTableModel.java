@@ -21,9 +21,11 @@ public class IvyRepositoryHtmlTableModel implements TableModel
   {
     this.list = list;
   }
+
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TableModel ---------------------
+
   public int getRowCount()
   {
     return list.size();
@@ -82,6 +84,7 @@ public class IvyRepositoryHtmlTableModel implements TableModel
   public void removeTableModelListener(TableModelListener l) {}
 
   // -------------------------- OTHER METHODS --------------------------
+
   public IvyPackage getItemAt(int row)
   {
     return list.get(row);

@@ -72,6 +72,12 @@ public class NoDotDialog extends JDialog
     setVisible(true);
   }
 
+  private void onCancel()
+  {
+    // add your code here if necessary
+    dispose();
+  }
+
   private void onOK()
   {
     JFileChooser fileChooser = new JFileChooser();
@@ -85,11 +91,7 @@ public class NoDotDialog extends JDialog
     dispose();
   }
 
-  private void onCancel()
-  {
-    // add your code here if necessary
-    dispose();
-  }
+  // --------------------------- main() method ---------------------------
 
   public static void main(String[] args)
   {
@@ -99,6 +101,8 @@ public class NoDotDialog extends JDialog
     dialog.setVisible(true);
     System.exit(0);
   }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public File getFile()
   {

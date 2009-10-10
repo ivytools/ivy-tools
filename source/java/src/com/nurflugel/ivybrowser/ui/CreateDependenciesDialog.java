@@ -159,6 +159,7 @@ public class CreateDependenciesDialog extends JDialog
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   public List<IvyRepositoryItem> getDependancies()
   {
     Object[]                selectedObjects = dependenciesPanel.getComponents();
@@ -181,6 +182,7 @@ public class CreateDependenciesDialog extends JDialog
   }
 
   // --------------------------- main() method ---------------------------
+
   public static void main(String[] args)
   {
     CreateDependenciesDialog dialog = new CreateDependenciesDialog(new ArrayList<IvyRepositoryItem>());

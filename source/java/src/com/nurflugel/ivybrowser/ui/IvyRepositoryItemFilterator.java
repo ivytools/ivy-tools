@@ -10,6 +10,10 @@ import java.util.List;
 @SuppressWarnings({ "unchecked" })
 public class IvyRepositoryItemFilterator implements TextFilterator
 {
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TextFilterator ---------------------
+
   public void getFilterStrings(List list, Object o)
   {
     IvyRepositoryItem item = (IvyRepositoryItem) o;

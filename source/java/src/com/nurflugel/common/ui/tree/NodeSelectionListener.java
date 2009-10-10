@@ -17,6 +17,10 @@ public class NodeSelectionListener extends MouseAdapter
     this.tree = tree;
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface MouseListener ---------------------
+
   /** If this node has children, and it's checked, check all the children, too. Or uncheck them, if the node is unchecked. */
   @Override
   public void mouseClicked(MouseEvent e)
@@ -53,6 +57,8 @@ public class NodeSelectionListener extends MouseAdapter
       // }
     }
   }
+
+  // -------------------------- OTHER METHODS --------------------------
 
   private void setAllChildren(CheckableNode node, boolean selected)
   {

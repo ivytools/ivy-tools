@@ -11,6 +11,31 @@ public class Branch
     name = branchName;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  /** Gets the path of the branch relative to the reposlitory root. */
+  public String getPath()
+  {
+    if (name.equals("trunk"))
+    {
+      return name;
+    }
+    else
+    {
+      return "branches/" + name;
+    }
+  }
+
+  // ------------------------ CANONICAL METHODS ------------------------
+
+  @Override
+  public String toString()
+  {
+    return name;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
   public String getName()
   {
     return name;
@@ -29,24 +54,5 @@ public class Branch
   public void setTagName(String tagName)
   {
     this.tagName = tagName;
-  }
-
-  @Override
-  public String toString()
-  {
-    return name;
-  }
-
-  /** Gets the path of the branch relative to the reposlitory root. */
-  public String getPath()
-  {
-    if (name.equals("trunk"))
-    {
-      return name;
-    }
-    else
-    {
-      return "branches/" + name;
-    }
   }
 }

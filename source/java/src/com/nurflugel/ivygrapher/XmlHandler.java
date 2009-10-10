@@ -27,6 +27,8 @@ public class XmlHandler
   private static final String CALLERREV    = "callerrev";
   private static final String REV          = "rev";
 
+  // -------------------------- OTHER METHODS --------------------------
+
   void processXmlFile(File fileToGraph, Preferences preferences, NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath,
                       boolean deleteDotFileOnExit) throws JDOMException, IOException
   {
