@@ -22,25 +22,29 @@ public class Config
     imageDir          = preferences.get(IMAGE_DIR, "");
   }
 
-  public void saveSettings()
-  {
-    preferences.put(DOT_EXECUTABLE, dotExecutablePath);
-    preferences.put(IMAGE_DIR, imageDir);
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   public File getDotExecutablePath()
   {
     return new File(dotExecutablePath);
   }
 
-  public void setDotExecutablePath(String dotExecutablePath)
-  {
-    this.dotExecutablePath = dotExecutablePath;
-  }
-
   public File getImageDir()
   {
     return new File(imageDir);
+  }
+
+  public void saveSettings()
+  {
+    preferences.put(DOT_EXECUTABLE, dotExecutablePath);
+    preferences.put(IMAGE_DIR, imageDir);
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public void setDotExecutablePath(String dotExecutablePath)
+  {
+    this.dotExecutablePath = dotExecutablePath;
   }
 
   public void setImageDir(File imageDir)

@@ -7,11 +7,13 @@ import java.util.List;
  */
 public interface IvyFile
 {
-  String getOrg();
-  String getModule();
-  String getVersion();
-  String getKey();
-  void touch();
+  // -------------------------- OTHER METHODS --------------------------
+
   int getCount();
   List<String> getDependencies();
+  String getKey();
+  String getModule();
+  String getOrg();
+  String getVersion();
+  void touch();
 }

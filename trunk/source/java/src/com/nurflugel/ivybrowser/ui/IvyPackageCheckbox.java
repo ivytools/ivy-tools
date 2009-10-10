@@ -17,15 +17,21 @@ public class IvyPackageCheckbox extends JCheckBox implements Comparable
     setSelected(true);
   }
 
-  public IvyPackage getIvyPackage()
-  {
-    return ivyPackage;
-  }
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface Comparable ---------------------
 
   public int compareTo(Object o)
   {
     IvyPackageCheckbox otherCheckbox = (IvyPackageCheckbox) o;
 
     return ivyPackage.getPrettyText().compareTo(otherCheckbox.getIvyPackage().getPrettyText());
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public IvyPackage getIvyPackage()
+  {
+    return ivyPackage;
   }
 }

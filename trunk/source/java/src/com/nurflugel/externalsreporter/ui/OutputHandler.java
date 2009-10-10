@@ -27,6 +27,83 @@ public class OutputHandler
     this.mainFrame = mainFrame;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  public File launchDot(File dotFile, File dotExecutable) throws IOException, InterruptedException
+  {
+    String outputFileName = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
+    File   outputFile     = new File(dotFile.getParent(), outputFileName);
+    File   parentFile     = outputFile.getParentFile();
+    String dotFilePath    = dotFile.getAbsolutePath();
+    String outputFilePath = outputFile.getAbsolutePath();
+
+    if (outputFile.exists())
+    {                       // logger.debug("Deleting existing version of " + outputFilePath);
+      outputFile.delete();  // delete the file before generating it if it exists
+    }
+
+    // String   outputFormat = ui.getOutputFormat().getType();
+    String[] command = { dotExecutable.getAbsolutePath(), "-T" + mainFrame.getOs().getOutputFormat().getType(), dotFilePath, "-o" + outputFilePath };
+
+    // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
+    Runtime runtime = Runtime.getRuntime();
+    long    start   = new Date().getTime();
+
+    runtime.exec(command).waitFor();
+
+    long end = new Date().getTime();
+
+    System.out.println("Took " + (end - start) + " milliseconds to generate graphic");
+
+    return outputFile;
+  }
+
+  public void viewResultingFile(File imageFile) throws IOException
+  {
+    List<String> commandList    = new ArrayList<String>();
+    Runtime      runtime        = Runtime.getRuntime();
+    String       outputFilePath = imageFile.getAbsolutePath();
+    Os           os             = mainFrame.getOs();
+
+    if (os == Os.OS_X)
+    {
+      // calling FileManager to open the URL works, if we replace spaces with %20
+      outputFilePath = outputFilePath.replace(" ", "%20");
+
+      String fileUrl = "file://" + outputFilePath;
+
+      // We do this rather than calling
+      // FileManager.openURL(fileUrl);
+      // so we can compile this from Windoze, rather than alwasy having to compile it from OS X.  But it behaves just the same.
+      try
+      {
+        Class<?> aClass = Class.forName("com.apple.eio.FileManager");
+        Method   method = aClass.getMethod("openURL", String.class);
+
+        method.invoke(null, fileUrl);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else
+    {
+      if (os == Os.WINDOWS)
+      {
+        commandList.add("cmd.exe");
+        commandList.add("/c");
+      }
+
+      commandList.add(outputFilePath);
+
+      String[] command = commandList.toArray(new String[commandList.size()]);
+      // logger.debug("Command to run: " + concatenate(command));
+
+      runtime.exec(command);
+    }
+  }
+
   public File writeDotFile(Map<BuildableProjects, Map<String, List<External>>> dependencies) throws IOException
   {
     JFileChooser fileChooser = new JFileChooser(mainFrame.getConfig().getImageDir());
@@ -120,80 +197,5 @@ public class OutputHandler
       out.writeBytes("\t}" + NEW_LINE);
       clusterIndex++;
     }  // end for
-  }
-
-  public File launchDot(File dotFile, File dotExecutable) throws IOException, InterruptedException
-  {
-    String outputFileName = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
-    File   outputFile     = new File(dotFile.getParent(), outputFileName);
-    File   parentFile     = outputFile.getParentFile();
-    String dotFilePath    = dotFile.getAbsolutePath();
-    String outputFilePath = outputFile.getAbsolutePath();
-
-    if (outputFile.exists())
-    {                       // logger.debug("Deleting existing version of " + outputFilePath);
-      outputFile.delete();  // delete the file before generating it if it exists
-    }
-
-    // String   outputFormat = ui.getOutputFormat().getType();
-    String[] command = { dotExecutable.getAbsolutePath(), "-T" + mainFrame.getOs().getOutputFormat().getType(), dotFilePath, "-o" + outputFilePath };
-
-    // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
-    Runtime runtime = Runtime.getRuntime();
-    long    start   = new Date().getTime();
-
-    runtime.exec(command).waitFor();
-
-    long end = new Date().getTime();
-
-    System.out.println("Took " + (end - start) + " milliseconds to generate graphic");
-
-    return outputFile;
-  }
-
-  public void viewResultingFile(File imageFile) throws IOException
-  {
-    List<String> commandList    = new ArrayList<String>();
-    Runtime      runtime        = Runtime.getRuntime();
-    String       outputFilePath = imageFile.getAbsolutePath();
-    Os           os             = mainFrame.getOs();
-
-    if (os == Os.OS_X)
-    {
-      // calling FileManager to open the URL works, if we replace spaces with %20
-      outputFilePath = outputFilePath.replace(" ", "%20");
-
-      String fileUrl = "file://" + outputFilePath;
-
-      // We do this rather than calling
-      // FileManager.openURL(fileUrl);
-      // so we can compile this from Windoze, rather than alwasy having to compile it from OS X.  But it behaves just the same.
-      try
-      {
-        Class<?> aClass = Class.forName("com.apple.eio.FileManager");
-        Method   method = aClass.getMethod("openURL", String.class);
-
-        method.invoke(null, fileUrl);
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else
-    {
-      if (os == Os.WINDOWS)
-      {
-        commandList.add("cmd.exe");
-        commandList.add("/c");
-      }
-
-      commandList.add(outputFilePath);
-
-      String[] command = commandList.toArray(new String[commandList.size()]);
-      // logger.debug("Command to run: " + concatenate(command));
-
-      runtime.exec(command);
-    }
   }
 }

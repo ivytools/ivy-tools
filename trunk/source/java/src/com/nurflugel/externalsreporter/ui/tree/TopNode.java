@@ -15,6 +15,8 @@ public class TopNode extends CheckableNode
     super(s);
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public void add(CheckableNode node)
   {
@@ -22,6 +24,12 @@ public class TopNode extends CheckableNode
     {
       projects.add(((ProjectNode) node));
     }
+  }
+
+  @Override
+  public List<? extends CheckableNode> getChildren()
+  {
+    return projects;
   }
 
   @Override
@@ -33,11 +41,5 @@ public class TopNode extends CheckableNode
     }
 
     return -1;
-  }
-
-  @Override
-  public List<? extends CheckableNode> getChildren()
-  {
-    return projects;
   }
 }

@@ -18,6 +18,8 @@ import java.util.List;
 @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter", "CallToPrintStackTrace" })
 public class IvyRepositoryItem
 {
+  private static final int BYTE_MASK = 0xFF;
+
   /**
    * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where more
    * than one jar or zip file is in the ivy repository, represented by this ivy file.
@@ -40,6 +42,7 @@ public class IvyRepositoryItem
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   public List<IvyRepositoryItem> getDependencies()
   {
     return Collections.unmodifiableList(dependencies);
@@ -63,11 +66,6 @@ public class IvyRepositoryItem
   public String getOrg()
   {
     return orgName;
-  }
-
-  public String getRev()
-  {
-    return rev;
   }
 
   /** gets a timestamp of the format yyyymmddhhmmss. */
@@ -103,70 +101,6 @@ public class IvyRepositoryItem
     {
       e.printStackTrace();
     }
-  }
-
-  /** For every entry in the dir, create a checksum (md5 and sha1). */
-  private void writeChecksumFiles(File dirPath) throws NoSuchAlgorithmException, IOException
-  {
-    File[] files = dirPath.listFiles();
-
-    for (File file : files)
-    {
-      if (!file.isDirectory())
-      {
-        writeChecksum("MD5", file);
-        writeChecksum("SHA1", file);
-      }
-    }
-  }
-
-  private void writeChecksum(String algorythym, File file) throws NoSuchAlgorithmException, IOException
-  {
-    MessageDigest       md         = MessageDigest.getInstance(algorythym);
-    InputStream         is         = new FileInputStream(file);
-    BufferedInputStream bis        = new BufferedInputStream(is);
-    int                 bufferSize = 512;
-    byte[]              bytes      = new byte[bufferSize];
-
-    md.reset();
-
-    DigestInputStream dis = new DigestInputStream(is, md);
-
-    while (dis.read(bytes, 0, bufferSize) != -1) {}
-
-    dis.close();
-    is.close();
-
-    byte[] digest  = md.digest();
-    String hexHash = createDigestString(digest);
-
-    System.out.println(algorythym + " " + file + " digest = " + hexHash);
-
-    FileWriter fw = new FileWriter(file.getAbsolutePath() + "." + algorythym.toLowerCase());
-
-    fw.write(hexHash);
-    fw.close();
-  }
-
-  private static final int BYTE_MASK = 0xFF;
-
-  private String createDigestString(byte[] fileDigestBytes)
-  {
-    StringBuilder checksumSb = new StringBuilder();
-
-    for (byte fileDigestByte : fileDigestBytes)
-    {
-      String hexStr = Integer.toHexString(BYTE_MASK & fileDigestByte);
-
-      if (hexStr.length() < 2)
-      {
-        checksumSb.append("0");
-      }
-
-      checksumSb.append(hexStr);
-    }
-
-    return checksumSb.toString();
   }
 
   private File createParentDirs()
@@ -316,6 +250,83 @@ public class IvyRepositoryItem
     }
   }
 
+  /** For every entry in the dir, create a checksum (md5 and sha1). */
+  private void writeChecksumFiles(File dirPath) throws NoSuchAlgorithmException, IOException
+  {
+    File[] files = dirPath.listFiles();
+
+    for (File file : files)
+    {
+      if (!file.isDirectory())
+      {
+        writeChecksum("MD5", file);
+        writeChecksum("SHA1", file);
+      }
+    }
+  }
+
+  private void writeChecksum(String algorythym, File file) throws NoSuchAlgorithmException, IOException
+  {
+    MessageDigest       md         = MessageDigest.getInstance(algorythym);
+    InputStream         is         = new FileInputStream(file);
+    BufferedInputStream bis        = new BufferedInputStream(is);
+    int                 bufferSize = 512;
+    byte[]              bytes      = new byte[bufferSize];
+
+    md.reset();
+
+    DigestInputStream dis = new DigestInputStream(is, md);
+
+    while (dis.read(bytes, 0, bufferSize) != -1) {}
+
+    dis.close();
+    is.close();
+
+    byte[] digest  = md.digest();
+    String hexHash = createDigestString(digest);
+
+    System.out.println(algorythym + " " + file + " digest = " + hexHash);
+
+    FileWriter fw = new FileWriter(file.getAbsolutePath() + "." + algorythym.toLowerCase());
+
+    fw.write(hexHash);
+    fw.close();
+  }
+
+  private String createDigestString(byte[] fileDigestBytes)
+  {
+    StringBuilder checksumSb = new StringBuilder();
+
+    for (byte fileDigestByte : fileDigestBytes)
+    {
+      String hexStr = Integer.toHexString(BYTE_MASK & fileDigestByte);
+
+      if (hexStr.length() < 2)
+      {
+        checksumSb.append("0");
+      }
+
+      checksumSb.append(hexStr);
+    }
+
+    return checksumSb.toString();
+  }
+
+  // ------------------------ CANONICAL METHODS ------------------------
+
+  @Override
+  public String toString()
+  {
+    return orgName + " " + moduleName + " " + rev;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public String getRev()
+  {
+    return rev;
+  }
+
   public void setDependencies(List<IvyRepositoryItem> dependencies)
   {
     this.dependencies = dependencies;
@@ -324,11 +335,5 @@ public class IvyRepositoryItem
   public void setFiles(List<File> files)
   {
     this.libraryFiles = files;
-  }
-
-  @Override
-  public String toString()
-  {
-    return orgName + " " + moduleName + " " + rev;
   }
 }

@@ -25,33 +25,7 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
     this.mainFrame   = mainFrame;
   }
 
-  @Override
-  protected Object doInBackground() throws Exception
-  {
-    System.out.println("ExternalsFinderTask.doInBackground");
-    mainFrame.setBusyCursor();
-    mainFrame.initializeStatusBar(0, branches.size(), 0, true);
-
-    List<BuildableItem> list = new ArrayList<BuildableItem>();
-
-    System.out.println("1");
-
-    // todo make this work without the enum maps, as projects are now just urls
-    // Map<BuildableProjects, Map<String, List<External>>> dependencies =
-    // new EnumMap<BuildableProjects, Map<String, List<External>>>(BuildableProjects.class);
-    //
-    ////        if (!mainFrame.isTest()|| !mainFrame.getTestDataFromFile()) {
-    // addToExternalsList(dependencies);
-    ////        }
-    // System.out.println("2");
-    progressBar.setVisible(false);
-    mainFrame.setNormalCursor();
-
-    // ((IvyBrowserMainFrame) mainFrame).processExternals(dependencies);
-    System.out.println("3");
-
-    return list;
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   /** The map is a map of externals with the URL as the key, and a list of URLs to the dependent project dirs. */
   private void addToExternalsList(Map<BuildableProjects, Map<String, List<External>>> projectMap) throws SVNException
@@ -86,5 +60,33 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
 
       listHashMap.put(url, externals);
     }
+  }
+
+  @Override
+  protected Object doInBackground() throws Exception
+  {
+    System.out.println("ExternalsFinderTask.doInBackground");
+    mainFrame.setBusyCursor();
+    mainFrame.initializeStatusBar(0, branches.size(), 0, true);
+
+    List<BuildableItem> list = new ArrayList<BuildableItem>();
+
+    System.out.println("1");
+
+    // todo make this work without the enum maps, as projects are now just urls
+    // Map<BuildableProjects, Map<String, List<External>>> dependencies =
+    // new EnumMap<BuildableProjects, Map<String, List<External>>>(BuildableProjects.class);
+    //
+    ////        if (!mainFrame.isTest()|| !mainFrame.getTestDataFromFile()) {
+    // addToExternalsList(dependencies);
+    ////        }
+    // System.out.println("2");
+    progressBar.setVisible(false);
+    mainFrame.setNormalCursor();
+
+    // ((IvyBrowserMainFrame) mainFrame).processExternals(dependencies);
+    System.out.println("3");
+
+    return list;
   }
 }

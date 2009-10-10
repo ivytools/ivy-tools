@@ -9,6 +9,10 @@ import java.util.List;
 @SuppressWarnings({ "unchecked" })
 public class IvyFileFilterator implements TextFilterator
 {
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TextFilterator ---------------------
+
   public void getFilterStrings(List list, Object o)
   {
     IvyFile item = (IvyFile) o;

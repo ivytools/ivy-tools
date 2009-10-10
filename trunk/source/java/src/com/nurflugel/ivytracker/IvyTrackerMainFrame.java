@@ -222,18 +222,6 @@ public class IvyTrackerMainFrame extends JFrame
       });
   }
 
-  private void findMissingIvyFiles()
-  {
-    StringBuilder sb = new StringBuilder();
-
-    for (String missingIvyFile : missingIvyFiles)
-    {
-      sb.append(missingIvyFile).append("\n");
-    }
-
-    JOptionPane.showMessageDialog(this, sb.toString(), "Here are the missing files:", JOptionPane.PLAIN_MESSAGE);
-  }
-
   private void showProjectsTree()
   {
     ShowProjectsDialog showProjectsDialog = new ShowProjectsDialog(projectIvyFiles, ivyFilesMap);
@@ -258,6 +246,18 @@ public class IvyTrackerMainFrame extends JFrame
 
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sb.toString()), null);
     JOptionPane.showMessageDialog(this, "Formatted text has been pasted into your buffer");
+  }
+
+  private void findMissingIvyFiles()
+  {
+    StringBuilder sb = new StringBuilder();
+
+    for (String missingIvyFile : missingIvyFiles)
+    {
+      sb.append(missingIvyFile).append("\n");
+    }
+
+    JOptionPane.showMessageDialog(this, sb.toString(), "Here are the missing files:", JOptionPane.PLAIN_MESSAGE);
   }
 
   private void filterTable()
@@ -293,12 +293,8 @@ public class IvyTrackerMainFrame extends JFrame
     System.out.println("Done!");
   }
 
-  public Preferences getPreferences()
-  {
-    return preferences;
-  }
-
   // -------------------------- OTHER METHODS --------------------------
+
   public boolean isTest()
   {
     return isTest;
@@ -318,11 +314,6 @@ public class IvyTrackerMainFrame extends JFrame
   public boolean saveTestData()
   {
     return saveTestData;
-  }
-
-  public void setStatusLabel(String text)
-  {
-    statusLabel.setText(text);
   }
 
   public void showNormal()
@@ -363,9 +354,22 @@ public class IvyTrackerMainFrame extends JFrame
   }
 
   // --------------------------- main() method ---------------------------
+
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
   {
     IvyTrackerMainFrame frame = new IvyTrackerMainFrame();
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public Preferences getPreferences()
+  {
+    return preferences;
+  }
+
+  public void setStatusLabel(String text)
+  {
+    statusLabel.setText(text);
   }
 }

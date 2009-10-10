@@ -23,6 +23,10 @@ public class FindUsingProjectsTreeModel implements TreeModel
     this.ivyFilesMap = Collections.unmodifiableMap(ivyFilesMap);
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TreeModel ---------------------
+
   public Object getRoot()
   {
     return ivyFile;
@@ -38,29 +42,6 @@ public class FindUsingProjectsTreeModel implements TreeModel
     }
 
     return null;
-  }
-
-  private List<IvyFile> findAllIvyFilesUsingThisAsDependency(IvyFile childIvyFile)
-  {
-    String        key      = childIvyFile.getKey();
-    List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
-
-    for (IvyFile file : ivyFilesMap.values())
-    {
-      List<String> dependencies = file.getDependencies();
-
-      for (String dependency : dependencies)
-      {
-        if (dependency.equals(key))
-        {
-          ivyFiles.add(file);
-
-          break;
-        }
-      }
-    }
-
-    return ivyFiles;
   }
 
   public int getChildCount(Object o)
@@ -114,4 +95,29 @@ public class FindUsingProjectsTreeModel implements TreeModel
   public void addTreeModelListener(TreeModelListener treeModelListener) {}
 
   public void removeTreeModelListener(TreeModelListener treeModelListener) {}
+
+  // -------------------------- OTHER METHODS --------------------------
+
+  private List<IvyFile> findAllIvyFilesUsingThisAsDependency(IvyFile childIvyFile)
+  {
+    String        key      = childIvyFile.getKey();
+    List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
+
+    for (IvyFile file : ivyFilesMap.values())
+    {
+      List<String> dependencies = file.getDependencies();
+
+      for (String dependency : dependencies)
+      {
+        if (dependency.equals(key))
+        {
+          ivyFiles.add(file);
+
+          break;
+        }
+      }
+    }
+
+    return ivyFiles;
+  }
 }

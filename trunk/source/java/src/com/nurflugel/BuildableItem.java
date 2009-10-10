@@ -20,20 +20,13 @@ public class BuildableItem implements CheckableItem
     this.branch      = branch;
   }
 
-  // -------------------------- OTHER METHODS --------------------------
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface CheckableItem ---------------------
+
   public Branch getBranch()
   {
     return branch;
-  }
-
-  public String getProjectAbr()
-  {
-    return this.projectAbr;
-  }
-
-  public Targets getBuildTarget()
-  {
-    return buildTarget;
   }
 
   public BuildableProjects getProject()
@@ -51,9 +44,23 @@ public class BuildableItem implements CheckableItem
     this.selected = selected;
   }
 
+  // ------------------------ CANONICAL METHODS ------------------------
+
   @Override
   public String toString()
   {
     return buildTarget.toString();
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public Targets getBuildTarget()
+  {
+    return buildTarget;
+  }
+
+  public String getProjectAbr()
+  {
+    return this.projectAbr;
   }
 }

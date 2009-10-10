@@ -22,6 +22,48 @@ public class ProjectNode extends CheckableNode
     super(buildableProject);
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  @Override
+  public void add(CheckableNode node)
+  {
+    if (node instanceof BranchNode)
+    {
+      if (subProjects.isEmpty())
+      {
+        branches.add(((BranchNode) node));
+      }
+      else
+      {
+        throw new IllegalArgumentException("Cant add a branch when a project already has sub projects!");
+      }
+    }
+    else if (node instanceof ProjectNode)
+    {
+      if (branches.isEmpty())
+      {
+        subProjects.add(((ProjectNode) node));
+      }
+      else
+      {
+        throw new IllegalArgumentException("Cant add a sub project when a project already has branches!");
+      }
+    }
+  }
+
+  @Override
+  public List<? extends CheckableNode> getChildren()
+  {
+    if (branches.isEmpty())
+    {
+      return subProjects;
+    }
+    else
+    {
+      return branches;
+    }
+  }
+
   @Override
   @SuppressWarnings({ "ChainOfInstanceofChecks" })
   public int indexOf(Object child)
@@ -56,45 +98,13 @@ public class ProjectNode extends CheckableNode
     return -1;
   }
 
-  @Override
-  public List<? extends CheckableNode> getChildren()
+  /** Is this a "master" projct, one that only has other projects under it? */
+  public boolean isMasterProject()
   {
-    if (branches.isEmpty())
-    {
-      return subProjects;
-    }
-    else
-    {
-      return branches;
-    }
+    return !subProjects.isEmpty();
   }
 
-  @Override
-  public void add(CheckableNode node)
-  {
-    if (node instanceof BranchNode)
-    {
-      if (subProjects.isEmpty())
-      {
-        branches.add(((BranchNode) node));
-      }
-      else
-      {
-        throw new IllegalArgumentException("Cant add a branch when a project already has sub projects!");
-      }
-    }
-    else if (node instanceof ProjectNode)
-    {
-      if (branches.isEmpty())
-      {
-        subProjects.add(((ProjectNode) node));
-      }
-      else
-      {
-        throw new IllegalArgumentException("Cant add a sub project when a project already has branches!");
-      }
-    }
-  }
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public List<BranchNode> getBranches()
   {
@@ -109,11 +119,5 @@ public class ProjectNode extends CheckableNode
   public List<ProjectNode> getSubProjects()
   {
     return subProjects;
-  }
-
-  /** Is this a "master" projct, one that only has other projects under it? */
-  public boolean isMasterProject()
-  {
-    return !subProjects.isEmpty();
   }
 }

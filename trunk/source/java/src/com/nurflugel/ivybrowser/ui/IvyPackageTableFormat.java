@@ -16,6 +16,10 @@ public class IvyPackageTableFormat implements TableFormat
   static final int JAVADOCS    = 5;
   private String[] columnNames = { "Org", "Module", "Revision", "File", "Source?", "Javadocs?" };
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TableFormat ---------------------
+
   public int getColumnCount()
   {
     return 6;

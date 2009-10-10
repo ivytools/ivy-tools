@@ -31,6 +31,8 @@ public class GraphVizHandler
     this.deleteDotFileOnExit = deleteDotFileOnExit;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
   public File generateDotFile(File xmlFile, Module ivyModule, Map<String, Module> moduleMap) throws IOException
   {
     String fileName = xmlFile.getAbsolutePath().replace(".xml", "");
@@ -59,11 +61,25 @@ public class GraphVizHandler
     return dotFile;
   }
 
-  private void write(DataOutputStream out, String text) throws IOException
+  private void writeDotFileTargetDeclarations(Module ivyModule, Map<String, Module> moduleMap, DataOutputStream out) throws IOException
   {
-    out.writeBytes(text);
+    // out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_0"  + " {" + NEW_LINE);
 
-    // System.out.println(text);
+    String line = "\t\t" + ivyModule.getNiceXmlKey() + " [label=\"" + ivyModule.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "red"
+                  + " ]; ";
+
+    write(out, line + NEW_LINE);
+
+    for (Module module : moduleMap.values())
+    {
+      if (!module.equals(ivyModule))
+      {
+        line = "\t\t" + module.getNiceXmlKey() + " [label=\"" + module.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "black" + " ]; ";
+
+        write(out, line + NEW_LINE);
+      }
+    }
+    // write(out,"\t}" + NEW_LINE);
   }
 
   private void writeDotDependencies(Map<String, Module> moduleMap, DataOutputStream out, Module ivyModule) throws IOException
@@ -116,25 +132,11 @@ public class GraphVizHandler
     }
   }
 
-  private void writeDotFileTargetDeclarations(Module ivyModule, Map<String, Module> moduleMap, DataOutputStream out) throws IOException
+  private void write(DataOutputStream out, String text) throws IOException
   {
-    // out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_0"  + " {" + NEW_LINE);
+    out.writeBytes(text);
 
-    String line = "\t\t" + ivyModule.getNiceXmlKey() + " [label=\"" + ivyModule.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "red"
-                  + " ]; ";
-
-    write(out, line + NEW_LINE);
-
-    for (Module module : moduleMap.values())
-    {
-      if (!module.equals(ivyModule))
-      {
-        line = "\t\t" + module.getNiceXmlKey() + " [label=\"" + module.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "black" + " ]; ";
-
-        write(out, line + NEW_LINE);
-      }
-    }
-    // write(out,"\t}" + NEW_LINE);
+    // System.out.println(text);
   }
 
   /** Convert the .dot file into png, pdf, svg, whatever. */
@@ -204,7 +206,6 @@ public class GraphVizHandler
     }
     catch (Exception e)
     {  // todo handle error
-
       // logger.error(e);
     }
   }

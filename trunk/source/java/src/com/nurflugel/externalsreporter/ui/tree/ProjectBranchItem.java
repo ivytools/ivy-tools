@@ -20,7 +20,10 @@ public class ProjectBranchItem implements CheckableItem
     this.branch  = branch;
   }
 
-  // -------------------------- OTHER METHODS --------------------------
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface CheckableItem ---------------------
+
   public Branch getBranch()
   {
     return branch;
@@ -41,11 +44,7 @@ public class ProjectBranchItem implements CheckableItem
     this.selected = selected;
   }
 
-  @Override
-  public String toString()
-  {
-    return branch.getName();
-  }
+  // ------------------------ CANONICAL METHODS ------------------------
 
   @Override
   @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
@@ -82,5 +81,11 @@ public class ProjectBranchItem implements CheckableItem
                                                : 0);
 
     return result;
+  }
+
+  @Override
+  public String toString()
+  {
+    return branch.getName();
   }
 }

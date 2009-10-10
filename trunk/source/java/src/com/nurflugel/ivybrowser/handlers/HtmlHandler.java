@@ -32,6 +32,7 @@ public class HtmlHandler extends BaseWebHandler
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public void findIvyPackages()
   {
@@ -107,15 +108,6 @@ public class HtmlHandler extends BaseWebHandler
   }
 
   @Override
-  protected boolean shouldProcessIncludedFileLine(String line)
-  {
-    boolean isIvyFile   = line.contains("ivy.xml");
-    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
-
-    return isValidLine && !isIvyFile;
-  }
-
-  @Override
   public String getContents(String packageLine)
   {
     String newText;
@@ -151,9 +143,37 @@ public class HtmlHandler extends BaseWebHandler
     return hasVersion;
   }
 
+  /** Parse the file name out of the html line. */
+  @Override
+  protected String parseIncludedFileInfo(String line, String version)
+  {
+    String trimmedLine = line.trim();
+    String parsedLine  = StringUtils.substringAfter(trimmedLine, "A HREF=\"");
+
+    parsedLine = StringUtils.substringBefore(parsedLine, "\"");
+
+    String size = StringUtils.substringAfterLast(trimmedLine, " ");
+
+    return parsedLine + "   " + size;
+  }
+
+  @Override
+  protected boolean shouldProcessIncludedFileLine(String line)
+  {
+    boolean isIvyFile   = line.contains("ivy.xml");
+    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
+
+    return isValidLine && !isIvyFile;
+  }
+
   @Override
   protected boolean shouldProcessVersionedLibraryLine(String line)
   {
+    if (line.contains("ALT=\"[DIR]"))
+    {
+      return false;
+    }
+
     boolean shouldProcess;
 
     if (line.contains("<li"))
@@ -167,19 +187,5 @@ public class HtmlHandler extends BaseWebHandler
     }
 
     return shouldProcess;
-  }
-
-  /** Parse the file name out of the html line. */
-  @Override
-  protected String parseIncludedFileInfo(String line, String version)
-  {
-    String trimmedLine = line.trim();
-    String parsedLine  = StringUtils.substringAfter(trimmedLine, "A HREF=\"");
-
-    parsedLine = StringUtils.substringBefore(parsedLine, "\"");
-
-    String size = StringUtils.substringAfterLast(trimmedLine, " ");
-
-    return parsedLine + "   " + size;
   }
 }

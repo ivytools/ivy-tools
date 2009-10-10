@@ -21,6 +21,32 @@ public class BranchNode extends CheckableNode
     this.showTargets = showTargets;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  @Override
+  public void add(CheckableNode targetNode)
+  {
+    if (targetNode instanceof TargetNode)
+    {
+      targets.add(((TargetNode) targetNode));
+    }
+  }
+
+  public String getBranchUrl()
+  {
+    String url = project.getProjectBaseUrl();
+
+    url = url + "/" + getName();
+
+    return url;
+  }
+
+  @Override
+  public List<? extends CheckableNode> getChildren()
+  {
+    return targets;
+  }
+
   @Override
   public int indexOf(Object child)
   {
@@ -45,34 +71,7 @@ public class BranchNode extends CheckableNode
     return !showTargets;
   }
 
-  @Override
-  public void add(CheckableNode targetNode)
-  {
-    if (targetNode instanceof TargetNode)
-    {
-      targets.add(((TargetNode) targetNode));
-    }
-  }
-
-  @Override
-  public List<? extends CheckableNode> getChildren()
-  {
-    return targets;
-  }
-
-  public List<TargetNode> getTargets()
-  {
-    return targets;
-  }
-
-  public String getBranchUrl()
-  {
-    String url = project.getProjectBaseUrl();
-
-    url = url + "/" + getName();
-
-    return url;
-  }
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public Branch getBranch()
   {
@@ -82,5 +81,10 @@ public class BranchNode extends CheckableNode
   public BuildableProjects getProject()
   {
     return project;
+  }
+
+  public List<TargetNode> getTargets()
+  {
+    return targets;
   }
 }

@@ -20,6 +20,10 @@ public class CountValueMatcherEditor implements Matcher<IvyFile>
     this.showOnlyUnusedLibrariesRadioButton = showOnlyUnusedLibrariesRadioButton;
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface Matcher ---------------------
+
   public boolean matches(IvyFile item)
   {
     int count = item.getCount();

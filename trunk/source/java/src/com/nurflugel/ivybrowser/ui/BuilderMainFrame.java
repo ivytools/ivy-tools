@@ -28,6 +28,7 @@ public class BuilderMainFrame extends JFrame
   /** Use serialVersionUID for interoperability. */
   private static final long       serialVersionUID      = 3060125117710119253L;
   private static final String     REPOSITORY_LOCATION   = "repositoryLocation";
+  private static final String     REPOSITORY            = "repository";
   private JButton                 setIvyReposButton;
   private JButton                 addNewComponentButton;
   private JLabel                  ivyReposLabel;
@@ -38,7 +39,6 @@ public class BuilderMainFrame extends JFrame
   private File                    repositoryDir;
   private List<IvyRepositoryItem> ivyPackages           = new ArrayList<IvyRepositoryItem>();
   private Preferences             preferences;
-  private static final String     REPOSITORY            = "repository";
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public BuilderMainFrame()
@@ -109,13 +109,6 @@ public class BuilderMainFrame extends JFrame
     }
   }
 
-  private void doQuitAction()
-  {
-    savePreferences();
-    dispose();
-    System.exit(0);
-  }
-
   private void findRepositoryDir()
   {
     JFileChooser chooser = new JFileChooser();
@@ -147,28 +140,6 @@ public class BuilderMainFrame extends JFrame
     findFiles();
   }
 
-  private void addNewComponent()
-  {
-    NewComponentDialog dialog = new NewComponentDialog(ivyPackages, repositoryDir, preferences);
-
-    dialog.setVisible(true);
-  }
-
-  private void savePreferences()
-  {
-    if (repositoryDir != null)
-    {
-      preferences.put(REPOSITORY_LOCATION, repositoryDir.getAbsolutePath());
-    }
-  }
-
-  private void loadPreferences()
-  {
-    String dirName = preferences.get(REPOSITORY_LOCATION, null);
-
-    validateIvyRepositoryLocation(dirName);
-  }
-
   private void validateIvyRepositoryLocation(String dirName)
   {
     addNewComponentButton.setEnabled(false);
@@ -184,6 +155,35 @@ public class BuilderMainFrame extends JFrame
         addNewComponentButton.setEnabled(true);
       }
     }
+  }
+
+  private void addNewComponent()
+  {
+    NewComponentDialog dialog = new NewComponentDialog(ivyPackages, repositoryDir, preferences);
+
+    dialog.setVisible(true);
+  }
+
+  private void doQuitAction()
+  {
+    savePreferences();
+    dispose();
+    System.exit(0);
+  }
+
+  private void savePreferences()
+  {
+    if (repositoryDir != null)
+    {
+      preferences.put(REPOSITORY_LOCATION, repositoryDir.getAbsolutePath());
+    }
+  }
+
+  private void loadPreferences()
+  {
+    String dirName = preferences.get(REPOSITORY_LOCATION, null);
+
+    validateIvyRepositoryLocation(dirName);
   }
 
   public static void centerApp(Object object)
@@ -213,16 +213,20 @@ public class BuilderMainFrame extends JFrame
   }
 
   // -------------------------- OTHER METHODS --------------------------
-  public void setStatusLabel(String text)
-  {
-    statusLabel.setText(text);
-  }
 
   public void showNormal() {}
 
   // --------------------------- main() method ---------------------------
+
   public static void main(String[] args)
   {
     BuilderMainFrame builderMainFrame = new BuilderMainFrame();
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public void setStatusLabel(String text)
+  {
+    statusLabel.setText(text);
   }
 }

@@ -36,13 +36,58 @@ public class IvyPackage implements Comparable<IvyPackage>
     this.library    = library;
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface Comparable ---------------------
+
+  public int compareTo(IvyPackage ivyPackage)
+  {
+    String moduleA = getOrgName() + getModuleName() + getVersion();
+    String moduleB = ivyPackage.getOrgName() + ivyPackage.getModuleName() + ivyPackage.getVersion();
+
+    return moduleA.compareTo(moduleB);
+  }
+
   // -------------------------- OTHER METHODS --------------------------
+
   public List<IvyPackage> getDependencies()
   {
     IvyFile file = new IvyFile(versionUrl, ivyFile);
 
     return file.getDependencies();
   }
+
+  public String getPrettyText()
+  {
+    return orgName + " " + moduleName + " " + version;
+  }
+
+  public boolean hasJavaDocs()
+  {
+    return hasJavaDocs;
+  }
+
+  public boolean hasSourceCode()
+  {
+    return hasSourceCode;
+  }
+
+  // ------------------------ CANONICAL METHODS ------------------------
+
+  @Override
+  public String toString()
+  {
+    if (library == null)
+    {
+      return orgName + " " + moduleName + " " + version;
+    }
+    else
+    {
+      return orgName + " " + moduleName + " " + version + " " + library;
+    }
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public String getIvyFile()
   {
@@ -74,16 +119,6 @@ public class IvyPackage implements Comparable<IvyPackage>
     return version;
   }
 
-  public boolean hasJavaDocs()
-  {
-    return hasJavaDocs;
-  }
-
-  public boolean hasSourceCode()
-  {
-    return hasSourceCode;
-  }
-
   public void setHasJavaDocs(boolean hasJavaDocs)
   {
     this.hasJavaDocs = hasJavaDocs;
@@ -97,31 +132,5 @@ public class IvyPackage implements Comparable<IvyPackage>
   public void setVersionUrl(URL versionUrl)
   {
     this.versionUrl = versionUrl;
-  }
-
-  @Override
-  public String toString()
-  {
-    if (library == null)
-    {
-      return orgName + " " + moduleName + " " + version;
-    }
-    else
-    {
-      return orgName + " " + moduleName + " " + version + " " + library;
-    }
-  }
-
-  public String getPrettyText()
-  {
-    return orgName + " " + moduleName + " " + version;
-  }
-
-  public int compareTo(IvyPackage ivyPackage)
-  {
-    String moduleA = getOrgName() + getModuleName() + getVersion();
-    String moduleB = ivyPackage.getOrgName() + ivyPackage.getModuleName() + ivyPackage.getVersion();
-
-    return moduleA.compareTo(moduleB);
   }
 }

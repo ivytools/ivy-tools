@@ -10,15 +10,7 @@ public enum NodeOrder
 
   private String order;
 
-  NodeOrder(String order)
-  {
-    this.order = order;
-  }
-
-  public String getOrder()
-  {
-    return order;
-  }
+  // -------------------------- STATIC METHODS --------------------------
 
   public static NodeOrder find(String text)
   {
@@ -33,5 +25,17 @@ public enum NodeOrder
     }
 
     return TOP_TO_BOTTOM;
+  }
+
+  NodeOrder(String order)
+  {
+    this.order = order;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public String getOrder()
+  {
+    return order;
   }
 }

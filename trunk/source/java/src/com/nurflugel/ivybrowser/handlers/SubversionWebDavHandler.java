@@ -29,6 +29,7 @@ public class SubversionWebDavHandler extends BaseWebHandler
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
   public void findIvyPackages()
@@ -124,23 +125,6 @@ public class SubversionWebDavHandler extends BaseWebHandler
     return hasVersion;
   }
 
-  @Override
-  protected boolean shouldProcessVersionedLibraryLine(String line)
-  {
-    boolean shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
-
-    return shouldProcess;
-  }
-
-  @Override
-  protected boolean shouldProcessIncludedFileLine(String line)
-  {
-    boolean isIvyFile   = line.contains("ivy.xml");
-    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
-
-    return isValidLine && !isIvyFile;
-  }
-
   /** Parse the file name out of the html line. */
   @Override
   protected String parseIncludedFileInfo(String line, String version)
@@ -152,5 +136,22 @@ public class SubversionWebDavHandler extends BaseWebHandler
     parsedLine = StringUtils.remove(parsedLine, "-" + version);
 
     return parsedLine;
+  }
+
+  @Override
+  protected boolean shouldProcessIncludedFileLine(String line)
+  {
+    boolean isIvyFile   = line.contains("ivy.xml");
+    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
+
+    return isValidLine && !isIvyFile;
+  }
+
+  @Override
+  protected boolean shouldProcessVersionedLibraryLine(String line)
+  {
+    boolean shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
+
+    return shouldProcess;
   }
 }

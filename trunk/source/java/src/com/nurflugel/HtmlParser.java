@@ -17,6 +17,8 @@ public class HtmlParser
   private static final String TRUNK    = "trunk";
   private static final String BRANCHES = "branches";
 
+  // -------------------------- OTHER METHODS --------------------------
+
   /**
    * See if trunk and any branches exist in the repository.
    *
@@ -58,6 +60,20 @@ public class HtmlParser
     }
 
     return results;
+  }
+
+  /** Get a buffered reader for a url. */
+  private BufferedReader getReader(String projectBaseUrl) throws IOException
+  {
+    URL           repositoryUrl = new URL(projectBaseUrl);
+    URLConnection urlConnection = repositoryUrl.openConnection();
+
+    urlConnection.setAllowUserInteraction(true);
+    urlConnection.connect();
+
+    InputStream in = urlConnection.getInputStream();
+
+    return new BufferedReader(new InputStreamReader(in));
   }
 
   /**
@@ -117,20 +133,6 @@ public class HtmlParser
     }
 
     return results;
-  }
-
-  /** Get a buffered reader for a url. */
-  private BufferedReader getReader(String projectBaseUrl) throws IOException
-  {
-    URL           repositoryUrl = new URL(projectBaseUrl);
-    URLConnection urlConnection = repositoryUrl.openConnection();
-
-    urlConnection.setAllowUserInteraction(true);
-    urlConnection.connect();
-
-    InputStream in = urlConnection.getInputStream();
-
-    return new BufferedReader(new InputStreamReader(in));
   }
 
   private void closeReader(BufferedReader reader)

@@ -132,37 +132,6 @@ public class NewComponentDialog extends JDialog
       });
   }
 
-  private void addDependencies()
-  {
-    CreateDependenciesDialog dependenciesDialog = new CreateDependenciesDialog(ivyPackages);
-    List<IvyRepositoryItem>  dependencies       = dependenciesDialog.getDependancies();
-
-    for (IvyRepositoryItem dependency : dependencies)
-    {
-      IvyRepositoryItemCheckbox checkbox = new IvyRepositoryItemCheckbox(dependency);
-
-      dependenciesMap.put(dependency.getIvyLine(), checkbox);
-    }
-
-    dependenciesPanel.removeAll();
-
-    Collection<IvyRepositoryItemCheckbox> checkboxes = dependenciesMap.values();
-
-    for (IvyRepositoryItemCheckbox checkbox : checkboxes)
-    {
-      dependenciesPanel.add(checkbox);
-    }
-
-    dependenciesPanel.invalidate();
-    invalidate();
-
-    Dimension size = getSize();
-
-    pack();
-    setSize(size);
-    addDependenciesToComponentButton.requestFocus();
-  }
-
   private void onOK()
   {
     IvyRepositoryItem       newItem      = new IvyRepositoryItem(orgField.getText(), moduleField.getText(), revField.getText(), repositoryDir);
@@ -301,7 +270,39 @@ public class NewComponentDialog extends JDialog
     }
   }
 
+  private void addDependencies()
+  {
+    CreateDependenciesDialog dependenciesDialog = new CreateDependenciesDialog(ivyPackages);
+    List<IvyRepositoryItem>  dependencies       = dependenciesDialog.getDependancies();
+
+    for (IvyRepositoryItem dependency : dependencies)
+    {
+      IvyRepositoryItemCheckbox checkbox = new IvyRepositoryItemCheckbox(dependency);
+
+      dependenciesMap.put(dependency.getIvyLine(), checkbox);
+    }
+
+    dependenciesPanel.removeAll();
+
+    Collection<IvyRepositoryItemCheckbox> checkboxes = dependenciesMap.values();
+
+    for (IvyRepositoryItemCheckbox checkbox : checkboxes)
+    {
+      dependenciesPanel.add(checkbox);
+    }
+
+    dependenciesPanel.invalidate();
+    invalidate();
+
+    Dimension size = getSize();
+
+    pack();
+    setSize(size);
+    addDependenciesToComponentButton.requestFocus();
+  }
+
   // --------------------------- main() method ---------------------------
+
   @SuppressWarnings({ "CallToSystemExit" })
   public static void main(String[] args)
   {

@@ -56,9 +56,48 @@ public class MainFrame extends JFrame implements UiMainFrame
     go();
   }
 
-  public static void main(String[] args)
+  private void initializeUi()
   {
-    MainFrame mainFrame = new MainFrame();
+    setTitle("IvyFormatter v. " + Version.VERSION);
+    addStatus("");
+  }
+
+  private void go()
+  {
+    setCursor(busyCursor);
+    os.setLookAndFeel(this);
+
+    try
+    {
+      initializeComponents();
+      setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+      setSize(600, 1000);
+      center(this);
+      setVisible(true);
+      addStatus("Finding available projects...");
+
+      if (!isTest || getTestDataFromFile)
+      {
+        getBuildItems();
+      }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(this, "The application has experienced a fatal error\n" + e.toString());
+      System.exit(1);
+    }
+
+    addListeners();
+    setCursor(normalCursor);
+  }
+
+  private void initializeComponents()
+  {
+    Container container = getContentPane();
+
+    container.add(thePanel);
+    treeScrollPane.setViewportView(treeHandler.getTree());
   }
 
   public void addStatus(String statusLine)
@@ -67,12 +106,13 @@ public class MainFrame extends JFrame implements UiMainFrame
     statusLabel.setText(statusLine);
   }
 
-  public void initializeStatusBar(int minimum, int maximum, int initialValue, boolean visible)
+  private void getBuildItems()
   {
-    progressBar.setMinimum(minimum);
-    progressBar.setMaximum(maximum);
-    progressBar.setValue(initialValue);
-    progressBar.setVisible(visible);
+    Authenticator.setDefault(new WebAuthenticator());
+
+    ProjectFinderTask projectFinderTask = new ProjectFinderTask(this, progressBar, treeHandler, false);
+
+    projectFinderTask.execute();
   }
 
   private void addListeners()
@@ -123,6 +163,45 @@ public class MainFrame extends JFrame implements UiMainFrame
       });
   }
 
+  private void doQuitAction()
+  {
+    config.saveSettings();
+    System.exit(0);
+  }
+
+  @SuppressWarnings({ "OverlyBroadCatchBlock" })
+  private void startBuildAction()
+  {
+    setCursor(busyCursor);
+    System.out.println("\n\n\nHere are the dirs to be included:");
+    addStatus("Fetching externals information...");
+
+    // List<ProjectNode> checkedProjects = treeHandler.getCheckedProjects();
+    List<BranchNode> checkedBranches = treeHandler.getCheckedBranches();
+    // List<TargetNode>  checkedTargets  = treeHandler.getCheckedTargets();
+
+    getExternals(checkedBranches);
+    setCursor(normalCursor);
+  }
+
+  private void getExternals(List<BranchNode> branches)
+  {
+    Authenticator.setDefault(new WebAuthenticator());
+
+    ExternalsFinderTask externalsFinderTask = new ExternalsFinderTask(this, progressBar, branches);
+
+    // externalsFinderTask.execute();
+    try
+    {
+      externalsFinderTask.doInBackground();
+      treeHandler.expandAll(false);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+
   private void findDotExecutablePath()
   {
     // if ((dotExecutablePath == null) || (dotExecutablePath.length() == 0)) {
@@ -158,86 +237,50 @@ public class MainFrame extends JFrame implements UiMainFrame
     }
   }
 
-  private void doQuitAction()
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface UiMainFrame ---------------------
+
+  /**  */
+  public Os getOs()
   {
-    config.saveSettings();
-    System.exit(0);
+    return os;
   }
+
+  public void initializeStatusBar(int minimum, int maximum, int initialValue, boolean visible)
+  {
+    progressBar.setMinimum(minimum);
+    progressBar.setMaximum(maximum);
+    progressBar.setValue(initialValue);
+    progressBar.setVisible(visible);
+  }
+
+  public boolean isTest()
+  {
+    return isTest;
+  }
+
+  @SuppressWarnings({ "BooleanMethodNameMustStartWithQuestion" })
+  public boolean getTestDataFromFile()
+  {
+    return getTestDataFromFile;
+  }
+
+  public void setReady(boolean isReady)
+  {
+    findExternalsButton.setEnabled(isReady);
+  }
+
+  public void showSevereError(String message, Exception e)
+  {
+    // todo
+  }
+
+  // -------------------------- OTHER METHODS --------------------------
 
   public void enableGoButton(boolean enabled)
   {
     findExternalsButton.setEnabled(enabled);
-  }
-
-  private void getBuildItems()
-  {
-    Authenticator.setDefault(new WebAuthenticator());
-
-    ProjectFinderTask projectFinderTask = new ProjectFinderTask(this, progressBar, treeHandler, false);
-
-    projectFinderTask.execute();
-  }
-
-  private void getExternals(List<BranchNode> branches)
-  {
-    Authenticator.setDefault(new WebAuthenticator());
-
-    ExternalsFinderTask externalsFinderTask = new ExternalsFinderTask(this, progressBar, branches);
-
-    // externalsFinderTask.execute();
-    try
-    {
-      externalsFinderTask.doInBackground();
-      treeHandler.expandAll(false);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void go()
-  {
-    setCursor(busyCursor);
-    os.setLookAndFeel(this);
-
-    try
-    {
-      initializeComponents();
-      setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-      setSize(600, 1000);
-      center(this);
-      setVisible(true);
-      addStatus("Finding available projects...");
-
-      if (!isTest || getTestDataFromFile)
-      {
-        getBuildItems();
-      }
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      JOptionPane.showMessageDialog(this, "The application has experienced a fatal error\n" + e.toString());
-      System.exit(1);
-    }
-
-    addListeners();
-    setCursor(normalCursor);
-  }
-
-  private void initializeComponents()
-  {
-    Container container = getContentPane();
-
-    container.add(thePanel);
-    treeScrollPane.setViewportView(treeHandler.getTree());
-  }
-
-  private void initializeUi()
-  {
-    setTitle("IvyFormatter v. " + Version.VERSION);
-    addStatus("");
   }
 
   @SuppressWarnings({ "unchecked" })
@@ -290,6 +333,11 @@ public class MainFrame extends JFrame implements UiMainFrame
     }
   }
 
+  public void setBusyCursor()
+  {
+    setCursor(Util.busyCursor);
+  }
+
   private void saveExternalsToFile(Map<BuildableProjects, Map<String, List<External>>> dependencies) throws IOException
   {  // todo fix
 
@@ -302,57 +350,19 @@ public class MainFrame extends JFrame implements UiMainFrame
     out.close();
   }
 
-  @SuppressWarnings({ "OverlyBroadCatchBlock" })
-  private void startBuildAction()
-  {
-    setCursor(busyCursor);
-    System.out.println("\n\n\nHere are the dirs to be included:");
-    addStatus("Fetching externals information...");
-
-    // List<ProjectNode> checkedProjects = treeHandler.getCheckedProjects();
-    List<BranchNode> checkedBranches = treeHandler.getCheckedBranches();
-    // List<TargetNode>  checkedTargets  = treeHandler.getCheckedTargets();
-
-    getExternals(checkedBranches);
-    setCursor(normalCursor);
-  }
-
-  /**  */
-  public Os getOs()
-  {
-    return os;
-  }
-
-  @SuppressWarnings({ "BooleanMethodNameMustStartWithQuestion" })
-  public boolean getTestDataFromFile()
-  {
-    return getTestDataFromFile;
-  }
-
-  public void setBusyCursor()
-  {
-    setCursor(Util.busyCursor);
-  }
-
   public void setNormalCursor()
   {
     setCursor(Util.normalCursor);
   }
 
-  public void setReady(boolean isReady)
+  // --------------------------- main() method ---------------------------
+
+  public static void main(String[] args)
   {
-    findExternalsButton.setEnabled(isReady);
+    MainFrame mainFrame = new MainFrame();
   }
 
-  public void showSevereError(String message, Exception e)
-  {
-    // todo
-  }
-
-  public boolean isTest()
-  {
-    return isTest;
-  }
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public Config getConfig()
   {

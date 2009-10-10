@@ -7,6 +7,8 @@ public class Targets
 {
   private String targetName;
 
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
   public String getTargetName()
   {
     return targetName;

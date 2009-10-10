@@ -13,11 +13,35 @@ public class BuildableProjects
 
   // private MasterProjects projectMaster;
   private String projectAbr;
+
+  // ------------------------ CANONICAL METHODS ------------------------
+
+  // // todo this really doesn't belong here... but it's a nice way for all targets of a project to get the same tag name
+  // public String getSuggestedTagName()
+  // {
+  // return suggestedTagName;
+  // }
+  //
+  // public void setSuggestedTagName(String suggestedTagName)
+  // {
+  // this.suggestedTagName = suggestedTagName;
+  // }
+  @Override
+  public String toString()
+  {
+    return projectName;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public String getProjectAbr()
+  {
+    return projectAbr;
+  }
+
   // private Targets[] buildTargets;
   // private String suggestedTagName;
   // private BuildScripts buildScript;
-
-  // -------------------------- STATIC METHODS --------------------------
   // public static List<BuildableProjects> getProjectsForMaster(MasterProjects masterProject)
   // {
   // BuildableProjects[] buildableProjects = values();
@@ -76,27 +100,6 @@ public class BuildableProjects
   // return projectMaster;
   // }
   public String getProjectName()
-  {
-    return projectName;
-  }
-
-  public String getProjectAbr()
-  {
-    return projectAbr;
-  }
-
-  // // todo this really doesn't belong here... but it's a nice way for all targets of a project to get the same tag name
-  // public String getSuggestedTagName()
-  // {
-  // return suggestedTagName;
-  // }
-  //
-  // public void setSuggestedTagName(String suggestedTagName)
-  // {
-  // this.suggestedTagName = suggestedTagName;
-  // }
-  @Override
-  public String toString()
   {
     return projectName;
   }

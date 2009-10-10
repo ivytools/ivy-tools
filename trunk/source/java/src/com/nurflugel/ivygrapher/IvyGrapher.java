@@ -35,10 +35,12 @@ import static com.nurflugel.ivygrapher.NodeOrder.*;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class IvyGrapher extends JFrame
 {
+  public static final String  HELP_HS           = "ivyGrapherHelp.hs";
+  private static final String DIR               = "dir";
+  private static final String DOT_EXECUTABLE    = "dotExecutable";
   private File[]              filesToGraph;
   private String              lastVisitedDir;
   private Preferences         preferences       = Preferences.userNodeForPackage(IvyGrapher.class);
-  private static final String DIR               = "dir";
   private Os                  os;
   private OutputFormat        outputFormat;
   private NodeOrder           nodeOrder;
@@ -55,11 +57,9 @@ public class IvyGrapher extends JFrame
   private JRadioButton        pngButton;
   private JRadioButton        pdfButtton;
   private JRadioButton        svgButton;
-  private static final String DOT_EXECUTABLE    = "dotExecutable";
   private String              dotExecutablePath;
   private Cursor              normalCursor      = getPredefinedCursor(DEFAULT_CURSOR);
   private Cursor              busyCursor        = getPredefinedCursor(WAIT_CURSOR);
-  public static final String  HELP_HS           = "ivyGrapherHelp.hs";
 
   public IvyGrapher(String[] args)
   {
@@ -86,13 +86,14 @@ public class IvyGrapher extends JFrame
     setVisible(true);
   }
 
-  private void doQuitAction()
+  private void initializeUi()
   {
-    preferences.put("outputFormat", outputFormat.getDisplayLabel());
-    preferences.put("nodeOrder", nodeOrder.toString());
-    preferences.putBoolean("deleteDotFiles", deleteDotButton.isSelected());
-    preferences.put("dotLocation", dotExecutablePath);
-    System.exit(0);
+    getOutputFormat();
+    getNodeOrdering();
+    getMiscInfo();
+    getDotLocation();
+    addActionListeners();
+    validateDotExistance();
   }
 
   private void getOutputFormat()
@@ -115,28 +116,6 @@ public class IvyGrapher extends JFrame
     svgButton.setSelected(outputFormat == SVG);
   }
 
-  private void initializeUi()
-  {
-    getOutputFormat();
-    getNodeOrdering();
-    getMiscInfo();
-    getDotLocation();
-    addActionListeners();
-    validateDotExistance();
-  }
-
-  private void getDotLocation()
-  {
-    dotExecutablePath = preferences.get("dotLocation", os.getDefaultDotPath());
-  }
-
-  private void getMiscInfo()
-  {
-    boolean deleteDotFiles = preferences.getBoolean("deleteDotFiles", true);
-
-    deleteDotButton.setSelected(deleteDotFiles);
-  }
-
   private void getNodeOrdering()
   {
     String text = preferences.get("nodeOrder", TOP_TO_BOTTOM.toString());
@@ -146,6 +125,18 @@ public class IvyGrapher extends JFrame
     btButton.setSelected(nodeOrder == BOTTOM_TO_TOP);
     rlButton.setSelected(nodeOrder == RIGHT_TO_LEFT);
     lrButton.setSelected(nodeOrder == LEFT_TO_RIGHT);
+  }
+
+  private void getMiscInfo()
+  {
+    boolean deleteDotFiles = preferences.getBoolean("deleteDotFiles", true);
+
+    deleteDotButton.setSelected(deleteDotFiles);
+  }
+
+  private void getDotLocation()
+  {
+    dotExecutablePath = preferences.get("dotLocation", os.getDefaultDotPath());
   }
 
   private void addActionListeners()
@@ -224,27 +215,13 @@ public class IvyGrapher extends JFrame
     addHelpListener();
   }
 
-  /** Add the help listener - link to the help files. */
-  private void addHelpListener()
+  private void doQuitAction()
   {
-    ClassLoader classLoader = IvyGrapher.class.getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, HELP_HS);
-
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {  // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-      // LOGGER.error("HelpSet " + ee.getMessage());
-      // LOGGER.error("HelpSet " + HELP_HS + " not found");
-    }
+    preferences.put("outputFormat", outputFormat.getDisplayLabel());
+    preferences.put("nodeOrder", nodeOrder.toString());
+    preferences.putBoolean("deleteDotFiles", deleteDotButton.isSelected());
+    preferences.put("dotLocation", dotExecutablePath);
+    System.exit(0);
   }
 
   private void findDotLocation()
@@ -271,24 +248,6 @@ public class IvyGrapher extends JFrame
     }
 
     validateDotExistance();
-  }
-
-  /** Validate the existence of the DOT executatble. No executable, no executing Graphviz... */
-  private void validateDotExistance()
-  {
-    File    dot    = new File(dotExecutablePath);
-    boolean exists = dot.exists();
-
-    selectFilesButton.setEnabled(exists);
-    selectFilesButton.setToolTipText(exists ? "Select the XML files in the .ivy  directory to graph"
-                                            : "You must first find Dot on your system");
-  }
-
-  public static void main(String[] args)
-  {
-    IvyGrapher grapher = new IvyGrapher(args);
-
-    // grapher.createGraph();
   }
 
   private void createGraph()
@@ -351,5 +310,48 @@ public class IvyGrapher extends JFrame
     {
       e.printStackTrace();
     }
+  }
+
+  /** Add the help listener - link to the help files. */
+  private void addHelpListener()
+  {
+    ClassLoader classLoader = IvyGrapher.class.getClassLoader();
+
+    try
+    {
+      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, HELP_HS);
+
+      HelpSet                   helpSet               = new HelpSet(null, hsURL);
+      HelpBroker                helpBroker            = helpSet.createHelpBroker();
+      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
+
+      helpButton.addActionListener(displayHelpFromSource);
+    }
+    catch (HelpSetException ee)
+    {  // Say what the exception really is
+      System.out.println("Exception! " + ee.getMessage());
+      // LOGGER.error("HelpSet " + ee.getMessage());
+      // LOGGER.error("HelpSet " + HELP_HS + " not found");
+    }
+  }
+
+  /** Validate the existence of the DOT executatble. No executable, no executing Graphviz... */
+  private void validateDotExistance()
+  {
+    File    dot    = new File(dotExecutablePath);
+    boolean exists = dot.exists();
+
+    selectFilesButton.setEnabled(exists);
+    selectFilesButton.setToolTipText(exists ? "Select the XML files in the .ivy  directory to graph"
+                                            : "You must first find Dot on your system");
+  }
+
+  // --------------------------- main() method ---------------------------
+
+  public static void main(String[] args)
+  {
+    IvyGrapher grapher = new IvyGrapher(args);
+
+    // grapher.createGraph();
   }
 }

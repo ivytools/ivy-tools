@@ -23,6 +23,7 @@ public enum Os
   private OutputFormat outputFormat;
 
   // -------------------------- STATIC METHODS --------------------------
+
   public static Os findOs(String osName)
   {
     Os[] oses = values();
@@ -48,7 +49,25 @@ public enum Os
     this.defaultDotPath  = defaultDotPath;
     this.outputFormat    = outputFormat;
   }
+
   // -------------------------- OTHER METHODS --------------------------
+
+  public String getBuildCommandPath(String basePath)
+  {
+    return basePath + File.separator + buildCommand;
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public String getDefaultDotPath()
+  {
+    return defaultDotPath;
+  }
+
+  public String getName()
+  {
+    return name;
+  }
 
   // public String[] getCommandArgs(String path, BuildableItem buildableItem)
   // {
@@ -71,16 +90,6 @@ public enum Os
     return outputFormat;
   }
 
-  public String getBuildCommandPath(String basePath)
-  {
-    return basePath + File.separator + buildCommand;
-  }
-
-  public String getName()
-  {
-    return name;
-  }
-
   @SuppressWarnings({ "CallToPrintStackTrace", "OverlyBroadCatchBlock" })
   public void setLookAndFeel(Component component)
   {
@@ -88,10 +97,5 @@ public enum Os
     {
       Util.setLookAndFeel(lookAndFeel, component);
     }
-  }
-
-  public String getDefaultDotPath()
-  {
-    return defaultDotPath;
   }
 }

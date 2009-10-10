@@ -23,6 +23,10 @@ public class IvyProjectTreeModel implements TreeModel
     this.ivyFilesMap     = Collections.unmodifiableMap(ivyFilesMap);
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface TreeModel ---------------------
+
   public Object getRoot()
   {
     return rootText;

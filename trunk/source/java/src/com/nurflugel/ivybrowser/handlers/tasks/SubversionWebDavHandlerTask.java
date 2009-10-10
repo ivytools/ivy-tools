@@ -25,6 +25,10 @@ public class SubversionWebDavHandlerTask implements Runnable
     this.handler       = handler;
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface Runnable ---------------------
+
   public void run()
   {
     try
