@@ -5,11 +5,15 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
+import javax.swing.*;
+import static javax.swing.JOptionPane.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -61,9 +65,13 @@ public class HandlerFactory
 
       reader.close();
     }
-    catch (Exception e)
+    catch (UnknownHostException e)
     {
-      e.printStackTrace();
+      showMessageDialog(null, "Network error contacting host: " + e.getMessage(), "Unable to parse repository", ERROR_MESSAGE);
+    }
+    catch (IOException e)
+    {
+      showMessageDialog(null, "Error reaching repository: " + e.getMessage(), "Unable to parse repository", ERROR_MESSAGE);
     }
 
     return false;

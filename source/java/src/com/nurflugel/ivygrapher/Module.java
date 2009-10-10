@@ -57,6 +57,7 @@ public class Module
     this.revision = revision;
   }
 
+  @Override
   public String toString()
   {
     return getNiceXmlKey() + "_" + revision;
