@@ -13,15 +13,13 @@ import java.net.URLConnection;
                   })
 public class HtmlHandlerTask implements Runnable
 {
-  private IvyBrowserMainFrame mainFrame;
   private HtmlHandler         htmlHandler;
   private URL                 repositoryUrl;
   private String              orgName;
 
   // --------------------------- CONSTRUCTORS ---------------------------
-  public HtmlHandlerTask(IvyBrowserMainFrame mainFrame, HtmlHandler htmlHandler, URL repositoryUrl, String orgName)
+  public HtmlHandlerTask(HtmlHandler htmlHandler, URL repositoryUrl, String orgName)
   {
-    this.mainFrame     = mainFrame;
     this.htmlHandler   = htmlHandler;
     this.repositoryUrl = repositoryUrl;
     this.orgName       = BaseWebHandler.stripSlash(orgName);
