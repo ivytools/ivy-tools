@@ -70,7 +70,7 @@ public class HtmlHandler extends BaseWebHandler
 
           if (!orgName.equalsIgnoreCase("/Home/") && !orgName.contains("Parent Directory"))
           {
-            HtmlHandlerTask task = new HtmlHandlerTask(mainFrame, this, repositoryUrl, orgName);
+            HtmlHandlerTask task = new HtmlHandlerTask(this, repositoryUrl, orgName);
 
             threadPool.execute(task);
 

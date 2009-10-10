@@ -18,8 +18,8 @@ import static javax.swing.JFileChooser.*;
 @SuppressWarnings({ "ProtectedField" })
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
-  // public static final int                                   NUMBER_OF_THREADS = 5;
-  public static final int                                   NUMBER_OF_THREADS = 1;
+   public static final int                                   NUMBER_OF_THREADS = 5;
+//  public static final int                                   NUMBER_OF_THREADS = 1;
   private static final int                                  BLOCK_SIZE        = 1024;
   protected IvyBrowserMainFrame                             mainFrame;
   protected boolean                                         isTest;
@@ -48,10 +48,6 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     return null;
   }
 
-  //
-  // protected abstract void findModules(URL repositoryUrl, String orgName)
-  // throws IOException;
-  //
   public abstract void findIvyPackages();
 
   public void downloadFile(JLabel fileLabel, String orgName, String moduleName, String version)
