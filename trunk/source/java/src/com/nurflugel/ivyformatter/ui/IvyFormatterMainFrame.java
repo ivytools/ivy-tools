@@ -31,13 +31,13 @@ public class IvyFormatterMainFrame extends JFrame
   private JButton            formatTextButton;
   private JButton            quitButton;
   private JTextArea          textArea;
-  private JPanel             contentPane      = new JPanel();
+  private JPanel             contentPane;
   private JButton            helpButton;
   public static final String HELP_HS          = "ivyFormatterHelp.hs";
 
   public IvyFormatterMainFrame()
   {
-    // $$$setupUI$$$();
+//     $$$setupUI$$$();
     setContentPane(contentPane);
     setTitle("Ivy Formatter v. " + VERSION);
     Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
@@ -79,7 +79,6 @@ public class IvyFormatterMainFrame extends JFrame
     try
     {
       URL                       hsURL                 = HelpSet.findHelpSet(classLoader, HELP_HS);
-
       HelpSet                   helpSet               = new HelpSet(null, hsURL);
       HelpBroker                helpBroker            = helpSet.createHelpBroker();
       CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
@@ -129,8 +128,4 @@ public class IvyFormatterMainFrame extends JFrame
     IvyFormatterMainFrame mainFrame = new IvyFormatterMainFrame();
   }
 
-  private void createUIComponents()
-  {
-    // TODO: place custom component creation code here
-  }
 }
