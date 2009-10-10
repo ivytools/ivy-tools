@@ -21,6 +21,7 @@ import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.*;
 import java.io.File;
 import java.net.Authenticator;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -32,6 +33,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.help.HelpSet;
+import javax.help.HelpBroker;
+import javax.help.CSH;
+import javax.help.HelpSetException;
 
 /** Created by IntelliJ IDEA. User: dbulla Date: Apr 26, 2007 Time: 12:37:50 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
@@ -43,6 +48,7 @@ public class IvyBrowserMainFrame extends JFrame
   private JButton specifyButton = new JButton("Specify Repository");
   private JButton reparseButton = new JButton("Re-parse Repository");
   private JButton quitButton = new JButton("Quit");
+  private JButton helpButton = new JButton("Help");
   private JLabel findLabel = new JLabel("Find library:");
   private JLabel statusLabel = new JLabel();
   private JCheckBox parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
@@ -106,6 +112,7 @@ public class IvyBrowserMainFrame extends JFrame
     buttonPanel.add(specifyButton);
     buttonPanel.add(reparseButton);
     buttonPanel.add(parseOnOpenCheckbox);
+    buttonPanel.add(helpButton);
     buttonPanel.add(quitButton);
     holdingPanel.add(textPanel);
     holdingPanel.add(buttonPanel);
@@ -185,6 +192,25 @@ public class IvyBrowserMainFrame extends JFrame
           preferences.putBoolean(PARSE_ON_OPEN, isSelected);
         }
       });
+
+    ClassLoader classLoader = IvyBrowserMainFrame.class.getClassLoader();
+
+    try
+    {
+      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, "ivyBrowserHelp.hs");
+
+      HelpSet                   helpSet               = new HelpSet(null, hsURL);
+      HelpBroker                helpBroker            = helpSet.createHelpBroker();
+      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
+
+      helpButton.addActionListener(displayHelpFromSource);
+    }
+    catch (HelpSetException ee)
+    {  // Say what the exception really is
+      System.out.println("Exception! " + ee.getMessage());
+      // LOGGER.error("HelpSet " + ee.getMessage());
+      // LOGGER.error("HelpSet " + HELP_HS + " not found");
+    }
   }
 
   public static String specifyRepository(Preferences appPreferences)

@@ -3,7 +3,6 @@ package com.nurflugel;
 import com.nurflugel.externalsreporter.ui.OutputFormat;
 import com.nurflugel.common.ui.Util;
 import static com.nurflugel.externalsreporter.ui.OutputFormat.*;
-
 import javax.swing.*;
 import java.io.File;
 import java.awt.*;
@@ -12,8 +11,7 @@ import java.awt.*;
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
 public enum Os
 {
-  OS_X   ("Mac OS X", "build.sh", new String[] {}, "javax.swing.plaf.mac.MacLookAndFeel", "/Applications/Graphviz.app/Contents/MacOS/dot",
-          PDF),
+  OS_X   ("Mac OS X", "build.sh", new String[] {}, "javax.swing.plaf.mac.MacLookAndFeel", "/Applications/Graphviz.app/Contents/MacOS/dot", PDF),
   WINDOWS("Windows", "build.cmd", new String[] { "cmd.exe", "/C" }, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
           "\"C:\\Program Files\\Graphviz2.24\\bin\\dot.exe\"", PNG);
 
