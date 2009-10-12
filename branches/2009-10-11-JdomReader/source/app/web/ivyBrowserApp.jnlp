@@ -2,7 +2,7 @@
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
         spec="1.0+"
-        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
+        codebase="http://ivy-tools.googlecode.com/svn/branches/2009-10-11-JdomReader/webstart/"
         href="ivyBrowserApp.jnlp">
     <information>
         <title>IvyBrowser</title>
