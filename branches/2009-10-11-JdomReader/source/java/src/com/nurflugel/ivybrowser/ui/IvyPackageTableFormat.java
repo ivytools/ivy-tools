@@ -23,7 +23,7 @@ public class IvyPackageTableFormat implements TableFormat
 
   public int getColumnCount()
   {
-    return 6;
+    return 5;
   }
 
   public String getColumnName(int i)
