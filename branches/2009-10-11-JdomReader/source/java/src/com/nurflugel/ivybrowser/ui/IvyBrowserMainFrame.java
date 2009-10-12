@@ -17,9 +17,12 @@ import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
 import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.Authenticator;
 import java.net.URL;
 import java.util.*;
@@ -42,28 +45,28 @@ import javax.help.HelpSetException;
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
 public class IvyBrowserMainFrame extends JFrame
 {
+  public static final String IVY_REPOSITORY = "IvyRepository";
+  private static final long serialVersionUID = 8982188831570838035L;
+  private static final String PARSE_ON_OPEN = "parseOnOpen";
+  private static final String SAVE_DIR = "saveDir";
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
   private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
-  public static final String  IVY_REPOSITORY      = "IvyRepository";
-  private static final long   serialVersionUID    = 8982188831570838035L;
-  private static final String PARSE_ON_OPEN       = "parseOnOpen";
-  private static final String SAVE_DIR            = "saveDir";
-  private Cursor              busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor              normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private JButton             specifyButton       = new JButton("Specify Repository");
-  private JButton             reparseButton       = new JButton("Re-parse Repository");
-  private JButton             quitButton          = new JButton("Quit");
-  private JButton             helpButton          = new JButton("Help");
-  private JLabel              findLabel           = new JLabel("Find library:");
-  private JLabel              statusLabel         = new JLabel();
-  private JCheckBox           parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
-  private JTable              resultsTable        = new JTable();
-  private JTextField          libraryField        = new JTextField();
-  private Preferences         preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
-  private List<IvyPackage>    repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
-  private JScrollPane         scrollPane;
-  private JPanel              holdingPanel;
-  private String              ivyRepositoryPath;
+  private Cursor           busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor           normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private JButton          specifyButton       = new JButton("Specify Repository");
+  private JButton          reparseButton       = new JButton("Re-parse Repository");
+  private JButton          quitButton          = new JButton("Quit");
+  private JButton          helpButton          = new JButton("Help");
+  private JLabel           findLabel           = new JLabel("Find library:");
+  private JLabel           statusLabel         = new JLabel();
+  private JCheckBox        parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
+  private JTable           resultsTable        = new JTable();
+  private JTextField       libraryField        = new JTextField();
+  private Preferences      preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
+  private List<IvyPackage> repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
+  private JScrollPane      scrollPane;
+  private JPanel           holdingPanel;
+  private String           ivyRepositoryPath;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyBrowserMainFrame()
@@ -171,7 +174,14 @@ public class IvyBrowserMainFrame extends JFrame
         @Override
         public void mousePressed(MouseEvent e)
         {
-          showIvyLine(e);
+          try
+          {
+            showIvyLine(e);
+          }
+          catch (IOException e1)
+          {
+            e1.printStackTrace();  // todo show error dialog
+          }
         }
       });
     addWindowListener(new WindowAdapter()
@@ -205,7 +215,7 @@ public class IvyBrowserMainFrame extends JFrame
       helpButton.addActionListener(displayHelpFromSource);
     }
     catch (HelpSetException ee)
-    {  // Say what the exception really is
+    {                              // Say what the exception really is
       System.out.println("Exception! " + ee.getMessage());
       // LOGGER.error("HelpSet " + ee.getMessage());
       // LOGGER.error("HelpSet " + HELP_HS + " not found");
@@ -242,7 +252,7 @@ public class IvyBrowserMainFrame extends JFrame
   }
 
   @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
-  private void showIvyLine(MouseEvent e)
+  private void showIvyLine(MouseEvent e) throws IOException
   {
     int row = resultsTable.getSelectedRow();
 

@@ -20,7 +20,8 @@ public class IvyPackageFilterator implements TextFilterator
 
     list.add(item.getModuleName());
     list.add(item.getVersion());
-    list.add(item.getLibrary());
+
+    // list.add(item.getLibrary());
     list.add(item.getOrgName());
   }
 }

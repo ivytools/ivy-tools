@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/** A representation of an item in the Ivy repository. */
+/** A representation of an item in the Ivy repository. todo delete this file */
 public class IvyFile
 {
   private List<IvyPackage> dependencies = new ArrayList<IvyPackage>();

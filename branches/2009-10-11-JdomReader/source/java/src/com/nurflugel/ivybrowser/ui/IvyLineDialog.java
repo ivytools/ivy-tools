@@ -8,10 +8,9 @@ import static java.awt.Cursor.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import static java.awt.event.KeyEvent.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import javax.swing.*;
 import static javax.swing.BoxLayout.*;
 import static javax.swing.JComponent.*;
@@ -31,7 +30,7 @@ public class IvyLineDialog extends JDialog
   private String              ivyRepositoryPath;
   private IvyBrowserMainFrame mainFrame;
 
-  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame)
+  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame) throws IOException
   {
     this.ivyPackage        = ivyPackage;
     this.ivyRepositoryPath = ivyRepositoryPath;
@@ -118,9 +117,9 @@ public class IvyLineDialog extends JDialog
     dispose();
   }
 
-  private void createText()
+  private void createText() throws IOException
   {
-    List<IvyPackage> dependencies = ivyPackage.getDependencies();
+    Set<IvyPackage> dependencies = (Set<IvyPackage>) ivyPackage.getDependencies();
 
     dependenciesPanel.removeAll();
 
@@ -128,7 +127,7 @@ public class IvyLineDialog extends JDialog
     {
       dependenciesPanel.add(new JLabel("No dependencies found"));
     }
-    else
+    else  // todo put this into a method "populate dependencies
     {
       List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
 
@@ -153,11 +152,19 @@ public class IvyLineDialog extends JDialog
               setCursor(getPredefinedCursor(WAIT_CURSOR));
 
               // get package from look up of org module rev in hashtable
-              IvyPackage    newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
-              IvyLineDialog lineDialog    = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
+              IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
 
-              lineDialog.setVisible(true);
-              setCursor(getPredefinedCursor(DEFAULT_CURSOR));
+              try
+              {
+                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
+
+                lineDialog.setVisible(true);
+                setCursor(getPredefinedCursor(DEFAULT_CURSOR));
+              }
+              catch (IOException e)
+              {
+                e.printStackTrace();  // todo show error dialog
+              }
             }
           });
         sortedCheckboxes.add(checkBox);
@@ -187,17 +194,14 @@ public class IvyLineDialog extends JDialog
     return aPackage;
   }
 
-  private void populateIncludedJarsPanel()
+  private void populateIncludedJarsPanel() throws IOException
   {
+    Collection<String>   includedFiles = ivyPackage.getPublications();
     final String         orgName       = ivyPackage.getOrgName();
     final String         moduleName    = ivyPackage.getModuleName();
     final String         version       = ivyPackage.getVersion();
     final BaseWebHandler handler       = HandlerFactory.getHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
-    List<String>         includedFiles = handler.findIncludedFiles(ivyRepositoryPath, orgName, moduleName, version);
-
-    Collections.sort(includedFiles);
-
-    int height = 0;
+    int                  height        = 0;
 
     for (String includedFile : includedFiles)
     {
@@ -212,7 +216,14 @@ public class IvyLineDialog extends JDialog
           @Override
           public void mouseClicked(MouseEvent mouseEvent)
           {
-            handler.downloadFile(fileLabel, orgName, moduleName, version);
+            try
+            {
+              handler.downloadFile(fileLabel, orgName, moduleName, version);
+            }
+            catch (IOException e)
+            {
+              e.printStackTrace();  // todo error message
+            }
           }
         });
     }
@@ -294,18 +305,4 @@ public class IvyLineDialog extends JDialog
   }
 
   // --------------------------- main() method ---------------------------
-
-  public static void main(String[] args)
-  {
-    IvyPackage ivyPackage = new IvyPackage("org.apache", "commons-lang", "2.1");
-
-    ivyPackage.setHasJavaDocs(true);
-    ivyPackage.setHasSourceCode(true);
-
-    IvyLineDialog dialog = new IvyLineDialog(ivyPackage, "something", null);
-
-    dialog.pack();
-    dialog.setVisible(true);
-    System.exit(0);
-  }
 }

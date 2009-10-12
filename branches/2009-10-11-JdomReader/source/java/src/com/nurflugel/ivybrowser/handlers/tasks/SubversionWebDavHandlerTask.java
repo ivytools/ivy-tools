@@ -59,23 +59,9 @@ public class SubversionWebDavHandlerTask implements Runnable
 
       reader.close();
     }
-    catch (IOException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
+      e.printStackTrace();  // todo set a flag on calling component, show error message
     }
   }
-
-  // @Override protected boolean hasVersion(String versionLine)
-  // {
-  // boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
-  //
-  // return hasVersion;
-  // }
-  //
-  // @Override protected boolean shouldProcessVersionedLibraryLine(String line)
-  // {
-  // boolean shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
-  //
-  // return shouldProcess;
-  // }
 }
