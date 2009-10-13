@@ -1,7 +1,8 @@
 package com.nurflugel.ivybrowser.domain;
 
 import java.net.URL;
-import java.util.List;
+import java.util.*;
+import static java.util.Collections.*;
 
 /** Representation of . */
 public class IvyPackage implements Comparable<IvyPackage>
@@ -13,12 +14,18 @@ public class IvyPackage implements Comparable<IvyPackage>
    * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where more
    * than one jar or zip file is in the ivy repository, represented by this ivy file.
    */
-  private String ivyFile;
-  private String library;
-  private String moduleName;
-  private String orgName;
-  private String version;
-  private URL    versionUrl;
+  private String          moduleName;
+  private String          orgName;
+  private String          version;
+  private Set<IvyPackage> dependencies = new TreeSet<IvyPackage>();
+  private Set<String>     publications = new TreeSet<String>();
+
+  // -------------------------- STATIC METHODS --------------------------
+
+  public static String getKey(String org, String module, String version)
+  {
+    return org + " " + module + " " + version;
+  }
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyPackage(String orgName, String moduleName, String version)
@@ -26,14 +33,6 @@ public class IvyPackage implements Comparable<IvyPackage>
     this.orgName    = orgName;
     this.moduleName = moduleName;
     this.version    = version;
-  }
-
-  public IvyPackage(String orgName, String moduleName, String version, String library)
-  {
-    this.orgName    = orgName;
-    this.moduleName = moduleName;
-    this.version    = version;
-    this.library    = library;
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
@@ -50,16 +49,29 @@ public class IvyPackage implements Comparable<IvyPackage>
 
   // -------------------------- OTHER METHODS --------------------------
 
-  public List<IvyPackage> getDependencies()
+  public void addDependency(IvyPackage dependencyPackage)
   {
-    IvyFile file = new IvyFile(versionUrl, ivyFile);
+    dependencies.add(dependencyPackage);
+  }
 
-    return file.getDependencies();
+  public void addPublication(String publication)
+  {
+    publications.add(publication);
+  }
+
+  public Collection<IvyPackage> getDependencies()
+  {
+    return unmodifiableSet(dependencies);
   }
 
   public String getPrettyText()
   {
     return orgName + " " + moduleName + " " + version;
+  }
+
+  public Collection<String> getPublications()
+  {
+    return unmodifiableSet(publications);
   }
 
   public boolean hasJavaDocs()
@@ -77,32 +89,10 @@ public class IvyPackage implements Comparable<IvyPackage>
   @Override
   public String toString()
   {
-    if (library == null)
-    {
-      return orgName + " " + moduleName + " " + version;
-    }
-    else
-    {
-      return orgName + " " + moduleName + " " + version + " " + library;
-    }
+    return orgName + " " + moduleName + " " + version;
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
-  public String getIvyFile()
-  {
-    return ivyFile;
-  }
-
-  public void setIvyFile(String ivyFile)
-  {
-    this.ivyFile = ivyFile;
-  }
-
-  public String getLibrary()
-  {
-    return library;
-  }
 
   public String getModuleName()
   {
@@ -129,8 +119,13 @@ public class IvyPackage implements Comparable<IvyPackage>
     this.hasSourceCode = hasSourceCode;
   }
 
-  public void setVersionUrl(URL versionUrl)
+  public void setPublications(Collection<String> publications)
   {
-    this.versionUrl = versionUrl;
+    this.publications.addAll(publications);
+  }
+
+  public void setDependencies(Collection<IvyPackage> dependencies)
+  {
+    this.dependencies.addAll(dependencies);
   }
 }

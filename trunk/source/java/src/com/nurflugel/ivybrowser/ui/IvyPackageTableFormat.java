@@ -8,13 +8,14 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
  */
 public class IvyPackageTableFormat implements TableFormat
 {
-  static final int ORG         = 0;
-  static final int MODULE      = 1;
-  static final int REVISION    = 2;
-  static final int FILE        = 3;
-  static final int SOURCE      = 4;
-  static final int JAVADOCS    = 5;
-  private String[] columnNames = { "Org", "Module", "Revision", "File", "Source?", "Javadocs?" };
+  static final int ORG      = 0;
+  static final int MODULE   = ORG + 1;
+  static final int REVISION = MODULE + 1;
+
+  // static final int FILE        = 3;
+  static final int SOURCE      = REVISION + 1;
+  static final int JAVADOCS    = SOURCE + 1;
+  private String[] columnNames = { "Org", "Module", "Revision", "Source?", "Javadocs?" };
 
   // ------------------------ INTERFACE METHODS ------------------------
 
@@ -22,7 +23,7 @@ public class IvyPackageTableFormat implements TableFormat
 
   public int getColumnCount()
   {
-    return 6;
+    return 5;
   }
 
   public String getColumnName(int i)
@@ -50,14 +51,11 @@ public class IvyPackageTableFormat implements TableFormat
       case REVISION:
         return ivyPackage.getVersion();
 
-      case FILE:
-        return ivyPackage.getLibrary();
-
       case SOURCE:
         return ivyPackage.hasSourceCode();
 
       case JAVADOCS:
-        return ivyPackage.hasJavaDocs();
+        return new Boolean(ivyPackage.hasJavaDocs());
 
       default:
         throw new IllegalStateException();

@@ -73,7 +73,7 @@ public class IvyRepositoryHtmlTableModel implements TableModel
         return ivyPackage.hasJavaDocs();
 
       default:
-        return ivyPackage.getLibrary();
+        return ivyPackage.getOrgName();
     }
   }
 

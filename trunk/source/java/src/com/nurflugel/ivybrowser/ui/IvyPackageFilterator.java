@@ -4,9 +4,7 @@ import ca.odell.glazedlists.TextFilterator;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 10:36:57 PM To change this template use File | Settings | File Templates.
- */
+/** This tells GlazedLists what fields to filter by when the user types into the text box. */
 @SuppressWarnings({ "unchecked" })
 public class IvyPackageFilterator implements TextFilterator
 {
@@ -20,7 +18,8 @@ public class IvyPackageFilterator implements TextFilterator
 
     list.add(item.getModuleName());
     list.add(item.getVersion());
-    list.add(item.getLibrary());
+
+    // list.add(item.getLibrary());
     list.add(item.getOrgName());
   }
 }
