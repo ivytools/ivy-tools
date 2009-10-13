@@ -16,9 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:19:45 PM To change this template use File | Settings | File Templates.
- */
+/** Subversion flavored handler. Subversion hosted repositories render HTML a bit differently than pure HTML-based repositories. */
 public class SubversionWebDavHandler extends BaseWebHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
@@ -123,35 +121,5 @@ public class SubversionWebDavHandler extends BaseWebHandler
     boolean hasVersion = versionLine.contains("<li") && !versionLine.contains("..");
 
     return hasVersion;
-  }
-
-  /** Parse the file name out of the html line. */
-  @Override
-  protected String parseIncludedFileInfo(String line, String version)
-  {
-    String trimmedLine = line.trim();
-    String parsedLine  = StringUtils.substringAfter(trimmedLine, "\"");
-
-    parsedLine = StringUtils.substringBefore(parsedLine, "\"");
-    parsedLine = StringUtils.remove(parsedLine, "-" + version);
-
-    return parsedLine;
-  }
-
-  @Override
-  protected boolean shouldProcessIncludedFileLine(String line)
-  {
-    boolean isIvyFile   = line.contains("ivy.xml");
-    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
-
-    return isValidLine && !isIvyFile;
-  }
-
-  @Override
-  protected boolean shouldProcessVersionedLibraryLine(String line)
-  {
-    boolean shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
-
-    return shouldProcess;
   }
 }

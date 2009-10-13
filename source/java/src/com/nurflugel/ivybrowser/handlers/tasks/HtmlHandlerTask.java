@@ -13,9 +13,9 @@ import java.net.URLConnection;
                   })
 public class HtmlHandlerTask implements Runnable
 {
-  private HtmlHandler         htmlHandler;
-  private URL                 repositoryUrl;
-  private String              orgName;
+  private HtmlHandler htmlHandler;
+  private URL         repositoryUrl;
+  private String      orgName;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public HtmlHandlerTask(HtmlHandler htmlHandler, URL repositoryUrl, String orgName)
@@ -63,7 +63,7 @@ public class HtmlHandlerTask implements Runnable
           {
             htmlHandler.findVersions(repositoryUrl, orgName, moduleName);
           }
-          catch (FileNotFoundException e)
+          catch (Exception e)
           {
             System.out.println("Had problem parsing package " + orgName + " " + moduleName);
           }
