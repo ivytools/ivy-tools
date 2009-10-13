@@ -22,6 +22,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
                     "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod",
                     "OverlyComplexBooleanExpression"
                   })
+/**
+ * The HTML handler for a HTML based repository.
+ */
 public class HtmlHandler extends BaseWebHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
@@ -141,51 +144,5 @@ public class HtmlHandler extends BaseWebHandler
     }
 
     return hasVersion;
-  }
-
-  /** Parse the file name out of the html line. */
-  @Override
-  protected String parseIncludedFileInfo(String line, String version)
-  {
-    String trimmedLine = line.trim();
-    String parsedLine  = StringUtils.substringAfter(trimmedLine, "A HREF=\"");
-
-    parsedLine = StringUtils.substringBefore(parsedLine, "\"");
-
-    String size = StringUtils.substringAfterLast(trimmedLine, " ");
-
-    return parsedLine + "   " + size;
-  }
-
-  @Override
-  protected boolean shouldProcessIncludedFileLine(String line)
-  {
-    boolean isIvyFile   = line.contains("ivy.xml");
-    boolean isValidLine = shouldProcessVersionedLibraryLine(line);
-
-    return isValidLine && !isIvyFile;
-  }
-
-  @Override
-  protected boolean shouldProcessVersionedLibraryLine(String line)
-  {
-    if (line.contains("ALT=\"[DIR]"))
-    {
-      return false;
-    }
-
-    boolean shouldProcess;
-
-    if (line.contains("<li"))
-    {
-      shouldProcess = line.contains("<li") && !line.contains("..") && !line.contains("md5") && !line.contains("sha1");
-    }
-    else
-    {
-      shouldProcess = line.contains("A HREF") && !line.contains("[DIR]") && !line.contains("<PRE>") && !line.contains("Parent Directory")
-                      && !line.contains("sha1") && !line.contains("md5");
-    }
-
-    return shouldProcess;
   }
 }

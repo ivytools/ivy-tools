@@ -276,8 +276,6 @@ public class IvyBrowserMainFrame extends JFrame
   private void reparse()
   {
     setCursor(busyCursor);
-
-    // resultsTable.setVisible(false);
     holdingPanel.remove(scrollPane);
     progressPanel.start();
     ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
@@ -287,7 +285,7 @@ public class IvyBrowserMainFrame extends JFrame
       ivyRepositoryPath = specifyRepository(preferences);
     }
 
-    if (ivyRepositoryPath.length() > 0)  // List<IvyPackage> list = new ArrayList<IvyPackage>();
+    if (ivyRepositoryPath.length() > 0)
     {
       repositoryList.clear();
       packageMap.clear();

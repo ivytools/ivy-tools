@@ -3,6 +3,7 @@ package com.nurflugel.ivybrowser.handlers;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.*;
 import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -17,9 +18,7 @@ import java.util.List;
 import javax.swing.*;
 import static javax.swing.JFileChooser.*;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:31:06 PM To change this template use File | Settings | File Templates.
- */
+/** The parent class of all the handlers that parse the repository. */
 @SuppressWarnings({ "ProtectedField" })
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
@@ -47,6 +46,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public static final String      ORG          = "org";
   public static final String      REV          = "rev";
 
+  @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
   protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath,
                            Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
@@ -69,15 +69,11 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
   public abstract void findIvyPackages();
 
-  /**
-   * Download the actual jar file to wherever the user wants it.
-   *
-   * <p>Todo - the jars aren't coming down right - what's up with that?</p>
-   */
-  public void downloadFile(JLabel fileLabel, String orgName, String moduleName, String version) throws IOException
+  /** Download the actual jar file to wherever the user wants it. */
+  public void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
-    String       newText         = StringUtils.substringBeforeLast(text, ".") + "." + StringUtils.substringAfterLast(text, ".");
+    String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
     URL          fileUrl         = new URL(ivyRepositoryPath + "/" + orgName + "/" + moduleName + "/" + version + "/" + newText);
     JFileChooser fileChooser     = new JFileChooser("Save file as...");
     String       previousSaveDir = mainFrame.getPreferredSaveDir();  // todo get dir preference from Preferences, save if changed
@@ -100,56 +96,28 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     {
       File selectedFile = fileChooser.getSelectedFile();
 
-      mainFrame.setPreferredSaveDir(selectedFile.getParent());
-
-      BufferedInputStream  in   = new BufferedInputStream(fileUrl.openStream());
-      FileOutputStream     fos  = new FileOutputStream(selectedFile);
-      BufferedOutputStream bout = new BufferedOutputStream(fos, BLOCK_SIZE);
-      byte[]               data = new byte[BLOCK_SIZE];
-
-      while (in.read(data, 0, BLOCK_SIZE) >= 0)
-      {
-        bout.write(data);
-      }
-
-      bout.close();
-      in.close();
+      downloadFile(fileUrl, selectedFile);
     }
   }
 
-  public List<String> findIncludedFiles(String repositoryUrl, String orgName, String moduleName, String version) throws IOException
+  private void downloadFile(URL fileUrl, File selectedFile) throws IOException
   {
-    List<String>  includedFiles = new ArrayList<String>();
+    mainFrame.setPreferredSaveDir(selectedFile.getParent());
 
-    URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
-    URLConnection urlConnection = versionUrl.openConnection();
+    FileOutputStream     fos       = new FileOutputStream(selectedFile);
+    BufferedOutputStream bout      = new BufferedOutputStream(fos, BLOCK_SIZE);
+    InputStream          in        = fileUrl.openStream();
+    byte[]               data      = new byte[4 * BLOCK_SIZE];
+    int                  bytesRead;
 
-    urlConnection.setAllowUserInteraction(true);
-    urlConnection.connect();
-
-    InputStream    in     = urlConnection.getInputStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-    String         line   = reader.readLine();
-
-    while (line != null)
+    while ((bytesRead = in.read(data)) != -1)
     {
-      boolean shouldProcess = shouldProcessIncludedFileLine(line);
-
-      if (shouldProcess)
-      {
-        includedFiles.add(parseIncludedFileInfo(line, version));
-      }
-
-      line = reader.readLine();
+      bout.write(data, 0, bytesRead);
     }
 
-    return includedFiles;
+    bout.close();
+    in.close();
   }
-
-  protected abstract boolean shouldProcessIncludedFileLine(String line);
-
-  /** Parse the file name out of the html line. */
-  protected abstract String parseIncludedFileInfo(String line, String version);
 
   public void findVersions(URL repositoryUrl, String orgName, String moduleName) throws IOException, JDOMException
   {
@@ -221,10 +189,8 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
       {
         ivyPackage.setHasSourceCode(true);
       }
-      else if (conf.equals(DEFAULT))  // it's a jar or something
-      {
-        ivyPackage.addPublication(name + "." + ext);
-      }
+
+      ivyPackage.addPublication(name + "." + ext);
     }
 
     if (dependencies != null)
@@ -265,7 +231,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
   }
 
-  protected abstract boolean shouldProcessVersionedLibraryLine(String line);
+  // protected abstract boolean shouldProcessVersionedLibraryLine(String line);
   protected abstract String getContents(String packageLine);
 
   private void addPackages(List<IvyPackage> localPackages)
@@ -278,6 +244,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
   }
 
+  /** puts the pacage into hte map of packages. */
   private void addPackage(IvyPackage ivyPackage)
   {
     String                               orgName    = stripSlash(ivyPackage.getOrgName());
@@ -304,6 +271,13 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     if (thePackage == null)
     {
       moduleMap.put(version, ivyPackage);
+    }
+    else
+    {
+      thePackage.setHasJavaDocs(ivyPackage.hasJavaDocs());
+      thePackage.setHasSourceCode(ivyPackage.hasSourceCode());
+      thePackage.setPublications(ivyPackage.getPublications());
+      thePackage.setDependencies(ivyPackage.getDependencies());
     }
   }
 

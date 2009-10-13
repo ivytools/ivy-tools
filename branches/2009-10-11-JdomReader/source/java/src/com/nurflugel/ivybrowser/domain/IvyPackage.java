@@ -118,4 +118,14 @@ public class IvyPackage implements Comparable<IvyPackage>
   {
     this.hasSourceCode = hasSourceCode;
   }
+
+  public void setPublications(Collection<String> publications)
+  {
+    this.publications.addAll(publications);
+  }
+
+  public void setDependencies(Collection<IvyPackage> dependencies)
+  {
+    this.dependencies.addAll(dependencies);
+  }
 }

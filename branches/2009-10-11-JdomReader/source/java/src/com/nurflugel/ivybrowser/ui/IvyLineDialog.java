@@ -14,6 +14,8 @@ import java.util.List;
 import javax.swing.*;
 import static javax.swing.BoxLayout.*;
 import static javax.swing.JComponent.*;
+import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.*;
 
 public class IvyLineDialog extends JDialog
 {
@@ -129,57 +131,62 @@ public class IvyLineDialog extends JDialog
     }
     else  // todo put this into a method "populate dependencies
     {
-      List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
-
-      for (final IvyPackage dependency : dependencies)
-      {
-        IvyPackageCheckbox checkBox = new IvyPackageCheckbox(dependency);
-
-        checkBox.setToolTipText("Right-click to bring up another window of this item's dependencies");
-        checkBox.addActionListener(new ActionListener()
-          {
-            public void actionPerformed(ActionEvent e)
-            {
-              updatePastedText();
-            }
-          });
-        checkBox.addMouseListener(new MouseAdapter()
-          {
-            /** Popup still yet another line dialog box if they click on the label of the checkbox. */
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent)
-            {
-              setCursor(getPredefinedCursor(WAIT_CURSOR));
-
-              // get package from look up of org module rev in hashtable
-              IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
-
-              try
-              {
-                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
-
-                lineDialog.setVisible(true);
-                setCursor(getPredefinedCursor(DEFAULT_CURSOR));
-              }
-              catch (IOException e)
-              {
-                e.printStackTrace();  // todo show error dialog
-              }
-            }
-          });
-        sortedCheckboxes.add(checkBox);
-      }
-
-      Collections.sort(sortedCheckboxes);
-
-      for (IvyPackageCheckbox sortedCheckbox : sortedCheckboxes)
-      {
-        dependenciesPanel.add(sortedCheckbox);
-      }
+      populateDependenciesPanel(dependencies);
     }
 
     populateIncludedJarsPanel();
     updatePastedText();
+  }
+
+  private void populateDependenciesPanel(Set<IvyPackage> dependencies)
+  {
+    List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
+
+    for (final IvyPackage dependency : dependencies)
+    {
+      IvyPackageCheckbox checkBox = new IvyPackageCheckbox(dependency);
+
+      checkBox.setToolTipText("Right-click to bring up another window of this item's dependencies");
+      checkBox.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e)
+          {
+            updatePastedText();
+          }
+        });
+      checkBox.addMouseListener(new MouseAdapter()
+        {
+          /** Popup still yet another line dialog box if they click on the label of the checkbox. */
+          @Override
+          public void mouseClicked(MouseEvent mouseEvent)
+          {
+            setCursor(getPredefinedCursor(WAIT_CURSOR));
+
+            // get package from look up of org module rev in hashtable
+            IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
+
+            try
+            {
+              IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
+
+              lineDialog.setVisible(true);
+              setCursor(getPredefinedCursor(DEFAULT_CURSOR));
+            }
+            catch (IOException e)
+            {
+              e.printStackTrace();  // todo show error dialog
+            }
+          }
+        });
+      sortedCheckboxes.add(checkBox);
+    }
+
+    Collections.sort(sortedCheckboxes);
+
+    for (IvyPackageCheckbox sortedCheckbox : sortedCheckboxes)
+    {
+      dependenciesPanel.add(sortedCheckbox);
+    }
   }
 
   private IvyPackage getPackageFromMap(IvyPackage dependency, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
@@ -194,7 +201,7 @@ public class IvyLineDialog extends JDialog
     return aPackage;
   }
 
-  private void populateIncludedJarsPanel() throws IOException
+  private void populateIncludedJarsPanel()
   {
     Collection<String>   includedFiles = ivyPackage.getPublications();
     final String         orgName       = ivyPackage.getOrgName();
@@ -205,9 +212,9 @@ public class IvyLineDialog extends JDialog
 
     for (String includedFile : includedFiles)
     {
-      final JLabel fileLabel = new JLabel(includedFile);
+      final JCheckBox fileLabel = new JCheckBox(includedFile, true);
 
-      fileLabel.setToolTipText("Click to download this file");
+      fileLabel.setToolTipText("Click to download this file, unselect to exclude");
       includedFilesPanel.add(fileLabel);
       height += fileLabel.getPreferredSize().height;
       fileLabel.addMouseListener(new MouseAdapter()
@@ -226,12 +233,20 @@ public class IvyLineDialog extends JDialog
             }
           }
         });
+      fileLabel.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent actionEvent)
+          {
+            updatePastedText();
+          }
+        });
     }
 
     height += 15;
 
     Dimension newSize = new Dimension(includedFilesPanel.getWidth(), height);
 
+    // todo put this into a scrollpane
     includedFilesPanel.setSize(newSize);
     includedFilesPanel.setMinimumSize(newSize);
     includedFilesPanel.setPreferredSize(newSize);
@@ -254,11 +269,13 @@ public class IvyLineDialog extends JDialog
                                                  : "";
     String forceText = forceThisVersionCheckBox.isSelected() ? " force=\"true\" "
                                                              : "";
-    StringBuilder    pasteText        = new StringBuilder();
-    List<IvyPackage> excludedPackages = new ArrayList<IvyPackage>();
-    Component[]      components       = dependenciesPanel.getComponents();
+    StringBuilder    pasteText         = new StringBuilder();
+    List<IvyPackage> excludedPackages  = new ArrayList<IvyPackage>();
+    List<String>     excludedFiles     = new ArrayList<String>();
+    Component[]      packageComponents = dependenciesPanel.getComponents();
+    Component[]      fileComponents    = includedFilesPanel.getComponents();
 
-    for (Component component : components)
+    for (Component component : packageComponents)
     {
       if (component instanceof IvyPackageCheckbox)
       {
@@ -271,9 +288,25 @@ public class IvyLineDialog extends JDialog
       }
     }
 
+    for (Component fileComponent : fileComponents)
+    {
+      if (fileComponent instanceof JCheckBox)
+      {
+        JCheckBox checkBox = (JCheckBox) fileComponent;
+
+        if (!checkBox.isSelected())
+        {
+          String file = checkBox.getText();
+
+          file = substringBeforeLast(file, ".");
+          excludedFiles.add(file);
+        }
+      }
+    }
+
     String text = "";
 
-    if (excludedPackages.isEmpty())
+    if (excludedPackages.isEmpty() && excludedFiles.isEmpty())
     {
       text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
              + "\"  conf=\"build,dist-war,test" + sourceTag + javadocTag + "\"" + forceText + "/>";
@@ -290,6 +323,13 @@ public class IvyLineDialog extends JDialog
       for (IvyPackage excludedPackage : excludedPackages)
       {
         text = "    <exclude org=\"" + excludedPackage.getOrgName() + "\" name=\"" + excludedPackage.getModuleName() + "\"/>";
+        ivyTextPanel.add(new JLabel(text));
+        pasteText.append("\n").append(text);
+      }
+
+      for (String excludedFile : excludedFiles)
+      {
+        text = "    <exclude  name=\"" + excludedFile + "\"/>";
         ivyTextPanel.add(new JLabel(text));
         pasteText.append("\n").append(text);
       }
