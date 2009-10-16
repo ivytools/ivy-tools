@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
+@SuppressWarnings({ "CallToPrintStackTrace" })
 public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
@@ -39,6 +40,15 @@ public class HandlerFactory
 
   private static boolean isSubversionRepository(String ivyRepositoryPath)
   {
+    try
+    {
+      throw new Exception("dibble");
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+
     try
     {
       URL           repositoryUrl = new URL(ivyRepositoryPath);
@@ -68,10 +78,12 @@ public class HandlerFactory
     catch (UnknownHostException e)
     {
       showMessageDialog(null, "Network error contacting host: " + e.getMessage(), "Unable to parse repository", ERROR_MESSAGE);
+      e.printStackTrace();
     }
     catch (IOException e)
     {
       showMessageDialog(null, "Error reaching repository: " + e.getMessage(), "Unable to parse repository", ERROR_MESSAGE);
+      e.printStackTrace();
     }
 
     return false;

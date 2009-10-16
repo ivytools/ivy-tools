@@ -1,5 +1,6 @@
 package com.nurflugel.ivyformatter.ui;
 
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Version.*;
@@ -66,7 +67,7 @@ public class IvyFormatterMainFrame extends JFrame
       });
     pack();
     setSize(1000, 1000);
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
     setVisible(true);
     addHelpListener();
   }

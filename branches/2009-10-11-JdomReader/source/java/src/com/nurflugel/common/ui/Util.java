@@ -83,5 +83,18 @@ public class Util
     }
   }
 
+  public static void centerApp(Object object)
+  {
+    if (object instanceof Component)
+    {
+      Component comp           = (Component) object;
+      Toolkit   defaultToolkit = Toolkit.getDefaultToolkit();
+      Dimension screenSize     = defaultToolkit.getScreenSize();
+      int       x              = (int) ((screenSize.getWidth() - comp.getWidth()) / 2);
+      int       y              = (int) ((screenSize.getHeight() - comp.getHeight()) / 2);
+
+      comp.setBounds(x, y, comp.getWidth(), comp.getHeight());
+    }
+  }
   private Util() {}
 }

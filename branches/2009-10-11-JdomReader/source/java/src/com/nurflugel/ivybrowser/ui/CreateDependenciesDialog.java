@@ -7,6 +7,8 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import java.awt.*;
 import java.awt.event.*;
@@ -42,7 +44,7 @@ public class CreateDependenciesDialog extends JDialog
     addListeners();
     pack();
     setTitle("Select your dependencies from the list...");
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
     filterTable();
     setVisible(true);
   }

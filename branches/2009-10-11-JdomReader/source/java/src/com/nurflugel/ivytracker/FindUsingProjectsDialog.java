@@ -1,5 +1,7 @@
 package com.nurflugel.ivytracker;
 
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import java.awt.*;
@@ -25,7 +27,7 @@ public class FindUsingProjectsDialog extends JDialog
     populateTree(ivyFile, ivyFilesMap);
     pack();
     setSize(600, 600);
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
   }
 
   private void addListeners()
