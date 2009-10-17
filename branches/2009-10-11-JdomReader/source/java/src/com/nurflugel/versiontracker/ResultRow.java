@@ -1,5 +1,6 @@
 package com.nurflugel.versiontracker;
 
+import org.apache.commons.lang.StringUtils;
 import java.io.File;
 
 /**
@@ -33,16 +34,34 @@ class ResultRow implements Comparable
 
   public String getPath()
   {
-    if (versionTrackerUi.useShortPaths())
+    PathLength pathLength = versionTrackerUi.getPathLength();
+
+    if (pathLength == PathLength.FILE_NAME)
     {
       return file.getName();
     }
 
-    return file.getAbsolutePath();
+    String filePath = file.getAbsolutePath();
+
+    if (pathLength == PathLength.FULL)
+    {
+      return filePath;
+    }
+
+    String commonText = versionTrackerUi.getCommonText();
+
+    filePath = StringUtils.removeStart(filePath, commonText);
+
+    return filePath;
   }
 
   public String getVersion()
   {
     return version;
+  }
+
+  public File getFile()
+  {
+    return file;
   }
 }

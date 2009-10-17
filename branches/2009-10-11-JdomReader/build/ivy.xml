@@ -35,6 +35,7 @@
         <dependency org="com.intellij"         name="javac2"       rev="8.1.3"           conf="build" />
         <dependency org="org.objectweb.asm"    name="asm"          rev="3.1"             conf="build" />
         <dependency org="org.jdom"             name="jdom"         rev="1.0"             conf="build" />
+    <dependency org="org.testng"  name="testng"  rev="5.8-jdk1.5"  conf="build,test"/>
 
        <!--<dependency org="javax.xml"  name="jaxb"  rev="2.1.7"  conf="dibble">-->
                 <!--<exclude    name="jaxb-impl" />-->

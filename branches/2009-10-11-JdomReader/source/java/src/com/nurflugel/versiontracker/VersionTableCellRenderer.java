@@ -31,6 +31,7 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
     }
 
     String text      = (String) whatToRender;
+
     int    level     = Integer.parseInt(text.trim());
     Jdk    threshold = ui.getJdkThreshold();
 

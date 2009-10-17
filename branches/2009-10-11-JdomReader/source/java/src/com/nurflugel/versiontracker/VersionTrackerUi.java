@@ -8,13 +8,13 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import static com.nurflugel.common.ui.Util.centerApp;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static com.nurflugel.common.ui.Version.VERSION;
+import static com.nurflugel.versiontracker.PathLength.*;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
+import static javax.swing.BoxLayout.*;
 import static javax.swing.JFileChooser.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import static java.awt.Cursor.*;
-import static java.awt.Cursor.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -30,8 +30,8 @@ import java.util.zip.ZipFile;
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class VersionTrackerUi extends JFrame
 {
-  private static final String FILES_DIR             = "filesDir";
-  private static final String JDK_THRESHOLD         = "jdkThreshold";
+  private static final String FILES_DIR                 = "filesDir";
+  private static final String JDK_THRESHOLD             = "jdkThreshold";
   private JButton             selectDirsFilesButton;
   private JButton             quitButton;
   private JButton             helpButton;
@@ -39,14 +39,20 @@ public class VersionTrackerUi extends JFrame
   private JPanel              contentsPanel;
   private JPanel              jdkButtonPanel;
   private JRadioButton        fullPathsRadioButton;
-  private JRadioButton        shortPathsRadioButton;
+  private JRadioButton        fileNameRadioButton;
+  private JRadioButton        shortFilePathsRadioButton;
   private ButtonGroup         jdkButtonGroup;
   private Preferences         preferences;
   private File                fileDir;
-  private File                tempDir               = new File("tempDir");
-  private Jdk                 jdkThreshold          = Jdk.JDK15;
+  private File                tempDir                   = new File("tempDir");
+  private Jdk                 jdkThreshold              = Jdk.JDK15;
+  private List<ResultRow>     results                   = new ArrayList<ResultRow>();
+  private String              commonText;
+  private static final String SLASH                     = File.separator;
 
-  public VersionTrackerUi()
+  public VersionTrackerUi() {}
+
+  private void loadUi()
   {
     setTitle("Version Tracker v. " + VERSION);
     setContentPane(contentsPanel);
@@ -58,20 +64,6 @@ public class VersionTrackerUi extends JFrame
     pack();
     centerApp(this);
     setVisible(true);
-    shortPathsRadioButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          refreshTableDisplay();
-        }
-      });
-    fullPathsRadioButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-          refreshTableDisplay();
-        }
-      });
   }
 
   private void addListeners()
@@ -82,6 +74,7 @@ public class VersionTrackerUi extends JFrame
         {
           setCursor(Cursor.WAIT_CURSOR);
           processDirs();
+          filterNames(results);
           setCursor(Cursor.DEFAULT_CURSOR);
         }
       });
@@ -101,6 +94,48 @@ public class VersionTrackerUi extends JFrame
           doQuitAction();
         }
       });
+    fileNameRadioButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          refreshTableDisplay();
+        }
+      });
+    fullPathsRadioButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          refreshTableDisplay();
+        }
+      });
+    shortFilePathsRadioButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          refreshTableDisplay();
+        }
+      });
+  }
+
+  public String filterNames(List<ResultRow> results)
+  {
+    List<String> paths = new ArrayList<String>();
+
+    for (ResultRow result : results)
+    {
+      paths.add(result.getFile().getAbsolutePath());
+    }
+
+    String[] strings = paths.toArray(new String[paths.size()]);
+
+    commonText = StringUtils.getCommonPrefix(strings);
+
+    return commonText;
+  }
+
+  public String getCommonText()
+  {
+    return commonText;
   }
 
   private void processDirs()
@@ -123,7 +158,8 @@ public class VersionTrackerUi extends JFrame
 
     if (choice == APPROVE_OPTION)
     {
-      List<ResultRow>        results       = new ArrayList<ResultRow>();
+      results.clear();
+
       File[]                 selectedFiles = fileChooser.getSelectedFiles();
       Map<File, Set<String>> jarResults    = new HashMap<File, Set<String>>();  // map of string(jar path, version list)
 
@@ -470,7 +506,7 @@ public class VersionTrackerUi extends JFrame
     jdkButtonPanel = new JPanel();
     jdkButtonGroup = new ButtonGroup();
 
-    BoxLayout boxLayout = new BoxLayout(jdkButtonPanel, BoxLayout.Y_AXIS);
+    BoxLayout boxLayout = new BoxLayout(jdkButtonPanel, Y_AXIS);
 
     jdkButtonPanel.setLayout(boxLayout);
 
@@ -493,9 +529,18 @@ public class VersionTrackerUi extends JFrame
     }
   }
 
-  public boolean useShortPaths()
+  public PathLength getPathLength()
   {
-    return shortPathsRadioButton.isSelected();
+    if (fileNameRadioButton.isSelected())
+    {
+      return FILE_NAME;
+    }
+    else if (fullPathsRadioButton.isSelected())
+    {
+      return FULL;
+    }
+
+    return SHORT;
   }
 
   // --------------------------- main() method ---------------------------
@@ -503,6 +548,8 @@ public class VersionTrackerUi extends JFrame
   public static void main(String[] args)
   {
     VersionTrackerUi ui = new VersionTrackerUi();
+
+    ui.loadUi();
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
