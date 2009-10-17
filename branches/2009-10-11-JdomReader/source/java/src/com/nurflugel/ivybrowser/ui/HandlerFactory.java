@@ -40,14 +40,6 @@ public class HandlerFactory
 
   private static boolean isSubversionRepository(String ivyRepositoryPath)
   {
-    try
-    {
-      throw new Exception("dibble");
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
 
     try
     {

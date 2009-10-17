@@ -30,10 +30,7 @@ import java.util.prefs.Preferences;
 import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
 import static javax.swing.JOptionPane.showInputDialog;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import javax.help.HelpSet;
 import javax.help.HelpBroker;
 import javax.help.CSH;
@@ -245,6 +242,7 @@ public class IvyBrowserMainFrame extends JFrame
     EventTableModel<IvyPackage> tableModel       = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
 
     resultsTable.setModel(tableModel);
+    resultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
 
     TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
   }
