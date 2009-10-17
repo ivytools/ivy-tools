@@ -5,20 +5,23 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
-import static com.nurflugel.common.ui.Util.*;
-import static com.nurflugel.common.ui.Version.*;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
+import static com.nurflugel.common.ui.Version.VERSION;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
 import static javax.swing.JFileChooser.*;
-import static javax.swing.JFileChooser.OPEN_DIALOG;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import static java.awt.Cursor.*;
+import static java.awt.Cursor.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -27,24 +30,24 @@ import java.util.zip.ZipFile;
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class VersionTrackerUi extends JFrame
 {
-  private JButton      selectDirsFilesButton;
-  private JButton      quitButton;
-  private JButton      helpButton;
-  private JRadioButton jdk13RadioButton;
-  private JRadioButton jdk14RadioButton;
-  private JRadioButton jdk15RadioButton;
-  private JRadioButton jdk16RadioButton;
-  private JRadioButton jdk17RadioButton;
-  private JTable       resultsTable;
-  private JPanel       contentsPanel;
-  private Preferences  preferences;
-  private File         fileDir;
-  private int          jdkThreshold;
-  private File         tempDir = new File("tempDir");
+  private static final String FILES_DIR             = "filesDir";
+  private static final String JDK_THRESHOLD         = "jdkThreshold";
+  private JButton             selectDirsFilesButton;
+  private JButton             quitButton;
+  private JButton             helpButton;
+  private JTable              resultsTable;
+  private JPanel              contentsPanel;
+  private JPanel              jdkButtonPanel;
+  private JRadioButton        fullPathsRadioButton;
+  private JRadioButton        shortPathsRadioButton;
+  private ButtonGroup         jdkButtonGroup;
+  private Preferences         preferences;
+  private File                fileDir;
+  private File                tempDir               = new File("tempDir");
+  private Jdk                 jdkThreshold          = Jdk.JDK15;
 
   public VersionTrackerUi()
   {
-    addListeners();
     setTitle("Version Tracker v. " + VERSION);
     setContentPane(contentsPanel);
     addListeners();
@@ -55,28 +58,20 @@ public class VersionTrackerUi extends JFrame
     pack();
     centerApp(this);
     setVisible(true);
-  }
-
-  private void loadPreferences()
-  {
-    String fileDirPath = preferences.get("filesDir", null);
-
-    if (fileDirPath != null)
-    {
-      fileDir = new File(fileDirPath);
-    }
-
-    jdkThreshold = preferences.getInt("jdkThreshold", 49);
-  }
-
-  private void savePreferences()
-  {
-    if (fileDir != null)
-    {
-      preferences.put("filesDir", fileDir.getAbsolutePath());
-    }
-
-    preferences.putInt("jdkThreshold", 49);  // todo get from UI
+    shortPathsRadioButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          refreshTableDisplay();
+        }
+      });
+    fullPathsRadioButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          refreshTableDisplay();
+        }
+      });
   }
 
   private void addListeners()
@@ -85,7 +80,9 @@ public class VersionTrackerUi extends JFrame
       {
         public void actionPerformed(ActionEvent actionEvent)
         {
+          setCursor(Cursor.WAIT_CURSOR);
           processDirs();
+          setCursor(Cursor.DEFAULT_CURSOR);
         }
       });
     quitButton.addActionListener(new ActionListener()
@@ -104,11 +101,6 @@ public class VersionTrackerUi extends JFrame
           doQuitAction();
         }
       });
-  }
-
-  public static void main(String[] args)
-  {
-    VersionTrackerUi ui = new VersionTrackerUi();
   }
 
   private void processDirs()
@@ -137,8 +129,10 @@ public class VersionTrackerUi extends JFrame
 
       for (File file : selectedFiles)
       {
+        preferences.put(FILES_DIR, file.getParent());
+
         System.out.println("file = " + file);
-        processArg(file.getAbsolutePath(), jarResults);
+        processArg(file, jarResults);
       }
 
       Set<File>  files    = jarResults.keySet();
@@ -164,8 +158,8 @@ public class VersionTrackerUi extends JFrame
         }
 
         // add to table model
-//         System.out.println(file.getAbsolutePath() + getWhiteSpace(file, maxLength) + builder);
-        ResultRow resultRow = new ResultRow(file.getAbsolutePath(), builder.toString());
+        // System.out.println(file.getAbsolutePath() + getWhiteSpace(file, maxLength) + builder);
+        ResultRow resultRow = new ResultRow(file, builder.toString(), this);
 
         results.add(resultRow);
       }
@@ -175,24 +169,8 @@ public class VersionTrackerUi extends JFrame
     }
   }
 
-  private void populateTable(List<ResultRow> results)
+  private void processArg(File file, Map<File, Set<String>> jarResults)
   {
-    resultsTable.setModel(new DefaultTableModel());
-
-    EventList<ResultRow>  eventList  = new BasicEventList<ResultRow>(results);
-    SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
-
-    // TextComponentMatcherEditor matcherEditor= new TextComponentMatcherEditor();
-    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat());
-
-    resultsTable.setModel(tableModel);
-
-    TableComparatorChooser<ResultRow> tableSorter = new TableComparatorChooser<ResultRow>(resultsTable, sortedList, true);
-  }
-
-  private void processArg(String arg, Map<File, Set<String>> jarResults)
-  {
-    File   file = new File(arg);
     String name = file.getName();
 
     if (name.endsWith(".jar") || name.endsWith(".zip"))
@@ -215,142 +193,6 @@ public class VersionTrackerUi extends JFrame
       processExpandedDir(jarResults, jarFile);
       deleteFile(tempDir);
     }
-  }
-
-  private void deleteFile(File file)
-  {
-    boolean result = file.delete();
-
-    if (!result) {}
-  }
-
-  private void processExpandedDir(Map<File, Set<String>> jarResults, File jarFile)
-  {
-    File[]  files        = tempDir.listFiles();
-    boolean wasProcessed = false;
-
-    for (File file : files)
-    {
-      if (file.isDirectory())
-      {
-        wasProcessed = processDir(file, jarResults, jarFile, wasProcessed);
-      }
-
-      if (file.getName().endsWith(".class"))
-      {
-        if (!wasProcessed)
-        {
-          wasProcessed = true;  // todo pass this in as a parameter, so we can force recursion iton all dirs
-          processClassFile(file, jarResults, jarFile);
-        }
-      }
-
-      deleteFile(file);
-    }
-  }
-
-  private boolean processDir(File dir, Map<File, Set<String>> jarResults, File jarFile, boolean processed)
-  {
-    File[]  files        = dir.listFiles();
-    boolean wasProcessed = processed;
-
-    for (File file : files)
-    {
-      if (file.isDirectory())
-      {
-        wasProcessed = processDir(file, jarResults, jarFile, wasProcessed);
-      }
-
-      if (file.getName().endsWith(".jar"))
-      {
-        processJarFile(file, jarResults);
-      }
-      else if (file.getName().endsWith(".class"))
-      {
-        if (!wasProcessed)
-        {
-          processClassFile(file, jarResults, jarFile);
-          wasProcessed = true;
-        }
-
-        deleteFile(file);
-      }
-    }
-
-    return wasProcessed;
-  }
-
-  private void processClassFile(File file, Map<File, Set<String>> jarResults, File jarFile)
-  {
-    try
-    {
-      // call javap with tempdir as classapth
-      // remove tempdir from file name, convert file seperators to "."
-      // call javap
-      // parse output to catch major version
-      // put into map for jar file
-      String className = getClassName(file);
-
-      className = StringUtils.substringBefore(className, ".class");
-
-      Runtime runtime = Runtime.getRuntime();
-
-      Process process = runtime.exec("javap -v -classpath " + tempDir.getAbsolutePath() + " " + className);
-
-      printOutput(file, process, jarFile, jarResults);
-      deleteFile(file);
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void printOutput(File file, Process process, File jarFile, Map<File, Set<String>> jarResults) throws IOException
-  {
-    InputStream       inputStream  = process.getInputStream();
-    InputStreamReader streamReader = new InputStreamReader(inputStream);
-    BufferedReader    reader       = new BufferedReader(streamReader);
-    String            line         = reader.readLine();
-    int               i            = 0;
-
-    while (line != null)
-    {
-      // System.out.println("line["+ i++ +"] = " + line);
-      if (StringUtils.contains(line, "major version: "))
-      {
-        // System.out.println("line = " + line);
-        String version = StringUtils.substringAfter(line, "major version: ");
-
-        // System.out.println("Jar: " + jarFile.getName() + "     File: " + file.getName() + "     version = " + version);
-        Set<String> versions = jarResults.get(jarFile);
-
-        if (versions == null)
-        {
-          versions = new HashSet<String>();
-          jarResults.put(jarFile, versions);
-        }
-
-        versions.add(version);
-        process.destroy();
-
-        break;
-      }
-
-      line = reader.readLine();
-    }
-  }
-
-  private String getClassName(File file)
-  {
-    String path          = file.getAbsolutePath();
-    String leadingPath   = tempDir.getAbsolutePath();
-    String classPathName = StringUtils.substringAfter(path, leadingPath);
-    String className     = StringUtils.replace(classPathName, File.separator, ".");
-
-    className = StringUtils.substringAfter(className, ".");
-
-    return className;
   }
 
   @SuppressWarnings({ "ResultOfMethodCallIgnored", "IOResourceOpenedButNotSafelyClosed" })
@@ -418,10 +260,255 @@ public class VersionTrackerUi extends JFrame
     out.close();
   }
 
+  private void processExpandedDir(Map<File, Set<String>> jarResults, File jarFile)
+  {
+    File[]  files        = tempDir.listFiles();
+    boolean wasProcessed = false;
+
+    for (File file : files)
+    {
+      if (file.isDirectory())
+      {
+        wasProcessed = processDir(file, jarResults, jarFile, wasProcessed);
+      }
+
+      if (file.getName().endsWith(".class"))
+      {
+        if (!wasProcessed)
+        {
+          wasProcessed = true;  // todo pass this in as a parameter, so we can force recursion into all dirs
+          processClassFile(file, jarResults, jarFile);
+        }
+      }
+
+      deleteFile(file);
+    }
+  }
+
+  private void processClassFile(File file, Map<File, Set<String>> jarResults, File jarFile)
+  {
+    try
+    {
+      // call javap with tempdir as classapth
+      // remove tempdir from file name, convert file seperators to "."
+      // call javap
+      // parse output to catch major version
+      // put into map for jar file
+      String className = getClassName(file);
+
+      className = StringUtils.substringBefore(className, ".class");
+
+      Runtime runtime = Runtime.getRuntime();
+
+      Process process = runtime.exec("javap -v -classpath " + tempDir.getAbsolutePath() + " " + className);
+
+      printOutput(file, process, jarFile, jarResults);
+      deleteFile(file);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  private String getClassName(File file)
+  {
+    String path          = file.getAbsolutePath();
+    String leadingPath   = tempDir.getAbsolutePath();
+    String classPathName = StringUtils.substringAfter(path, leadingPath);
+    String className     = StringUtils.replace(classPathName, File.separator, ".");
+
+    className = StringUtils.substringAfter(className, ".");
+
+    return className;
+  }
+
+  private void printOutput(File file, Process process, File jarFile, Map<File, Set<String>> jarResults) throws IOException
+  {
+    InputStream       inputStream  = process.getInputStream();
+    InputStreamReader streamReader = new InputStreamReader(inputStream);
+    BufferedReader    reader       = new BufferedReader(streamReader);
+    String            line         = reader.readLine();
+    int               i            = 0;
+
+    while (line != null)
+    {
+      // System.out.println("line["+ i++ +"] = " + line);
+      if (StringUtils.contains(line, "major version: "))
+      {
+        // System.out.println("line = " + line);
+        String version = StringUtils.substringAfter(line, "major version: ");
+
+        // System.out.println("Jar: " + jarFile.getName() + "     File: " + file.getName() + "     version = " + version);
+        Set<String> versions = jarResults.get(jarFile);
+
+        if (versions == null)
+        {
+          versions = new HashSet<String>();
+          jarResults.put(jarFile, versions);
+        }
+
+        versions.add(version);
+        process.destroy();
+
+        break;
+      }
+
+      line = reader.readLine();
+    }
+  }
+
+  private void deleteFile(File file)
+  {
+    boolean result = file.delete();
+
+    if (!result) {}
+  }
+
+  private boolean processDir(File dir, Map<File, Set<String>> jarResults, File jarFile, boolean processed)
+  {
+    File[]  files        = dir.listFiles();
+    boolean wasProcessed = processed;
+
+    for (File file : files)
+    {
+      if (file.isDirectory())
+      {
+        wasProcessed = processDir(file, jarResults, jarFile, wasProcessed);
+      }
+
+      if (file.getName().endsWith(".jar"))
+      {
+        processJarFile(file, jarResults);
+      }
+      else if (file.getName().endsWith(".class"))
+      {
+        if (!wasProcessed)
+        {
+          processClassFile(file, jarResults, jarFile);
+          wasProcessed = true;
+        }
+
+        deleteFile(file);
+      }
+    }
+
+    return wasProcessed;
+  }
+
+  private void populateTable(List<ResultRow> results)
+  {
+    resultsTable.setModel(new DefaultTableModel());
+
+    EventList<ResultRow>  eventList  = new BasicEventList<ResultRow>(results);
+    SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
+
+    // TextComponentMatcherEditor matcherEditor= new TextComponentMatcherEditor();
+    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat());
+
+    resultsTable.setModel(tableModel);
+
+    TableComparatorChooser<ResultRow> tableSorter = new TableComparatorChooser<ResultRow>(resultsTable, sortedList, true);
+  }
+
   private void doQuitAction()
   {
     savePreferences();
     dispose();
     System.exit(0);
+  }
+
+  private void savePreferences()
+  {
+    if (fileDir != null)
+    {
+      preferences.put(FILES_DIR, fileDir.getAbsolutePath());
+    }
+
+    preferences.putInt(JDK_THRESHOLD, jdkThreshold.getVersion());
+  }
+
+  private void loadPreferences()
+  {
+    String fileDirPath = preferences.get(FILES_DIR, null);
+
+    if (fileDirPath != null)
+    {
+      fileDir = new File(fileDirPath);
+    }
+
+    jdkThreshold = Jdk.findByVersion(preferences.getInt(JDK_THRESHOLD, 49));
+
+    Component[] components = jdkButtonPanel.getComponents();
+
+    for (Component component : components)
+    {
+      if (component instanceof JdkCheckBox)
+      {
+        JdkCheckBox box = (JdkCheckBox) component;
+
+        if (box.getJdk() == jdkThreshold)
+        {
+          box.setSelected(true);
+        }
+      }
+    }
+  }
+
+  private void refreshTableDisplay()
+  {
+    resultsTable.invalidate();
+    resultsTable.repaint();
+  }
+
+  // -------------------------- OTHER METHODS --------------------------
+
+  private void createUIComponents()
+  {
+    resultsTable = new JTable();
+    resultsTable.setDefaultRenderer(Object.class, new VersionTableCellRenderer(this));
+    jdkButtonPanel = new JPanel();
+    jdkButtonGroup = new ButtonGroup();
+
+    BoxLayout boxLayout = new BoxLayout(jdkButtonPanel, BoxLayout.Y_AXIS);
+
+    jdkButtonPanel.setLayout(boxLayout);
+
+    Jdk[] jdks = Jdk.values();
+
+    for (final Jdk jdk : jdks)
+    {
+      JdkCheckBox checkBox = new JdkCheckBox(jdk);
+
+      jdkButtonGroup.add(checkBox);
+      jdkButtonPanel.add(checkBox);
+      checkBox.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent actionEvent)
+          {
+            jdkThreshold = jdk;
+            refreshTableDisplay();
+          }
+        });
+    }
+  }
+
+  public boolean useShortPaths()
+  {
+    return shortPathsRadioButton.isSelected();
+  }
+
+  // --------------------------- main() method ---------------------------
+
+  public static void main(String[] args)
+  {
+    VersionTrackerUi ui = new VersionTrackerUi();
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
+
+  public Jdk getJdkThreshold()
+  {
+    return jdkThreshold;
   }
 }

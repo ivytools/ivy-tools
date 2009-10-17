@@ -1,31 +1,48 @@
 package com.nurflugel.versiontracker;
 
+import java.io.File;
+
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 15, 2009 Time: 10:04:24 PM To change this template use File | Settings | File Templates.
  */
 class ResultRow implements Comparable
 {
-  private String path;
-  private String version;
+  private File             file;
+  private String           version;
+  private VersionTrackerUi versionTrackerUi;
 
-  ResultRow(String path, String version)
+  ResultRow(File file, String version, VersionTrackerUi versionTrackerUi)
   {
-    this.path    = path;
-    this.version = version;
+    this.file             = file;
+    this.version          = version;
+    this.versionTrackerUi = versionTrackerUi;
   }
+
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface Comparable ---------------------
+
+  public int compareTo(Object o)
+  {
+    ResultRow other = (ResultRow) o;
+
+    return getPath().compareTo(other.getPath());
+  }
+
+  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public String getPath()
   {
-    return path;
+    if (versionTrackerUi.useShortPaths())
+    {
+      return file.getName();
+    }
+
+    return file.getAbsolutePath();
   }
 
   public String getVersion()
   {
     return version;
-  }
-
-  public int compareTo(Object o)
-  {ResultRow other = (ResultRow) o;
-    return path.compareTo(other.getPath());
   }
 }
