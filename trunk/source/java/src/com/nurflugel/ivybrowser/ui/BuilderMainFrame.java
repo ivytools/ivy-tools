@@ -1,7 +1,9 @@
 package com.nurflugel.ivybrowser.ui;
 
+import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Version.*;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.handlers.FileHandler;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
@@ -43,10 +45,10 @@ public class BuilderMainFrame extends JFrame
   // --------------------------- CONSTRUCTORS ---------------------------
   public BuilderMainFrame()
   {
-    setTitle("IvyBuild v. " + Version.VERSION);
+    setTitle("IvyBuild v. " + VERSION);
     setContentPane(contentsPanel);
     addListeners();
-    Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
     centerApp(this);
     preferences = Preferences.userNodeForPackage(BuilderMainFrame.class);
     loadPreferences();
@@ -88,25 +90,7 @@ public class BuilderMainFrame extends JFrame
           doQuitAction();
         }
       });
-
-    ClassLoader classLoader = BuilderMainFrame.class.getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, "ivyBuilderHelp.hs");
-
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {  // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-      // LOGGER.error("HelpSet " + ee.getMessage());
-      // LOGGER.error("HelpSet " + HELP_HS + " not found");
-    }
+    addHelpListener("ivyBuilderHelp.hs", helpButton, this);
   }
 
   private void findRepositoryDir()
@@ -184,20 +168,6 @@ public class BuilderMainFrame extends JFrame
     String dirName = preferences.get(REPOSITORY_LOCATION, null);
 
     validateIvyRepositoryLocation(dirName);
-  }
-
-  public static void centerApp(Object object)
-  {
-    if (object instanceof Component)
-    {
-      Component comp           = (Component) object;
-      Toolkit   defaultToolkit = Toolkit.getDefaultToolkit();
-      Dimension screenSize     = defaultToolkit.getScreenSize();
-      int       x              = (int) ((screenSize.getWidth() - comp.getWidth()) / 2);
-      int       y              = (int) ((screenSize.getHeight() - comp.getHeight()) / 2);
-
-      comp.setBounds(x, y, comp.getWidth(), comp.getHeight());
-    }
   }
 
   private void findFiles()

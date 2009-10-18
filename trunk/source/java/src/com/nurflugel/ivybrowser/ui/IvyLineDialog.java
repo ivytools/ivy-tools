@@ -1,8 +1,9 @@
 package com.nurflugel.ivybrowser.ui;
 
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
-import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
 import java.awt.*;
 import static java.awt.Cursor.*;
 import java.awt.datatransfer.StringSelection;
@@ -14,12 +15,11 @@ import java.util.List;
 import javax.swing.*;
 import static javax.swing.BoxLayout.*;
 import static javax.swing.JComponent.*;
-import org.apache.commons.lang.StringUtils;
 import static org.apache.commons.lang.StringUtils.*;
 
+@SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyLineDialog extends JDialog
 {
-  /** Use serialVersionUID for interoperability. */
   private static final long   serialVersionUID         = 4553280884847762492L;
   private JPanel              contentPane;
   private JButton             buttonOK;
@@ -27,10 +27,11 @@ public class IvyLineDialog extends JDialog
   private JCheckBox           forceThisVersionCheckBox;
   private JPanel              dependenciesPanel;
   private JPanel              ivyTextPanel;
-  private JPanel              includedFilesPanel;
+  private JPanel              publicationsPanel;
   private IvyPackage          ivyPackage;
   private String              ivyRepositoryPath;
   private IvyBrowserMainFrame mainFrame;
+  private boolean             isOk;
 
   public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame) throws IOException
   {
@@ -38,29 +39,41 @@ public class IvyLineDialog extends JDialog
     this.ivyRepositoryPath = ivyRepositoryPath;
     this.mainFrame         = mainFrame;
     setContentPane(contentPane);
-    setModal(true);
+    setModal(false);
     getRootPane().setDefaultButton(buttonOK);
 
     LayoutManager textboxLayout = new BoxLayout(ivyTextPanel, Y_AXIS);
     LayoutManager boxLayout     = new BoxLayout(dependenciesPanel, Y_AXIS);
-    LayoutManager filesLayout   = new BoxLayout(includedFilesPanel, Y_AXIS);
+    LayoutManager filesLayout   = new BoxLayout(publicationsPanel, Y_AXIS);
 
     ivyTextPanel.setLayout(textboxLayout);
     dependenciesPanel.setLayout(boxLayout);
-    includedFilesPanel.setLayout(filesLayout);
+    publicationsPanel.setLayout(filesLayout);
     addListeners();
     createText();
     pack();
+    setSize(getSize().width, (int) (getSize().height * 1.25));
+    centerApp(this);
+    adjustSize();
+  }
 
+  private void adjustSize()
+  {
     Dimension requestedSize = getSize();
     Dimension screenSize    = Toolkit.getDefaultToolkit().getScreenSize();
 
-    if (screenSize.height < requestedSize.height)
+    if (requestedSize.height < screenSize.height)
+    {
+      setSize(requestedSize.width, requestedSize.height);
+    }
+    else
     {
       setSize(requestedSize.width, screenSize.height);
     }
 
-    centerApp(this);
+    setLocation(getLocation().x, 0);
+    doLayout();
+    invalidate();
   }
 
   private void addListeners()
@@ -110,155 +123,9 @@ public class IvyLineDialog extends JDialog
 
   private void onOK()
   {
+    isOk = true;
     getPasteText();
     dispose();
-  }
-
-  private void onCancel()
-  {
-    dispose();
-  }
-
-  private void createText() throws IOException
-  {
-    Set<IvyPackage> dependencies = (Set<IvyPackage>) ivyPackage.getDependencies();
-
-    dependenciesPanel.removeAll();
-
-    if (dependencies.isEmpty())
-    {
-      dependenciesPanel.add(new JLabel("No dependencies found"));
-    }
-    else  // todo put this into a method "populate dependencies
-    {
-      populateDependenciesPanel(dependencies);
-    }
-
-    populateIncludedJarsPanel();
-    updatePastedText();
-  }
-
-  private void populateDependenciesPanel(Set<IvyPackage> dependencies)
-  {
-    List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
-
-    for (final IvyPackage dependency : dependencies)
-    {
-      IvyPackageCheckbox checkBox = new IvyPackageCheckbox(dependency);
-
-      checkBox.setToolTipText("Right-click to bring up another window of this item's dependencies");
-      checkBox.addActionListener(new ActionListener()
-        {
-          public void actionPerformed(ActionEvent e)
-          {
-            updatePastedText();
-          }
-        });
-      checkBox.addMouseListener(new MouseAdapter()
-        {
-          /** Popup still yet another line dialog box if they click on the label of the checkbox. */
-          @Override
-          public void mouseClicked(MouseEvent mouseEvent)
-          {
-            setCursor(getPredefinedCursor(WAIT_CURSOR));
-
-            // get package from look up of org module rev in hashtable
-            IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
-
-            try
-            {
-              IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
-
-              lineDialog.setVisible(true);
-              setCursor(getPredefinedCursor(DEFAULT_CURSOR));
-            }
-            catch (IOException e)
-            {
-              e.printStackTrace();  // todo show error dialog
-            }
-          }
-        });
-      sortedCheckboxes.add(checkBox);
-    }
-
-    Collections.sort(sortedCheckboxes);
-
-    for (IvyPackageCheckbox sortedCheckbox : sortedCheckboxes)
-    {
-      dependenciesPanel.add(sortedCheckbox);
-    }
-  }
-
-  private IvyPackage getPackageFromMap(IvyPackage dependency, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
-  {
-    String                               orgName    = dependency.getOrgName();
-    String                               moduleName = dependency.getModuleName();
-    String                               version    = dependency.getVersion();
-    Map<String, Map<String, IvyPackage>> modules    = packageMap.get(orgName);
-    Map<String, IvyPackage>              versions   = modules.get(moduleName);
-    IvyPackage                           aPackage   = versions.get(version);
-
-    return aPackage;
-  }
-
-  private void populateIncludedJarsPanel()
-  {
-    Collection<String>   includedFiles = ivyPackage.getPublications();
-    final String         orgName       = ivyPackage.getOrgName();
-    final String         moduleName    = ivyPackage.getModuleName();
-    final String         version       = ivyPackage.getVersion();
-    final BaseWebHandler handler       = HandlerFactory.getHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
-    int                  height        = 0;
-
-    for (String includedFile : includedFiles)
-    {
-      final JCheckBox fileLabel = new JCheckBox(includedFile, true);
-
-      fileLabel.setToolTipText("Click to download this file, unselect to exclude");
-      includedFilesPanel.add(fileLabel);
-      height += fileLabel.getPreferredSize().height;
-      fileLabel.addMouseListener(new MouseAdapter()
-        {
-          /** download the file. */
-          @Override
-          public void mouseClicked(MouseEvent mouseEvent)
-          {
-            try
-            {
-              handler.downloadFile(fileLabel, orgName, moduleName, version);
-            }
-            catch (IOException e)
-            {
-              e.printStackTrace();  // todo error message
-            }
-          }
-        });
-      fileLabel.addActionListener(new ActionListener()
-        {
-          public void actionPerformed(ActionEvent actionEvent)
-          {
-            updatePastedText();
-          }
-        });
-    }
-
-    height += 15;
-
-    Dimension newSize = new Dimension(includedFilesPanel.getWidth(), height);
-
-    // todo put this into a scrollpane
-    includedFilesPanel.setSize(newSize);
-    includedFilesPanel.setMinimumSize(newSize);
-    includedFilesPanel.setPreferredSize(newSize);
-  }
-
-  @SuppressWarnings({ "StringConcatenationInsideStringBufferAppend" })
-  private void updatePastedText()
-  {
-    ivyTextPanel.removeAll();
-    getPasteText();
-    pack();
-    centerApp(this);
   }
 
   private void getPasteText()
@@ -273,7 +140,7 @@ public class IvyLineDialog extends JDialog
     List<IvyPackage> excludedPackages  = new ArrayList<IvyPackage>();
     List<String>     excludedFiles     = new ArrayList<String>();
     Component[]      packageComponents = dependenciesPanel.getComponents();
-    Component[]      fileComponents    = includedFilesPanel.getComponents();
+    Component[]      fileComponents    = publicationsPanel.getComponents();
 
     for (Component component : packageComponents)
     {
@@ -344,5 +211,172 @@ public class IvyLineDialog extends JDialog
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ivyLine, null);
   }
 
-  // --------------------------- main() method ---------------------------
+  private void onCancel()
+  {
+    isOk = false;
+    dispose();
+  }
+
+  @SuppressWarnings({ "StringConcatenationInsideStringBufferAppend" })
+  private void updatePastedText()
+  {
+    ivyTextPanel.removeAll();
+    getPasteText();
+    ivyTextPanel.updateUI();
+    dependenciesPanel.updateUI();
+    publicationsPanel.updateUI();
+
+    // ivyTextPanel.doLayout();
+    // ivyTextPanel.setSize(ivyTextPanel.getPreferredSize());
+    // ivyTextPanel.invalidate();
+    // ivyTextPanel.repaint();
+    // pack();
+    adjustSize();
+    // centerApp(this);
+  }
+
+  private void createText() throws IOException
+  {
+    Set<IvyPackage> dependencies = (Set<IvyPackage>) ivyPackage.getDependencies();
+
+    dependenciesPanel.removeAll();
+
+    if (dependencies.isEmpty())
+    {
+      dependenciesPanel.add(new JLabel("No dependencies found"));
+    }
+    else  // todo put this into a method "populate dependencies
+    {
+      populateDependenciesPanel(dependencies);
+    }
+
+    populateIncludedJarsPanel();
+    updatePastedText();
+  }
+
+  private void populateDependenciesPanel(Set<IvyPackage> dependencies)
+  {
+    List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
+
+    for (final IvyPackage dependency : dependencies)
+    {
+      IvyPackageCheckbox checkBox = new IvyPackageCheckbox(dependency);
+
+      checkBox.setToolTipText("Right-click to bring up another window of this item's dependencies");
+      checkBox.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e)
+          {
+            updatePastedText();
+          }
+        });
+      checkBox.addMouseListener(new MouseAdapter()
+        {
+          /** Popup still yet another line dialog box if they click on the label of the checkbox. */
+          @Override
+          public void mouseClicked(MouseEvent mouseEvent)
+          {
+            if (mouseEvent.isMetaDown())
+            {
+              setCursor(getPredefinedCursor(WAIT_CURSOR));
+
+              // get package from look up of org module rev in hashtable
+              IvyPackage newIvyPackage = getPackageFromMap(dependency, mainFrame.getPackageMap());
+
+              try
+              {
+                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
+
+                lineDialog.setVisible(true);
+                setCursor(getPredefinedCursor(DEFAULT_CURSOR));
+              }
+              catch (IOException e)
+              {
+                e.printStackTrace();  // todo show error dialog
+              }
+            }
+          }
+        });
+      sortedCheckboxes.add(checkBox);
+    }
+
+    Collections.sort(sortedCheckboxes);
+
+    for (IvyPackageCheckbox sortedCheckbox : sortedCheckboxes)
+    {
+      dependenciesPanel.add(sortedCheckbox);
+    }
+  }
+
+  private IvyPackage getPackageFromMap(IvyPackage dependency, Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+  {
+    String                               orgName    = dependency.getOrgName();
+    String                               moduleName = dependency.getModuleName();
+    String                               version    = dependency.getVersion();
+    Map<String, Map<String, IvyPackage>> modules    = packageMap.get(orgName);
+    Map<String, IvyPackage>              versions   = modules.get(moduleName);
+    IvyPackage                           aPackage   = versions.get(version);
+
+    return aPackage;
+  }
+
+  private void populateIncludedJarsPanel()
+  {
+    Collection<String> includedFiles = ivyPackage.getPublications();
+    final String       orgName       = ivyPackage.getOrgName();
+    final String       moduleName    = ivyPackage.getModuleName();
+    final String       version       = ivyPackage.getVersion();
+
+    // final BaseWebHandler handler       = HandlerFactory.getHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
+    int height = 0;
+
+    for (String includedFile : includedFiles)
+    {
+      final JCheckBox fileLabel = new JCheckBox(includedFile, true);
+
+      fileLabel.setToolTipText("Click to download this file, unselect to exclude");
+      publicationsPanel.add(fileLabel);
+      height += fileLabel.getPreferredSize().height;
+      fileLabel.addMouseListener(new MouseAdapter()
+        {
+          /** download the file. */
+          @Override
+          public void mouseClicked(MouseEvent mouseEvent)
+          {
+            if (mouseEvent.isMetaDown())
+            {
+              try
+              {
+                BaseWebHandler.downloadFile(fileLabel, orgName, moduleName, version, mainFrame, ivyRepositoryPath);
+              }
+              catch (IOException e)
+              {
+                e.printStackTrace();  // todo error message
+              }
+            }
+          }
+        });
+      fileLabel.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent actionEvent)
+          {
+            updatePastedText();
+          }
+        });
+    }
+
+    height += 15;
+
+    Dimension newSize = new Dimension(publicationsPanel.getWidth(), height);
+
+    // todo put this into a scrollpane
+    publicationsPanel.setSize(newSize);
+    publicationsPanel.setMinimumSize(newSize);
+    publicationsPanel.setPreferredSize(newSize);
+  }
+
+  public boolean isOk()
+  {
+    return isOk;
+  }
 }

@@ -1,10 +1,9 @@
 package com.nurflugel.ivyformatter.ui;
 
-import com.nurflugel.common.ui.Version;
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Version.*;
-import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
-import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import java.awt.*;
 import static java.awt.datatransfer.DataFlavor.*;
 import java.awt.datatransfer.StringSelection;
@@ -27,13 +26,12 @@ import javax.help.HelpSetException;
 public class IvyFormatterMainFrame extends JFrame
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long  serialVersionUID = -6797243387476820162L;
-  private JButton            formatTextButton;
-  private JButton            quitButton;
-  private JTextArea          textArea;
-  private JPanel             contentPane;
-  private JButton            helpButton;
-  public static final String HELP_HS          = "ivyFormatterHelp.hs";
+  private static final long serialVersionUID = -6797243387476820162L;
+  private JButton           formatTextButton;
+  private JButton           quitButton;
+  private JTextArea         textArea;
+  private JPanel            contentPane;
+  private JButton           helpButton;
 
   public IvyFormatterMainFrame()
   {
@@ -66,29 +64,9 @@ public class IvyFormatterMainFrame extends JFrame
       });
     pack();
     setSize(1000, 1000);
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
     setVisible(true);
-    addHelpListener();
-  }
-
-  /** Add the help listener - link to the help files. */
-  private void addHelpListener()
-  {
-    ClassLoader classLoader = IvyFormatterMainFrame.class.getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, HELP_HS);
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {  // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-    }
+    addHelpListener("ivyFormatterHelp.hs", helpButton, this);
   }
 
   private void formatText(String ivyText)

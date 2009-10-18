@@ -1,6 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
-import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.*;
 import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -20,6 +21,7 @@ public class FindIvyRepositoryDialog extends JDialog
   private JComboBox           comboBox;
   private Preferences         appPreferences;
   private List<String>        locations;
+  private boolean             isOK;
 
   public FindIvyRepositoryDialog(Preferences appPreferences)
   {
@@ -93,6 +95,8 @@ public class FindIvyRepositoryDialog extends JDialog
 
   private void onOK()
   {
+    isOK = true;
+
     Object item     = comboBox.getSelectedItem();
     String location = (String) item;
 
@@ -117,6 +121,7 @@ public class FindIvyRepositoryDialog extends JDialog
   private void onCancel()
   {
     // add your code here if necessary
+    isOK = false;
     dispose();
   }
 
@@ -125,5 +130,10 @@ public class FindIvyRepositoryDialog extends JDialog
   public String getRepositoryLocation()
   {
     return (String) comboBox.getSelectedItem();
+  }
+
+  public boolean isOk()
+  {
+    return isOK;
   }
 }
