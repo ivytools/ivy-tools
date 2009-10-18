@@ -956,6 +956,7 @@
         <w>Html</w>
         <w>Renderer</w>
         <w>Versioned</w>
+        <w>classpath</w>
         <w>conf</w>
         <w>hashtable</w>
         <w>javadoc</w>
