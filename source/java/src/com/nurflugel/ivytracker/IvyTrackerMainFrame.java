@@ -9,6 +9,7 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.*;
@@ -90,7 +91,7 @@ public class IvyTrackerMainFrame extends JFrame
     Authenticator.setDefault(new WebAuthenticator());
     pack();
     setSize(1000, 800);
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
     filterField.setEnabled(false);
     setVisible(true);
     setCursor(busyCursor);
@@ -123,7 +124,9 @@ public class IvyTrackerMainFrame extends JFrame
       {
         public void actionPerformed(ActionEvent actionEvent)
         {
-          IvyBrowserMainFrame.specifyRepository(preferences);
+          int i = 5 / 0;  // yes this will break!
+
+          // IvyBrowserMainFrame.specifyRepository(preferences);
         }
       });
   }
@@ -280,7 +283,9 @@ public class IvyTrackerMainFrame extends JFrame
 
     if (ivyRepositoryPath.length() == 0)
     {
-      ivyRepositoryPath = IvyBrowserMainFrame.specifyRepository(preferences);
+      int i = 5 / 0;
+
+      // ivyRepositoryPath = IvyBrowserMainFrame.specifyRepository(preferences);
     }
 
     URL startingUrl = new URL(ivyRepositoryPath);

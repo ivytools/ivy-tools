@@ -1,15 +1,14 @@
 package com.nurflugel.ivytracker;
 
-import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
+import static com.nurflugel.common.ui.Util.center;
 import com.nurflugel.ivytracker.domain.IvyFile;
-import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.TreeModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.*;
-import javax.swing.tree.TreeModel;
 
 public class ShowProjectsDialog extends JDialog
 {
@@ -28,7 +27,7 @@ public class ShowProjectsDialog extends JDialog
     populateTree(projectIvyFiles, ivyFilesMap);
     pack();
     setSize(1000, 800);
-    BuilderMainFrame.centerApp(this);
+    center(this);
   }
 
   private void addListeners()

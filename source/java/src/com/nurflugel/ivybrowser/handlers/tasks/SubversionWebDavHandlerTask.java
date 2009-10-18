@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.MalformedURLException;
+import org.jdom.JDOMException;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:19:45 PM To change this template use File | Settings | File Templates.
@@ -59,9 +61,13 @@ public class SubversionWebDavHandlerTask implements Runnable
 
       reader.close();
     }
+    catch (StringIndexOutOfBoundsException e)
+    {
+      // do nothing, we're parsing a non-Ivy file
+    }
     catch (Exception e)
     {
-      e.printStackTrace();  // todo set a flag on calling component, show error message
+      e.printStackTrace();
     }
   }
 }

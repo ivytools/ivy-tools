@@ -19,7 +19,7 @@ import javax.swing.*;
 import static javax.swing.JFileChooser.*;
 
 /** The parent class of all the handlers that parse the repository. */
-@SuppressWarnings({ "ProtectedField" })
+@SuppressWarnings({ "ProtectedField", "UseOfSystemOutOrSystemErr" })
 public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 {
   public static final int NUMBER_OF_THREADS = 5;
@@ -70,7 +70,8 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public abstract void findIvyPackages();
 
   /** Download the actual jar file to wherever the user wants it. */
-  public void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version) throws IOException
+  public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame mainFrame,
+                                  String ivyRepositoryPath) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
     String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
@@ -96,11 +97,11 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     {
       File selectedFile = fileChooser.getSelectedFile();
 
-      downloadFile(fileUrl, selectedFile);
+      downloadFile(fileUrl, selectedFile, mainFrame);
     }
   }
 
-  private void downloadFile(URL fileUrl, File selectedFile) throws IOException
+  private static void downloadFile(URL fileUrl, File selectedFile, IvyBrowserMainFrame mainFrame) throws IOException
   {
     mainFrame.setPreferredSaveDir(selectedFile.getParent());
 
@@ -119,7 +120,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     in.close();
   }
 
-  public void findVersions(URL repositoryUrl, String orgName, String moduleName) throws IOException, JDOMException
+  public void findVersions(URL repositoryUrl, String orgName, String moduleName) throws IOException
   {
     URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
     URLConnection urlConnection = versionUrl.openConnection();
@@ -127,26 +128,47 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     urlConnection.setAllowUserInteraction(true);
     urlConnection.connect();
 
-    InputStream    in          = urlConnection.getInputStream();
-    BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-    String         versionLine = reader.readLine();
-
-    while (versionLine != null)
+    try
     {
-      boolean hasVersion = hasVersion(versionLine);
+      InputStream    in          = urlConnection.getInputStream();
+      BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
+      String         versionLine = reader.readLine();
 
-      if (hasVersion && !versionLine.contains("Parent Directory"))
+      while (versionLine != null)
       {
-        String version = getContents(versionLine);
+        boolean hasVersion = hasVersion(versionLine);
 
-        mainFrame.setStatusLabel("Parsing " + moduleName + " version " + version);
-        findVersionedLibrary(repositoryUrl, stripSlash(orgName), stripSlash(moduleName), stripSlash(version));
+        if (hasVersion && !versionLine.contains("Parent Directory"))
+        {
+          String version = getContents(versionLine);
+
+          mainFrame.setStatusLabel("Parsing " + repositoryUrl + " for " + moduleName + " version " + version);
+
+          try
+          {
+            findVersionedLibrary(repositoryUrl, stripSlash(orgName), stripSlash(moduleName), stripSlash(version));
+          }
+          catch (IOException e)
+          {
+            System.out.println("You have a version with a missing XML file: " + stripSlash(orgName) + " " + stripSlash(moduleName) + " "
+                               + stripSlash(version) + " " + e.getMessage());
+          }
+          catch (JDOMException e)
+          {
+            System.out.println("JDom couldn't parse the file for this library (probably a 0-byte file): " + stripSlash(orgName) + " "
+                               + stripSlash(moduleName) + " " + stripSlash(version) + " " + e.getMessage());
+          }
+        }
+
+        versionLine = reader.readLine();
       }
 
-      versionLine = reader.readLine();
+      reader.close();
     }
-
-    reader.close();
+    catch (IOException e)
+    {
+      System.out.println("You have a missing versionUrl " + versionUrl + " " + e.getMessage());
+    }
   }
 
   protected abstract boolean hasVersion(String versionLine);
@@ -168,45 +190,49 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     Element          root          = doc.getRootElement();
     Element          info          = root.getChild(INFO);
     Element          publications  = root.getChild(PUBLICATIONS);
-    List             artifacts     = publications.getChildren(ARTIFACT);
-    Element          dependencies  = root.getChild(DEPENDENCIES);
-    IvyPackage       ivyPackage    = getIvyPackage(orgName, moduleName, version);
 
-    localPackages.add(ivyPackage);
-
-    for (Object item : artifacts)
+    if (publications != null)
     {
-      Element artifact = (Element) item;
-      String  name     = artifact.getAttributeValue(NAME);
-      String  ext      = artifact.getAttributeValue(EXT);
-      String  conf     = artifact.getAttributeValue(CONF);
+      List       artifacts    = publications.getChildren(ARTIFACT);
+      Element    dependencies = root.getChild(DEPENDENCIES);
+      IvyPackage ivyPackage   = getIvyPackage(orgName, moduleName, version);
 
-      if (conf.equals(JAVADOC))
+      localPackages.add(ivyPackage);
+
+      for (Object item : artifacts)
       {
-        ivyPackage.setHasJavaDocs(true);
+        Element artifact = (Element) item;
+        String  name     = artifact.getAttributeValue(NAME);
+        String  ext      = artifact.getAttributeValue(EXT);
+        String  conf     = artifact.getAttributeValue(CONF);
+
+        if (conf.equals(JAVADOC))
+        {
+          ivyPackage.setHasJavaDocs(true);
+        }
+        else if (conf.equals(SOURCE))
+        {
+          ivyPackage.setHasSourceCode(true);
+        }
+
+        ivyPackage.addPublication(name + "." + ext);
       }
-      else if (conf.equals(SOURCE))
+
+      if (dependencies != null)
       {
-        ivyPackage.setHasSourceCode(true);
-      }
+        List children = dependencies.getChildren("dependency");
 
-      ivyPackage.addPublication(name + "." + ext);
-    }
+        for (Object item : children)
+        {
+          Element    dependency        = (Element) item;
+          String     org               = dependency.getAttributeValue(ORG);
+          String     module            = dependency.getAttributeValue(NAME);
+          String     rev               = dependency.getAttributeValue(REV);
+          String     conf              = dependency.getAttributeValue(CONF);
+          IvyPackage dependencyPackage = getIvyPackage(org, module, rev);
 
-    if (dependencies != null)
-    {
-      List children = dependencies.getChildren("dependency");
-
-      for (Object item : children)
-      {
-        Element    dependency        = (Element) item;
-        String     org               = dependency.getAttributeValue(ORG);
-        String     module            = dependency.getAttributeValue(NAME);
-        String     rev               = dependency.getAttributeValue(REV);
-        String     conf              = dependency.getAttributeValue(CONF);
-        IvyPackage dependencyPackage = getIvyPackage(org, module, rev);
-
-        ivyPackage.addDependency(dependencyPackage);
+          ivyPackage.addDependency(dependencyPackage);
+        }
       }
     }
 

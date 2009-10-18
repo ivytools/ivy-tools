@@ -1,7 +1,8 @@
 package com.nurflugel.ivybrowser.ui;
 
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-import static com.nurflugel.ivybrowser.ui.BuilderMainFrame.centerApp;
 import java.awt.*;
 import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;

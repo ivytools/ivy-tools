@@ -6,14 +6,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
-import javax.help.HelpSet;
-import javax.help.HelpBroker;
-import javax.help.CSH;
-import javax.help.HelpSetException;
 import java.io.File;
 import java.io.IOException;
-import java.io.FilenameFilter;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -21,11 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import static java.awt.Cursor.getPredefinedCursor;
-import static java.awt.Cursor.DEFAULT_CURSOR;
-import static java.awt.Cursor.WAIT_CURSOR;
-import java.net.URL;
 import static com.nurflugel.common.ui.Util.*;
-import com.nurflugel.common.ui.Version;
 import static com.nurflugel.common.ui.Version.*;
 import com.nurflugel.Os;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
@@ -35,7 +25,6 @@ import static com.nurflugel.ivygrapher.NodeOrder.*;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class IvyGrapher extends JFrame
 {
-  public static final String  HELP_HS           = "ivyGrapherHelp.hs";
   private static final String DIR               = "dir";
   private static final String DOT_EXECUTABLE    = "dotExecutable";
   private File[]              filesToGraph;
@@ -212,7 +201,7 @@ public class IvyGrapher extends JFrame
           nodeOrder = LEFT_TO_RIGHT;
         }
       });
-    addHelpListener();
+    addHelpListener("ivyGrapherHelp.hs", helpButton, this);
   }
 
   private void doQuitAction()
@@ -309,29 +298,6 @@ public class IvyGrapher extends JFrame
     catch (IOException e)
     {
       e.printStackTrace();
-    }
-  }
-
-  /** Add the help listener - link to the help files. */
-  private void addHelpListener()
-  {
-    ClassLoader classLoader = IvyGrapher.class.getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, HELP_HS);
-
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {  // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-      // LOGGER.error("HelpSet " + ee.getMessage());
-      // LOGGER.error("HelpSet " + HELP_HS + " not found");
     }
   }
 

@@ -8,20 +8,20 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
-import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.*;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
-import static java.awt.Cursor.*;
-import static java.awt.Cursor.*;
-import static java.awt.Cursor.*;
 import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.URL;
@@ -30,12 +30,8 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
-import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import javax.help.HelpSet;
 import javax.help.HelpBroker;
 import javax.help.CSH;
@@ -74,7 +70,7 @@ public class IvyBrowserMainFrame extends JFrame
     initializeComponents();
     pack();
     setSize(800, 600);
-    BuilderMainFrame.centerApp(this);
+    centerApp(this);
 
     // this was causing problems with GlazedLists throwing NPEs
     // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
@@ -154,12 +150,7 @@ public class IvyBrowserMainFrame extends JFrame
       {
         public void actionPerformed(ActionEvent e)
         {
-          String path = specifyRepository(preferences);
-
-          if ((path != null) && (path.length() > 0))
-          {
-            reparse();
-          }
+          specifyRepository(preferences);
         }
       });
     libraryField.addActionListener(new ActionListener()
@@ -203,37 +194,26 @@ public class IvyBrowserMainFrame extends JFrame
         }
       });
 
-    ClassLoader classLoader = IvyBrowserMainFrame.class.getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, "ivyBrowserHelp.hs");
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {                              // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-      // LOGGER.error("HelpSet " + ee.getMessage());
-      // LOGGER.error("HelpSet " + HELP_HS + " not found");
-    }
+    addHelpListener("ivyBrowserHelp.hs", helpButton, this);
   }
 
-  public static String specifyRepository(Preferences appPreferences)
+  public void specifyRepository(Preferences appPreferences)
   {
     // String ivyRepositoryPath = appPreferences.get(IVY_REPOSITORY, "");
     FindIvyRepositoryDialog dialog = new FindIvyRepositoryDialog(appPreferences);
 
     dialog.setVisible(true);
 
-    String ivyRepositoryPath = dialog.getRepositoryLocation();
+    if (dialog.isOk())
+    {
+      String ivyRepositoryPath = dialog.getRepositoryLocation();
 
-    // ivyRepositoryPath = (String) showInputDialog(null, "What is the Ivy repository URL?", "Enter Ivy repository URL", QUESTION_MESSAGE, null, null,
-    // ivyRepositoryPath); appPreferences.put(IVY_REPOSITORY, ivyRepositoryPath);
-    return ivyRepositoryPath;
+      if (!isEmpty(ivyRepositoryPath) && !ivyRepositoryPath.equals(this.ivyRepositoryPath))
+      {
+        this.ivyRepositoryPath = ivyRepositoryPath;
+        reparse();
+      }
+    }
   }
 
   public void filterTable()
@@ -247,6 +227,7 @@ public class IvyBrowserMainFrame extends JFrame
     EventTableModel<IvyPackage> tableModel       = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
 
     resultsTable.setModel(tableModel);
+    resultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
 
     TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
   }
@@ -280,12 +261,12 @@ public class IvyBrowserMainFrame extends JFrame
     progressPanel.start();
     ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
 
-    if (ivyRepositoryPath.equalsIgnoreCase(""))
+    if (isEmpty(ivyRepositoryPath))
     {
-      ivyRepositoryPath = specifyRepository(preferences);
+      specifyRepository(preferences);
     }
 
-    if (ivyRepositoryPath.length() > 0)
+    if (!isEmpty(ivyRepositoryPath))
     {
       repositoryList.clear();
       packageMap.clear();
