@@ -1,10 +1,9 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import static java.awt.Color.*;
-import java.util.*;
 import java.util.List;
 
 /** Renderer to highlight rows which exceed the threshold. */

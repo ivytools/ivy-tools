@@ -1,4 +1,4 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 import javax.swing.*;
 
