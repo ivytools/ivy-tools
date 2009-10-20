@@ -9,9 +9,9 @@ import java.util.List;
 /** Renderer to highlight rows which exceed the threshold. */
 public class VersionTableCellRenderer extends JLabel implements TableCellRenderer
 {
-  private VersionTrackerUi ui;
+  private VersionFinderUi ui;
 
-  public VersionTableCellRenderer(VersionTrackerUi ui)
+  public VersionTableCellRenderer(VersionFinderUi ui)
   {
     this.ui = ui;
   }

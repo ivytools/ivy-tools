@@ -10,13 +10,13 @@ class ResultRow implements Comparable
 {
   private File             file;
   private String           version;
-  private VersionTrackerUi versionTrackerUi;
+  private VersionFinderUi versionFinderUi;
 
-  ResultRow(File file, String version, VersionTrackerUi versionTrackerUi)
+  ResultRow(File file, String version, VersionFinderUi versionFinderUi)
   {
     this.file             = file;
     this.version          = version;
-    this.versionTrackerUi = versionTrackerUi;
+    this.versionFinderUi = versionFinderUi;
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
@@ -34,7 +34,7 @@ class ResultRow implements Comparable
 
   public String getPath()
   {
-    PathLength pathLength = versionTrackerUi.getPathLength();
+    PathLength pathLength = versionFinderUi.getPathLength();
 
     if (pathLength == PathLength.FILE_NAME)
     {
@@ -48,7 +48,7 @@ class ResultRow implements Comparable
       return filePath;
     }
 
-    String commonText = versionTrackerUi.getCommonText();
+    String commonText = versionFinderUi.getCommonText();
 
     filePath = StringUtils.removeStart(filePath, commonText);
 

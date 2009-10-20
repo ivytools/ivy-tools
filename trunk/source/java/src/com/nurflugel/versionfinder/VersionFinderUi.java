@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 
 /** Find class versions in libraries. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
-public class VersionTrackerUi extends JFrame
+public class VersionFinderUi extends JFrame
 {
   private static final String FILES_DIR                 = "filesDir";
   private static final String JDK_THRESHOLD             = "jdkThreshold";
@@ -52,7 +52,7 @@ public class VersionTrackerUi extends JFrame
   private List<ResultRow>     results                   = new ArrayList<ResultRow>();
   private String              commonText;
 
-  public VersionTrackerUi() {}
+  public VersionFinderUi() {}
 
   // -------------------------- OTHER METHODS --------------------------
 
@@ -104,7 +104,7 @@ public class VersionTrackerUi extends JFrame
 
   public static void main(String[] args)
   {
-    VersionTrackerUi ui = new VersionTrackerUi();
+    VersionFinderUi ui = new VersionFinderUi();
 
     ui.loadUi();
   }
@@ -115,7 +115,7 @@ public class VersionTrackerUi extends JFrame
     setContentPane(contentsPanel);
     addListeners();
     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-    preferences = Preferences.userNodeForPackage(VersionTrackerUi.class);
+    preferences = Preferences.userNodeForPackage(VersionFinderUi.class);
     loadPreferences();
 
     pack();
