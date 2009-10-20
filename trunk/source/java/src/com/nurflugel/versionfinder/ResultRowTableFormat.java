@@ -1,7 +1,6 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 import ca.odell.glazedlists.gui.TableFormat;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 15, 2009 Time: 10:03:40 PM To change this template use File | Settings | File Templates.

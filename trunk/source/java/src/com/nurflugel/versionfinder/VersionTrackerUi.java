@@ -1,4 +1,4 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -9,15 +9,14 @@ import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.centerApp;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static com.nurflugel.common.ui.Version.VERSION;
-import static com.nurflugel.versiontracker.Jdk.*;
-import static com.nurflugel.versiontracker.PathLength.*;
+import static com.nurflugel.versionfinder.Jdk.*;
+import static com.nurflugel.versionfinder.PathLength.*;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
 import static javax.swing.BoxLayout.*;
 import static javax.swing.JFileChooser.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import static java.awt.Cursor.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;

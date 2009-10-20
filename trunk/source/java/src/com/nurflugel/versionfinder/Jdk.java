@@ -1,4 +1,4 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 16, 2009 Time: 7:48:55 PM To change this template use File | Settings | File Templates.

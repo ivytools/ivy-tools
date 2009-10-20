@@ -1,4 +1,4 @@
-package com.nurflugel.versiontracker;
+package com.nurflugel.versionfinder;
 
 /** Enum of possible values for file name lengths. */
 public enum PathLength
