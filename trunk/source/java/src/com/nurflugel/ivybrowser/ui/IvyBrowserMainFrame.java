@@ -8,15 +8,19 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
-import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
-import org.apache.commons.lang.StringUtils;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import javax.swing.*;
+import static javax.swing.BoxLayout.Y_AXIS;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
@@ -24,18 +28,9 @@ import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.Authenticator;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.*;
-import static javax.swing.BoxLayout.Y_AXIS;
-import static javax.swing.JOptionPane.showInputDialog;
-import javax.swing.table.*;
-import javax.help.HelpSet;
-import javax.help.HelpBroker;
-import javax.help.CSH;
-import javax.help.HelpSetException;
 
 /** Main UI frame for the Ivy Browser. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
@@ -46,7 +41,7 @@ public class IvyBrowserMainFrame extends JFrame
   private static final String PARSE_ON_OPEN = "parseOnOpen";
   private static final String SAVE_DIR = "saveDir";
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
-  private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
+  private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient - click to cancel", this);
   private Cursor           busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
   private Cursor           normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private JButton          specifyButton       = new JButton("Specify Repository");
@@ -63,6 +58,7 @@ public class IvyBrowserMainFrame extends JFrame
   private JScrollPane      scrollPane;
   private JPanel           holdingPanel;
   private String           ivyRepositoryPath;
+  private BaseWebHandler   parsingHandler;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyBrowserMainFrame()
@@ -271,9 +267,9 @@ public class IvyBrowserMainFrame extends JFrame
       repositoryList.clear();
       packageMap.clear();
 
-      BaseWebHandler handler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList, packageMap);
+      parsingHandler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList, packageMap);
 
-      handler.execute();
+      parsingHandler.execute();
       holdingPanel.add(scrollPane);
     }
   }
@@ -322,6 +318,11 @@ public class IvyBrowserMainFrame extends JFrame
     progressPanel.stop();
   }
 
+  public void stopThreads()
+  {
+    parsingHandler.halt();
+  }
+
   // --------------------------- main() method ---------------------------
 
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
@@ -345,5 +346,6 @@ public class IvyBrowserMainFrame extends JFrame
   public void setStatusLabel(String text)
   {
     statusLabel.setText(text);
+    progressPanel.setText(text);
   }
 }

@@ -15,6 +15,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.*;
 import static javax.swing.JFileChooser.*;
 
@@ -45,6 +47,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public static final String      CONF         = "conf";
   public static final String      ORG          = "org";
   public static final String      REV          = "rev";
+  ExecutorService                 threadPool   = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
   protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath,
@@ -70,14 +73,14 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public abstract void findIvyPackages();
 
   /** Download the actual jar file to wherever the user wants it. */
-  public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame mainFrame,
-                                  String ivyRepositoryPath) throws IOException
+  public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame theFrame,
+                                  String thePath) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
     String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
-    URL          fileUrl         = new URL(ivyRepositoryPath + "/" + orgName + "/" + moduleName + "/" + version + "/" + newText);
+    URL          fileUrl         = new URL(thePath + "/" + orgName + "/" + moduleName + "/" + version + "/" + newText);
     JFileChooser fileChooser     = new JFileChooser("Save file as...");
-    String       previousSaveDir = mainFrame.getPreferredSaveDir();  // todo get dir preference from Preferences, save if changed
+    String       previousSaveDir = theFrame.getPreferredSaveDir();  // todo get dir preference from Preferences, save if changed
     File         suggestedFile   = null;
 
     if (previousSaveDir == null)
@@ -91,19 +94,19 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     fileChooser.setSelectedFile(suggestedFile);
 
-    int returnVal = fileChooser.showSaveDialog(mainFrame);
+    int returnVal = fileChooser.showSaveDialog(theFrame);
 
     if (returnVal == APPROVE_OPTION)
     {
       File selectedFile = fileChooser.getSelectedFile();
 
-      downloadFile(fileUrl, selectedFile, mainFrame);
+      downloadFile(fileUrl, selectedFile, theFrame);
     }
   }
 
-  private static void downloadFile(URL fileUrl, File selectedFile, IvyBrowserMainFrame mainFrame) throws IOException
+  private static void downloadFile(URL fileUrl, File selectedFile, IvyBrowserMainFrame theFrame) throws IOException
   {
-    mainFrame.setPreferredSaveDir(selectedFile.getParent());
+    theFrame.setPreferredSaveDir(selectedFile.getParent());
 
     FileOutputStream     fos       = new FileOutputStream(selectedFile);
     BufferedOutputStream bout      = new BufferedOutputStream(fos, BLOCK_SIZE);
@@ -321,5 +324,10 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     boolean hasDirLink = isHref && !isUp && !isPre && isDir;
 
     return hasDirLink;
+  }
+
+  public void halt()
+  {
+    threadPool.shutdownNow();
   }
 }

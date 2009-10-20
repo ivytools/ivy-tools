@@ -18,7 +18,7 @@ public class Util
   public static final Cursor busyCursor           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
   public static final Cursor normalCursor         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
-// -------------------------- STATIC METHODS --------------------------
+  // -------------------------- STATIC METHODS --------------------------
 
   /** Firgures out how much time is remaining in the task. */
   public static String calculateTimeRemaining(long startTime, int currentValue, int maxValue)
