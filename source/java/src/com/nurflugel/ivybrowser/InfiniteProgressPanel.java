@@ -5,6 +5,7 @@ package com.nurflugel.ivybrowser;
  * Romain Guy <romain.guy@jext.org>
  * Subject to the BSD license.
  */
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import java.awt.*;
 import static java.awt.RenderingHints.*;
 import java.awt.event.MouseEvent;
@@ -38,7 +39,7 @@ import javax.swing.*;
  * @author   Romain Guy
  * @version  1.0
  */
-@SuppressWarnings({ "ClassWithTooManyConstructors", "ProtectedField", "NumericCastThatLosesPrecision" })
+@SuppressWarnings({ "ClassWithTooManyConstructors", "ProtectedField", "NumericCastThatLosesPrecision", "UseOfSystemOutOrSystemErr" })
 public class InfiniteProgressPanel extends JComponent implements MouseListener
 {
   /** Use serialVersionUID for interoperability. */
@@ -72,7 +73,8 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   protected float fps = 15.0f;
 
   /** Rendering hints to set anti aliasing. */
-  protected RenderingHints hints;
+  protected RenderingHints    hints;
+  private IvyBrowserMainFrame mainFrame;
   // --------------------------- CONSTRUCTORS ---------------------------
 
   /**
@@ -184,11 +186,22 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
     hints.put(KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_ON);
   }
 
+  public InfiniteProgressPanel(String text, IvyBrowserMainFrame mainFrame)
+  {
+    this(text);
+
+    this.mainFrame = mainFrame;
+  }
+
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface MouseListener ---------------------
 
-  public void mouseClicked(MouseEvent e) {}
+  public void mouseClicked(MouseEvent e)
+  {
+    stop();
+    mainFrame.stopThreads();
+  }
 
   public void mousePressed(MouseEvent e) {}
 

@@ -50,10 +50,9 @@ public class HtmlHandler extends BaseWebHandler
       urlConnection.setAllowUserInteraction(true);
       urlConnection.connect();
 
-      InputStream     in          = urlConnection.getInputStream();
-      BufferedReader  reader      = new BufferedReader(new InputStreamReader(in));
-      String          packageLine = reader.readLine();
-      ExecutorService threadPool  = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+      InputStream    in          = urlConnection.getInputStream();
+      BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
+      String         packageLine = reader.readLine();
 
       while (packageLine != null)
       {

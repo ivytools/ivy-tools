@@ -562,4 +562,9 @@ public class VersionTrackerUi extends JFrame
   {
     return jdkThreshold;
   }
+
+  public List<ResultRow> getResults()
+  {
+    return results;
+  }
 }

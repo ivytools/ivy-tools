@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import static java.awt.Color.*;
+import java.util.*;
+import java.util.List;
 
 /** Renderer to highlight rows which exceed the threshold. */
 public class VersionTableCellRenderer extends JLabel implements TableCellRenderer
@@ -23,17 +25,12 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
   {
     setText(whatToRender.toString());
 
-    if (col == 0)
-    {
-      setForeground(BLACK);
+    List<ResultRow> list      = ui.getResults();
+    ResultRow       resultRow = list.get(row);
 
-      return this;
-    }
-
-    String text      = (String) whatToRender;
-
-    int    level     = Integer.parseInt(text.trim());
-    Jdk    threshold = ui.getJdkThreshold();
+    String          text      = resultRow.getVersion();
+    int             level     = Integer.parseInt(text.trim());
+    Jdk             threshold = ui.getJdkThreshold();
 
     if (level >= threshold.getVersion())
     {
