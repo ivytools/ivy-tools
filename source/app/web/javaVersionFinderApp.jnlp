@@ -27,6 +27,6 @@
         <jar href="lib/glazedlists.jar"/>
         <extension name="help" href="help.jnlp"/>
     </resources>
-    <application-desc main-class="com.nurflugel.versiontracker.VersionTrackerUi"/>
+    <application-desc main-class="com.nurflugel.versionfinder.VersionFinderUi"/>
 </jnlp>
 
