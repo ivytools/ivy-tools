@@ -111,7 +111,7 @@ public class VersionFinderUi extends JFrame
 
   private void loadUi()
   {
-    setTitle("Version Tracker v. " + VERSION);
+    setTitle("Version Finder v. " + VERSION);
     setContentPane(contentsPanel);
     addListeners();
     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
