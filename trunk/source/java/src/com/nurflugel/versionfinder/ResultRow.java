@@ -8,14 +8,14 @@ import java.io.File;
  */
 class ResultRow implements Comparable
 {
-  private File             file;
-  private String           version;
+  private File            file;
+  private MajorMinor      version;
   private VersionFinderUi versionFinderUi;
 
-  ResultRow(File file, String version, VersionFinderUi versionFinderUi)
+  ResultRow(File file, MajorMinor version, VersionFinderUi versionFinderUi)
   {
-    this.file             = file;
-    this.version          = version;
+    this.file            = file;
+    this.version         = version;
     this.versionFinderUi = versionFinderUi;
   }
 
@@ -55,7 +55,7 @@ class ResultRow implements Comparable
     return filePath;
   }
 
-  public String getVersion()
+  public MajorMinor getVersion()
   {
     return version;
   }

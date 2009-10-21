@@ -7,9 +7,10 @@ import ca.odell.glazedlists.gui.TableFormat;
  */
 public class ResultRowTableFormat implements TableFormat
 {
-  static final int JAR         = 0;
-  static final int VERSION     = 1;
-  private String[] columnNames = { "Jar", "Java Version" };
+  static final int JAR           = 0;
+  static final int MAJOR_VERSION = 1;
+  static final int MINOR_VERSION = 2;
+  private String[] columnNames   = { "Jar", "Java Major Version", "Java Minor Version" };
 
   // ------------------------ INTERFACE METHODS ------------------------
 
@@ -17,7 +18,7 @@ public class ResultRowTableFormat implements TableFormat
 
   public int getColumnCount()
   {
-    return 2;
+    return 3;
   }
 
   public String getColumnName(int i)
@@ -32,15 +33,19 @@ public class ResultRowTableFormat implements TableFormat
 
   public Object getColumnValue(Object o, int i)
   {
-    ResultRow resultRow = (ResultRow) o;
+    ResultRow  resultRow = (ResultRow) o;
+    MajorMinor version   = resultRow.getVersion();
 
     switch (i)
     {
       case JAR:
         return resultRow.getPath();
 
-      case VERSION:
-        return resultRow.getVersion();
+      case MAJOR_VERSION:
+        return version.getMajorVersion();
+
+      case MINOR_VERSION:
+        return version.getMinorVersion();
 
       default:
         throw new IllegalStateException();
