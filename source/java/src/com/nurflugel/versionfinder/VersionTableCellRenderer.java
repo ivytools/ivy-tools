@@ -27,7 +27,7 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
     List<ResultRow> list      = ui.getResults();
     ResultRow       resultRow = list.get(row);
 
-    String          text      = resultRow.getVersion();
+    String          text      = resultRow.getVersion().getMajorVersion();
     int             level     = Integer.parseInt(text.trim());
     Jdk             threshold = ui.getJdkThreshold();
 
@@ -38,6 +38,15 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
     else
     {
       setForeground(BLACK);
+    }
+
+    if (col > 0)
+    {
+      setHorizontalAlignment(CENTER);
+    }
+    else
+    {
+      setHorizontalAlignment(LEFT);
     }
 
     return this;

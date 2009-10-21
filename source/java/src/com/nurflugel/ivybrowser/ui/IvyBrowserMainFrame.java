@@ -8,6 +8,8 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.*;
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
@@ -69,7 +71,9 @@ public class IvyBrowserMainFrame extends JFrame
     centerApp(this);
 
     // this was causing problems with GlazedLists throwing NPEs
-    // IvyTrackerMainFrame.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    // LookAndFeel lookAndFeel = setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    // System.out.println("lookAndFeel = " + lookAndFeel);
+    // setLookAndFeel(lookAndFeel, resultsTable.getParent().getParent().getParent().getParent());
     Authenticator.setDefault(new WebAuthenticator());
     libraryField.setEnabled(false);
     setVisible(true);

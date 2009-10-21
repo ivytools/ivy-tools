@@ -76,8 +76,10 @@ public class Util
 
   /** Sets the look and feel. */
   @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
-  public static void setLookAndFeel(String feelName, Component component)
+  public static LookAndFeel setLookAndFeel(String feelName, Component component)
   {
+    LookAndFeel currentLAF = UIManager.getLookAndFeel();
+
     try
     {
       UIManager.setLookAndFeel(feelName);
@@ -87,6 +89,13 @@ public class Util
     {
       System.out.println("Error setting native LAF: " + feelName + e.getMessage());
     }
+
+    return currentLAF;
+  }
+
+  public static LookAndFeel setLookAndFeel(LookAndFeel lookAndFeel, Component component)
+  {
+    return setLookAndFeel(lookAndFeel.getName(), component);
   }
 
   public static void centerApp(Object object)

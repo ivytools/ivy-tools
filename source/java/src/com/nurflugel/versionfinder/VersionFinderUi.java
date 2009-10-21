@@ -197,8 +197,8 @@ public class VersionFinderUi extends JFrame
     {
       results.clear();
 
-      File[]                 selectedFiles = fileChooser.getSelectedFiles();
-      Map<File, Set<String>> jarResults    = new HashMap<File, Set<String>>();  // map of string(jar path, version list)
+      File[]                     selectedFiles = fileChooser.getSelectedFiles();
+      Map<File, Set<MajorMinor>> jarResults    = new HashMap<File, Set<MajorMinor>>();  // map of string(jar path, version list)
 
       for (File file : selectedFiles)
       {
@@ -222,17 +222,18 @@ public class VersionFinderUi extends JFrame
 
       for (File file : fileList)
       {
-        StringBuilder builder  = new StringBuilder();
-        Set<String>   versions = jarResults.get(file);
+        // StringBuilder builder  = new StringBuilder();
+        Set<MajorMinor> versions = jarResults.get(file);
 
-        for (String version : versions)
-        {
-          builder.append(version).append(" ");
-        }
+        // for (MajorMinor version : versions)
+        // {
+        // builder.append(version).append(" ");
+        // }
+        MajorMinor version = versions.iterator().next();
 
         // add to table model
         // System.out.println(file.getAbsolutePath() + getWhiteSpace(file, maxLength) + builder);
-        ResultRow resultRow = new ResultRow(file, builder.toString(), this);
+        ResultRow resultRow = new ResultRow(file, version, this);
 
         results.add(resultRow);
       }
@@ -242,7 +243,7 @@ public class VersionFinderUi extends JFrame
     }
   }
 
-  private void processArg(File file, Map<File, Set<String>> jarResults)
+  private void processArg(File file, Map<File, Set<MajorMinor>> jarResults)
   {
     String name = file.getName();
 
@@ -256,7 +257,7 @@ public class VersionFinderUi extends JFrame
     }
   }
 
-  private void processJarFile(File jarFile, Map<File, Set<String>> jarResults)
+  private void processJarFile(File jarFile, Map<File, Set<MajorMinor>> jarResults)
   {
     if (jarFile.getName().endsWith(".jar"))
     {
@@ -333,7 +334,7 @@ public class VersionFinderUi extends JFrame
     out.close();
   }
 
-  private void processExpandedDir(Map<File, Set<String>> jarResults, File jarFile)
+  private void processExpandedDir(Map<File, Set<MajorMinor>> jarResults, File jarFile)
   {
     File[]  files        = tempDir.listFiles();
     boolean wasProcessed = false;
@@ -358,7 +359,7 @@ public class VersionFinderUi extends JFrame
     }
   }
 
-  private void processClassFile(File file, Map<File, Set<String>> jarResults, File jarFile)
+  private void processClassFile(File file, Map<File, Set<MajorMinor>> jarResults, File jarFile)
   {
     try
     {
@@ -396,32 +397,43 @@ public class VersionFinderUi extends JFrame
     return className;
   }
 
-  private void printOutput(File file, Process process, File jarFile, Map<File, Set<String>> jarResults) throws IOException
+  private void printOutput(File file, Process process, File jarFile, Map<File, Set<MajorMinor>> jarResults) throws IOException
   {
     InputStream       inputStream  = process.getInputStream();
     InputStreamReader streamReader = new InputStreamReader(inputStream);
     BufferedReader    reader       = new BufferedReader(streamReader);
     String            line         = reader.readLine();
     int               i            = 0;
+    String            major        = "";
+    String            minor        = "";
 
     while (line != null)
     {
-      // System.out.println("line["+ i++ +"] = " + line);
-      if (StringUtils.contains(line, "major version: "))
+      System.out.println("line[" + i++ + "] = " + line);
+
+      if (StringUtils.contains(line, "major version:"))
       {
         // System.out.println("line = " + line);
-        String version = StringUtils.substringAfter(line, "major version: ");
+        major = StringUtils.substringAfter(line, "major version:").trim();
+      }
+      else if (StringUtils.contains(line, "minor version:"))
+      {
+        minor = StringUtils.substringAfter(line, "minor version:").trim();
+      }
 
+      if (major.length()>0 && minor.length()>0)
+      {
         // System.out.println("Jar: " + jarFile.getName() + "     File: " + file.getName() + "     version = " + version);
-        Set<String> versions = jarResults.get(jarFile);
+        Set<MajorMinor> versions = jarResults.get(jarFile);
 
         if (versions == null)
         {
-          versions = new HashSet<String>();
+          versions = new HashSet<MajorMinor>();
           jarResults.put(jarFile, versions);
         }
 
-        versions.add(version);
+        // todo major and minor are on seperate lines
+        versions.add(new MajorMinor(major, minor));
         process.destroy();
 
         break;
@@ -438,7 +450,7 @@ public class VersionFinderUi extends JFrame
     if (!result) {}
   }
 
-  private boolean processDir(File dir, Map<File, Set<String>> jarResults, File jarFile, boolean processed)
+  private boolean processDir(File dir, Map<File, Set<MajorMinor>> jarResults, File jarFile, boolean processed)
   {
     File[]  files        = dir.listFiles();
     boolean wasProcessed = processed;
