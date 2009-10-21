@@ -139,7 +139,7 @@ public class HtmlHandler extends BaseWebHandler
     }
     else
     {
-      hasVersion = versionLine.contains("<A HREF") && versionLine.contains("[DIR]") && !versionLine.contains("..");
+      hasVersion = versionLine.toUpperCase().contains("<A HREF") && versionLine.toUpperCase().contains("[DIR]") && !versionLine.contains("..");
     }
 
     return hasVersion;
