@@ -38,29 +38,29 @@ import java.util.prefs.Preferences;
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
 public class IvyBrowserMainFrame extends JFrame
 {
-  public static final String IVY_REPOSITORY = "IvyRepository";
+  public static final String IVY_REPOSITORY  = "IvyRepository";
   private static final long serialVersionUID = 8982188831570838035L;
-  private static final String PARSE_ON_OPEN = "parseOnOpen";
-  private static final String SAVE_DIR = "saveDir";
+  private static final String PARSE_ON_OPEN  = "parseOnOpen";
+  private static final String SAVE_DIR       = "saveDir";
+  private Cursor busyCursor                  = getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor normalCursor                = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private JButton specifyButton              = new JButton("Specify Repository");
+  private JButton reparseButton              = new JButton("Re-parse Repository");
+  private JButton quitButton                 = new JButton("Quit");
+  private JButton helpButton                 = new JButton("Help");
+  private JLabel findLabel                   = new JLabel("Find library:");
+  private JLabel statusLabel                 = new JLabel();
+  private JCheckBox parseOnOpenCheckbox      = new JCheckBox("Parse Repository on Open", false);
+  private JTable resultsTable                = new JTable();
+  private JTextField libraryField            = new JTextField();
+  private Preferences preferences            = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
+  private List<IvyPackage> repositoryList    = Collections.synchronizedList(new ArrayList<IvyPackage>());
+  private JScrollPane scrollPane;
+  private JPanel holdingPanel;
+  private String ivyRepositoryPath;
+  private BaseWebHandler parsingHandler;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
   private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient - click to cancel", this);
-  private Cursor           busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor           normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private JButton          specifyButton       = new JButton("Specify Repository");
-  private JButton          reparseButton       = new JButton("Re-parse Repository");
-  private JButton          quitButton          = new JButton("Quit");
-  private JButton          helpButton          = new JButton("Help");
-  private JLabel           findLabel           = new JLabel("Find library:");
-  private JLabel           statusLabel         = new JLabel();
-  private JCheckBox        parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
-  private JTable           resultsTable        = new JTable();
-  private JTextField       libraryField        = new JTextField();
-  private Preferences      preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
-  private List<IvyPackage> repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
-  private JScrollPane      scrollPane;
-  private JPanel           holdingPanel;
-  private String           ivyRepositoryPath;
-  private BaseWebHandler   parsingHandler;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyBrowserMainFrame()
@@ -220,11 +220,11 @@ public class IvyBrowserMainFrame extends JFrame
   {
     resultsTable.setModel(new DefaultTableModel());
 
-    EventList<IvyPackage> eventList = new BasicEventList<IvyPackage>(repositoryList);
-    SortedList<IvyPackage> sortedPackages = new SortedList<IvyPackage>(eventList);
-    TextComponentMatcherEditor textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
-    FilterList<IvyPackage>      filteredPackages = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
-    EventTableModel<IvyPackage> tableModel       = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
+    EventList<IvyPackage>       eventList                  = new BasicEventList<IvyPackage>(repositoryList);
+    SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(eventList);
+    TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
+    FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
+    EventTableModel<IvyPackage> tableModel                 = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
 
     resultsTable.setModel(tableModel);
     resultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
