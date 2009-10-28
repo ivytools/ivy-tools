@@ -47,8 +47,8 @@ import javax.swing.table.TableColumnModel;
                   })
 public class IvyTrackerMainFrame extends JFrame
 {
-  private static final long serialVersionUID = 8982188831570838035L;
-  private InfiniteProgressPanel progressPanel = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
+  private static final long          serialVersionUID                   = 8982188831570838035L;
+  private InfiniteProgressPanel      progressPanel                      = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient");
   private boolean                    useTestData                        = false;  // if true, reads cannd data in from a file for fast testing
   private boolean                    saveTestData                       = false;  // if true, reads cannd data in from a file for fast testing
   private boolean                    isTest                             = false;  // if true, reads cannd data in from a file for fast testing

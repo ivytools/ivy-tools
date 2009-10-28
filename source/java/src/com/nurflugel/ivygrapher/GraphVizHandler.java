@@ -1,6 +1,6 @@
 package com.nurflugel.ivygrapher;
 
-import com.apple.eio.FileManager;
+// import com.apple.eio.FileManager;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
 import com.nurflugel.Os;
 import java.io.*;
@@ -182,7 +182,7 @@ public class GraphVizHandler
         String fileUrl = "file://" + outputFilePath;
 
         // logger.debug("Trying to open URL: " + fileUrl);
-        FileManager.openURL(fileUrl);
+        // FileManager.openURL(fileUrl);      //todo put this sort of stuff into a module in Ivy and import it so anyone can compile
       }
       else
       {

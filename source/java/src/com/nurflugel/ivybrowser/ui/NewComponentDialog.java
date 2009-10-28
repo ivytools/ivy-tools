@@ -21,22 +21,22 @@ import static javax.swing.JFileChooser.FILES_ONLY;
 public class NewComponentDialog extends JDialog
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long serialVersionUID = 2069426482124193511L;
-  private JPanel contentPane;
-  private JButton buttonOK;
-  private JButton buttonCancel;
-  private JTextField orgField;
-  private JTextField moduleField;
-  private JTextField revField;
-  private JButton addFilesToComponentButton;
-  private JButton addDependenciesToComponentButton;
-  private JPanel dependenciesPanel;
-  private JPanel filesPanel;
-  private List<IvyRepositoryItem> ivyPackages = new ArrayList<IvyRepositoryItem>();
-  private File repositoryDir;
-  private Preferences preferences;
-  private Map<String, IvyFileCheckbox> filesMap = new TreeMap<String, IvyFileCheckbox>();
-  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap = new TreeMap<String, IvyRepositoryItemCheckbox>();
+  private static final long                      serialVersionUID                 = 2069426482124193511L;
+  private JPanel                                 contentPane;
+  private JButton                                buttonOK;
+  private JButton                                buttonCancel;
+  private JTextField                             orgField;
+  private JTextField                             moduleField;
+  private JTextField                             revField;
+  private JButton                                addFilesToComponentButton;
+  private JButton                                addDependenciesToComponentButton;
+  private JPanel                                 dependenciesPanel;
+  private JPanel                                 filesPanel;
+  private List<IvyRepositoryItem>                ivyPackages                      = new ArrayList<IvyRepositoryItem>();
+  private File                                   repositoryDir;
+  private Preferences                            preferences;
+  private Map<String, IvyFileCheckbox>           filesMap                         = new TreeMap<String, IvyFileCheckbox>();
+  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap                  = new TreeMap<String, IvyRepositoryItemCheckbox>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)
