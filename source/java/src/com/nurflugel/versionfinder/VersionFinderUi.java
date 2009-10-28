@@ -413,7 +413,7 @@ public class VersionFinderUi extends JFrame
 
     while (line != null)
     {
-//      System.out.println("line[" + i++ + "] = " + line);
+      System.out.println("line[" + i++ + "] = " + line);
 
       if (StringUtils.contains(line, "major version:"))
       {
