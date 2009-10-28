@@ -20,9 +20,9 @@ public class IvyFile
     try
     {
       SAXBuilder builder = new SAXBuilder();
-      String protocol = versionUrl.getProtocol();
-      int portNumber = versionUrl.getPort();
-      String host = versionUrl.getHost();
+      String protocol    = versionUrl.getProtocol();
+      int portNumber     = versionUrl.getPort();
+      String host        = versionUrl.getHost();
       String port = (portNumber == -1) ? ""
                                        : (":" + portNumber);
       String   dirPath = versionUrl.getPath();

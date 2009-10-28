@@ -6,6 +6,7 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.net.URL;
 import java.util.Date;
 
@@ -131,6 +132,28 @@ public class Util
       System.out.println("Exception! " + ee.getMessage());
       // LOGGER.error("HelpSet " + ee.getMessage());
       // LOGGER.error("HelpSet " + HELP_HS + " not found");
+    }
+  }
+
+  public static void rmDirs(File theFile)
+  {
+    if (theFile.isFile())
+    {
+      theFile.delete();
+    }
+    else
+    {
+      File[] files = theFile.listFiles();
+
+      if (files != null)
+      {
+        for (File file : files)
+        {
+          rmDirs(file);
+        }
+      }
+
+      theFile.delete();
     }
   }
 

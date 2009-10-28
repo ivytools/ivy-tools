@@ -14,11 +14,11 @@ import javax.swing.*;
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class OutputHandler
 {
-  public static final String NEW_LINE = "\n";
+  public static final String NEW_LINE                 = "\n";
   protected static final String CLOSING_LINE_DOTGRAPH = "}";
   protected static final String OPENING_LINE_DOTGRAPH = "digraph G {\nnode [shape=box,fontname=\"Arial\",fontsize=\"10\"];\nedge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=RL;\n\n";
-  protected static final String OPENING_LINE_SUBGRAPH   = "subgraph ";
-  private static final String   QUOTE                   = "\"";
+  protected static final String OPENING_LINE_SUBGRAPH = "subgraph ";
+  private static final String   QUOTE                 = "\"";
   private boolean               shouldGroupByBuildfiles = true;
   private MainFrame             mainFrame;
 
@@ -187,8 +187,9 @@ public class OutputHandler
         for (External external : externals)
         {
           String filteredName = filteredBranch + "/" + Util.filterUrlNames(external.getDir());
-          String line = "\t\t" + QUOTE + filteredName + QUOTE + " [label=" + QUOTE + filteredName + QUOTE + " shape=" + "box" + " color=" + "black"
-                        + " ]; ";
+          String line         = "\t\t" + QUOTE + filteredName + QUOTE + " [label=" + QUOTE + filteredName + QUOTE + " shape=" + "box" + " color="
+                                + "black"
+                                + " ]; ";
 
           out.writeBytes(line + NEW_LINE);
         }

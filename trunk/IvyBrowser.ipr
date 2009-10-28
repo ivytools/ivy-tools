@@ -969,7 +969,7 @@
     </dictionary>
   </component>
   <component name="ProjectKey">
-    <option name="state" value="https://ivy-tools.googlecode.com/svn/branches/2009-10-11-JdomReader/IvyBrowser.ipr" />
+    <option name="state" value="https://ivy-tools.googlecode.com/svn/trunk/IvyBrowser.ipr" />
   </component>
   <component name="ProjectModuleManager">
     <modules>
@@ -993,6 +993,7 @@
     <option name="GENERATE_IIOP_STUBS" value="false" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" Folders="0" Dictionaries="0" />
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>

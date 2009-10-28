@@ -27,27 +27,27 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public static final int NUMBER_OF_THREADS = 5;
 
   // public static final int NUMBER_OF_THREADS = 1;
-  private static final int BLOCK_SIZE = 1024;
-  protected IvyBrowserMainFrame mainFrame;
-  protected boolean isTest;
-  protected boolean shouldRun = true;
-  protected String ivyRepositoryPath;
-  protected List<IvyPackage> ivyPackages;
+  private static final int                                  BLOCK_SIZE        = 1024;
+  protected IvyBrowserMainFrame                             mainFrame;
+  protected boolean                                         isTest;
+  protected boolean                                         shouldRun         = true;
+  protected String                                          ivyRepositoryPath;
+  protected List<IvyPackage>                                ivyPackages;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
-  private Map<String, IvyPackage> allPackages  = Collections.synchronizedMap(new HashMap<String, IvyPackage>());
-  public static final String      JAVADOC      = "javadoc";
-  public static final String      SOURCE       = "source";
-  public static final String      DEFAULT      = "default";
-  public static final String      INFO         = "info";
-  public static final String      PUBLICATIONS = "publications";
-  public static final String      ARTIFACT     = "artifact";
-  public static final String      DEPENDENCIES = "dependencies";
-  public static final String      NAME         = "name";
-  public static final String      EXT          = "ext";
-  public static final String      CONF         = "conf";
-  public static final String      ORG          = "org";
-  public static final String      REV          = "rev";
-  ExecutorService                 threadPool   = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+  private Map<String, IvyPackage>                           allPackages       = Collections.synchronizedMap(new HashMap<String, IvyPackage>());
+  public static final String                                JAVADOC           = "javadoc";
+  public static final String                                SOURCE            = "source";
+  public static final String                                DEFAULT           = "default";
+  public static final String                                INFO              = "info";
+  public static final String                                PUBLICATIONS      = "publications";
+  public static final String                                ARTIFACT          = "artifact";
+  public static final String                                DEPENDENCIES      = "dependencies";
+  public static final String                                NAME              = "name";
+  public static final String                                EXT               = "ext";
+  public static final String                                CONF              = "conf";
+  public static final String                                ORG               = "org";
+  public static final String                                REV               = "rev";
+  ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
   protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath,
