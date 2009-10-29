@@ -374,10 +374,10 @@ public class VersionFinderUi extends JFrame
       Runtime runtime = Runtime.getRuntime();
 
       // now this works - go figure...
-      Process process = runtime.exec("javap -v -classpath " + tempDir.getAbsolutePath() + " " + className);
-      // String[] command          = { "javap", "-v","-classpath " + tempDir.getAbsolutePath(), className };
+//      Process process = runtime.exec("javap -v -classpath " + tempDir.getAbsolutePath() + " " + className);
+       String[] command          = { "javap", "-verbose","-classpath" , tempDir.getAbsolutePath(), className };
 
-      // Process process = runtime.exec(command);
+       Process process = runtime.exec(command);
       // process.waitFor();
 
       printOutput(file, process, jarFile, jarResults);
@@ -413,7 +413,7 @@ public class VersionFinderUi extends JFrame
 
     while (line != null)
     {
-      System.out.println("line[" + i++ + "] = " + line);
+//      System.out.println("line[" + i++ + "] = " + line);
 
       if (StringUtils.contains(line, "major version:"))
       {
