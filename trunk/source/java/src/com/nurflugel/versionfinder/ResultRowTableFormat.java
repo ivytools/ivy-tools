@@ -1,16 +1,21 @@
 package com.nurflugel.versionfinder;
 
 import ca.odell.glazedlists.gui.TableFormat;
+import java.util.List;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 15, 2009 Time: 10:03:40 PM To change this template use File | Settings | File Templates.
- */
+/** This figures out how to take the object and what gets displayed in which column. */
 public class ResultRowTableFormat implements TableFormat
 {
-  static final int JAR           = 0;
-  static final int MAJOR_VERSION = 1;
-  static final int MINOR_VERSION = 2;
-  private String[] columnNames   = { "Jar", "Java Major Version", "Java Minor Version" };
+  static final int        JAR           = 0;
+  static final int        MAJOR_VERSION = 1;
+  static final int        MINOR_VERSION = 2;
+  private String[]        columnNames   = { "Jar", "Java Major Version", "Java Minor Version" };
+  private List<ResultRow> results;
+
+  public ResultRowTableFormat(List<ResultRow> results)
+  {
+    this.results = results;
+  }
 
   // ------------------------ INTERFACE METHODS ------------------------
 
@@ -31,15 +36,15 @@ public class ResultRowTableFormat implements TableFormat
     throw new IllegalStateException();
   }
 
-  public Object getColumnValue(Object o, int i)
+  public Object getColumnValue(Object o, int column)
   {
     ResultRow  resultRow = (ResultRow) o;
     MajorMinor version   = resultRow.getVersion();
 
-    switch (i)
+    switch (column)
     {
       case JAR:
-        return resultRow.getPath();
+        return resultRow.getPath(results);
 
       case MAJOR_VERSION:
         return version.getMajorVersion();

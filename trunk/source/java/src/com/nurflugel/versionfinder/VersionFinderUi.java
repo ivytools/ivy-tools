@@ -12,8 +12,10 @@ import static com.nurflugel.versionfinder.PathLength.*;
 import com.nurflugel.common.ui.Util;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
+import static java.awt.Cursor.*;
 import static javax.swing.BoxLayout.*;
 import static javax.swing.JFileChooser.*;
+import static javax.swing.JOptionPane.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,7 +53,17 @@ public class VersionFinderUi extends JFrame
   private List<ResultRow>     results                   = new ArrayList<ResultRow>();
   private String              commonText;
 
-  public VersionFinderUi() {}
+  public VersionFinderUi()
+  {
+    String javaHome = System.getProperty("java.home");
+
+    if (!StringUtils.contains(javaHome, "1.6"))
+    {
+      showMessageDialog(this, "Cannot continue - Java Home must be defined pointing to JDK 1.6 or greater", "Missing JDK 1.6 in Java_Home",
+                        ERROR_MESSAGE);
+      System.exit(0);
+    }
+  }
 
   // -------------------------- OTHER METHODS --------------------------
 
@@ -116,7 +128,7 @@ public class VersionFinderUi extends JFrame
 
   private void loadUi()
   {
-    setTitle("Version Finder v. " + VERSION);
+    setAppTitle();
     setContentPane(contentsPanel);
     addListeners();
     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
@@ -126,6 +138,11 @@ public class VersionFinderUi extends JFrame
     pack();
     centerApp(this);
     setVisible(true);
+  }
+
+  private void setAppTitle()
+  {
+    setTitle("Version Finder v. " + VERSION);
   }
 
   private void addListeners()
@@ -223,19 +240,13 @@ public class VersionFinderUi extends JFrame
 
     Collections.sort(fileList);
 
-    int maxLength = 0;
-
-    for (File file : fileList)
-    {
-      maxLength = Math.max(maxLength, file.getAbsolutePath().length());
-    }
-
     for (File file : fileList)
     {
       processFile(jarResults, file);
     }
 
     populateTable();
+    setAppTitle();
     rmDirs(tempDir);
     tempDir.deleteOnExit();
   }
@@ -259,17 +270,23 @@ public class VersionFinderUi extends JFrame
   {
     if (jarFile.getName().endsWith(".jar"))
     {
-      setTitle("Processing " + jarFile);
+      setTitle("Processing " + jarFile.getName());
       rmDirs(tempDir);
       tempDir.mkdirs();
-      unzipFile(jarFile);
-      processExpandedDir(jarResults, jarFile);
+
+      File classFile = unzipFile(jarFile);
+
+      if (classFile != null)
+      {
+        processClassFile(classFile, jarResults, jarFile);
+      }
+
       rmDirs(tempDir);
     }
   }
 
   @SuppressWarnings({ "ResultOfMethodCallIgnored", "IOResourceOpenedButNotSafelyClosed" })
-  private void unzipFile(File file)
+  private File unzipFile(File file)
   {
     try
     {
@@ -282,17 +299,6 @@ public class VersionFinderUi extends JFrame
         String   name    = entry.getName();
         File     newFile = new File(tempDir, name);
 
-        if (entry.isDirectory())
-        {
-          // Assume directories are stored parents first then children.
-          // System.err.println("Extracting directory: " + name);
-          // This is not robust, just for demonstration purposes.
-          newFile.mkdir();
-
-          continue;
-        }
-
-        // System.err.println("Extracting file: " + name);
         if (name.endsWith(".class"))
         {
           File dir = newFile.getParentFile();
@@ -306,7 +312,7 @@ public class VersionFinderUi extends JFrame
           copyInputStream(inputStream, out);
           fileOutputStream.close();
 
-          break;
+          return newFile;
         }
       }
 
@@ -317,6 +323,8 @@ public class VersionFinderUi extends JFrame
       System.err.println("Unhandled (but not fatal) exception:");
       ioe.printStackTrace();
     }
+
+    return null;
   }
 
   public void copyInputStream(InputStream in, OutputStream out) throws IOException
@@ -333,40 +341,10 @@ public class VersionFinderUi extends JFrame
     out.close();
   }
 
-  private void processExpandedDir(Map<File, Set<MajorMinor>> jarResults, File jarFile)
-  {
-    File[]  files        = tempDir.listFiles();
-    boolean wasProcessed = false;
-
-    for (File file : files)
-    {
-      if (file.isDirectory())
-      {
-        wasProcessed = processDir(file, jarResults, jarFile, wasProcessed);
-      }
-
-      if (file.getName().endsWith(".class"))
-      {
-        if (!wasProcessed)
-        {
-          wasProcessed = true;  // todo pass this in as a parameter, so we can force recursion into all dirs
-          processClassFile(file, jarResults, jarFile);
-        }
-      }
-
-      deleteFile(file);
-    }
-  }
-
   private void processClassFile(File file, Map<File, Set<MajorMinor>> jarResults, File jarFile)
   {
     try
     {
-      // call javap with tempdir as classapth
-      // remove tempdir from file name, convert file seperators to "."
-      // call javap
-      // parse output to catch major version
-      // put into map for jar file
       String className = getClassName(file);
 
       className = StringUtils.substringBefore(className, ".class");
@@ -374,14 +352,11 @@ public class VersionFinderUi extends JFrame
       Runtime runtime = Runtime.getRuntime();
 
       // now this works - go figure...
-//      Process process = runtime.exec("javap -v -classpath " + tempDir.getAbsolutePath() + " " + className);
-       String[] command          = { "javap", "-verbose","-classpath" , tempDir.getAbsolutePath(), className };
+      String[] command = { "javap", "-verbose", "-classpath", tempDir.getAbsolutePath(), className };
 
-       Process process = runtime.exec(command);
-      // process.waitFor();
+      Process  process = runtime.exec(command);
 
       printOutput(file, process, jarFile, jarResults);
-      deleteFile(file);
     }
     catch (IOException e)
     {
@@ -407,17 +382,17 @@ public class VersionFinderUi extends JFrame
     InputStreamReader streamReader = new InputStreamReader(inputStream);
     BufferedReader    reader       = new BufferedReader(streamReader);
     String            line         = reader.readLine();
-    int               i            = 0;
-    String            major        = "";
-    String            minor        = "";
+
+    // int i = 0;
+    String major = "";
+    String minor = "";
 
     while (line != null)
     {
-//      System.out.println("line[" + i++ + "] = " + line);
+      // System.out.println("line[" + i++ + "] = " + line);
 
       if (StringUtils.contains(line, "major version:"))
       {
-        // System.out.println("line = " + line);
         major = StringUtils.substringAfter(line, "major version:").trim();
       }
       else if (StringUtils.contains(line, "minor version:"))
@@ -435,7 +410,6 @@ public class VersionFinderUi extends JFrame
           jarResults.put(jarFile, versions);
         }
 
-        // todo major and minor are on seperate lines
         versions.add(new MajorMinor(major, minor));
         process.destroy();
 
@@ -444,13 +418,6 @@ public class VersionFinderUi extends JFrame
 
       line = reader.readLine();
     }
-  }
-
-  private void deleteFile(File file)
-  {
-    boolean result = file.delete();
-
-    if (!result) {}
   }
 
   private boolean processDir(File dir, Map<File, Set<MajorMinor>> jarResults, File jarFile, boolean processed)
@@ -469,16 +436,14 @@ public class VersionFinderUi extends JFrame
       {
         processJarFile(file, jarResults);
       }
-      else if (file.getName().endsWith(".class"))
-      {
-        if (!wasProcessed)
-        {
-          processClassFile(file, jarResults, jarFile);
-          wasProcessed = true;
-        }
-
-        deleteFile(file);
-      }
+      // else if (file.getName().endsWith(".class"))
+      // {
+      // if (!wasProcessed)
+      // {
+      // processClassFile(file, jarResults, jarFile);
+      // wasProcessed = true;
+      // }
+      // }
     }
 
     return wasProcessed;
@@ -486,17 +451,9 @@ public class VersionFinderUi extends JFrame
 
   private void processFile(Map<File, Set<MajorMinor>> jarResults, File file)
   {
-    // StringBuilder builder  = new StringBuilder();
-    Set<MajorMinor> versions = jarResults.get(file);
-
-    // for (MajorMinor version : versions)
-    // {
-    // builder.append(version).append(" ");
-    // }
-    MajorMinor version = versions.iterator().next();
-
-    // add to table model
-    ResultRow resultRow = new ResultRow(file, version, this);
+    Set<MajorMinor> versions  = jarResults.get(file);
+    MajorMinor      version   = versions.iterator().next();
+    ResultRow       resultRow = new ResultRow(file, version, this);
 
     results.add(resultRow);
   }
@@ -509,7 +466,7 @@ public class VersionFinderUi extends JFrame
     SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
 
     // TextComponentMatcherEditor matcherEditor= new TextComponentMatcherEditor();
-    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat());
+    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat(results));
 
     resultsTable.setModel(tableModel);
 

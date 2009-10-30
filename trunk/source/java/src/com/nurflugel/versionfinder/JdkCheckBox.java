@@ -11,7 +11,7 @@ public class JdkCheckBox extends JCheckBox
 
   public JdkCheckBox(Jdk jdk)
   {
-    super(jdk.getName() + "+");
+    super(jdk.getName() + "+      ("+jdk.getVersion()+")");
     this.jdk = jdk;
   }
 

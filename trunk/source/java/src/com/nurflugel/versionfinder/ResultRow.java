@@ -2,10 +2,9 @@ package com.nurflugel.versionfinder;
 
 import org.apache.commons.lang.StringUtils;
 import java.io.File;
+import java.util.List;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 15, 2009 Time: 10:04:24 PM To change this template use File | Settings | File Templates.
- */
+/** This represents a row in teh display. */
 class ResultRow implements Comparable
 {
   private File            file;
@@ -27,18 +26,20 @@ class ResultRow implements Comparable
   {
     ResultRow other = (ResultRow) o;
 
-    return getPath().compareTo(other.getPath());
+    return getPath(null).compareTo(other.getPath(null));
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
 
-  public String getPath()
+  public String getPath(List<ResultRow> results)
   {
     PathLength pathLength = versionFinderUi.getPathLength();
 
+    String     fileName   = file.getName();
+
     if (pathLength == PathLength.FILE_NAME)
     {
-      return file.getName();
+      return fileName;
     }
 
     String filePath = file.getAbsolutePath();
@@ -48,11 +49,22 @@ class ResultRow implements Comparable
       return filePath;
     }
 
+    if (results == null)
+    {
+      return filePath;
+    }
+
+    if (results.size() == 1)
+    {
+      return fileName;
+    }
+
     String commonText = versionFinderUi.getCommonText();
 
     filePath = StringUtils.removeStart(filePath, commonText);
 
-    return filePath;
+    return (filePath.length() < fileName.length()) ? fileName
+                                                   : filePath;
   }
 
   public MajorMinor getVersion()
