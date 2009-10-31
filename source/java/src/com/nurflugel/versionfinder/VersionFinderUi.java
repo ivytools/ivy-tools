@@ -55,9 +55,9 @@ public class VersionFinderUi extends JFrame
 
   public VersionFinderUi()
   {
-    String javaHome = System.getProperty("java.home");
+    String javaVersion = System.getProperty("java.version");
 
-    System.out.println("VersionFinderUi.VersionFinderUi::javaHome = " + javaHome);
+    System.out.println("VersionFinderUi.VersionFinderUi::java home version = " + javaVersion);
 
     Properties properties = System.getProperties();
 
@@ -66,7 +66,7 @@ public class VersionFinderUi extends JFrame
       System.out.println("VersionFinderUi.VersionFinderUi::properties.getProperty(" + o + ") = " + properties.getProperty((String) o));
     }
 
-    if (!StringUtils.contains(javaHome, "1.6"))
+    if (!StringUtils.startsWith(javaVersion, "1.6"))
     {
       showMessageDialog(this, "Cannot continue - Java Home must be defined pointing to JDK 1.6 or greater", "Missing JDK 1.6 in Java_Home",
                         ERROR_MESSAGE);
