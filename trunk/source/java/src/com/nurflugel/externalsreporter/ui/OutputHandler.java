@@ -1,5 +1,6 @@
 package com.nurflugel.externalsreporter.ui;
 
+import com.apple.eio.FileManager;
 import com.nurflugel.BuildableProjects;
 import com.nurflugel.Os;
 import com.nurflugel.common.ui.Util;

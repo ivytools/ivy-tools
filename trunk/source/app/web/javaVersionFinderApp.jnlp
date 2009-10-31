@@ -9,7 +9,7 @@
         <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
         <description>Java Version Finder</description>
-        <icon href="images/VersionFinder-small.png"/>
+        <icon href="images/VersionFinder-small.jpg"/>
         <icon kind="splash" href="images/VersionFinder-splash.jpg"/>
         <shortcut online="false">
 	      <desktop/>

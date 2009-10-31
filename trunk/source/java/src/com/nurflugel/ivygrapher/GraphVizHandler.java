@@ -2,20 +2,21 @@ package com.nurflugel.ivygrapher;
 
 // import com.apple.eio.FileManager;
 import static com.nurflugel.ivygrapher.OutputFormat.*;
+import com.apple.eio.FileManager;
 import com.nurflugel.Os;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /** Outputs the .dot file to GraphViz's "dot" - this converts it into the desired format (PDF, PNG, etc). */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class GraphVizHandler
 {
-  // public static final Logger logger                = LogFactory.getLogger(GraphVizHandler.class);
   public static final String NEW_LINE            = "\n";
-
   private NodeOrder          nodeOrder;
   private Os                 os;
   private OutputFormat       outputFormat;
@@ -169,7 +170,7 @@ public class GraphVizHandler
 
       long end = new Date().getTime();
 
-      // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
+//       logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
 
       List<String> commandList = new ArrayList<String>();
 
@@ -181,8 +182,17 @@ public class GraphVizHandler
 
         String fileUrl = "file://" + outputFilePath;
 
-        // logger.debug("Trying to open URL: " + fileUrl);
-        // FileManager.openURL(fileUrl);      //todo put this sort of stuff into a module in Ivy and import it so anyone can compile
+        try
+        {
+          Class<?> aClass = Class.forName("com.apple.eio.FileManager");
+          Method   method = aClass.getMethod("openURL", String.class);
+
+          method.invoke(null, fileUrl);
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
       }
       else
       {
