@@ -1,6 +1,8 @@
 package com.nurflugel.versionfinder;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.io.File;
 import java.util.List;
 
@@ -76,4 +78,16 @@ class ResultRow implements Comparable
   {
     return file;
   }
+
+  @Override
+  public String toString()
+  {
+    return new ToStringBuilder(this).
+        append("file", file.getName()).
+        append("version", version).
+        toString();
+  }
 }
+
+
+
