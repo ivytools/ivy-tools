@@ -33,12 +33,14 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
 
     if (level >= threshold.getVersion())
     {
-      System.out.println("Showing " +resultRow+" as red" );
+      if(col==0)
+      System.out.println("Row " +row+ " Showing " + resultRow + " as red" );
       setForeground(RED);
     }
     else
     {
-      System.out.println("Showing " +resultRow+" as black" );
+      if(col==0)
+      System.out.println("Row " +row+ " Showing " + resultRow + " as black" );
       setForeground(BLACK);
     }
 
