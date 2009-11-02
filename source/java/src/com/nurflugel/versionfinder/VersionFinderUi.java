@@ -240,7 +240,7 @@ public class VersionFinderUi extends JFrame
     for (File file : selectedFiles)
     {
       preferences.put(FILES_DIR, file.getParent());
-
+      fileDir=file.getParentFile();
       processArg(file, jarResults);
     }
 
