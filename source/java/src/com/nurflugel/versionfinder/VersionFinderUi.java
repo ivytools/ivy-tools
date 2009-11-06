@@ -472,10 +472,11 @@ public class VersionFinderUi extends JFrame
     resultsTable.setModel(new DefaultTableModel());
 
     EventList<ResultRow>  eventList  = new BasicEventList<ResultRow>(results);
-    SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
+//    SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
 
     // TextComponentMatcherEditor matcherEditor= new TextComponentMatcherEditor();
-    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat(results));
+//    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat(results));
+    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(eventList, new ResultRowTableFormat(results));
 
     resultsTable.setModel(tableModel);
 
