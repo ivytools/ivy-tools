@@ -240,7 +240,7 @@ public class VersionFinderUi extends JFrame
     for (File file : selectedFiles)
     {
       preferences.put(FILES_DIR, file.getParent());
-      fileDir=file.getParentFile();
+      fileDir = file.getParentFile();
       processArg(file, jarResults);
     }
 
@@ -471,11 +471,11 @@ public class VersionFinderUi extends JFrame
   {
     resultsTable.setModel(new DefaultTableModel());
 
-    EventList<ResultRow>  eventList  = new BasicEventList<ResultRow>(results);
-//    SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
+    EventList<ResultRow> eventList = new BasicEventList<ResultRow>(results);
+    // SortedList<ResultRow> sortedList = new SortedList<ResultRow>(eventList);
 
     // TextComponentMatcherEditor matcherEditor= new TextComponentMatcherEditor();
-//    EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat(results));
+    // EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(sortedList, new ResultRowTableFormat(results));
     EventTableModel<ResultRow> tableModel = new EventTableModel<ResultRow>(eventList, new ResultRowTableFormat(results));
 
     resultsTable.setModel(tableModel);

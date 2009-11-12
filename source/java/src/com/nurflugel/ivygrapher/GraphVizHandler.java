@@ -170,7 +170,7 @@ public class GraphVizHandler
 
       long end = new Date().getTime();
 
-//       logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
+      // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
 
       List<String> commandList = new ArrayList<String>();
 

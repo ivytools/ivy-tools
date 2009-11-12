@@ -29,6 +29,7 @@ public class IvyFormatterProcess
     }
   }
 
+  @SuppressWarnings({ "CallToPrintStackTrace" })
   public static void formatFile(String fileName)
   {
     if (fileName.endsWith("ivy.xml"))
@@ -109,6 +110,7 @@ public class IvyFormatterProcess
     formatPublications(lines);
     formatDependencyLines(lines);
     formatExcludeLines(lines);
+    unindentExcludes(lines);
     text = pasteLinesTogether(lines);
 
     return text;
@@ -128,19 +130,6 @@ public class IvyFormatterProcess
     indent(confLines, lines, 8);
     alignLinesOnWord(confLines, lines, "visibility=");
     alignLinesOnWord(confLines, lines, "description=");
-  }
-
-  // <artifact name="nurflugel-resourcebundler-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
-  // <artifact name="nurflugel-resourcebundler-source" type="source" ext="zip" conf="source"/>
-  private static void formatPublications(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, new String[] { "<artifact", "name" });
-
-    indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "name=");
-    alignLinesOnWord(confLines, lines, "type=");
-    alignLinesOnWord(confLines, lines, "ext=");
-    alignLinesOnWord(confLines, lines, "conf=");
   }
 
   private static List<Integer> getAffectedLines(String[] lines, String[] keyWords)
@@ -186,20 +175,6 @@ public class IvyFormatterProcess
     }
   }
 
-  private static String getLeadingSpaces(int numberOfLeadingSpaces)
-  {
-    StringBuilder leadingSpace = new StringBuilder();
-
-    for (int i = 0; i < numberOfLeadingSpaces; i++)
-    {
-      leadingSpace.append(" ");
-    }
-
-    String spaces = leadingSpace.toString();
-
-    return spaces;
-  }
-
   /** go through all of the lines and make sure they line up for the given work. */
   private static void alignLinesOnWord(List<Integer> confLines, String[] lines, String alignmentWord)
   {
@@ -227,6 +202,19 @@ public class IvyFormatterProcess
         lines[confLine] = line.substring(0, index) + spaces + line.substring(index);
       }
     }
+  }
+
+  // <artifact name="nurflugel-resourcebundler-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
+  // <artifact name="nurflugel-resourcebundler-source" type="source" ext="zip" conf="source"/>
+  private static void formatPublications(String[] lines)
+  {
+    List<Integer> confLines = getAffectedLines(lines, new String[] { "<artifact", "name" });
+
+    indent(confLines, lines, 8);
+    alignLinesOnWord(confLines, lines, "name=");
+    alignLinesOnWord(confLines, lines, "type=");
+    alignLinesOnWord(confLines, lines, "ext=");
+    alignLinesOnWord(confLines, lines, "conf=");
   }
 
   /**
@@ -260,6 +248,66 @@ public class IvyFormatterProcess
     indent(dependencyLines, lines, 12);
     alignLinesOnWord(dependencyLines, lines, "org=");
     alignLinesOnWord(dependencyLines, lines, "name=");
+  }
+
+  /** Since any global exludes will have been indented, we go through and unindent them. */
+  private static void unindentExcludes(String[] lines)
+  {
+    boolean wasCloseDependencyLine = false;
+    boolean inExcludes             = false;
+    int     index                  = 0;
+
+    for (String longLine : lines)
+    {
+      String  line          = longLine.trim();
+      boolean isExcludeLine = (line.contains("<exclude"));
+
+      if (!inExcludes)
+      {
+        if (isExcludeLine && wasCloseDependencyLine)
+        {
+          inExcludes = true;
+        }
+
+        wasCloseDependencyLine = (line.contains("</dependency>")) || (line.startsWith("<dependency") && line.endsWith("/>"));     // or <dependency ..... />
+      }
+
+      if (inExcludes)
+      {
+        if (isExcludeLine)
+        {
+          lines[index] = indent(line, 8);
+        }
+      }
+
+      index++;
+    }
+  }
+
+  /** Strip off any leading space and indent with the number of spaces needed. */
+  private static String indent(String lineToIndent, int numberOfLeadingSpaces)
+  {
+    String spaces = getLeadingSpaces(numberOfLeadingSpaces);
+
+    String line   = lineToIndent.trim();
+
+    line = spaces + line;
+
+    return line;
+  }
+
+  private static String getLeadingSpaces(int numberOfLeadingSpaces)
+  {
+    StringBuilder leadingSpace = new StringBuilder();
+
+    for (int i = 0; i < numberOfLeadingSpaces; i++)
+    {
+      leadingSpace.append(" ");
+    }
+
+    String spaces = leadingSpace.toString();
+
+    return spaces;
   }
 
   private static String pasteLinesTogether(String[] lines)
