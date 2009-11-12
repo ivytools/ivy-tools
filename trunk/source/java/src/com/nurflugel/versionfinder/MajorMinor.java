@@ -29,9 +29,6 @@ public class MajorMinor
   @Override
   public String toString()
   {
-    return new ToStringBuilder(this).
-        append("major", majorVersion).
-        append("minor", minorVersion).
-        toString();
+    return new ToStringBuilder(this).append("major", majorVersion).append("minor", minorVersion).toString();
   }
 }
