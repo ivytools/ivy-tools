@@ -10,4 +10,4 @@ export JAVA_HOME
 export ANT_OPTS=-Xmx640m
 
 set CLASSPATH=.
-java WhenceJava $*
+java -cp . WhenceJava $*

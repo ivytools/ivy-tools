@@ -22,14 +22,17 @@ public class GraphVizHandler
   private OutputFormat       outputFormat;
   private String             dotExecutablePath;
   private boolean            deleteDotFileOnExit;
+  private boolean            concentrateEdges;
 
-  public GraphVizHandler(NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath, boolean deleteDotFileOnExit)
+  public GraphVizHandler(NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath, boolean deleteDotFileOnExit,
+                         boolean concentrateEdges)
   {
     this.nodeOrder           = nodeOrder;
     this.os                  = os;
     this.outputFormat        = outputFormat;
     this.dotExecutablePath   = dotExecutablePath;
     this.deleteDotFileOnExit = deleteDotFileOnExit;
+    this.concentrateEdges    = concentrateEdges;
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -47,7 +50,7 @@ public class GraphVizHandler
     // open a new .dot file
     String openingLine = "digraph G {\nnode [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];\n"
                          + "edge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=" + nodeOrder.getOrder() + ";\n\n"
-                         + "concentrate=false;\n";
+                         + "concentrate=" + concentrateEdges + ";\n";
 
     write(out, openingLine);
 
