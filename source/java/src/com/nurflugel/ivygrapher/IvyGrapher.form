@@ -99,53 +99,6 @@
             <properties/>
             <border type="etched" title="Misc Options"/>
             <children>
-              <grid id="a2c7b" layout-manager="GridBagLayout">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="1.0"/>
-                </constraints>
-                <properties/>
-                <border type="etched" title="Node Ordering"/>
-                <children>
-                  <component id="f2e52" class="javax.swing.JRadioButton" binding="tbButton">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="1.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <selected value="false"/>
-                      <text value="Top-to-bottom"/>
-                    </properties>
-                  </component>
-                  <component id="abbc7" class="javax.swing.JRadioButton" binding="btButton">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="1.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <text value="Bottom-to-top"/>
-                    </properties>
-                  </component>
-                  <component id="70095" class="javax.swing.JRadioButton" binding="rlButton">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="1.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <text value="Right-to-left"/>
-                    </properties>
-                  </component>
-                  <component id="d08b3" class="javax.swing.JRadioButton" binding="lrButton">
-                    <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="1.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <text value="Left-to-right"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
               <component id="a0f67" class="javax.swing.JCheckBox" binding="deleteDotButton">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -154,6 +107,63 @@
                 <properties>
                   <selected value="false"/>
                   <text value="Delete .dot files on exit"/>
+                </properties>
+              </component>
+              <component id="3bde7" class="javax.swing.JCheckBox" binding="concentrateEdgesCheckBox" default-binding="true">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <selected value="true"/>
+                  <text value="Concentrate edges"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="a2c7b" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+            <border type="etched" title="Node Ordering"/>
+            <children>
+              <component id="f2e52" class="javax.swing.JRadioButton" binding="tbButton">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <selected value="false"/>
+                  <text value="Top-to-bottom"/>
+                </properties>
+              </component>
+              <component id="abbc7" class="javax.swing.JRadioButton" binding="btButton">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Bottom-to-top"/>
+                </properties>
+              </component>
+              <component id="70095" class="javax.swing.JRadioButton" binding="rlButton">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Right-to-left"/>
+                </properties>
+              </component>
+              <component id="d08b3" class="javax.swing.JRadioButton" binding="lrButton">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Left-to-right"/>
                 </properties>
               </component>
             </children>

@@ -30,7 +30,7 @@ public class XmlHandler
   // -------------------------- OTHER METHODS --------------------------
 
   void processXmlFile(File fileToGraph, Preferences preferences, NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath,
-                      boolean deleteDotFileOnExit) throws JDOMException, IOException
+                      boolean deleteDotFileOnExit, boolean concentrateEdges) throws JDOMException, IOException
   {
     Map<String, Module> moduleMap    = new HashMap<String, Module>();
     SAXBuilder          builder      = new SAXBuilder();
@@ -42,9 +42,7 @@ public class XmlHandler
     String              infoRevision = info.getAttributeValue(REVISION);
     String              infoConf     = info.getAttributeValue(CONF);
     String              infoConfs    = info.getAttributeValue(CONFS);
-
     Module              ivyModule    = addModuleToMap(ivyOrg, infoModule, infoRevision, moduleMap);
-
     Element             dependencies = root.getChild(DEPENDENCIES);
     List                modules      = dependencies.getChildren(MODULE);
 
@@ -85,8 +83,7 @@ public class XmlHandler
       }
     }
 
-    GraphVizHandler handler = new GraphVizHandler(nodeOrder, os, outputFormat, dotExecutablePath, deleteDotFileOnExit);
-
+    GraphVizHandler handler = new GraphVizHandler(nodeOrder, os, outputFormat, dotExecutablePath, deleteDotFileOnExit, concentrateEdges);
     File            dotFile = handler.generateDotFile(fileToGraph, ivyModule, moduleMap);
 
     handler.processDotFile(dotFile);

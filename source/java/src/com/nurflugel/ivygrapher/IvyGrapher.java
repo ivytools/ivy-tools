@@ -25,11 +25,11 @@ import static com.nurflugel.ivygrapher.NodeOrder.*;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class IvyGrapher extends JFrame
 {
-  private static final String DIR               = "dir";
-  private static final String DOT_EXECUTABLE    = "dotExecutable";
+  private static final String DIR                      = "dir";
+  private static final String DOT_EXECUTABLE           = "dotExecutable";
   private File[]              filesToGraph;
   private String              lastVisitedDir;
-  private Preferences         preferences       = Preferences.userNodeForPackage(IvyGrapher.class);
+  private Preferences         preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
   private Os                  os;
   private OutputFormat        outputFormat;
   private NodeOrder           nodeOrder;
@@ -46,9 +46,10 @@ public class IvyGrapher extends JFrame
   private JRadioButton        pngButton;
   private JRadioButton        pdfButtton;
   private JRadioButton        svgButton;
+  private JCheckBox           concentrateEdgesCheckBox;
   private String              dotExecutablePath;
-  private Cursor              normalCursor      = getPredefinedCursor(DEFAULT_CURSOR);
-  private Cursor              busyCursor        = getPredefinedCursor(WAIT_CURSOR);
+  private Cursor              normalCursor             = getPredefinedCursor(DEFAULT_CURSOR);
+  private Cursor              busyCursor               = getPredefinedCursor(WAIT_CURSOR);
 
   public IvyGrapher(String[] args)
   {
@@ -118,9 +119,11 @@ public class IvyGrapher extends JFrame
 
   private void getMiscInfo()
   {
-    boolean deleteDotFiles = preferences.getBoolean("deleteDotFiles", true);
+    boolean deleteDotFiles   = preferences.getBoolean("deleteDotFiles", true);
+    boolean concentrateEdges = preferences.getBoolean("concentrateEdges", true);
 
     deleteDotButton.setSelected(deleteDotFiles);
+    concentrateEdgesCheckBox.setSelected(concentrateEdges);
   }
 
   private void getDotLocation()
@@ -209,6 +212,7 @@ public class IvyGrapher extends JFrame
     preferences.put("outputFormat", outputFormat.getDisplayLabel());
     preferences.put("nodeOrder", nodeOrder.toString());
     preferences.putBoolean("deleteDotFiles", deleteDotButton.isSelected());
+    preferences.putBoolean("concentrateEdges", concentrateEdgesCheckBox.isSelected());
     preferences.put("dotLocation", dotExecutablePath);
     System.exit(0);
   }
@@ -243,6 +247,7 @@ public class IvyGrapher extends JFrame
   {
     try
     {
+      // todo make a file chooser that's taller adn wider!
       JFileChooser chooser = new JFileChooser();
 
       chooser.setDialogTitle("Select the Ivy file");
@@ -260,6 +265,7 @@ public class IvyGrapher extends JFrame
       chooser.setFileSelectionMode(FILES_ONLY);
       chooser.setMultiSelectionEnabled(true);
       chooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
+      // chooser.setBounds(100,100,1000,1000); nice try
 
       int returnVal = chooser.showDialog(null, "Use these files");
 
@@ -284,7 +290,8 @@ public class IvyGrapher extends JFrame
       {
         for (File fileToGraph : filesToGraph)
         {
-          xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected());
+          xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected(),
+                                    concentrateEdgesCheckBox.isSelected());
         }
       }
 
