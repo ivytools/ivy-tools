@@ -33,8 +33,8 @@ public class MainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
   private static final long   serialVersionUID    = 7878527239782932441L;
-  private boolean             getTestDataFromFile = false;  // if true, reads cannd data in from a file for fast testing
-  private boolean             isTest              = false;  // if true, reads cannd data in from a file for fast testing
+  private boolean             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
+  private boolean             isTest;  // if true, reads canned data in from a file for fast testing
   private Cursor              busyCursor          = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
   private Cursor              normalCursor        = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private ExternalTreeHandler treeHandler         = new ExternalTreeHandler(true);

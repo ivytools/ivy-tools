@@ -27,7 +27,7 @@ public class IvyGrapher extends JFrame
 {
   private static final String DIR                      = "dir";
   private static final String DOT_EXECUTABLE           = "dotExecutable";
-  private File[]              filesToGraph;
+  private List<File> filesToGraph;
   private String              lastVisitedDir;
   private Preferences         preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
   private Os                  os;
@@ -62,7 +62,7 @@ public class IvyGrapher extends JFrame
         files.add(new File(arg));
       }
 
-      filesToGraph = files.toArray(new File[files.size()]);
+      filesToGraph = files;
     }
 
     os          = Os.findOs(System.getProperty("os.name"));
@@ -247,35 +247,22 @@ public class IvyGrapher extends JFrame
   {
     try
     {
-      // todo make a file chooser that's taller adn wider!
-      JFileChooser chooser = new JFileChooser();
-
-      chooser.setDialogTitle("Select the Ivy file");
-
       String dirName = preferences.get(DIR, null);
-
+        File lastDir=new File(".");
       if (dirName != null)
       {
-        File lastDir = new File(dirName);
-
-        chooser.setCurrentDirectory(lastDir);
-        chooser.setFileHidingEnabled(false);
+       lastDir = new File(dirName);
       }
+        FileDialog fileDialog=new FileDialog(lastDir);
+        fileDialog.setVisible(true);
 
-      chooser.setFileSelectionMode(FILES_ONLY);
-      chooser.setMultiSelectionEnabled(true);
-      chooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
-      // chooser.setBounds(100,100,1000,1000); nice try
-
-      int returnVal = chooser.showDialog(null, "Use these files");
-
-      if (returnVal == APPROVE_OPTION)
-      {
-        filesToGraph = chooser.getSelectedFiles();
-
-        if (filesToGraph.length > 0)
+        if(fileDialog.isWasOk())
         {
-          dirName = filesToGraph[0].getParent();
+        filesToGraph = fileDialog.getFiles();
+
+        if (!filesToGraph.isEmpty())
+        {
+          dirName = filesToGraph.get(0).getParent();
           preferences.put(DIR, dirName);
         }
       }
