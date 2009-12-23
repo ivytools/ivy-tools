@@ -1,13 +1,13 @@
 package com.nurflugel.externalsreporter.ui;
 
-import com.apple.eio.FileManager;
 import com.nurflugel.BuildableProjects;
 import com.nurflugel.Os;
 import com.nurflugel.common.ui.Util;
+
+import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
-import javax.swing.*;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 17, 2008 Time: 10:10:22 PM To change this template use File | Settings | File Templates.
