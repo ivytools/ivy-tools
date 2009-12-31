@@ -8,7 +8,7 @@
         <title>IvyGrapher</title>
         <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
-        <description>Ivy Grapher</description>
+        <description>Ivy Grapher </description>
         <icon href="images/IvyGrapher-small.png"/>
         <icon kind="splash" href="images/IvyGrapher-splash.jpg"/>
         <shortcut online="false">
