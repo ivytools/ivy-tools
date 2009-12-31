@@ -23,6 +23,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/jdom.jar"/>
         <jar href="lib/help.jar"/>
+        <jar href="lib/forms_rt.jar"/>
         <extension name="help" href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
