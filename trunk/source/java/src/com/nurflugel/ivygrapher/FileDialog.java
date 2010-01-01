@@ -12,7 +12,7 @@ public class FileDialog extends JDialog
   private JPanel  contentPane;
   private JButton buttonOK;
   private JButton buttonCancel;
-  private JList   list1;
+  private JList   fileList;
   private boolean wasOk;
 
   public FileDialog(File currentDir)
@@ -62,16 +62,16 @@ public class FileDialog extends JDialog
 
     FileDialogListModel listModel = new FileDialogListModel(currentDir);
 
-    list1.setCellRenderer(new FileCellRenderer());
-    list1.setModel(listModel);
+    fileList.setCellRenderer(new FileCellRenderer());
+    fileList.setModel(listModel);
     setTitle("Select Ivy report(s)...");
 
-    list1.addMouseListener(new MouseAdapter()
+    fileList.addMouseListener(new MouseAdapter()
       {
         @Override
         public void mouseClicked(MouseEvent e)
         {
-          Object value = list1.getSelectedValue();
+          Object value = fileList.getSelectedValue();
 
           if (value instanceof FileWrapper)
           {
@@ -79,11 +79,28 @@ public class FileDialog extends JDialog
 
             if (file.isDirectory())
             {
-              ((FileDialogListModel) list1.getModel()).setCurrentDir(file);
+              ((FileDialogListModel) fileList.getModel()).setCurrentDir(file);
             }
           }
         }
       });
+    // if they double-click, they're done - simulate the "OK" event
+    fileList.addMouseListener(new MouseAdapter()
+      {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          if (e.getClickCount() == 2)
+          {
+            onOK();
+          }
+        }
+      });
+  }
+
+  private void onCancel()
+  {
+    dispose();
   }
 
   private void onOK()
@@ -92,19 +109,11 @@ public class FileDialog extends JDialog
     dispose();
   }
 
-  private void onCancel()
-  {
-    dispose();
-  }
-
-  public boolean isWasOk()
-  {
-    return wasOk;
-  }
+  // -------------------------- OTHER METHODS --------------------------
 
   public List<File> getFiles()
   {
-    Object[]   objects = list1.getSelectedValues();
+    Object[]   objects = fileList.getSelectedValues();
     List<File> results = new ArrayList<File>();
 
     for (Object object : objects)
@@ -119,6 +128,13 @@ public class FileDialog extends JDialog
 
     return results;
   }
+
+  public boolean isWasOk()
+  {
+    return wasOk;
+  }
+
+  // --------------------------- main() method ---------------------------
 
   public static void main(String[] args)
   {

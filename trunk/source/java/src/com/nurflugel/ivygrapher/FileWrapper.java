@@ -12,13 +12,16 @@ public class FileWrapper
     this.file = file;
   }
 
+  // -------------------------- OTHER METHODS --------------------------
+
+  public File getFile()
+  {
+    return file;
+  }
+
   @Override
   public String toString()
   {
     return file.getName();
   }
-
-    public File getFile() {
-        return file;
-    }
 }
