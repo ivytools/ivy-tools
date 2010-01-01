@@ -18,12 +18,6 @@ public class FileDialogListModel implements ListModel
     scanFiles();
   }
 
-  @Override
-  public int getSize()
-  {
-    return files.size();
-  }
-
   /** Scan the current dir and find all files available for display. */
   private void scanFiles()
   {
@@ -66,10 +60,15 @@ public class FileDialogListModel implements ListModel
     }
   }
 
-  public void setCurrentDir(File currentDir)
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface ListModel ---------------------
+
+  @Override
+  public int getSize()
   {
-    this.currentDir = currentDir;
-    scanFiles();
+    return files.size();
   }
 
   @Override
@@ -88,5 +87,13 @@ public class FileDialogListModel implements ListModel
   public void removeListDataListener(ListDataListener l)
   {
     // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+// -------------------------- OTHER METHODS --------------------------
+
+  public void setCurrentDir(File currentDir)
+  {
+    this.currentDir = currentDir;
+    scanFiles();
   }
 }

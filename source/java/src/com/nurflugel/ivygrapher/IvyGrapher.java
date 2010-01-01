@@ -27,7 +27,7 @@ public class IvyGrapher extends JFrame
 {
   private static final String DIR                      = "dir";
   private static final String DOT_EXECUTABLE           = "dotExecutable";
-  private List<File> filesToGraph;
+  private List<File>          filesToGraph;
   private String              lastVisitedDir;
   private Preferences         preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
   private Os                  os;
@@ -248,16 +248,19 @@ public class IvyGrapher extends JFrame
     try
     {
       String dirName = preferences.get(DIR, null);
-        File lastDir=new File(".");
+      File   lastDir = new File(".");
+
       if (dirName != null)
       {
-       lastDir = new File(dirName);
+        lastDir = new File(dirName);
       }
-        FileDialog fileDialog=new FileDialog(lastDir);
-        fileDialog.setVisible(true);
 
-        if(fileDialog.isWasOk())
-        {
+      FileDialog fileDialog = new FileDialog(lastDir);
+
+      fileDialog.setVisible(true);
+
+      if (fileDialog.isWasOk())
+      {
         filesToGraph = fileDialog.getFiles();
 
         if (!filesToGraph.isEmpty())

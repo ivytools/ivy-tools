@@ -48,45 +48,63 @@ public class XmlHandler
 
     for (Object oModule : modules)
     {
-      Element moduleElement = (Element) oModule;
-      String  organization  = moduleElement.getAttributeValue(ORGANISATION);
-      String  name          = moduleElement.getAttributeValue(NAME);
-      Module  module        = addModuleToMap(organization, name, null, moduleMap);
-      List    revisions     = moduleElement.getChildren(REVISION);
-
-      for (Object oRevision : revisions)
-      {
-        Element revision = (Element) oRevision;
-        String  evicted  = revision.getAttributeValue("evicted");
-
-        if (evicted == null)
-        {
-          String revisionNumber = revision.getAttributeValue(NAME);
-
-          module.setRevision(revisionNumber);
-
-          List callerList = revision.getChildren(CALLER);
-
-          for (Object oCaller : callerList)
-          {
-            Element callerElement           = (Element) oCaller;
-            String  callerOrganization      = callerElement.getAttributeValue(ORGANISATION);
-            String  callerName              = callerElement.getAttributeValue(NAME);
-            String  callerConf              = callerElement.getAttributeValue(CONF);
-            String  callerPreferredRevision = callerElement.getAttributeValue(REV);
-            String  callersRevision         = callerElement.getAttributeValue(CALLERREV);
-            Module  caller                  = addModuleToMap(callerOrganization, callerName, callersRevision, moduleMap);
-
-            module.addCaller(caller, callerPreferredRevision);
-          }
-        }
-      }
+      parseModule(moduleMap, oModule);
     }
 
     GraphVizHandler handler = new GraphVizHandler(nodeOrder, os, outputFormat, dotExecutablePath, deleteDotFileOnExit, concentrateEdges);
     File            dotFile = handler.generateDotFile(fileToGraph, ivyModule, moduleMap);
 
     handler.processDotFile(dotFile);
+  }
+
+  /** Parse the element for the module. */
+  private void parseModule(Map<String, Module> moduleMap, Object oModule)
+  {
+    Element moduleElement = (Element) oModule;
+    String  organization  = moduleElement.getAttributeValue(ORGANISATION);
+    String  name          = moduleElement.getAttributeValue(NAME);
+    Module  module        = addModuleToMap(organization, name, null, moduleMap);
+    List    revisions     = moduleElement.getChildren(REVISION);
+
+    for (Object oRevision : revisions)
+    {
+      parseRevision(moduleMap, module, oRevision);
+    }
+  }
+
+  /** Parse the element for the revision - avoid evicted revisions. */
+  private void parseRevision(Map<String, Module> moduleMap, Module module, Object oRevision)
+  {
+    Element revision = (Element) oRevision;
+    String  evicted  = revision.getAttributeValue("evicted");
+
+    if (evicted == null)
+    {
+      Element artifacts = revision.getChild("artifacts");
+      List    children  = artifacts.getChildren();
+
+      if (!children.isEmpty())
+      {
+        String revisionNumber = revision.getAttributeValue(NAME);
+
+        module.setRevision(revisionNumber);
+
+        List callerList = revision.getChildren(CALLER);
+
+        for (Object oCaller : callerList)
+        {
+          Element callerElement           = (Element) oCaller;
+          String  callerOrganization      = callerElement.getAttributeValue(ORGANISATION);
+          String  callerName              = callerElement.getAttributeValue(NAME);
+          String  callerConf              = callerElement.getAttributeValue(CONF);
+          String  callerPreferredRevision = callerElement.getAttributeValue(REV);
+          String  callersRevision         = callerElement.getAttributeValue(CALLERREV);
+          Module  caller                  = addModuleToMap(callerOrganization, callerName, callersRevision, moduleMap);
+
+          module.addCaller(caller, callerPreferredRevision);
+        }
+      }
+    }
   }
 
   private Module addModuleToMap(String organization, String name, String revision, Map<String, Module> moduleMap)

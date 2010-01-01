@@ -64,7 +64,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="b39a0" class="javax.swing.JList" binding="list1" default-binding="true">
+              <component id="b39a0" class="javax.swing.JList" binding="fileList">
                 <constraints/>
                 <properties>
                   <layoutOrientation value="0"/>
