@@ -5,7 +5,7 @@ public enum OutputFormat
 {
   SVG("SVG", "svg", ".svg"),
   PNG("PNG", "png", ".png"),
-  PDF("PDF", "epdf", ".pdf");
+  PDF("PDF", "pdf", ".pdf");
 
   private final String displayLabel;  // for debug only
   private final String extension;     // for debug only

@@ -161,10 +161,17 @@ public class GraphVizHandler
         outputFile.delete();  // delete the file before generating it if it exists
       }
 
-      String   outputFormatName = outputFormat.getType();
-      String[] command          = { dotExecutablePath, "-T" + outputFormatName, dotFilePath, "-o" + outputFilePath };
+      String outputFormatName = outputFormat.getType();
 
-      // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
+      // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's in /usr/local/bin, leave as pdf
+      if ((os == Os.OS_X) && dotExecutablePath.startsWith("/Applications"))
+      {
+        outputFormatName = "e" + outputFormatName;
+      }
+
+      String[] command = { dotExecutablePath, "-T" + outputFormatName, dotFilePath, "-o" + outputFilePath };
+
+      System.out.println("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
 
       Runtime runtime = Runtime.getRuntime();
       long    start   = new Date().getTime();
@@ -221,6 +228,18 @@ public class GraphVizHandler
     {  // todo handle error
       // logger.error(e);
     }
+  }
+
+  private String concatenate(String[] command)
+  {
+    StringBuilder sb = new StringBuilder();
+
+    for (String s : command)
+    {
+      sb.append(s).append(" ");
+    }
+
+    return sb.toString();
   }
 
   /** Takes someting like build.dot and returns build.png. */
