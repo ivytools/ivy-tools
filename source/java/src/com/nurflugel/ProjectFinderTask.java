@@ -26,26 +26,7 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
     this.showTargets = showTargets;
   }
 
-  @Override
-  protected Object doInBackground() throws Exception
-  {
-    System.out.println("ProjectFinderTask.doInBackground");
-
-    // mainFrame.initializeStatusBar(0, BuildableProjects.values().length, 0, true);
-    // mainFrame.setBusyCursor();
-    // long startTime = new Date().getTime();
-    // addToUi(MasterProjects.ATLAS, startTime);
-    // addToUi(MasterProjects.OM, startTime);
-    // addToUi(MasterProjects.NONE, startTime);
-    progressBar.setVisible(false);
-
-    // treeHandler.expandAll(false);
-    mainFrame.addStatus("");
-    mainFrame.setNormalCursor();
-    mainFrame.setReady(true);
-
-    return null;
-  }
+// -------------------------- OTHER METHODS --------------------------
 
   private void addToUi(MasterProjects masterProject, long startTime) throws IOException
   {
@@ -106,5 +87,26 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
     String[] strings = buildableUrl.split("/");
 
     return strings[strings.length - 1];
+  }
+
+  @Override
+  public Object doInBackground() throws Exception
+  {
+    System.out.println("ProjectFinderTask.doInBackground");
+
+    // mainFrame.initializeStatusBar(0, BuildableProjects.values().length, 0, true);
+    // mainFrame.setBusyCursor();
+    // long startTime = new Date().getTime();
+    // addToUi(MasterProjects.ATLAS, startTime);
+    // addToUi(MasterProjects.OM, startTime);
+    // addToUi(MasterProjects.NONE, startTime);
+    progressBar.setVisible(false);
+
+    // treeHandler.expandAll(false);
+    mainFrame.addStatus("");
+    mainFrame.setNormalCursor();
+    mainFrame.setReady(true);
+
+    return null;
   }
 }

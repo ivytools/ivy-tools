@@ -1,13 +1,12 @@
 package com.nurflugel.externalsreporter.ui;
 
-import com.nurflugel.BuildableProjects;
 import com.nurflugel.Os;
 import com.nurflugel.common.ui.Util;
-
+import com.nurflugel.ivygrapher.OutputFormat;
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 17, 2008 Time: 10:10:22 PM To change this template use File | Settings | File Templates.
@@ -15,36 +14,49 @@ import java.util.*;
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class OutputHandler
 {
-  public static final String NEW_LINE                 = "\n";
-  protected static final String CLOSING_LINE_DOTGRAPH = "}";
-  protected static final String OPENING_LINE_DOTGRAPH = "digraph G {\nnode [shape=box,fontname=\"Arial\",fontsize=\"10\"];\nedge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=RL;\n\n";
-  protected static final String OPENING_LINE_SUBGRAPH = "subgraph ";
-  private static final String   QUOTE                 = "\"";
-  private boolean               shouldGroupByBuildfiles = true;
+  public static final String    NEW_LINE                = "\n";
+  protected static final String CLOSING_LINE_DOTGRAPH   = "}";
+  protected static final String OPENING_LINE_DOTGRAPH   = "digraph G {\nnode [shape=box,fontname=\"Arial\",fontsize=\"10\"];\nedge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=RL;\n\n";
+  protected static final String OPENING_LINE_SUBGRAPH   = "subgraph ";
+  private static final String   QUOTE                   = "\"";
+  private boolean               shouldGroupByBuildfiles = false;
   private MainFrame             mainFrame;
+  private Os                    os;
 
   public OutputHandler(MainFrame mainFrame)
   {
     this.mainFrame = mainFrame;
+    os             = mainFrame.getOs();
   }
 
   // -------------------------- OTHER METHODS --------------------------
 
   public File launchDot(File dotFile, File dotExecutable) throws IOException, InterruptedException
   {
-    String outputFileName = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
-    File   outputFile     = new File(dotFile.getParent(), outputFileName);
-    File   parentFile     = outputFile.getParentFile();
-    String dotFilePath    = dotFile.getAbsolutePath();
-    String outputFilePath = outputFile.getAbsolutePath();
+    String outputFileName    = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
+    File   outputFile        = new File(dotFile.getParent(), outputFileName);
+    File   parentFile        = outputFile.getParentFile();
+    String dotExecutablePath = dotFile.getAbsolutePath();
+    String outputFilePath    = outputFile.getAbsolutePath();
 
     if (outputFile.exists())
     {                       // logger.debug("Deleting existing version of " + outputFilePath);
       outputFile.delete();  // delete the file before generating it if it exists
     }
 
-    // String   outputFormat = ui.getOutputFormat().getType();
-    String[] command = { dotExecutable.getAbsolutePath(), "-T" + mainFrame.getOs().getOutputFormat().getType(), dotFilePath, "-o" + outputFilePath };
+    OutputFormat outputFormat     = os.getOutputFormat();
+    String       outputFormatName = outputFormat.getType();
+
+    // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's
+    // in /usr/local/bin, leave as pdf
+    if ((os == Os.OS_X) && dotExecutablePath.startsWith("/Applications"))
+    {
+      outputFormatName = "e" + outputFormatName;
+    }
+
+    String[] command = { dotExecutable.getAbsolutePath(), "-T" + outputFormatName, dotExecutablePath, "-o" + outputFilePath };
+
+    // String[] command = { dotExecutable.getAbsolutePath(), "-T" + outputFormatName, dotExecutablePath, "-o" + outputFilePath };
 
     // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
     Runtime runtime = Runtime.getRuntime();
@@ -61,60 +73,30 @@ public class OutputHandler
 
   public void viewResultingFile(File imageFile) throws IOException
   {
-    List<String> commandList    = new ArrayList<String>();
-    Runtime      runtime        = Runtime.getRuntime();
-    String       outputFilePath = imageFile.getAbsolutePath();
-    Os           os             = mainFrame.getOs();
+    String outputFilePath = imageFile.getAbsolutePath();
 
-    if (os == Os.OS_X)
+    try
     {
-      // calling FileManager to open the URL works, if we replace spaces with %20
-      outputFilePath = outputFilePath.replace(" ", "%20");
-
-      String fileUrl = "file://" + outputFilePath;
-
-      // We do this rather than calling
-      // FileManager.openURL(fileUrl);
-      // so we can compile this from Windoze, rather than alwasy having to compile it from OS X.  But it behaves just the same.
-      try
-      {
-        Class<?> aClass = Class.forName("com.apple.eio.FileManager");
-        Method   method = aClass.getMethod("openURL", String.class);
-
-        method.invoke(null, fileUrl);
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
+      os.openFile(outputFilePath);
     }
-    else
+    catch (Exception e)
     {
-      if (os == Os.WINDOWS)
-      {
-        commandList.add("cmd.exe");
-        commandList.add("/c");
-      }
-
-      commandList.add(outputFilePath);
-
-      String[] command = commandList.toArray(new String[commandList.size()]);
-      // logger.debug("Command to run: " + concatenate(command));
-
-      runtime.exec(command);
+      throw new IOException(e);
     }
   }
 
-  public File writeDotFile(Map<BuildableProjects, Map<String, List<External>>> dependencies) throws IOException
+  public File writeDotFile(List<External> externals) throws IOException
   {
-    JFileChooser fileChooser = new JFileChooser(mainFrame.getConfig().getImageDir());
+    File         imageDir    = mainFrame.getConfig().getImageDir();
+    JFileChooser fileChooser = new JFileChooser(imageDir);
 
     fileChooser.setDialogTitle("Choose a location for your image");
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.setMultiSelectionEnabled(false);
+    fileChooser.ensureFileIsVisible(imageDir);
     fileChooser.showDialog(mainFrame, "Save image here");
 
-    File imageDir = fileChooser.getSelectedFile();
+    imageDir = fileChooser.getSelectedFile();
 
     mainFrame.getConfig().setImageDir(imageDir);
 
@@ -133,29 +115,16 @@ public class OutputHandler
       out.writeBytes("clusterrank=none;\n");
     }
 
-    writeDotFileTargetDeclarations(out, dependencies);
+    writeDotFileTargetDeclarations(out, externals);
 
-    Set<BuildableProjects> projects = dependencies.keySet();
-
-    for (BuildableProjects project : projects)
+    for (External external : externals)
     {
-      Map<String, List<External>> branchesExternalsMap = dependencies.get(project);
-      Set<String>                 branches             = branchesExternalsMap.keySet();
+      String branch = Util.filterUrlNames(external.getProjectBaseUrl());
 
-      for (String branch : branches)
-      {
-        List<External> externals = branchesExternalsMap.get(branch);
+      String url    = external.getUrl();
 
-        for (External external : externals)
-        {
-          branch = Util.filterUrlNames(branch);
-
-          String url = external.getUrl();
-
-          url = Util.filterUrlNames(url);
-          out.writeBytes(QUOTE + branch + "/" + external.getDir() + QUOTE + " -> " + QUOTE + url + QUOTE + NEW_LINE);
-        }
-      }
+      url = Util.filterUrlNames(url);
+      out.writeBytes(QUOTE + branch + external.getDir() + QUOTE + " -> " + QUOTE + url + QUOTE + NEW_LINE);
     }
 
     out.writeBytes(CLOSING_LINE_DOTGRAPH);
@@ -164,40 +133,30 @@ public class OutputHandler
     return dotFile;
   }
 
-  private void writeDotFileTargetDeclarations(DataOutputStream out, Map<BuildableProjects, Map<String, List<External>>> dependencies)
-                                       throws IOException
+  private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals) throws IOException
   {
-    int                    clusterIndex = 0;
-    Set<BuildableProjects> projectsSet  = dependencies.keySet();
+    int clusterIndex = 0;
 
-    for (BuildableProjects project : projectsSet)
+    out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_" + clusterIndex + " {" + NEW_LINE);
+
+    // String fileName = project.getProjectName();
+
+    // out.writeBytes("\t\tlabel=" + QUOTE + fileName + QUOTE + NEW_LINE);
+
+    for (External external : externals)
     {
-      out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_" + clusterIndex + " {" + NEW_LINE);
+      String filteredBranch = Util.filterUrlNames(external.getProjectBaseUrl());
+      String externalDir    = Util.filterUrlNames(external.getDir());
+      String filteredName   = filteredBranch + externalDir;
+      String line           = "\t\t" + QUOTE + filteredName + QUOTE + " [label=" + QUOTE + filteredBranch + "\\n" + externalDir + QUOTE + " shape="
+                              + "box" + " color="
+                              + "black"
+                              + " ]; ";
 
-      String fileName = project.getProjectName();
+      out.writeBytes(line + NEW_LINE);
+    }
 
-      out.writeBytes("\t\tlabel=" + QUOTE + fileName + QUOTE + NEW_LINE);
-
-      Map<String, List<External>> branchesExternals = dependencies.get(project);
-
-      for (String branchName : branchesExternals.keySet())
-      {
-        List<External> externals      = branchesExternals.get(branchName);
-        String         filteredBranch = Util.filterUrlNames(branchName);
-
-        for (External external : externals)
-        {
-          String filteredName = filteredBranch + "/" + Util.filterUrlNames(external.getDir());
-          String line         = "\t\t" + QUOTE + filteredName + QUOTE + " [label=" + QUOTE + filteredName + QUOTE + " shape=" + "box" + " color="
-                                + "black"
-                                + " ]; ";
-
-          out.writeBytes(line + NEW_LINE);
-        }
-      }
-
-      out.writeBytes("\t}" + NEW_LINE);
-      clusterIndex++;
-    }  // end for
-  }
+    out.writeBytes("\t}" + NEW_LINE);
+    clusterIndex++;
+  }  // end for
 }

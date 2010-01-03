@@ -1,11 +1,15 @@
 package com.nurflugel;
 
-import com.nurflugel.externalsreporter.ui.OutputFormat;
+import com.nurflugel.ivygrapher.OutputFormat;
 import com.nurflugel.common.ui.Util;
-import static com.nurflugel.externalsreporter.ui.OutputFormat.*;
-import javax.swing.*;
+import static com.nurflugel.ivygrapher.OutputFormat.*;
 import java.io.File;
 import java.awt.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.List;
 
 /** Enum of operating systems, and methods to deal with differenes between them. */
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
@@ -50,14 +54,12 @@ public enum Os
     this.outputFormat    = outputFormat;
   }
 
-  // -------------------------- OTHER METHODS --------------------------
+// -------------------------- OTHER METHODS --------------------------
 
   public String getBuildCommandPath(String basePath)
   {
     return basePath + File.separator + buildCommand;
   }
-
-  // --------------------- GETTER / SETTER METHODS ---------------------
 
   public String getDefaultDotPath()
   {
@@ -69,25 +71,45 @@ public enum Os
     return name;
   }
 
-  // public String[] getCommandArgs(String path, BuildableItem buildableItem)
-  // {
-  // BuildableProjects project = buildableItem.getProject();
-  // BuildScripts buildScript = project.getBuildScript();
-  // List<String> commands = new ArrayList<String>();
-  //
-  // commands.addAll(Arrays.asList(baseCommandArgs));
-  // commands.add(getBuildCommandPath(path));
-  // commands.add("-f");
-  // commands.add(buildScript.getScriptName());
-  // commands.add(buildableItem.getBuildTarget().toString());
-  //
-  // String[] output = commands.toArray(new String[commands.size()]);
-  //
-  // return output;
-  // }
   public OutputFormat getOutputFormat()
   {
     return outputFormat;
+  }
+
+  public void openFile(String filePath) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException,
+                                               ClassNotFoundException
+  {
+    if (this == OS_X)
+    {
+      // calling FileManager to open the URL works, if we replace spaces with %20
+      String   outputFilePath = filePath.replace(" ", "%20");
+
+      String   fileUrl        = "file://" + outputFilePath;
+
+      Class<?> aClass         = Class.forName("com.apple.eio.FileManager");
+      Method   method         = aClass.getMethod("openURL", String.class);
+
+      method.invoke(null, fileUrl);
+    }
+    else
+    {
+      List<String> commandList = new ArrayList<String>();
+
+      if (this == WINDOWS)
+      {
+        commandList.add("cmd.exe");
+        commandList.add("/c");
+      }
+
+      commandList.add(filePath);
+
+      String[] command = commandList.toArray(new String[commandList.size()]);
+
+      // logger.debug("Command to run: " + concatenate(command));
+      Runtime runtime = Runtime.getRuntime();
+
+      runtime.exec(command);
+    }
   }
 
   @SuppressWarnings({ "CallToPrintStackTrace", "OverlyBroadCatchBlock" })

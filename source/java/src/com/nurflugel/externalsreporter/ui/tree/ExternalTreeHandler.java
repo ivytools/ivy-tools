@@ -10,7 +10,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Created by IntelliJ IDEA. User: douglasbullard Date: May 31, 2008 Time: 11:17:28 AM To change this template use File | Settings | File Templates.
+ * Handler to go through all the projects and find externals for them
  */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class ExternalTreeHandler
