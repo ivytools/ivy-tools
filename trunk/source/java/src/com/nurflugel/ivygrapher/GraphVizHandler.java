@@ -1,16 +1,10 @@
 package com.nurflugel.ivygrapher;
 
-// import com.apple.eio.FileManager;
-import static com.nurflugel.ivygrapher.OutputFormat.*;
-import com.apple.eio.FileManager;
 import com.nurflugel.Os;
+
 import java.io.*;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /** Outputs the .dot file to GraphViz's "dot" - this converts it into the desired format (PDF, PNG, etc). */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
@@ -163,7 +157,8 @@ public class GraphVizHandler
 
       String outputFormatName = outputFormat.getType();
 
-      // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's in /usr/local/bin, leave as pdf
+      // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's
+      // in /usr/local/bin, leave as pdf
       if ((os == Os.OS_X) && dotExecutablePath.startsWith("/Applications"))
       {
         outputFormatName = "e" + outputFormatName;
@@ -182,42 +177,7 @@ public class GraphVizHandler
 
       // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
 
-      List<String> commandList = new ArrayList<String>();
-
-      if (os == Os.OS_X)
-      {
-        // This method doesn't work
-        // calling FileManager to open the URL works, if we replace spaces with %20
-        outputFilePath = outputFilePath.replace(" ", "%20");
-
-        String fileUrl = "file://" + outputFilePath;
-
-        try
-        {
-          Class<?> aClass = Class.forName("com.apple.eio.FileManager");
-          Method   method = aClass.getMethod("openURL", String.class);
-
-          method.invoke(null, fileUrl);
-        }
-        catch (Exception e)
-        {
-          e.printStackTrace();
-        }
-      }
-      else
-      {
-        if (os == Os.WINDOWS)
-        {
-          commandList.add("cmd.exe");
-          commandList.add("/c");
-        }
-
-        commandList.add(outputFilePath);
-        command = commandList.toArray(new String[commandList.size()]);
-        // logger.debug("Command to run: " + concatenate(command));
-
-        runtime.exec(command);
-      }
+      os.openFile(outputFilePath);
 
       if (deleteDotFileOnExit)
       {
@@ -227,6 +187,8 @@ public class GraphVizHandler
     catch (Exception e)
     {  // todo handle error
       // logger.error(e);
+        e.printStackTrace();
+        System.err.println("exception = " + e);
     }
   }
 

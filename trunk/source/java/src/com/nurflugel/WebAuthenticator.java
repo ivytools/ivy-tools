@@ -1,5 +1,9 @@
 package com.nurflugel;
 
+import com.nurflugel.externalsreporter.ui.Config;
+import com.nurflugel.versionfinder.UsernamePasswordDialog;
+import org.apache.commons.lang.StringUtils;
+
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
@@ -8,21 +12,19 @@ import java.net.PasswordAuthentication;
  */
 public class WebAuthenticator extends Authenticator
 {
-  // todo - prompt user if these aren't set, Google doesn't require authentication, but other guys will, and this shouldn't be
-  // hard-coded.  Put this into Preferences, keyed under the base URL or something...
-  private static final String USER_NAME = "user_name";
-  private static final String PASSWORD  = "password";
+  private static String userName;
+  private static String password;
+  private static Config config;
 
   // -------------------------- STATIC METHODS --------------------------
 
-  public static String getUsername()
-  {
-    return USER_NAME;
-  }
+  public WebAuthenticator() {}
 
-  public static String getPassword()
+  public WebAuthenticator(Config config)
   {
-    return PASSWORD;
+    this.config = config;
+    userName    = config.getUserName();
+    password    = config.getPassword();
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -30,6 +32,45 @@ public class WebAuthenticator extends Authenticator
   @Override
   public PasswordAuthentication getPasswordAuthentication()
   {
-    return new PasswordAuthentication(USER_NAME, (PASSWORD.toCharArray()));
+    if ((userName.length() == 0) || (password.length() == 0))
+    {
+      showDialog();
+    }
+
+    return new PasswordAuthentication(userName, (password.toCharArray()));
+  }
+
+  private static void showDialog()
+  {
+    UsernamePasswordDialog dialog = new UsernamePasswordDialog(userName, password);
+
+    userName = dialog.getUsername();
+    password = dialog.getPassword();
+
+    if (config != null)
+    {
+      config.setUserName(userName);
+      config.setPassword(password);
+    }
+  }
+
+  public static String getUsername()
+  {
+    if (StringUtils.isEmpty(userName))
+    {
+      showDialog();
+    }
+
+    return userName;
+  }
+
+  public static String getPassword()
+  {
+    if (StringUtils.isEmpty(password))
+    {
+      showDialog();
+    }
+
+    return password;
   }
 }
