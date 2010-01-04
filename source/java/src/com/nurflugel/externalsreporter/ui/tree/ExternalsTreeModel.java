@@ -26,45 +26,53 @@ public class ExternalsTreeModel implements TreeModel
   // --------------------- Interface TreeModel ---------------------
 
   /** Returns the root of the tree. */
+  @Override
   public Object getRoot()
   {
     return root;
   }
 
   /** Returns the child of parent at index index in the parent's child array. */
+  @Override
   public Object getChild(Object parent, int index)
   {
     return ((CheckableNode) parent).getChildren().get(index);
   }
 
   /** Returns the number of children of parent. */
+  @Override
   public int getChildCount(Object parent)
   {
     return ((CheckableNode) parent).getChildren().size();
   }
 
   /** Returns true if node is a leaf. */
+  @Override
   public boolean isLeaf(Object node)
   {
     return ((CheckableNode) node).isLeaf();
   }
 
   /** Messaged when the user has altered the value for the item identified by path to newValue. */
+  @Override
   public void valueForPathChanged(TreePath treePath, Object o) {}
 
   /** Returns the index of child in parent. */
+  @Override
   public int getIndexOfChild(Object parent, Object child)
   {
     return ((CheckableNode) parent).indexOf(child);
   }
 
   /** Adds a listener for the TreeModelEvent posted after the tree changes. */
+  @Override
   public void addTreeModelListener(TreeModelListener treeModelListener)
   {
     treeModelListeners.add(treeModelListener);
   }
 
   /** Removes a listener previously added with addTreeModelListener. */
+  @Override
   public void removeTreeModelListener(TreeModelListener treeModelListener)
   {
     treeModelListeners.remove(treeModelListener);

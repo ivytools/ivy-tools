@@ -1,7 +1,6 @@
 package com.nurflugel.externalsreporter.ui;
 
 import org.apache.commons.lang.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,7 @@ public class HtmlHandler
     URL           versionUrl    = new URL(repositoryUrl);
     URLConnection urlConnection = versionUrl.openConnection();
 
-//    Authenticator.setDefault(new WebAuthenticator());
+    // Authenticator.setDefault(new WebAuthenticator());
 
     urlConnection.setAllowUserInteraction(true);
     urlConnection.connect();

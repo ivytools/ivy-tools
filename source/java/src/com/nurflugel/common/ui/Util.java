@@ -1,5 +1,6 @@
 package com.nurflugel.common.ui;
 
+import org.apache.commons.lang.StringUtils;
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
@@ -13,11 +14,12 @@ import java.util.Date;
 /** Util class. */
 public class Util
 {
-  public static final String OSX_DOT_LOCATION     = "/Applications/Graphviz.app/Contents/MacOS/dot";
-  public static final String PREVIEW_LOCATION     = "/Applications/Preview.app/Contents/MacOS/Preview";
-  public static final String WINDOWS_DOT_LOCATION = "\"\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"";
-  public static final Cursor busyCursor           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  public static final Cursor normalCursor         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  public static final String  OSX_DOT_LOCATION     = "/Applications/Graphviz.app/Contents/MacOS/dot";
+  public static final String  PREVIEW_LOCATION     = "/Applications/Preview.app/Contents/MacOS/Preview";
+  public static final String  WINDOWS_DOT_LOCATION = "\"\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"";
+  public static final Cursor  busyCursor           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+  public static final Cursor  normalCursor         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private static final String SLASH                = "/";
 
   // -------------------------- STATIC METHODS --------------------------
 
@@ -70,7 +72,7 @@ public class Util
     // String branch = theBranch.replace("http://----/svn/", "");
     //
     // branch = branch.replace("http://----.nurflugel.com/svn/", "");
-    branch = branch.replace("//", "/");
+    branch = branch.replace("//", SLASH);
 
     return branch;
   }
@@ -154,6 +156,34 @@ public class Util
       }
 
       theFile.delete();
+    }
+  }
+
+  /** Filters out the http:// in a URL if it exists... also the /svn/ if that's there, too. */
+  public static String filterHttp(String url)
+  {
+    String trimmedUrl = StringUtils.substringAfter(url, "http://");
+
+    trimmedUrl = StringUtils.substringAfter(trimmedUrl, SLASH);  // get text after URL closing /
+
+    if (trimmedUrl.startsWith("svn"))
+    {
+      trimmedUrl = StringUtils.substringAfter(trimmedUrl, SLASH);
+    }
+
+    return trimmedUrl;
+  }
+
+  /** Returns the text with no trailing "/". */
+  public static String getUrlNoTrailingSlash(String text)
+  {
+    if (text.endsWith(SLASH))
+    {
+      return StringUtils.substringBeforeLast(text, SLASH);
+    }
+    else
+    {
+      return text;
     }
   }
 

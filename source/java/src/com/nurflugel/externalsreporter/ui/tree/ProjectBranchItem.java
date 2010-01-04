@@ -24,21 +24,25 @@ public class ProjectBranchItem implements CheckableItem
 
   // --------------------- Interface CheckableItem ---------------------
 
+  @Override
   public Branch getBranch()
   {
     return branch;
   }
 
+  @Override
   public BuildableProjects getProject()
   {
     return project;
   }
 
+  @Override
   public boolean isSelected()
   {
     return selected;
   }
 
+  @Override
   public void setSelected(boolean selected)
   {
     this.selected = selected;

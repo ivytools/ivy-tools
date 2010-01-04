@@ -9,9 +9,7 @@ import javax.swing.*;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-/**
- * Handler to go through all the projects and find externals for them
- */
+/** Handler to go through all the projects and find externals for them. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class ExternalTreeHandler
 {
