@@ -22,11 +22,13 @@ public class IvyFileTableFormat implements TableFormat
 
   // --------------------- Interface TableFormat ---------------------
 
+  @Override
   public int getColumnCount()
   {
     return 4;
   }
 
+  @Override
   public String getColumnName(int i)
   {
     if ((i >= 0) && (i < columnNames.length))
@@ -37,6 +39,7 @@ public class IvyFileTableFormat implements TableFormat
     throw new IllegalStateException();
   }
 
+  @Override
   public Object getColumnValue(Object o, int i)
   {
     IvyFile ivyFile = (IvyFile) o;

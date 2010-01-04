@@ -1,7 +1,6 @@
 package com.nurflugel.ivygrapher;
 
 import com.nurflugel.Os;
-
 import java.io.*;
 import java.util.Date;
 import java.util.Map;
@@ -186,9 +185,10 @@ public class GraphVizHandler
     }
     catch (Exception e)
     {  // todo handle error
+
       // logger.error(e);
-        e.printStackTrace();
-        System.err.println("exception = " + e);
+      e.printStackTrace();
+      System.err.println("exception = " + e);
     }
   }
 

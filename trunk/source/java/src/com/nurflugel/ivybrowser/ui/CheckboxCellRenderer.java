@@ -4,9 +4,7 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Oct 16, 2009 Time: 1:33:34 PM To change this template use File | Settings | File Templates.
- */
+/** Table renderer for Booleans to show as checkbox. */
 public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
 {
   private boolean background;
@@ -16,6 +14,7 @@ public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
     background = isBackground;
   }
 
+  @Override
   public Component getTableCellRendererComponent(JTable jTable, Object theObject, boolean isSelected, boolean hasFocus, int row, int column)
   {
     // System.out.println("theObject = " + theObject);

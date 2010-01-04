@@ -60,10 +60,9 @@ public class FileDialogListModel implements ListModel
     }
   }
 
-// ------------------------ INTERFACE METHODS ------------------------
+  // ------------------------ INTERFACE METHODS ------------------------
 
-
-// --------------------- Interface ListModel ---------------------
+  // --------------------- Interface ListModel ---------------------
 
   @Override
   public int getSize()
@@ -89,7 +88,7 @@ public class FileDialogListModel implements ListModel
     // To change body of implemented methods use File | Settings | File Templates.
   }
 
-// -------------------------- OTHER METHODS --------------------------
+  // -------------------------- OTHER METHODS --------------------------
 
   public void setCurrentDir(File currentDir)
   {

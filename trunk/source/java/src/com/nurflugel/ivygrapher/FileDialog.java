@@ -2,6 +2,7 @@ package com.nurflugel.ivygrapher;
 
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class FileDialog extends JDialog
           }
         }
       });
+
     // if they double-click, they're done - simulate the "OK" event
     fileList.addMouseListener(new MouseAdapter()
       {

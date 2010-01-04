@@ -23,6 +23,7 @@ class ResultRow implements Comparable
 
   // --------------------- Interface Comparable ---------------------
 
+  @Override
   public int compareTo(Object o)
   {
     ResultRow other = (ResultRow) o;

@@ -15,6 +15,7 @@ public class IvyRepositoryItemComparator implements Comparator, Serializable
 
   // --------------------- Interface Comparator ---------------------
 
+  @Override
   public int compare(Object o1, Object o2)
   {
     IvyRepositoryItem itemA   = (IvyRepositoryItem) o1;

@@ -30,6 +30,7 @@ public class CreateDependenciesDialog extends JDialog
   private EventList<IvyRepositoryItem> ivyPackages;
 
   // --------------------------- CONSTRUCTORS ---------------------------
+
   public CreateDependenciesDialog(List<IvyRepositoryItem> packages)
   {
     ivyPackages = new BasicEventList<IvyRepositoryItem>();
@@ -145,9 +146,9 @@ public class CreateDependenciesDialog extends JDialog
   private void filterTable()
   {
     SortedList<IvyRepositoryItem> sortedDependencies = new SortedList<IvyRepositoryItem>(ivyPackages, new IvyRepositoryItemComparator());
-    FilterList<IvyRepositoryItem> filteredPackages = new FilterList<IvyRepositoryItem>(sortedDependencies,
-                                                                                       new TextComponentMatcherEditor(selectionText,
-                                                                                                                      new IvyRepositoryItemFilterator()));
+    FilterList<IvyRepositoryItem> filteredPackages   = new FilterList<IvyRepositoryItem>(sortedDependencies,
+                                                                                         new TextComponentMatcherEditor(selectionText,
+                                                                                                                        new IvyRepositoryItemFilterator()));
     EventTableModel<IvyRepositoryItem> tableModel = new EventTableModel<IvyRepositoryItem>(filteredPackages, new IvyRepositoryItemTableFormat());
 
     dependenciesTable.setModel(tableModel);

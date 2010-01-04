@@ -19,10 +19,10 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 {
   // private boolean useTestData = true;
   // private boolean saveTestData = false;
-  protected static final String BASE_NAME = "/Users/douglasbullard/Documents/JavaStuff/Nike Subversion Projects/JavaExternals/trunk/maintenance/IvyBrowser/";
-  private static final String PROJECT_IVY_FILES_DATA_FILE = BASE_NAME + "projectIvyFilesData.xml";
-  private static final String ALL_IVY_FILES_DATA_FILE     = BASE_NAME + "allIvyFilesData.xml";
-  private static final String IVY_FILES_MAP_FILE          = BASE_NAME + "ivyFilesMap.xml";
+  protected static final String BASE_NAME                   = "/Users/douglasbullard/Documents/JavaStuff/Nike Subversion Projects/JavaExternals/trunk/maintenance/IvyBrowser/";
+  private static final String   PROJECT_IVY_FILES_DATA_FILE = BASE_NAME + "projectIvyFilesData.xml";
+  private static final String   ALL_IVY_FILES_DATA_FILE     = BASE_NAME + "allIvyFilesData.xml";
+  private static final String   IVY_FILES_MAP_FILE          = BASE_NAME + "ivyFilesMap.xml";
 
   // private boolean isTest = false;
   private boolean             shouldRun         = true;

@@ -275,6 +275,7 @@ public class VersionFinderUi extends JFrame
   }
 
   // todo thread task
+
   private void processJarFile(File jarFile, Map<File, Set<MajorMinor>> jarResults)
   {
     if (jarFile.getName().endsWith(".jar"))

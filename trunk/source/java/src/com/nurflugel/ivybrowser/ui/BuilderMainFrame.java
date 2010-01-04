@@ -43,6 +43,7 @@ public class BuilderMainFrame extends JFrame
   private Preferences             preferences;
 
   // --------------------------- CONSTRUCTORS ---------------------------
+
   public BuilderMainFrame()
   {
     setTitle("IvyBuild v. " + VERSION);

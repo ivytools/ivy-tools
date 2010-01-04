@@ -26,7 +26,7 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
     this.showTargets = showTargets;
   }
 
-// -------------------------- OTHER METHODS --------------------------
+  // -------------------------- OTHER METHODS --------------------------
 
   private void addToUi(MasterProjects masterProject, long startTime) throws IOException
   {

@@ -39,6 +39,7 @@ public class IvyPackage implements Comparable<IvyPackage>
 
   // --------------------- Interface Comparable ---------------------
 
+  @Override
   public int compareTo(IvyPackage ivyPackage)
   {
     String moduleA = getOrgName() + getModuleName() + getVersion();

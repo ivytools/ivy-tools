@@ -79,6 +79,7 @@ public class IvyTrackerMainFrame extends JFrame
   private Preferences                preferences                        = Preferences.userNodeForPackage(IvyTrackerMainFrame.class);
 
   // --------------------------- CONSTRUCTORS ---------------------------
+
   public IvyTrackerMainFrame()
   {
     initializeComponents();
