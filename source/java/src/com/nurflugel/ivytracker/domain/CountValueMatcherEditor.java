@@ -24,6 +24,7 @@ public class CountValueMatcherEditor implements Matcher<IvyFile>
 
   // --------------------- Interface Matcher ---------------------
 
+  @Override
   public boolean matches(IvyFile item)
   {
     int count = item.getCount();

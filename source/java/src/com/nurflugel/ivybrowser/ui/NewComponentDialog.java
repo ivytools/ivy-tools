@@ -39,6 +39,7 @@ public class NewComponentDialog extends JDialog
   private Map<String, IvyRepositoryItemCheckbox> dependenciesMap                  = new TreeMap<String, IvyRepositoryItemCheckbox>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
+
   public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)
   {
     this.ivyPackages   = ivyPackages;
@@ -243,9 +244,8 @@ public class NewComponentDialog extends JDialog
 
     int returnVal = chooser.showDialog(this, "Add files to Ivy");
 
-    if (returnVal == APPROVE_OPTION)
-    {  // add any selected files to the map of files - this eliminates dupes
-
+    if (returnVal == APPROVE_OPTION)  // add any selected files to the map of files - this eliminates dupes
+    {
       File[] selectedFiles = chooser.getSelectedFiles();
 
       for (File file : selectedFiles)

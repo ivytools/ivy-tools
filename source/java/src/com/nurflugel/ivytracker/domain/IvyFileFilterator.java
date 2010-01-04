@@ -13,6 +13,7 @@ public class IvyFileFilterator implements TextFilterator
 
   // --------------------- Interface TextFilterator ---------------------
 
+  @Override
   public void getFilterStrings(List list, Object o)
   {
     IvyFile item = (IvyFile) o;

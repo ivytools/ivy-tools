@@ -2,6 +2,7 @@ package com.nurflugel.versionfinder;
 
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class UsernamePasswordDialog extends JDialog
@@ -82,7 +83,7 @@ public class UsernamePasswordDialog extends JDialog
 
   public String getPassword()
   {
-    return passwordField.getToolTipText();
+    return passwordField.getText();
   }
 
   public static void main(String[] args)

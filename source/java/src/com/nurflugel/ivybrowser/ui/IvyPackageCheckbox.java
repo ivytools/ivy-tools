@@ -21,6 +21,7 @@ public class IvyPackageCheckbox extends JCheckBox implements Comparable
 
   // --------------------- Interface Comparable ---------------------
 
+  @Override
   public int compareTo(Object o)
   {
     IvyPackageCheckbox otherCheckbox = (IvyPackageCheckbox) o;

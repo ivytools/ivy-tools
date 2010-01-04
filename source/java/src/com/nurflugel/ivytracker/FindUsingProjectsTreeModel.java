@@ -27,11 +27,13 @@ public class FindUsingProjectsTreeModel implements TreeModel
 
   // --------------------- Interface TreeModel ---------------------
 
+  @Override
   public Object getRoot()
   {
     return ivyFile;
   }
 
+  @Override
   public Object getChild(Object o, int i)
   {
     if (o instanceof IvyFile)
@@ -44,6 +46,7 @@ public class FindUsingProjectsTreeModel implements TreeModel
     return null;
   }
 
+  @Override
   public int getChildCount(Object o)
   {
     if (o instanceof IvyFile)
@@ -54,6 +57,7 @@ public class FindUsingProjectsTreeModel implements TreeModel
     return 0;
   }
 
+  @Override
   public boolean isLeaf(Object o)
   {
     if (o instanceof IvyFile)
@@ -64,8 +68,10 @@ public class FindUsingProjectsTreeModel implements TreeModel
     return false;
   }
 
+  @Override
   public void valueForPathChanged(TreePath treePath, Object o) {}
 
+  @Override
   public int getIndexOfChild(Object o, Object o1)
   {
     if (o instanceof IvyFile)
@@ -92,8 +98,10 @@ public class FindUsingProjectsTreeModel implements TreeModel
     return 0;
   }
 
+  @Override
   public void addTreeModelListener(TreeModelListener treeModelListener) {}
 
+  @Override
   public void removeTreeModelListener(TreeModelListener treeModelListener) {}
 
   // -------------------------- OTHER METHODS --------------------------

@@ -14,6 +14,7 @@ public class IvyRepositoryItemFilterator implements TextFilterator
 
   // --------------------- Interface TextFilterator ---------------------
 
+  @Override
   public void getFilterStrings(List list, Object o)
   {
     IvyRepositoryItem item = (IvyRepositoryItem) o;

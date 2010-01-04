@@ -12,11 +12,13 @@ public class IvyRepositoryItemTableFormat implements TableFormat
 
   // --------------------- Interface TableFormat ---------------------
 
+  @Override
   public int getColumnCount()
   {
     return 3;
   }
 
+  @Override
   public String getColumnName(int i)
   {
     switch (i)
@@ -35,6 +37,7 @@ public class IvyRepositoryItemTableFormat implements TableFormat
     }
   }
 
+  @Override
   public Object getColumnValue(Object o, int i)
   {
     IvyRepositoryItem dependency = (IvyRepositoryItem) o;

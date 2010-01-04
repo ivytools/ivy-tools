@@ -21,11 +21,13 @@ public class IvyPackageTableFormat implements TableFormat
 
   // --------------------- Interface TableFormat ---------------------
 
+  @Override
   public int getColumnCount()
   {
     return 5;
   }
 
+  @Override
   public String getColumnName(int i)
   {
     if ((i >= 0) && (i < columnNames.length))
@@ -36,6 +38,7 @@ public class IvyPackageTableFormat implements TableFormat
     throw new IllegalStateException();
   }
 
+  @Override
   public Object getColumnValue(Object o, int i)
   {
     IvyPackage ivyPackage = (IvyPackage) o;

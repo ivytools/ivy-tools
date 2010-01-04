@@ -15,6 +15,7 @@ public class IvyPackageComparator implements Comparator<IvyPackage>, Serializabl
 
   // --------------------- Interface Comparator ---------------------
 
+  @Override
   public int compare(IvyPackage itemA, IvyPackage itemB)
   {
     String moduleA = itemA.getOrgName() + itemA.getModuleName() + itemA.getVersion();

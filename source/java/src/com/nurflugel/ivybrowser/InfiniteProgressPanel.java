@@ -197,18 +197,23 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
 
   // --------------------- Interface MouseListener ---------------------
 
+  @Override
   public void mouseClicked(MouseEvent e)
   {
     stop();
     mainFrame.stopThreads();
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {}
 
+  @Override
   public void mouseReleased(MouseEvent e) {}
 
+  @Override
   public void mouseEntered(MouseEvent e) {}
 
+  @Override
   public void mouseExited(MouseEvent e) {}
 
   // -------------------------- OTHER METHODS --------------------------
@@ -357,6 +362,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
       this.rampUp = rampUp;
     }
 
+    @Override
     public void run()
     {
       System.out.println("Running the animation");

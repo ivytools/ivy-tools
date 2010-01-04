@@ -20,6 +20,7 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
 
   // --------------------- Interface TableCellRenderer ---------------------
 
+  @Override
   public Component getTableCellRendererComponent(JTable jTable, Object whatToRender, boolean isSelected, boolean b1, int row, int col)
   {
     setText(whatToRender.toString());
