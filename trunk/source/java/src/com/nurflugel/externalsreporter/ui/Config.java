@@ -18,12 +18,15 @@ public class Config
   private String              lastRepository;
   private static final String LAST_REPOSITORY   = "lastRepository";
 
+  /** Todo how to deal with changed or wrong passwords? */
   public Config()
   {
     preferences       = Preferences.userNodeForPackage(MainFrame.class);
     dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
     imageDir          = preferences.get(IMAGE_DIR, "");
     lastRepository    = preferences.get(LAST_REPOSITORY, "");
+    userName          = preferences.get(USER_NAME, "");
+    password          = preferences.get(PASSWORD, "");
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -43,10 +46,7 @@ public class Config
     preferences.put(DOT_EXECUTABLE, dotExecutablePath);
     preferences.put(IMAGE_DIR, imageDir);
 
-    String value = password;
-    String key   = PASSWORD;
-
-    saveNonNullValue(value, key);
+    saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
     saveNonNullValue(lastRepository, LAST_REPOSITORY);
   }
@@ -56,6 +56,7 @@ public class Config
   {
     if (value != null)
     {
+      System.out.println("Saving key " + key + "with value = " + value);
       preferences.put(key, value);
     }
   }

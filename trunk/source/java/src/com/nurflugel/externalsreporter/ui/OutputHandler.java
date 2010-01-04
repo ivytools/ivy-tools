@@ -1,12 +1,15 @@
 package com.nurflugel.externalsreporter.ui;
 
+import ca.odell.glazedlists.EventList;
 import com.nurflugel.Os;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.ivygrapher.OutputFormat;
 import javax.swing.*;
 import java.io.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 17, 2008 Time: 10:10:22 PM To change this template use File | Settings | File Templates.
@@ -85,7 +88,7 @@ public class OutputHandler
     }
   }
 
-  public File writeDotFile(List<External> externals) throws IOException
+  public File writeDotFile(List<External> externals, List<ProjectExternalReference> projectsList) throws IOException
   {
     File         imageDir    = mainFrame.getConfig().getImageDir();
     JFileChooser fileChooser = new JFileChooser(imageDir);
@@ -115,16 +118,21 @@ public class OutputHandler
       out.writeBytes("clusterrank=none;\n");
     }
 
-    writeDotFileTargetDeclarations(out, externals);
+    writeDotFileTargetDeclarations(out, externals, projectsList);
 
-    for (External external : externals)
+    Set<String> lines = new HashSet<String>();
+
+    // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
+    for (ProjectExternalReference reference : projectsList)
     {
-      String branch = Util.filterUrlNames(external.getProjectBaseUrl());
+      String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
 
-      String url    = external.getUrl();
+      lines.add(line);
+    }
 
-      url = Util.filterUrlNames(url);
-      out.writeBytes(QUOTE + branch + external.getDir() + QUOTE + " -> " + QUOTE + url + QUOTE + NEW_LINE);
+    for (String line : lines)
+    {
+      out.writeBytes(line);
     }
 
     out.writeBytes(CLOSING_LINE_DOTGRAPH);
@@ -133,7 +141,8 @@ public class OutputHandler
     return dotFile;
   }
 
-  private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals) throws IOException
+  private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
+                                       throws IOException
   {
     int clusterIndex = 0;
 
@@ -143,20 +152,30 @@ public class OutputHandler
 
     // out.writeBytes("\t\tlabel=" + QUOTE + fileName + QUOTE + NEW_LINE);
 
+    Set<String> lines = new HashSet<String>();
+
     for (External external : externals)
+    {  // todo make external and project get nice names, etc
+
+      String line = "\t\t" + QUOTE + external.getKey() + QUOTE + " [label=" + QUOTE + external.getLabel() + QUOTE + " shape=box color=black ]; "
+                    + NEW_LINE;
+
+      lines.add(line);
+    }
+
+    for (String line : lines)
     {
-      String filteredBranch = Util.filterUrlNames(external.getProjectBaseUrl());
-      String externalDir    = Util.filterUrlNames(external.getDir());
-      String filteredName   = filteredBranch + externalDir;
-      String line           = "\t\t" + QUOTE + filteredName + QUOTE + " [label=" + QUOTE + filteredBranch + "\\n" + externalDir + QUOTE + " shape="
-                              + "box" + " color="
-                              + "black"
-                              + " ]; ";
+      out.writeBytes(line);
+    }
+
+    for (ProjectExternalReference project : projectsList)
+    {
+      String line = "\t\t" + QUOTE + project.getKey() + QUOTE + " [label=" + QUOTE + project.getLabel() + QUOTE + " shape=box color=black ]; ";
 
       out.writeBytes(line + NEW_LINE);
     }
 
     out.writeBytes("\t}" + NEW_LINE);
     clusterIndex++;
-  }  // end for
+  }    // end for
 }

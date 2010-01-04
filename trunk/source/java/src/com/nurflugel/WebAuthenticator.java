@@ -3,9 +3,9 @@ package com.nurflugel;
 import com.nurflugel.externalsreporter.ui.Config;
 import com.nurflugel.versionfinder.UsernamePasswordDialog;
 import org.apache.commons.lang.StringUtils;
-
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import static org.apache.commons.lang.StringUtils.*;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 5:38:09 PM To change this template use File | Settings | File Templates.
@@ -32,7 +32,7 @@ public class WebAuthenticator extends Authenticator
   @Override
   public PasswordAuthentication getPasswordAuthentication()
   {
-    if ((userName.length() == 0) || (password.length() == 0))
+    if (isEmpty(userName) || isEmpty(password))
     {
       showDialog();
     }
@@ -56,7 +56,7 @@ public class WebAuthenticator extends Authenticator
 
   public static String getUsername()
   {
-    if (StringUtils.isEmpty(userName))
+    if (isEmpty(userName))
     {
       showDialog();
     }
@@ -66,7 +66,7 @@ public class WebAuthenticator extends Authenticator
 
   public static String getPassword()
   {
-    if (StringUtils.isEmpty(password))
+    if (isEmpty(password))
     {
       showDialog();
     }

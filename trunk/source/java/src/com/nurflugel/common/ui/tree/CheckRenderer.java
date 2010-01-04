@@ -29,6 +29,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
 
   // --------------------- Interface TreeCellRenderer ---------------------
 
+  @Override
   @SuppressWarnings({ "ReturnOfThis" })
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row,
                                                 boolean hasFocus)

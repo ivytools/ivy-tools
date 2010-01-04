@@ -1,27 +1,32 @@
 package com.nurflugel.externalsreporter.ui;
 
-import com.nurflugel.BuildableProjects;
+import ca.odell.glazedlists.*;
+import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
-import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.nurflugel.ivybrowser.ui.CheckboxCellRenderer;
 import org.apache.commons.lang.StringUtils;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.*;
-import java.net.Authenticator;
-import java.util.*;
-import java.util.List;
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.Authenticator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import static com.nurflugel.common.ui.Util.center;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
 
 /**
@@ -31,131 +36,58 @@ import static javax.swing.JFileChooser.OPEN_DIALOG;
 public class MainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long   serialVersionUID                  = 7878527239782932441L;
-  private boolean             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
-  private boolean             isTest;               // if true, reads canned data in from a file for fast testing
-  private Cursor              busyCursor                        = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor              normalCursor                      = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private ExternalTreeHandler treeHandler                       = new ExternalTreeHandler(true);
-  private JButton             quitButton;
-  private JButton             findExternalsButton;
-  private JButton             findDotButton;
-  private JLabel              statusLabel;
-  private JPanel              thePanel;
-  private JProgressBar        progressBar;
-  private JScrollPane         treeScrollPane;
-  private JButton             addRepositoryButton;
-  private JButton             helpButton;
-  private JRadioButton        deepRecursiveSlowRadioButton;
-  private JRadioButton        shallowBranchTagsTrunkRadioButton;
-  private JPanel              repositoryCheckboxPanel;
-  private JButton             parseRepositoriesButton;
-  private JCheckBox           showAllExternalsForCheckBox;
-  private JCheckBox           showTagsCheckBox;
-  private JCheckBox           showBranchesCheckBox;
-  private JCheckBox           showTrunksCheckBox;
-  private Os                  os                                = Os.findOs(System.getProperty("os.name"));
-  private Config              config                            = new Config();
-  private SubversionHandler   subversionHandler                 = new SubversionHandler(this);
+  private static final long                   serialVersionUID                  = 7878527239782932441L;
+  private boolean                             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
+  private boolean                             isTest;               // if true, reads canned data in from a file for fast testing
+  private ExternalTreeHandler                 treeHandler                       = new ExternalTreeHandler(true);
+  private JButton                             quitButton;
+  private JButton                             findDotButton;
+  private JLabel                              statusLabel;
+  private JPanel                              thePanel;
+  private JProgressBar                        progressBar;
+  private JButton                             addRepositoryButton;
+  private JButton                             helpButton;
+  private JRadioButton                        deepRecursiveSlowRadioButton;
+  private JRadioButton                        shallowBranchTagsTrunkRadioButton;
+  private JPanel                              repositoryCheckboxPanel;
+  private JButton                             parseRepositoriesButton;
+  private JCheckBox                           showAllExternalsForCheckBox;
+  private JCheckBox                           showTagsCheckBox;
+  private JCheckBox                           showBranchesCheckBox;
+  private JCheckBox                           showTrunksCheckBox;
+  private JTextField                          projectsFilterField;
+  private JTextField                          externalsFilterField;
+  private JTable                              projectsTable;
+  private JTable                              externalsTable;
+  private JButton                             generateReportButton;
+  private JCheckBox                           trimHttpFromURLsCheckBox;
+  private Os                                  os                                = Os.findOs(System.getProperty("os.name"));
+  private Config                              config                            = new Config();
+  private SubversionHandler                   subversionHandler                 = new SubversionHandler();
+  private EventList<External>                 externalsList;
+  private EventList<ProjectExternalReference> projectsList;
+  private Cursor                              busyCursor                        = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor                              normalCursor                      = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
   public MainFrame()
   {
+    /** Todo how to deal with changed or wrong passwords? */
     Authenticator.setDefault(new WebAuthenticator(config));
     initializeUi();
   }
 
-  /** Go through the repositories and see what's there for externals. */
-  private void parseRepositories()
-  {
-    Set<String> repositoryUrls = new TreeSet<String>();
-    Component[] components     = repositoryCheckboxPanel.getComponents();
-
-    for (Component component : components)
-    {
-      JCheckBox checkBox = (JCheckBox) component;
-
-      if (checkBox.isSelected())
-      {
-        String text = checkBox.getText();
-
-        repositoryUrls.add(text);
-      }
-    }
-
-    populateTreeUi(repositoryUrls);
-  }
-
-  public void setStatus(String text)
-  {
-    statusLabel.setText(text);
-  }
-
-  /**
-   * Go through the list of repositories, and find any externals. This will do one of the following:
-   *
-   * <ul>
-   *   <li>Look for immediate branches, tags, and trunk. If not immediately found,
-   *
-   *     <ul>
-   *       <li>Do a shallow search, which will look for immediate child directories (projects), and then branches, tags, and trunk.</li>
-   *     </ul>
-   *   </li>
-   *   <li>Do a deep search - a recursive search of all directories.</li>
-   * </ul>
-   */
-  private void populateTreeUi(Set<String> repositoryUrls)
-  {
-    ScanExternalsTask task = new ScanExternalsTask(repositoryUrls, this, shallowBranchTagsTrunkRadioButton.isSelected(), subversionHandler,
-                                                   showBranchesCheckBox.isSelected(), showTagsCheckBox.isSelected(), showTrunksCheckBox.isSelected());
-
-    task.execute();
-  }
-
-  void processResults(List<External> externalsList)
-  {
-    ExternalResultsFilterSelector filterSelector = new ExternalResultsFilterSelector(externalsList);
-
-    // todo now do something...  filter on external or project...
-    // externalsList=filterSelector.getExternalsList();
-    processExternals(externalsList);
-  }
-
-  /** Add a repository to the list. */
-  private void addRepository()
-  {
-    String lastRepository = config.getLastRepository();
-    String newUrl         = JOptionPane.showInputDialog(this, "Enter repository URL", lastRepository);
-
-    if (!StringUtils.isEmpty(newUrl))
-    {
-      if (!newUrl.endsWith("/"))
-      {
-        newUrl += "/";
-      }
-
-      config.setLastRepository(newUrl);
-
-      JCheckBox box = new JCheckBox(newUrl, true);
-
-      repositoryCheckboxPanel.add(box);
-      thePanel.validate();
-      addStatus(" ");
-    }
-    // todo maybe a table with model, to prevent duplicate URLs - also, store repositories in preferences, show dialog of past choices
-  }
-
   private void initializeUi()
   {
-    setTitle("IvyFormatter v. " + Version.VERSION);
+    setTitle("Subversion Externals Finder v. " + Version.VERSION);
     addStatus("");
     setCursor(busyCursor);
-    os.setLookAndFeel(this);
+    // os.setLookAndFeel(this);why doesn't this work???
 
     try
     {
       initializeComponents();
       setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-      setSize(600, 1000);
+      setSize(1000, 800);
       center(this);
       setVisible(true);
       addStatus("Enter one or more repository to search...");
@@ -169,6 +101,90 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     addListeners();
     setCursor(normalCursor);
+    setupGlazedLists();
+  }
+
+  @SuppressWarnings({ "unchecked" })
+  private void setupGlazedLists()
+  {
+    externalsList = new BasicEventList<External>();
+
+    final UniqueList<External>      uniqueExternalsList = new UniqueList<External>(externalsList);
+    SortedList<External>            sortedExternals     = new SortedList<External>(uniqueExternalsList);
+    TextComponentMatcherEditor      externalsEditor     = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
+    FilterList<External>            externalFilterList  = new FilterList<External>(sortedExternals, externalsEditor);
+    final EventTableModel<External> externalsTableModel = new EventTableModel<External>(externalFilterList,
+                                                                                        new ExternalsTableFormat(trimHttpFromURLsCheckBox));
+
+    externalsTable.setModel(externalsTableModel);
+    externalsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
+
+    TableComparatorChooser<External> externalsTableSorter = new TableComparatorChooser<External>(externalsTable, sortedExternals, true);
+
+    // EventList<External>         projectsEventList    = new BasicEventList<External>(projectsList);
+    projectsList = new BasicEventList<ProjectExternalReference>();
+
+    final UniqueList<ProjectExternalReference>      uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
+    final SortedList<ProjectExternalReference>      sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
+    TextComponentMatcherEditor                      projectsEditor     = new TextComponentMatcherEditor(projectsFilterField,
+                                                                                                        new ProjectsFilterator());
+    FilterList<ProjectExternalReference>            projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
+    final EventTableModel<ProjectExternalReference> projectsTableModel = new EventTableModel<ProjectExternalReference>(projectFilterList,
+                                                                                                                       new ProjectsTableFormat(trimHttpFromURLsCheckBox));
+
+    projectsTable.setModel(projectsTableModel);
+    projectsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
+
+    sizeTableColumns(projectsTable);
+    sizeTableColumns(externalsTable);
+
+    externalsTable.addMouseListener(new MouseAdapter()
+      {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          Point origin = e.getPoint();
+
+          int   row    = externalsTable.rowAtPoint(origin);
+
+          int   column = externalsTable.columnAtPoint(origin);
+
+          if ((row != -1) && (column == 0))
+          {
+            External external = externalsTableModel.getElementAt(row);
+
+            external.setSelected(!external.isSelected());
+
+            // hack to make selection show
+            uniqueExternalsList.add(external);
+          }
+        }
+      });
+    projectsTable.addMouseListener(new MouseAdapter()
+      {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          Point origin = e.getPoint();
+
+          int   row    = projectsTable.rowAtPoint(origin);
+
+          int   column = projectsTable.columnAtPoint(origin);
+
+          if ((row != -1) || (column == 0))
+          {
+            ProjectExternalReference reference = projectsTableModel.getElementAt(row);
+
+            reference.setSelected(!reference.isSelected());
+
+            // hack to make selection show
+            uniqueProjectsList.add(reference);
+          }
+        }
+      });
+
+    TableComparatorChooser<ProjectExternalReference> projectsTableSorter = new TableComparatorChooser<ProjectExternalReference>(projectsTable,
+                                                                                                                                sortedProjects, true);
   }
 
   private void initializeComponents()
@@ -176,8 +192,32 @@ public class MainFrame extends JFrame implements UiMainFrame
     Container container = getContentPane();
 
     container.add(thePanel);
-    treeScrollPane.setViewportView(treeHandler.getTree());
+    addRepositoryButton.requestFocus();
     validateDotPath();
+  }
+
+  /** Size the table columns to be just big enough to hold what they need. */
+  private void sizeTableColumns(JTable table)
+  {
+    TableColumnModel columnModel = table.getColumnModel();
+
+    for (int col = 0; col < table.getColumnCount(); col++)
+    {
+      int maxWidth = 0;
+
+      for (int row = 0; row < table.getRowCount(); row++)
+      {
+        TableCellRenderer cellRenderer      = table.getCellRenderer(row, col);
+        Object            value             = table.getValueAt(row, col);
+        Component         rendererComponent = cellRenderer.getTableCellRendererComponent(table, value, false, false, row, col);
+
+        maxWidth = Math.max(rendererComponent.getPreferredSize().width, maxWidth);
+      }
+
+      TableColumn column = columnModel.getColumn(col);
+
+      column.setPreferredWidth(maxWidth * 100);
+    }
   }
 
   /** toggle the buttons on/off based on the validity of the dot executable - don't let them proceed wihtout a valid value. */
@@ -190,6 +230,11 @@ public class MainFrame extends JFrame implements UiMainFrame
     isDotPathValid &= path.startsWith("dot");
     parseRepositoriesButton.setEnabled(isDotPathValid);
     addRepositoryButton.setEnabled(isDotPathValid);
+
+    if (!isDotPathValid)
+    {
+      findDotButton.requestFocus();
+    }
   }
 
   @Override
@@ -217,13 +262,7 @@ public class MainFrame extends JFrame implements UiMainFrame
           doQuitAction();
         }
       });
-    findExternalsButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          startSearchAction();
-        }
-      });
+
     findDotButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -247,45 +286,20 @@ public class MainFrame extends JFrame implements UiMainFrame
           parseRepositories();
         }
       });
+    generateReportButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          generateReport();
+        }
+      });
   }
 
   private void doQuitAction()
   {
     config.saveSettings();
     System.exit(0);
-  }
-
-  @SuppressWarnings({ "OverlyBroadCatchBlock" })
-  private void startSearchAction()
-  {
-    setCursor(busyCursor);
-    System.out.println("\n\n\nHere are the dirs to be included:");
-    addStatus("Fetching externals information...");
-
-    // List<ProjectNode> checkedProjects = treeHandler.getCheckedProjects();
-    List<BranchNode> checkedBranches = treeHandler.getCheckedBranches();
-    // List<TargetNode>  checkedTargets  = treeHandler.getCheckedTargets();
-
-    getExternals(checkedBranches);
-    setCursor(normalCursor);
-  }
-
-  private void getExternals(List<BranchNode> branches)
-  {
-    Authenticator.setDefault(new WebAuthenticator());
-
-    ExternalsFinderTask externalsFinderTask = new ExternalsFinderTask(this, progressBar, branches);
-
-    // externalsFinderTask.execute();
-    try
-    {
-      externalsFinderTask.doInBackground();
-      treeHandler.expandAll(false);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
   }
 
   private void findDotExecutablePath()
@@ -318,12 +332,69 @@ public class MainFrame extends JFrame implements UiMainFrame
       {
         JOptionPane.showMessageDialog(this,
                                       "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
-
-        // doQuitAction();
       }
     }
 
     validateDotPath();
+  }
+
+  /** Add a repository to the list. */
+  private void addRepository()
+  {
+    String lastRepository = config.getLastRepository();
+    String newUrl         = JOptionPane.showInputDialog(this, "Enter repository URL", lastRepository);
+
+    if (!StringUtils.isEmpty(newUrl))
+    {
+      if (!newUrl.endsWith("/"))
+      {
+        newUrl += "/";
+      }
+
+      config.setLastRepository(newUrl);
+
+      JCheckBox box = new JCheckBox(newUrl, true);
+
+      repositoryCheckboxPanel.add(box);
+      thePanel.validate();
+      addStatus(" ");
+    }
+  }
+
+  /** Go through the repositories and see what's there for externals. */
+  private void parseRepositories()
+  {
+    setCursor(busyCursor);
+
+    Set<String> repositoryUrls = new TreeSet<String>();
+    Component[] components     = repositoryCheckboxPanel.getComponents();
+
+    for (Component component : components)
+    {
+      JCheckBox checkBox = (JCheckBox) component;
+
+      if (checkBox.isSelected())
+      {
+        String text = checkBox.getText();
+
+        repositoryUrls.add(text);
+      }
+    }
+
+    ScanExternalsTask task = new ScanExternalsTask(repositoryUrls, this, shallowBranchTagsTrunkRadioButton.isSelected(), subversionHandler,
+                                                   showBranchesCheckBox.isSelected(), showTagsCheckBox.isSelected(), showTrunksCheckBox.isSelected(),
+                                                   externalsList, projectsList);
+
+    try
+    {
+      task.execute();
+
+      // task.doInBackground();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+    }
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
@@ -360,10 +431,7 @@ public class MainFrame extends JFrame implements UiMainFrame
   }
 
   @Override
-  public void setReady(boolean isReady)
-  {
-    findExternalsButton.setEnabled(isReady);
-  }
+  public void setReady(boolean isReady) {}
 
   @Override
   public void showSevereError(String message, Exception e)
@@ -373,25 +441,59 @@ public class MainFrame extends JFrame implements UiMainFrame
 
   // -------------------------- OTHER METHODS --------------------------
 
-  public void enableGoButton(boolean enabled)
+  private void createUIComponents()
   {
-    findExternalsButton.setEnabled(enabled);
+    repositoryCheckboxPanel = new JPanel();
+
+    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, BoxLayout.Y_AXIS);
+
+    repositoryCheckboxPanel.setLayout(layout);
   }
 
-  @SuppressWarnings({ "unchecked" })
-  private Map<BuildableProjects, Map<String, List<External>>> loadExternalsFromFile() throws IOException, ClassNotFoundException
+  public Config getConfig()
   {
-    File              file        = new File("/Users/douglasbullard/Documents/JavaStuff/Nike Subversion Projects/JavaExternals/maintenance/IvyBrowser/externals.xml");
-    XStream           xstream     = new XStream(new DomDriver());
-    Reader            reader      = new FileReader(file);
-    ObjectInputStream inputStream = xstream.createObjectInputStream(reader);
-    Object            object      = inputStream.readObject();
+    return config;
+  }
 
-    return (Map<BuildableProjects, Map<String, List<External>>>) object;
+  void processResults()
+  {
+    // ExternalResultsFilterSelector filterSelector = new ExternalResultsFilterSelector(externalsList);
+    addExternalsToLists(externalsList);
+    generateReportButton.setEnabled(true);
+    setNormalCursor();
+  }
+
+  private void generateReport()
+  {
+    // todo now do something...  filter on external or project...
+    // externalsList=filterSelector.getExternalsList();
+    processExternals(externalsList, projectsList);
+  }
+
+  private void addExternalsToLists(List<External> externalList)
+  {
+    // Set<String> externalsSet = new TreeSet<String>();
+    // Set<String> projectsSet  = new TreeSet<String>();
+    //
+    // for (External external : externalList)
+    // {
+    // externalsSet.add(external.getUrl());
+    // projectsSet.add(external.getProjectBaseUrl());
+    // }
+    // todo dibble
+    // for (String external : externalsSet)
+    // {
+    // externalsPanel.add(new JCheckBox(external));
+    // }
+    //
+    // for (String project : projectsSet)
+    // {
+    // projectPanel.add(new JCheckBox(project));
+    // }
   }
 
   /** Take the list of externals and projects, and build up a dot file for it. */
-  public void processExternals(List<External> externals)
+  public void processExternals(EventList<External> externalsList, EventList<ProjectExternalReference> projectsList)
   {
     setBusyCursor();
 
@@ -409,7 +511,7 @@ public class MainFrame extends JFrame implements UiMainFrame
 
       OutputHandler outputHandler = new OutputHandler(this);
       File          dotExecutable = config.getDotExecutablePath();
-      File          dotFile       = outputHandler.writeDotFile(externals);
+      File          dotFile       = outputHandler.writeDotFile(externalsList, projectsList);
       File          imageFile     = outputHandler.launchDot(dotFile, dotExecutable);
 
       outputHandler.viewResultingFile(imageFile);
@@ -426,6 +528,10 @@ public class MainFrame extends JFrame implements UiMainFrame
       // } catch (ClassNotFoundException e) {
       // e.printStackTrace();
     }
+    finally
+    {
+      setNormalCursor();
+    }
   }
 
   @Override
@@ -434,22 +540,33 @@ public class MainFrame extends JFrame implements UiMainFrame
     setCursor(Util.busyCursor);
   }
 
-  private void saveExternalsToFile(Map<BuildableProjects, Map<String, List<External>>> dependencies) throws IOException
-  {  // todo fix
-
-    File               file       = new File("/Users/douglasbullard/Documents/JavaStuff/Nike Subversion Projects/JavaExternals/maintenance/IvyBrowser/externals.xml");
-    XStream            xstream    = new XStream();
-    Writer             fileWriter = new FileWriter(file);
-    ObjectOutputStream out        = xstream.createObjectOutputStream(fileWriter);
-
-    out.writeObject(dependencies);
-    out.close();
-  }
-
   @Override
   public void setNormalCursor()
   {
     setCursor(Util.normalCursor);
+  }
+
+  public void setStatus(String text)
+  {
+    statusLabel.setText(text);
+  }
+
+  private void getExternals(List<BranchNode> branches)
+  {
+    Authenticator.setDefault(new WebAuthenticator());
+
+    ExternalsFinderTask externalsFinderTask = new ExternalsFinderTask(this, progressBar, branches);
+
+    try
+    {
+      // externalsFinderTask.execute();
+      externalsFinderTask.doInBackground();
+      treeHandler.expandAll(false);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
   }
 
   // --------------------------- main() method ---------------------------
@@ -457,26 +574,5 @@ public class MainFrame extends JFrame implements UiMainFrame
   public static void main(String[] args)
   {
     MainFrame mainFrame = new MainFrame();
-  }
-
-  // --------------------- GETTER / SETTER METHODS ---------------------
-
-  public Config getConfig()
-  {
-    return config;
-  }
-
-  private void createUIComponents()
-  {
-    repositoryCheckboxPanel = new JPanel();
-
-    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, BoxLayout.Y_AXIS);
-
-    repositoryCheckboxPanel.setLayout(layout);
-  }
-
-  public SubversionHandler getSubversionHandler()
-  {
-    return subversionHandler;
   }
 }

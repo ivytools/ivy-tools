@@ -1,11 +1,11 @@
 package com.nurflugel.externalsreporter.ui;
 
+import ca.odell.glazedlists.EventList;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,17 +13,20 @@ import java.util.Set;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class ScanExternalsTask extends SwingWorker
 {
-  private Set<String>       repositoryUrls;
-  private MainFrame         mainFrame;
-  private boolean           shallowSearch;
-  private SubversionHandler subversionHandler;
-  private HtmlHandler       urlHandler   = new HtmlHandler();
-  private boolean           showBranches;
-  private boolean           showTags;
-  private boolean           showTrunks;
+  private Set<String>                         repositoryUrls;
+  private MainFrame                           mainFrame;
+  private boolean                             shallowSearch;
+  private SubversionHandler                   subversionHandler;
+  private HtmlHandler                         urlHandler    = new HtmlHandler();
+  private boolean                             showBranches;
+  private boolean                             showTags;
+  private boolean                             showTrunks;
+  private EventList<External>                 externalsList;
+  private EventList<ProjectExternalReference> projectsList;
 
   public ScanExternalsTask(Set<String> repositoryUrls, MainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
-                           boolean showBranches, boolean showTags, boolean showTrunks)
+                           boolean showBranches, boolean showTags, boolean showTrunks, EventList<External> externalsList,
+                           EventList<ProjectExternalReference> projectsList)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;
@@ -32,54 +35,63 @@ public class ScanExternalsTask extends SwingWorker
     this.showBranches      = showBranches;
     this.showTags          = showTags;
     this.showTrunks        = showTrunks;
+    this.externalsList     = externalsList;
+    this.projectsList      = projectsList;
   }
 
+  /**
+   * Go through the list of repositories, and find any externals. This will do one of the following:
+   *
+   * <ul>
+   *   <li>Look for immediate branches, tags, and trunk. If not immediately found,
+   *
+   *     <ul>
+   *       <li>Do a shallow search, which will look for immediate child directories (projects), and then branches, tags, and trunk.</li>
+   *     </ul>
+   *   </li>
+   *   <li>Do a deep search - a recursive search of all directories.</li>
+   * </ul>
+   */
   @Override
   protected Object doInBackground() throws Exception
   {
-    List<External> externalList = new ArrayList<External>();
-
     for (String repositoryUrl : repositoryUrls)
     {
       try
       {
         if (shallowSearch)
         {
-          findShallowExternals(repositoryUrl, externalList);
+          findShallowExternals(repositoryUrl);
         }
         else
         {
-          findDeepExternals(repositoryUrl, externalList);
+          findDeepExternals(repositoryUrl);
         }
       }
-      catch (IOException e)
-      {
-        e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
-      }
-      catch (SVNException e)
+      catch (Exception e)
       {
         e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
       }
 
-      for (External external : externalList)
+      for (External external : externalsList)
       {
         System.out.println("Found external: " + external);
       }
     }
 
-    mainFrame.processResults(externalList);
+    mainFrame.processResults();
 
     return null;
   }
 
   /** Go through all dirs recursively, and find any externals there. */
-  private void findDeepExternals(String repositoryUrl, List<External> externalList)
+  private void findDeepExternals(String repositoryUrl)
   {
     // something
   }
 
   /** Don't do a recursive search - just surface,. todo - do this in a task, so the UI will update */
-  private void findShallowExternals(String repositoryUrl, List<External> externalList) throws IOException, SVNException
+  private void findShallowExternals(String repositoryUrl) throws IOException, SVNException
   {
     SVNWCClient  wcClient = SVNClientManager.newInstance().getWCClient();
     List<String> files    = urlHandler.getFiles(repositoryUrl);
@@ -99,14 +111,14 @@ public class ScanExternalsTask extends SwingWorker
           for (String branch : branches)
           {
             mainFrame.setStatus("Getting externals for " + branch);
-            subversionHandler.getExternals(branch, wcClient, externalList);
+            subversionHandler.getExternals(branch, wcClient, externalsList, projectsList);
           }
         }
         else if (file.endsWith("trunk/") && showTrunks)
         {
           // it's trunk
           mainFrame.setStatus("Getting externals for " + file);
-          subversionHandler.getExternals(file, wcClient, externalList);
+          subversionHandler.getExternals(file, wcClient, externalsList, projectsList);
         }
       }
     }
@@ -121,7 +133,7 @@ public class ScanExternalsTask extends SwingWorker
 
         if (isChildRoot)
         {
-          findShallowExternals(file, externalList);
+          findShallowExternals(file);
         }
       }
     }
