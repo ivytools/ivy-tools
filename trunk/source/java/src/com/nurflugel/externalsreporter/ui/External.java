@@ -4,12 +4,11 @@ import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
 
 /** Representation of an external and the project that uses it. */
-public class External implements Comparable
-{
+public class External implements Comparable, Selectable {
   private String  url;
-  private boolean externalSelected = false;
+  private boolean selected = true;
 
-  public External(String url)
+    public External(String url)
   {
     this.url = url;
   }
@@ -21,14 +20,16 @@ public class External implements Comparable
     return url;
   }
 
+  @Override
   public boolean isSelected()
   {
-    return externalSelected;
+    return selected;
   }
 
+  @Override
   public void setSelected(boolean externalSelected)
   {
-    this.externalSelected = externalSelected;
+    this.selected = externalSelected;
   }
 
   /** Get a key for Graphviz. */
