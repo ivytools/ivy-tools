@@ -4,12 +4,12 @@ import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
 
 /** Representation of an external and the project that uses it. */
-public class ProjectExternalReference implements Comparable
+public class ProjectExternalReference implements Comparable, Selectable
 {
   private String   baseUrl;
   private String   externalDir;
   private External external;
-  private boolean  isSelected = false;
+  private boolean  isSelected = true;
 
   public ProjectExternalReference(String baseUrl, String externalDir, External external)
   {

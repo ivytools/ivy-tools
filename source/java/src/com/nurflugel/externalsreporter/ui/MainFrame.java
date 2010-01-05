@@ -1,8 +1,6 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.*;
-import ca.odell.glazedlists.gui.TableFormat;
-import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
@@ -27,7 +25,8 @@ import java.net.Authenticator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import static ca.odell.glazedlists.matchers.TextMatcherEditor.*;
+import static ca.odell.glazedlists.matchers.TextMatcherEditor.CONTAINS;
+import static ca.odell.glazedlists.matchers.TextMatcherEditor.REGULAR_EXPRESSION;
 import static com.nurflugel.common.ui.Util.center;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
@@ -39,43 +38,49 @@ import static javax.swing.JFileChooser.OPEN_DIALOG;
 public class MainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long                   serialVersionUID                     = 7878527239782932441L;
-  private boolean                             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
-  private boolean                             isTest;               // if true, reads canned data in from a file for fast testing
-  private ExternalTreeHandler                 treeHandler                          = new ExternalTreeHandler(true);
-  private JButton                             quitButton;
-  private JButton                             findDotButton;
-  private JLabel                              statusLabel;
-  private JPanel                              thePanel;
-  private JProgressBar                        progressBar;
-  private JButton                             addRepositoryButton;
-  private JButton                             helpButton;
-  private JRadioButton                        deepRecursiveSlowRadioButton;
-  private JRadioButton                        shallowBranchTagsTrunkRadioButton;
-  private JPanel                              repositoryCheckboxPanel;
-  private JButton                             parseRepositoriesButton;
-  private JCheckBox                           showAllExternalsForCheckBox;
-  private JCheckBox                           showTagsCheckBox;
-  private JCheckBox                           showBranchesCheckBox;
-  private JCheckBox                           showTrunksCheckBox;
-  private JTextField                          projectsFilterField;
-  private JTextField                          externalsFilterField;
-  private JTable                              projectsTable;
-  private JTable                              externalsTable;
-  private JButton                             generateReportButton;
-  private JCheckBox                           trimHttpFromURLsCheckBox;
-  private JButton                             clearPreviousResultsButton;
-  private JRadioButton                        externalContainsRadioButton;
-  private JRadioButton                        externalRegularExpressionRadioButton;
-  private JRadioButton                        projectContainsRadioButton;
-  private JRadioButton                        projectRegularExpressionRadioButton;
-  private Os                                  os                                   = Os.findOs(System.getProperty("os.name"));
-  private Config                              config                               = new Config();
-  private SubversionHandler                   subversionHandler                    = new SubversionHandler();
-  private EventList<External>                 externalsList;
-  private EventList<ProjectExternalReference> projectsList;
-  private Cursor                              busyCursor                           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor                              normalCursor                         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private static final long                    serialVersionUID                     = 7878527239782932441L;
+  private boolean                              getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
+  private boolean                              isTest;               // if true, reads canned data in from a file for fast testing
+  private ExternalTreeHandler                  treeHandler                          = new ExternalTreeHandler(true);
+  private JButton                              quitButton;
+  private JButton                              findDotButton;
+  private JLabel                               statusLabel;
+  private JPanel                               thePanel;
+  private JProgressBar                         progressBar;
+  private JButton                              addRepositoryButton;
+  private JButton                              helpButton;
+  private JRadioButton                         deepRecursiveSlowRadioButton;
+  private JRadioButton                         shallowBranchTagsTrunkRadioButton;
+  private JPanel                               repositoryCheckboxPanel;
+  private JButton                              parseRepositoriesButton;
+  private JCheckBox                            showAllExternalsForCheckBox;
+  private JCheckBox                            showTagsCheckBox;
+  private JCheckBox                            showBranchesCheckBox;
+  private JCheckBox                            showTrunksCheckBox;
+  private JTextField                           projectsFilterField;
+  private JTextField                           externalsFilterField;
+  private JTable                               projectsTable;
+  private JTable                               externalsTable;
+  private JButton                              generateReportButton;
+  private JCheckBox                            trimHttpFromURLsCheckBox;
+  private JButton                              clearPreviousResultsButton;
+  private JRadioButton                         externalContainsRadioButton;
+  private JRadioButton                         externalRegularExpressionRadioButton;
+  private JRadioButton                         projectContainsRadioButton;
+  private JRadioButton                         projectRegularExpressionRadioButton;
+  private JCheckBox                            externalSelectAllCheckBox;
+  private JCheckBox                            projectSelectAllCheckBox;
+  private JButton                              clearProjectFilterFieldButton;
+  private JButton                              clearExternalFilterFieldButton;
+  private Os                                   os                                   = Os.findOs(System.getProperty("os.name"));
+  private Config                               config                               = new Config();
+  private SubversionHandler                    subversionHandler                    = new SubversionHandler();
+  private EventList<External>                  externalsList;
+  private EventList<ProjectExternalReference>  projectsList;
+  private Cursor                               busyCursor                           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor                               normalCursor                         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private FilterList<External>                 externalFilterList;
+  private FilterList<ProjectExternalReference> projectFilterList;
 
   public MainFrame()
   {
@@ -97,12 +102,14 @@ public class MainFrame extends JFrame implements UiMainFrame
       setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
       trimHttpFromURLsCheckBox.setSelected(config.isTrimHttpFromUrls());
       setSize(1200, 800);
-      setVisible(true);
       setupGlazedLists();
       addListeners();
 
       addRepository(config.getLastRepository());
       center(this);
+      setVisible(true);
+      sizeTableColumns(externalsTable);
+      sizeTableColumns(projectsTable);
       addStatus("Enter one or more repository to search...");
       setCursor(normalCursor);
     }
@@ -126,7 +133,8 @@ public class MainFrame extends JFrame implements UiMainFrame
     externalsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
                                                                      : REGULAR_EXPRESSION);
 
-    FilterList<External>            externalFilterList = new FilterList<External>(sortedExternals, externalsEditor);
+    externalFilterList = new FilterList<External>(sortedExternals, externalsEditor);
+
     final EventTableModel<External> externalsTableModel = new EventTableModel<External>(externalFilterList,
                                                                                         new ExternalsTableFormat(trimHttpFromURLsCheckBox));
 
@@ -144,15 +152,13 @@ public class MainFrame extends JFrame implements UiMainFrame
     projectsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
                                                                     : REGULAR_EXPRESSION);
 
-    FilterList<ProjectExternalReference>            projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
+    projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
+
     final EventTableModel<ProjectExternalReference> projectsTableModel = new EventTableModel<ProjectExternalReference>(projectFilterList,
                                                                                                                        new ProjectsTableFormat(trimHttpFromURLsCheckBox));
 
     projectsTable.setModel(projectsTableModel);
     projectsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
-
-    sizeTableColumns(externalsTable);
-    sizeTableColumns(projectsTable);
 
     externalsTable.addMouseListener(new MouseAdapter()
       {
@@ -220,7 +226,6 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     TableColumnModel columnModel = table.getColumnModel();
     int              columnCount = table.getColumnCount();
-    int              rowCount    = table.getRowCount();
     int[]            widths      = new int[columnCount];
     int              tableWidth  = table.getWidth();
 
@@ -392,6 +397,58 @@ public class MainFrame extends JFrame implements UiMainFrame
           config.setTrimHttpFromUrls(trimHttpFromURLsCheckBox.isSelected());
         }
       });
+    externalSelectAllCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          toggleAllExternalItems(externalSelectAllCheckBox.isSelected(), externalFilterList);
+        }
+      });
+    projectSelectAllCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          toggleAllItems(projectSelectAllCheckBox.isSelected(), projectFilterList);
+        }
+      });
+
+    clearProjectFilterFieldButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          projectsFilterField.setText("");
+        }
+      });
+    clearExternalFilterFieldButton.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          externalsFilterField.setText("");
+        }
+      });
+  }
+
+  /** Switch all the items in the filter list to the value specified. */
+  private void toggleAllExternalItems(boolean selected, FilterList<External> list)
+  {
+    for (External selectable : list)
+    {
+      selectable.setSelected(selected);
+      list.add(selectable);
+    }
+  }
+
+  /** Switch all the items in the filter list to the value specified. */
+  private void toggleAllItems(boolean selected, FilterList<ProjectExternalReference> list)
+  {
+    for (ProjectExternalReference selectable : list)
+    {
+      selectable.setSelected(selected);
+      list.add(selectable);
+    }
   }
 
   private void doQuitAction()

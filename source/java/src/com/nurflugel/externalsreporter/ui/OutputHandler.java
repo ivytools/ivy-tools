@@ -91,56 +91,63 @@ public class OutputHandler
   public File writeDotFile(List<External> externals, List<ProjectExternalReference> projectsList) throws IOException
   {
     File         imageDir    = mainFrame.getConfig().getImageDir();
-    JFileChooser fileChooser = new JFileChooser(imageDir);
+//    JFileChooser fileChooser = new JFileChooser(imageDir);
+//
+//    fileChooser.setDialogTitle("Choose a location for your image");
+//    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//    fileChooser.setMultiSelectionEnabled(false);
+//    fileChooser.ensureFileIsVisible(imageDir);
+//
+//    int returnVal = fileChooser.showDialog(mainFrame, "Save image here");
+//
+//    if (returnVal == JFileChooser.APPROVE_OPTION)
+//    {
+//      imageDir = fileChooser.getSelectedFile();
 
-    fileChooser.setDialogTitle("Choose a location for your image");
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fileChooser.setMultiSelectionEnabled(false);
-    fileChooser.ensureFileIsVisible(imageDir);
-      int returnVal = fileChooser.showDialog(mainFrame, "Save image here");
-     if(returnVal == JFileChooser.APPROVE_OPTION){
-    imageDir = fileChooser.getSelectedFile();
+      mainFrame.getConfig().setImageDir(imageDir);
 
-    mainFrame.getConfig().setImageDir(imageDir);
+      File dotFile = new File(imageDir, "externals.dot");
 
-    File dotFile = new File(imageDir, "externals.dot");
+      System.out.println("Writing output to file " + dotFile.getAbsolutePath());
 
-    System.out.println("Writing output to file " + dotFile.getAbsolutePath());
+      OutputStream     outputStream = new FileOutputStream(dotFile);
+      DataOutputStream out          = new DataOutputStream(outputStream);
 
-    OutputStream     outputStream = new FileOutputStream(dotFile);
-    DataOutputStream out          = new DataOutputStream(outputStream);
+      // open a new .dot file
+      out.writeBytes(OPENING_LINE_DOTGRAPH);
 
-    // open a new .dot file
-    out.writeBytes(OPENING_LINE_DOTGRAPH);
+      if (!shouldGroupByBuildfiles)
+      {
+        out.writeBytes("clusterrank=none;\n");
+      }
 
-    if (!shouldGroupByBuildfiles)
-    {
-      out.writeBytes("clusterrank=none;\n");
-    }
+      writeDotFileTargetDeclarations(out, externals, projectsList);
 
-    writeDotFileTargetDeclarations(out, externals, projectsList);
+      Set<String> lines = new HashSet<String>();
 
-    Set<String> lines = new HashSet<String>();
+      // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
+      for (ProjectExternalReference reference : projectsList)
+      {
+        if (reference.isSelected() || reference.getExternal().isSelected())
+        {
+          String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
 
-    // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
-    for (ProjectExternalReference reference : projectsList)
-    {
-      String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
+          lines.add(line);
+        }
+      }
 
-      lines.add(line);
-    }
+      for (String line : lines)
+      {
+        out.writeBytes(line);
+      }
 
-    for (String line : lines)
-    {
-      out.writeBytes(line);
-    }
+      out.writeBytes(CLOSING_LINE_DOTGRAPH);
+      outputStream.close();
 
-    out.writeBytes(CLOSING_LINE_DOTGRAPH);
-    outputStream.close();
-
-    return dotFile;
-     }
-      return null;
+      return dotFile;
+//    }
+//
+//    return null;
   }
 
   private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
@@ -150,19 +157,17 @@ public class OutputHandler
 
     out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_" + clusterIndex + " {" + NEW_LINE);
 
-    // String fileName = project.getProjectName();
-
-    // out.writeBytes("\t\tlabel=" + QUOTE + fileName + QUOTE + NEW_LINE);
-
     Set<String> lines = new HashSet<String>();
 
     for (External external : externals)
-    {  // todo make external and project get nice names, etc
+    {
+      if (external.isSelected())
+      {
+        String line = "\t\t" + QUOTE + external.getKey() + QUOTE + " [label=" + QUOTE + external.getLabel() + QUOTE + " shape=box color=black ]; "
+                      + NEW_LINE;
 
-      String line = "\t\t" + QUOTE + external.getKey() + QUOTE + " [label=" + QUOTE + external.getLabel() + QUOTE + " shape=box color=black ]; "
-                    + NEW_LINE;
-
-      lines.add(line);
+        lines.add(line);
+      }
     }
 
     for (String line : lines)
@@ -170,14 +175,24 @@ public class OutputHandler
       out.writeBytes(line);
     }
 
+    lines.clear();
+
     for (ProjectExternalReference project : projectsList)
     {
-      String line = "\t\t" + QUOTE + project.getKey() + QUOTE + " [label=" + QUOTE + project.getLabel() + QUOTE + " shape=box color=black ]; ";
+      if (project.isSelected())
+      {
+        String line = "\t\t" + QUOTE + project.getKey() + QUOTE + " [label=" + QUOTE + project.getLabel() + QUOTE + " shape=box color=black ]; ";
 
+        lines.add(line);
+      }
+    }
+
+    for (String line : lines)
+    {
       out.writeBytes(line + NEW_LINE);
     }
 
     out.writeBytes("\t}" + NEW_LINE);
     clusterIndex++;
-  }    // end for
+  }  // end for
 }
