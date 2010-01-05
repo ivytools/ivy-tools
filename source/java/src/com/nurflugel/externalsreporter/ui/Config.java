@@ -6,17 +6,19 @@ import java.util.prefs.Preferences;
 /** Class to handle configuration persistence for the app. */
 public class Config
 {
-  public static final String  DOT_EXECUTABLE    = "dotExecutable";
-  public static final String  IMAGE_DIR         = "imageDir";
-  private static final String PASSWORD          = "password";
-  private static final String USER_NAME         = "userName";
+  public static final String  DOT_EXECUTABLE      = "dotExecutable";
+  public static final String  IMAGE_DIR           = "imageDir";
+  private static final String PASSWORD            = "password";
+  private static final String USER_NAME           = "userName";
+  private static final String LAST_REPOSITORY     = "lastRepository";
+  private static final String TRIM_HTTP_FROM_URLS = "trimHttpFromUrls";
   private Preferences         preferences;
   private String              dotExecutablePath;
   private String              imageDir;
   private String              password;
   private String              userName;
   private String              lastRepository;
-  private static final String LAST_REPOSITORY   = "lastRepository";
+  private boolean             trimHttpFromUrls;
 
   /** Todo how to deal with changed or wrong passwords? */
   public Config()
@@ -27,6 +29,7 @@ public class Config
     lastRepository    = preferences.get(LAST_REPOSITORY, "");
     userName          = preferences.get(USER_NAME, "");
     password          = preferences.get(PASSWORD, "");
+    trimHttpFromUrls  = preferences.getBoolean(TRIM_HTTP_FROM_URLS, true);
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -45,6 +48,7 @@ public class Config
   {
     preferences.put(DOT_EXECUTABLE, dotExecutablePath);
     preferences.put(IMAGE_DIR, imageDir);
+    preferences.putBoolean(TRIM_HTTP_FROM_URLS, trimHttpFromUrls);
 
     saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
@@ -109,5 +113,16 @@ public class Config
   {
     this.lastRepository = lastRepository;
     saveSettings();
+  }
+
+  public void setTrimHttpFromUrls(boolean trimHttpFromUrls)
+  {
+    this.trimHttpFromUrls = trimHttpFromUrls;
+    saveSettings();
+  }
+
+  public boolean isTrimHttpFromUrls()
+  {
+    return trimHttpFromUrls;
   }
 }

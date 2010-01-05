@@ -97,8 +97,8 @@ public class OutputHandler
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.setMultiSelectionEnabled(false);
     fileChooser.ensureFileIsVisible(imageDir);
-    fileChooser.showDialog(mainFrame, "Save image here");
-
+      int returnVal = fileChooser.showDialog(mainFrame, "Save image here");
+     if(returnVal == JFileChooser.APPROVE_OPTION){
     imageDir = fileChooser.getSelectedFile();
 
     mainFrame.getConfig().setImageDir(imageDir);
@@ -139,6 +139,8 @@ public class OutputHandler
     outputStream.close();
 
     return dotFile;
+     }
+      return null;
   }
 
   private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
