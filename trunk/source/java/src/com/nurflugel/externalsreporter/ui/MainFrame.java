@@ -1,6 +1,8 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.*;
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
@@ -25,6 +27,7 @@ import java.net.Authenticator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import static ca.odell.glazedlists.matchers.TextMatcherEditor.*;
 import static com.nurflugel.common.ui.Util.center;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
@@ -36,10 +39,10 @@ import static javax.swing.JFileChooser.OPEN_DIALOG;
 public class MainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long                   serialVersionUID                  = 7878527239782932441L;
+  private static final long                   serialVersionUID                     = 7878527239782932441L;
   private boolean                             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
   private boolean                             isTest;               // if true, reads canned data in from a file for fast testing
-  private ExternalTreeHandler                 treeHandler                       = new ExternalTreeHandler(true);
+  private ExternalTreeHandler                 treeHandler                          = new ExternalTreeHandler(true);
   private JButton                             quitButton;
   private JButton                             findDotButton;
   private JLabel                              statusLabel;
@@ -61,13 +64,18 @@ public class MainFrame extends JFrame implements UiMainFrame
   private JTable                              externalsTable;
   private JButton                             generateReportButton;
   private JCheckBox                           trimHttpFromURLsCheckBox;
-  private Os                                  os                                = Os.findOs(System.getProperty("os.name"));
-  private Config                              config                            = new Config();
-  private SubversionHandler                   subversionHandler                 = new SubversionHandler();
+  private JButton                             clearPreviousResultsButton;
+  private JRadioButton                        externalContainsRadioButton;
+  private JRadioButton                        externalRegularExpressionRadioButton;
+  private JRadioButton                        projectContainsRadioButton;
+  private JRadioButton                        projectRegularExpressionRadioButton;
+  private Os                                  os                                   = Os.findOs(System.getProperty("os.name"));
+  private Config                              config                               = new Config();
+  private SubversionHandler                   subversionHandler                    = new SubversionHandler();
   private EventList<External>                 externalsList;
   private EventList<ProjectExternalReference> projectsList;
-  private Cursor                              busyCursor                        = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor                              normalCursor                      = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private Cursor                              busyCursor                           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+  private Cursor                              normalCursor                         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
   public MainFrame()
   {
@@ -87,10 +95,16 @@ public class MainFrame extends JFrame implements UiMainFrame
     {
       initializeComponents();
       setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-      setSize(1000, 800);
-      center(this);
+      trimHttpFromURLsCheckBox.setSelected(config.isTrimHttpFromUrls());
+      setSize(1200, 800);
       setVisible(true);
+      setupGlazedLists();
+      addListeners();
+
+      addRepository(config.getLastRepository());
+      center(this);
       addStatus("Enter one or more repository to search...");
+      setCursor(normalCursor);
     }
     catch (Exception e)
     {
@@ -98,10 +112,6 @@ public class MainFrame extends JFrame implements UiMainFrame
       JOptionPane.showMessageDialog(this, "The application has experienced a fatal error\n" + e.toString());
       System.exit(1);
     }
-
-    addListeners();
-    setCursor(normalCursor);
-    setupGlazedLists();
   }
 
   @SuppressWarnings({ "unchecked" })
@@ -109,10 +119,14 @@ public class MainFrame extends JFrame implements UiMainFrame
   {
     externalsList = new BasicEventList<External>();
 
-    final UniqueList<External>      uniqueExternalsList = new UniqueList<External>(externalsList);
-    SortedList<External>            sortedExternals     = new SortedList<External>(uniqueExternalsList);
-    TextComponentMatcherEditor      externalsEditor     = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
-    FilterList<External>            externalFilterList  = new FilterList<External>(sortedExternals, externalsEditor);
+    final UniqueList<External> uniqueExternalsList = new UniqueList<External>(externalsList);
+    SortedList<External>       sortedExternals     = new SortedList<External>(uniqueExternalsList);
+    TextComponentMatcherEditor externalsEditor     = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
+
+    externalsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
+                                                                     : REGULAR_EXPRESSION);
+
+    FilterList<External>            externalFilterList = new FilterList<External>(sortedExternals, externalsEditor);
     final EventTableModel<External> externalsTableModel = new EventTableModel<External>(externalFilterList,
                                                                                         new ExternalsTableFormat(trimHttpFromURLsCheckBox));
 
@@ -121,13 +135,15 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     TableComparatorChooser<External> externalsTableSorter = new TableComparatorChooser<External>(externalsTable, sortedExternals, true);
 
-    // EventList<External>         projectsEventList    = new BasicEventList<External>(projectsList);
     projectsList = new BasicEventList<ProjectExternalReference>();
 
-    final UniqueList<ProjectExternalReference>      uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
-    final SortedList<ProjectExternalReference>      sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
-    TextComponentMatcherEditor                      projectsEditor     = new TextComponentMatcherEditor(projectsFilterField,
-                                                                                                        new ProjectsFilterator());
+    final UniqueList<ProjectExternalReference> uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
+    final SortedList<ProjectExternalReference> sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
+    TextComponentMatcherEditor                 projectsEditor     = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
+
+    projectsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
+                                                                    : REGULAR_EXPRESSION);
+
     FilterList<ProjectExternalReference>            projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
     final EventTableModel<ProjectExternalReference> projectsTableModel = new EventTableModel<ProjectExternalReference>(projectFilterList,
                                                                                                                        new ProjectsTableFormat(trimHttpFromURLsCheckBox));
@@ -135,8 +151,8 @@ public class MainFrame extends JFrame implements UiMainFrame
     projectsTable.setModel(projectsTableModel);
     projectsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
 
-    sizeTableColumns(projectsTable);
     sizeTableColumns(externalsTable);
+    sizeTableColumns(projectsTable);
 
     externalsTable.addMouseListener(new MouseAdapter()
       {
@@ -194,18 +210,65 @@ public class MainFrame extends JFrame implements UiMainFrame
     container.add(thePanel);
     addRepositoryButton.requestFocus();
     validateDotPath();
+    // todo set up checkbox with last saved repository
   }
 
   /** Size the table columns to be just big enough to hold what they need. */
   private void sizeTableColumns(JTable table)
   {
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
     TableColumnModel columnModel = table.getColumnModel();
+    int              columnCount = table.getColumnCount();
+    int              rowCount    = table.getRowCount();
+    int[]            widths      = new int[columnCount];
+    int              tableWidth  = table.getWidth();
 
-    for (int col = 0; col < table.getColumnCount(); col++)
+    // if there are no rows, space the columns evenly
+    widths[0] = 70;
+
+    int totalWidth = widths[0];
+
+    for (int col = 1; col < columnCount; col++)
     {
-      int maxWidth = 0;
+      widths[col] = (tableWidth) / (columnCount - 1);
+      // widths[col] = (tableWidth - widths[0]) / (columnCount - 1);
 
-      for (int row = 0; row < table.getRowCount(); row++)
+      if (col == (columnCount - 1))
+      {
+        widths[col] = tableWidth - totalWidth;
+      }
+      else
+      {
+        totalWidth += widths[col];
+      }
+    }
+
+    for (int col = 0; col < columnCount; col++)
+    {
+      TableColumn column = columnModel.getColumn(col);
+
+      column.setPreferredWidth(widths[col]);
+    }
+  }
+
+  /** Size the table columns to be just big enough to hold what they need. */
+  private void resizeTableColumns(JTable table)
+  {
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+    TableColumnModel columnModel = table.getColumnModel();
+    int              columnCount = table.getColumnCount();
+    int              rowCount    = table.getRowCount();
+    int[]            widths      = new int[columnCount];
+    int              tableWidth  = table.getWidth();
+    int              totalWidth  = 0;
+
+    for (int col = 0; col < columnCount; col++)
+    {
+      int maxWidth = 70;  // no column is less than 70 pixels wide
+
+      for (int row = 0; row < rowCount; row++)
       {
         TableCellRenderer cellRenderer      = table.getCellRenderer(row, col);
         Object            value             = table.getValueAt(row, col);
@@ -214,9 +277,25 @@ public class MainFrame extends JFrame implements UiMainFrame
         maxWidth = Math.max(rendererComponent.getPreferredSize().width, maxWidth);
       }
 
+      widths[col] = maxWidth;
+
+      if (col == (columnCount - 1))
+      {
+        widths[col] = tableWidth - totalWidth;
+      }
+      else
+      {
+        totalWidth += widths[col];
+      }
+    }
+
+    for (int col = 0; col < columnCount; col++)
+    {
       TableColumn column = columnModel.getColumn(col);
 
-      column.setPreferredWidth(maxWidth * 100);
+      column.setPreferredWidth(widths[col]);
+
+      // column.setMinWidth(widths[col]);
     }
   }
 
@@ -228,7 +307,7 @@ public class MainFrame extends JFrame implements UiMainFrame
     boolean isDotPathValid = dotPath.exists();
 
     isDotPathValid &= path.startsWith("dot");
-    parseRepositoriesButton.setEnabled(isDotPathValid);
+    parseRepositoriesButton.setEnabled((repositoryCheckboxPanel.getComponents().length > 0) && isDotPathValid);
     addRepositoryButton.setEnabled(isDotPathValid);
 
     if (!isDotPathValid)
@@ -294,6 +373,25 @@ public class MainFrame extends JFrame implements UiMainFrame
           generateReport();
         }
       });
+    clearPreviousResultsButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          externalsList.clear();
+          projectsList.clear();
+          generateReportButton.setEnabled(false);
+          clearPreviousResultsButton.setEnabled(false);
+        }
+      });
+    trimHttpFromURLsCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setTrimHttpFromUrls(trimHttpFromURLsCheckBox.isSelected());
+        }
+      });
   }
 
   private void doQuitAction()
@@ -344,6 +442,12 @@ public class MainFrame extends JFrame implements UiMainFrame
     String lastRepository = config.getLastRepository();
     String newUrl         = JOptionPane.showInputDialog(this, "Enter repository URL", lastRepository);
 
+    addRepository(newUrl);
+  }
+
+  /** Add a repository to the list. */
+  private void addRepository(String newUrl)
+  {
     if (!StringUtils.isEmpty(newUrl))
     {
       if (!newUrl.endsWith("/"))
@@ -358,6 +462,7 @@ public class MainFrame extends JFrame implements UiMainFrame
       repositoryCheckboxPanel.add(box);
       thePanel.validate();
       addStatus(" ");
+      parseRepositoriesButton.setEnabled(true);
     }
   }
 
@@ -457,39 +562,18 @@ public class MainFrame extends JFrame implements UiMainFrame
 
   void processResults()
   {
-    // ExternalResultsFilterSelector filterSelector = new ExternalResultsFilterSelector(externalsList);
-    addExternalsToLists(externalsList);
     generateReportButton.setEnabled(true);
+    clearPreviousResultsButton.setEnabled(true);
+
+    resizeTableColumns(externalsTable);
+    resizeTableColumns(projectsTable);
+
     setNormalCursor();
   }
 
   private void generateReport()
   {
-    // todo now do something...  filter on external or project...
-    // externalsList=filterSelector.getExternalsList();
     processExternals(externalsList, projectsList);
-  }
-
-  private void addExternalsToLists(List<External> externalList)
-  {
-    // Set<String> externalsSet = new TreeSet<String>();
-    // Set<String> projectsSet  = new TreeSet<String>();
-    //
-    // for (External external : externalList)
-    // {
-    // externalsSet.add(external.getUrl());
-    // projectsSet.add(external.getProjectBaseUrl());
-    // }
-    // todo dibble
-    // for (String external : externalsSet)
-    // {
-    // externalsPanel.add(new JCheckBox(external));
-    // }
-    //
-    // for (String project : projectsSet)
-    // {
-    // projectPanel.add(new JCheckBox(project));
-    // }
   }
 
   /** Take the list of externals and projects, and build up a dot file for it. */
@@ -499,23 +583,18 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     try
     {
-      // if (isTest)
-      // {
-      // if (getTestDataFromFile) {
-      // dependencies = loadExternalsFromFile();
-      // } else {
-      // saveExternalsToFile(dependencies);
-
-      // }
-      // }
-
       OutputHandler outputHandler = new OutputHandler(this);
       File          dotExecutable = config.getDotExecutablePath();
       File          dotFile       = outputHandler.writeDotFile(externalsList, projectsList);
-      File          imageFile     = outputHandler.launchDot(dotFile, dotExecutable);
 
-      outputHandler.viewResultingFile(imageFile);
-      dotFile.deleteOnExit();
+      if (dotFile != null)
+      {
+        File imageFile = outputHandler.launchDot(dotFile, dotExecutable);
+
+        outputHandler.viewResultingFile(imageFile);
+        dotFile.deleteOnExit();
+      }
+
       setNormalCursor();
     }
     catch (IOException e)
@@ -525,8 +604,6 @@ public class MainFrame extends JFrame implements UiMainFrame
     catch (InterruptedException e)
     {
       e.printStackTrace();
-      // } catch (ClassNotFoundException e) {
-      // e.printStackTrace();
     }
     finally
     {

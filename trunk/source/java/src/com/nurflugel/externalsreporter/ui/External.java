@@ -69,9 +69,7 @@ public class External implements Comparable
     }
 
     External external    = (External) o;
-
     String   myUrl       = getUrlNoTrailingSlash(url);
-
     String   externalUrl = getUrlNoTrailingSlash(external.url);
 
     if ((myUrl != null) ? (!myUrl.equals(externalUrl))
