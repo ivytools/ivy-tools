@@ -2,7 +2,7 @@
 <jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
-        href="externalsFinder.jnlp">
+        href="externalsFinderApp.jnlp">
     <information>
         <title>Subversion Externals Finder</title>
         <vendor>Nurflugel Software</vendor>
