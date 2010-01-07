@@ -22,7 +22,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/xstream.jar"/>
         <jar href="lib/svnkit.jar"/>
-        <jar href="lib/glazedlists_jdk_1.5.jar"/>
+        <jar href="lib/glazedlists.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>
 </jnlp>
