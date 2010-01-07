@@ -1,6 +1,8 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.common.ui.Util;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
 
 /** Representation of an external and the project that uses it. */
@@ -11,11 +13,12 @@ public class ProjectExternalReference implements Comparable, Selectable
   private External external;
   private boolean  isSelected = true;
 
-  public ProjectExternalReference(String baseUrl, String externalDir, External external)
+  public ProjectExternalReference(String baseUrl, String externalDir, External external, boolean selectAllProjects)
   {
     this.baseUrl     = baseUrl;
     this.externalDir = externalDir;
     this.external    = external;
+    this.isSelected  = selectAllProjects;
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -35,11 +38,13 @@ public class ProjectExternalReference implements Comparable, Selectable
     return externalDir;
   }
 
+  @Override
   public boolean isSelected()
   {
     return isSelected;
   }
 
+  @Override
   public void setSelected(boolean selected)
   {
     this.isSelected = selected;
@@ -57,11 +62,15 @@ public class ProjectExternalReference implements Comparable, Selectable
     return Util.filterUrlNames(baseUrl) + "\\n" + externalDir;
   }
 
-  @Override
-  public String toString()
-  {
-    return "Base URL: " + baseUrl + "\tdir=" + externalDir + "\texternal=" + external.getUrl();
-  }
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("baseUrl", baseUrl).
+                append("externalDir", externalDir).
+                append("external", external).
+                append("isSelected", isSelected).
+                toString();
+    }
 
   @Override
   public int compareTo(Object o)

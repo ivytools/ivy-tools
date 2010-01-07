@@ -1,5 +1,6 @@
 package com.nurflugel.ivybrowser.handlers;
 
+import ca.odell.glazedlists.EventList;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +33,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   protected boolean                                         isTest;
   protected boolean                                         shouldRun         = true;
   protected String                                          ivyRepositoryPath;
-  protected List<IvyPackage>                                ivyPackages;
+  protected EventList<IvyPackage>                           ivyPackages;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
   private Map<String, IvyPackage>                           allPackages       = Collections.synchronizedMap(new HashMap<String, IvyPackage>());
   public static final String                                JAVADOC           = "javadoc";
@@ -50,7 +51,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  protected BaseWebHandler(IvyBrowserMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath,
+  protected BaseWebHandler(IvyBrowserMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
                            Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     this.mainFrame         = mainFrame;
@@ -260,12 +261,13 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
   }
 
-  // protected abstract boolean shouldProcessVersionedLibraryLine(String line);
   protected abstract String getContents(String packageLine);
 
   private void addPackages(List<IvyPackage> localPackages)
   {
+    ivyPackages.getReadWriteLock().writeLock().lock();
     ivyPackages.addAll(localPackages);
+    ivyPackages.getReadWriteLock().writeLock().unlock();
 
     for (IvyPackage localPackage : localPackages)
     {
@@ -273,7 +275,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
     }
   }
 
-  /** puts the pacage into hte map of packages. */
+  /** puts the package into the map of packages. */
   private void addPackage(IvyPackage ivyPackage)
   {
     String                               orgName    = stripSlash(ivyPackage.getOrgName());

@@ -11,6 +11,7 @@ import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
+import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.ui.CheckboxCellRenderer;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
@@ -81,6 +82,8 @@ public class MainFrame extends JFrame implements UiMainFrame
   private Cursor                               normalCursor                         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private FilterList<External>                 externalFilterList;
   private FilterList<ProjectExternalReference> projectFilterList;
+  private InfiniteProgressPanel                progressPanel                        = new InfiniteProgressPanel("Scanning the Subversion repository, please be patient - click to cancel",
+                                                                                                                this);
 
   public MainFrame()
   {
@@ -98,7 +101,14 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     try
     {
-      initializeComponents();
+      Container container = getContentPane();
+
+      container.add(thePanel);
+      addRepositoryButton.requestFocus();
+      validateDotPath();
+      setGlassPane(progressPanel);
+
+      // todo set up checkbox with last saved repository like IvyBrowser
       setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
       trimHttpFromURLsCheckBox.setSelected(config.isTrimHttpFromUrls());
       setSize(1200, 800);
@@ -149,8 +159,8 @@ public class MainFrame extends JFrame implements UiMainFrame
     final SortedList<ProjectExternalReference> sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
     TextComponentMatcherEditor                 projectsEditor     = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
 
-    projectsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
-                                                                    : REGULAR_EXPRESSION);
+    projectsEditor.setMode(projectContainsRadioButton.isSelected() ? CONTAINS
+                                                                   : REGULAR_EXPRESSION);
 
     projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
 
@@ -207,16 +217,6 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     TableComparatorChooser<ProjectExternalReference> projectsTableSorter = new TableComparatorChooser<ProjectExternalReference>(projectsTable,
                                                                                                                                 sortedProjects, true);
-  }
-
-  private void initializeComponents()
-  {
-    Container container = getContentPane();
-
-    container.add(thePanel);
-    addRepositoryButton.requestFocus();
-    validateDotPath();
-    // todo set up checkbox with last saved repository
   }
 
   /** Size the table columns to be just big enough to hold what they need. */
@@ -322,10 +322,11 @@ public class MainFrame extends JFrame implements UiMainFrame
   }
 
   @Override
-  public void addStatus(String statusLine)
+  public void addStatus(String text)
   {
-    System.out.println(statusLine);
-    statusLabel.setText(statusLine);
+    System.out.println(text);
+    statusLabel.setText(text);
+    progressPanel.setText(text);
   }
 
   private void addListeners()
@@ -367,7 +368,7 @@ public class MainFrame extends JFrame implements UiMainFrame
         @Override
         public void actionPerformed(ActionEvent e)
         {
-          parseRepositories();
+          scanRepositories();
         }
       });
     generateReportButton.addActionListener(new ActionListener()
@@ -427,6 +428,30 @@ public class MainFrame extends JFrame implements UiMainFrame
         public void actionPerformed(ActionEvent e)
         {
           externalsFilterField.setText("");
+        }
+      });
+    showTrunksCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setShowTrunks(showTrunksCheckBox.isSelected());
+        }
+      });
+    showBranchesCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setShowBranches(showBranchesCheckBox.isSelected());
+        }
+      });
+    showTagsCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setShowTags(showTagsCheckBox.isSelected());
         }
       });
   }
@@ -524,9 +549,10 @@ public class MainFrame extends JFrame implements UiMainFrame
   }
 
   /** Go through the repositories and see what's there for externals. */
-  private void parseRepositories()
+  private void scanRepositories()
   {
     setCursor(busyCursor);
+    progressPanel.start();
 
     Set<String> repositoryUrls = new TreeSet<String>();
     Component[] components     = repositoryCheckboxPanel.getComponents();
@@ -545,7 +571,8 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     ScanExternalsTask task = new ScanExternalsTask(repositoryUrls, this, shallowBranchTagsTrunkRadioButton.isSelected(), subversionHandler,
                                                    showBranchesCheckBox.isSelected(), showTagsCheckBox.isSelected(), showTrunksCheckBox.isSelected(),
-                                                   externalsList, projectsList);
+                                                   externalsList, projectsList, externalSelectAllCheckBox.isSelected(),
+                                                   projectSelectAllCheckBox.isSelected());
 
     try
     {
@@ -601,6 +628,9 @@ public class MainFrame extends JFrame implements UiMainFrame
     // todo
   }
 
+  @Override
+  public void stopThreads() {}
+
   // -------------------------- OTHER METHODS --------------------------
 
   private void createUIComponents()
@@ -621,7 +651,7 @@ public class MainFrame extends JFrame implements UiMainFrame
   {
     generateReportButton.setEnabled(true);
     clearPreviousResultsButton.setEnabled(true);
-
+    setStatus("");
     resizeTableColumns(externalsTable);
     resizeTableColumns(projectsTable);
 
@@ -651,8 +681,6 @@ public class MainFrame extends JFrame implements UiMainFrame
         outputHandler.viewResultingFile(imageFile);
         dotFile.deleteOnExit();
       }
-
-      setNormalCursor();
     }
     catch (IOException e)
     {
@@ -678,11 +706,13 @@ public class MainFrame extends JFrame implements UiMainFrame
   public void setNormalCursor()
   {
     setCursor(Util.normalCursor);
+    progressPanel.stop();
   }
 
   public void setStatus(String text)
   {
     statusLabel.setText(text);
+    progressPanel.setText(text);
   }
 
   private void getExternals(List<BranchNode> branches)

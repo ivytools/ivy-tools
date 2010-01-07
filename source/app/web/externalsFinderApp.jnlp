@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+        spec="1.0+"
+        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
+        href="externalsFinder.jnlp">
+    <information>
+        <title>Subversion Externals Finder</title>
+        <vendor>Nurflugel Software</vendor>
+        <homepage href="index.html"/>
+        <description>Find externals in your Subversion repositories</description>
+        <icon href="images/ES-64x.jpg"/>
+        <icon kind="splash" href="images/ExternalsFinder-splash.jpg"/>
+        <shortcut online="false">
+	      <desktop/>
+    	</shortcut>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
+        <jar href="lib/IvyBrowser.jar"/>
+        <jar href="lib/xstream.jar"/>
+        <jar href="lib/svnkit.jar"/>
+        <jar href="lib/glazedlists_jdk_1.5.jar"/>
+    </resources>
+    <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>
+</jnlp>
+

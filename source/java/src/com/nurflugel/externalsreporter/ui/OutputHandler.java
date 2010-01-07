@@ -1,10 +1,8 @@
 package com.nurflugel.externalsreporter.ui;
 
-import ca.odell.glazedlists.EventList;
 import com.nurflugel.Os;
-import com.nurflugel.common.ui.Util;
 import com.nurflugel.ivygrapher.OutputFormat;
-import javax.swing.*;
+
 import java.io.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -122,24 +120,7 @@ public class OutputHandler
       }
 
       writeDotFileTargetDeclarations(out, externals, projectsList);
-
-      Set<String> lines = new HashSet<String>();
-
-      // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
-      for (ProjectExternalReference reference : projectsList)
-      {
-        if (reference.isSelected() || reference.getExternal().isSelected())
-        {
-          String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
-
-          lines.add(line);
-        }
-      }
-
-      for (String line : lines)
-      {
-        out.writeBytes(line);
-      }
+      writeDotFileDependencies(projectsList, out);
 
       out.writeBytes(CLOSING_LINE_DOTGRAPH);
       outputStream.close();
@@ -150,7 +131,27 @@ public class OutputHandler
 //    return null;
   }
 
-  private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
+    private void writeDotFileDependencies(List<ProjectExternalReference> projectsList, DataOutputStream out) throws IOException {
+        Set<String> lines = new HashSet<String>();
+
+        // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
+        for (ProjectExternalReference reference : projectsList)
+        {
+          if (reference.isSelected() || reference.getExternal().isSelected())
+          {
+            String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
+
+            lines.add(line);
+          }
+        }
+
+        for (String line : lines)
+        {
+          out.writeBytes(line);
+        }
+    }
+
+    private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
                                        throws IOException
   {
     int clusterIndex = 0;

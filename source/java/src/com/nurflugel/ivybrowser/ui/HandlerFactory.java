@@ -23,7 +23,7 @@ public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
 
-  public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, List<IvyPackage> repositoryList,
+  public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList,
                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);

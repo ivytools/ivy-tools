@@ -5,6 +5,7 @@ package com.nurflugel.ivybrowser;
  * Romain Guy <romain.guy@jext.org>
  * Subject to the BSD license.
  */
+import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import java.awt.*;
 import static java.awt.RenderingHints.*;
@@ -73,8 +74,8 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   protected float fps = 15.0f;
 
   /** Rendering hints to set anti aliasing. */
-  protected RenderingHints    hints;
-  private IvyBrowserMainFrame mainFrame;
+  protected RenderingHints hints;
+  private UiMainFrame      mainFrame;
   // --------------------------- CONSTRUCTORS ---------------------------
 
   /**
@@ -125,6 +126,13 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   public InfiniteProgressPanel(String text, int barsCount)
   {
     this(text, barsCount, 0.70f);
+  }
+
+  public InfiniteProgressPanel(String text, UiMainFrame mainFrame)
+  {
+    this(text);
+
+    this.mainFrame = mainFrame;
   }
 
   /**
@@ -186,13 +194,6 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
     hints.put(KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_ON);
   }
 
-  public InfiniteProgressPanel(String text, IvyBrowserMainFrame mainFrame)
-  {
-    this(text);
-
-    this.mainFrame = mainFrame;
-  }
-
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface MouseListener ---------------------
@@ -217,6 +218,12 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   public void mouseExited(MouseEvent e) {}
 
   // -------------------------- OTHER METHODS --------------------------
+
+  /** Returns the current displayed message. */
+  public String getText()
+  {
+    return text;
+  }
 
   /**
    * Interrupts the animation, whatever its state is. You can use it when you need to stop the animation without running the fade out phase. This
@@ -274,6 +281,17 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
         layout.draw(g2, (float) (width - bounds.getWidth()) / 2, (float) (maxY + layout.getLeading() + (2 * layout.getAscent())));
       }
     }  // end if
+  }
+
+  /**
+   * Changes the displayed message at runtime.
+   *
+   * @param  text  The message to be displayed. Can be null or empty.
+   */
+  public void setText(String text)
+  {
+    this.text = text;
+    repaint();
   }
 
   /** Starts the waiting animation by fading the veil in, then rotating the shapes. This method handles the visibility of the glass pane. */
@@ -440,24 +458,5 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
         removeMouseListener(InfiniteProgressPanel.this);
       }
     }
-  }
-
-  // --------------------- GETTER / SETTER METHODS ---------------------
-
-  /** Returns the current displayed message. */
-  public String getText()
-  {
-    return text;
-  }
-
-  /**
-   * Changes the displayed message at runtime.
-   *
-   * @param  text  The message to be displayed. Can be null or empty.
-   */
-  public void setText(String text)
-  {
-    this.text = text;
-    repaint();
   }
 }
