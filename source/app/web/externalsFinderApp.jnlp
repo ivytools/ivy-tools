@@ -23,6 +23,9 @@
         <jar href="lib/xstream.jar"/>
         <jar href="lib/svnkit.jar"/>
         <jar href="lib/glazedlists.jar"/>
+        <jar href="lib/forms_rt.jar"/>
+        <jar href="lib/help.jar"/>
+        <extension name="help" href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>
 </jnlp>
