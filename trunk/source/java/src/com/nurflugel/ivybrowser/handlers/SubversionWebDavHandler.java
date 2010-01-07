@@ -1,5 +1,6 @@
 package com.nurflugel.ivybrowser.handlers;
 
+import ca.odell.glazedlists.EventList;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
@@ -20,7 +21,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class SubversionWebDavHandler extends BaseWebHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public SubversionWebDavHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages,
+  public SubversionWebDavHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
                                  Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
@@ -80,7 +81,7 @@ public class SubversionWebDavHandler extends BaseWebHandler
 
       // block until all threads are done, or until time limit is reached
       threadPool.awaitTermination(5, MINUTES);
-      mainFrame.filterTable();
+//      mainFrame.filterTable();
       System.out.println("ivyPackages = " + ivyPackages.size());
 
       Date  endTime  = new Date();

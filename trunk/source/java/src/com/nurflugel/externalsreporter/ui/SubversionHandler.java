@@ -22,7 +22,7 @@ public class SubversionHandler
 
   /** Get any externals used in this URL's project. */
   public void getExternals(String projectBaseUrl, SVNWCClient wcClient, EventList<External> externalsList,
-                           EventList<ProjectExternalReference> projectsList)
+                           EventList<ProjectExternalReference> projectsList, boolean isSelectAllExternals, boolean isSelectAllProjects)
   {
     try
     {
@@ -44,21 +44,28 @@ public class SubversionHandler
 
         for (String externalUrl : values)
         {
-          String[] externalLine              = externalUrl.split(" ");
-          String   externalDir               = externalLine[0];
+          String[] externalLine = externalUrl.split(" ");
+          String   externalDir  = externalLine[0];
 
           externalUrl = externalUrl.substring(externalDir.length());
           externalUrl = externalUrl.trim();
 
-          External                 external = new External(externalUrl);
-          ProjectExternalReference reference = new ProjectExternalReference(projectBaseUrl, externalDir, external);
+          External newExternal = new External(externalUrl, isSelectAllExternals);
+
+          // if the external already is in the list, fetch the existing one
+          if (externalsList.contains(newExternal))
+          {
+            newExternal = externalsList.get(externalsList.indexOf(newExternal));
+          }
+
+          ProjectExternalReference newReference = new ProjectExternalReference(projectBaseUrl, externalDir, newExternal, isSelectAllProjects);
 
           externalsList.getReadWriteLock().writeLock().lock();
-          externalsList.add(external);
+          externalsList.add(newExternal);
           externalsList.getReadWriteLock().writeLock().unlock();
 
           projectsList.getReadWriteLock().writeLock().lock();
-          projectsList.add(reference);
+          projectsList.add(newReference);
           projectsList.getReadWriteLock().writeLock().unlock();
         }
       }

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="externalsFinder.jnlp">
     <information>
-        <title>ExternalsFinder</title>
-        <vendor>Enterprise Services Applications Engineering</vendor>
+        <title>Subversion Externals Finder</title>
+        <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
-        <description>Find externals in Subversion projects</description>
+        <description>Find externals in your Subversion repositories</description>
         <icon href="images/ES-64x.jpg"/>
         <icon kind="splash" href="images/ExternalsFinder-splash.jpg"/>
         <shortcut online="false">
@@ -23,7 +22,6 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/xstream.jar"/>
         <jar href="lib/svnkit.jar"/>
-        <jar href="lib/swing-worker.jar"/>
         <jar href="lib/glazedlists_jdk_1.5.jar"/>
     </resources>
     <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>

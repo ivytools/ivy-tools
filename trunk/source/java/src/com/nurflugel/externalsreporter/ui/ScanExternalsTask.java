@@ -17,16 +17,18 @@ public class ScanExternalsTask extends SwingWorker
   private MainFrame                           mainFrame;
   private boolean                             shallowSearch;
   private SubversionHandler                   subversionHandler;
-  private HtmlHandler                         urlHandler    = new HtmlHandler();
+  private HtmlHandler                         urlHandler           = new HtmlHandler();
   private boolean                             showBranches;
   private boolean                             showTags;
   private boolean                             showTrunks;
   private EventList<External>                 externalsList;
   private EventList<ProjectExternalReference> projectsList;
+  private boolean                             isSelectAllExternals;
+  private boolean                             isSelectAllProjects;
 
   public ScanExternalsTask(Set<String> repositoryUrls, MainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
                            boolean showBranches, boolean showTags, boolean showTrunks, EventList<External> externalsList,
-                           EventList<ProjectExternalReference> projectsList)
+                           EventList<ProjectExternalReference> projectsList, boolean selectAllExternals, boolean selectAllProjects)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;
@@ -37,6 +39,8 @@ public class ScanExternalsTask extends SwingWorker
     this.showTrunks        = showTrunks;
     this.externalsList     = externalsList;
     this.projectsList      = projectsList;
+    isSelectAllExternals   = selectAllExternals;
+    isSelectAllProjects    = selectAllProjects;
   }
 
   /**
@@ -111,14 +115,14 @@ public class ScanExternalsTask extends SwingWorker
           for (String branch : branches)
           {
             mainFrame.setStatus("Getting externals for " + branch);
-            subversionHandler.getExternals(branch, wcClient, externalsList, projectsList);
+            subversionHandler.getExternals(branch, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
           }
         }
         else if (file.endsWith("trunk/") && showTrunks)
         {
           // it's trunk
           mainFrame.setStatus("Getting externals for " + file);
-          subversionHandler.getExternals(file, wcClient, externalsList, projectsList);
+          subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
         }
       }
     }

@@ -7,36 +7,39 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Util.*;
-import static com.nurflugel.common.ui.Util.addHelpListener;
-import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import javax.swing.*;
-import static javax.swing.BoxLayout.Y_AXIS;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.Authenticator;
-import java.util.*;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
+
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.SOUTH;
+import static java.awt.Cursor.getPredefinedCursor;
+import static javax.swing.BoxLayout.Y_AXIS;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /** Main UI frame for the Ivy Browser. */
 @SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
-public class IvyBrowserMainFrame extends JFrame
+public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 {
   public static final String                                IVY_REPOSITORY      = "IvyRepository";
   private static final long                                 serialVersionUID    = 8982188831570838035L;
@@ -54,7 +57,7 @@ public class IvyBrowserMainFrame extends JFrame
   private JTable                                            resultsTable        = new JTable();
   private JTextField                                        libraryField        = new JTextField();
   private Preferences                                       preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
-  private List<IvyPackage>                                  repositoryList      = Collections.synchronizedList(new ArrayList<IvyPackage>());
+  private EventList<IvyPackage>                             repositoryList      = new BasicEventList<IvyPackage>();
   private JScrollPane                                       scrollPane;
   private JPanel                                            holdingPanel;
   private String                                            ivyRepositoryPath;
@@ -67,14 +70,10 @@ public class IvyBrowserMainFrame extends JFrame
   public IvyBrowserMainFrame()
   {
     initializeComponents();
-    pack();
+      pack();
     setSize(800, 600);
     centerApp(this);
 
-    // this was causing problems with GlazedLists throwing NPEs
-    // LookAndFeel lookAndFeel = setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
-    // System.out.println("lookAndFeel = " + lookAndFeel);
-    // setLookAndFeel(lookAndFeel, resultsTable.getParent().getParent().getParent().getParent());
     Authenticator.setDefault(new WebAuthenticator());
     libraryField.setEnabled(false);
     setVisible(true);
@@ -121,18 +120,20 @@ public class IvyBrowserMainFrame extends JFrame
     mainPanel.add(holdingPanel, CENTER);
     mainPanel.add(statusLabel, SOUTH);
     addListeners();
+    setupTable();
+      Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
   }
 
   private void addListeners()
   {
-    libraryField.addKeyListener(new KeyAdapter()
-      {
-        @Override
-        public void keyReleased(KeyEvent e)
-        {
-          filterTable();
-        }
-      });
+    // libraryField.addKeyListener(new KeyAdapter()
+    // {
+    // @Override
+    // public void keyReleased(KeyEvent e)
+    // {
+    // filterTable();
+    // }
+    // });
     quitButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -154,13 +155,14 @@ public class IvyBrowserMainFrame extends JFrame
           specifyRepository(preferences);
         }
       });
-    libraryField.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          filterTable();
-        }
-      });
+
+    // libraryField.addActionListener(new ActionListener()
+    // {
+    // public void actionPerformed(ActionEvent e)
+    // {
+    // filterTable();
+    // }
+    // });
     resultsTable.addMouseListener(new MouseAdapter()
       {
         @Override
@@ -217,12 +219,9 @@ public class IvyBrowserMainFrame extends JFrame
     }
   }
 
-  public void filterTable()
+  private void setupTable()
   {
-    resultsTable.setModel(new DefaultTableModel());
-
-    EventList<IvyPackage>       eventList                  = new BasicEventList<IvyPackage>(repositoryList);
-    SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(eventList);
+    SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(repositoryList);
     TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
     FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
     EventTableModel<IvyPackage> tableModel                 = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
@@ -279,11 +278,92 @@ public class IvyBrowserMainFrame extends JFrame
     }
   }
 
+  // ------------------------ INTERFACE METHODS ------------------------
+
+  // --------------------- Interface UiMainFrame ---------------------
+
+  // tod implement these
+  @Override
+  public void addStatus(String statusLine)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public Os getOs()
+  {
+    return null;  // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public boolean getTestDataFromFile()
+  {
+    return false;  // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void initializeStatusBar(int minimum, int maximum, int initialValue, boolean visible)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public boolean isTest()
+  {
+    return false;  // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void setBusyCursor()
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void setNormalCursor()
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void setReady(boolean isReady)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void showSevereError(String message, Exception e)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void stopThreads()
+  {
+    parsingHandler.halt();
+  }
+
   // -------------------------- OTHER METHODS --------------------------
+
+  public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
+  {
+    return packageMap;
+  }
 
   public String getPreferredSaveDir()
   {
     return preferences.get(SAVE_DIR, null);
+  }
+
+  public void setPreferredSaveDir(String dir)
+  {
+    preferences.put(SAVE_DIR, dir);
+  }
+
+  public void setStatusLabel(String text)
+  {
+    statusLabel.setText(text);
+    progressPanel.setText(text);
   }
 
   public void showNormal()
@@ -301,7 +381,7 @@ public class IvyBrowserMainFrame extends JFrame
 
     for (int col = 0; col < resultsTable.getColumnCount(); col++)
     {
-      int maxWidth = 0;
+      int maxWidth = 50;
 
       for (int row = 0; row < resultsTable.getRowCount(); row++)
       {
@@ -315,6 +395,7 @@ public class IvyBrowserMainFrame extends JFrame
       TableColumn column = columnModel.getColumn(col);
 
       column.setPreferredWidth(maxWidth);
+      column.setMinWidth(maxWidth);
     }
   }
 
@@ -323,34 +404,11 @@ public class IvyBrowserMainFrame extends JFrame
     progressPanel.stop();
   }
 
-  public void stopThreads()
-  {
-    parsingHandler.halt();
-  }
-
   // --------------------------- main() method ---------------------------
 
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
   {
     new IvyBrowserMainFrame();
-  }
-
-  // --------------------- GETTER / SETTER METHODS ---------------------
-
-  public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
-  {
-    return packageMap;
-  }
-
-  public void setPreferredSaveDir(String dir)
-  {
-    preferences.put(SAVE_DIR, dir);
-  }
-
-  public void setStatusLabel(String text)
-  {
-    statusLabel.setText(text);
-    progressPanel.setText(text);
   }
 }

@@ -9,19 +9,20 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
-import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Version;
-import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Util.*;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
-import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
-import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVY_REPOSITORY;
 import com.nurflugel.ivytracker.domain.CountValueMatcherEditor;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import com.nurflugel.ivytracker.domain.IvyFileComparator;
 import com.nurflugel.ivytracker.domain.IvyFileFilterator;
 import com.nurflugel.ivytracker.handlers.HtmlHandler;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
@@ -31,12 +32,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+
+import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
+import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVY_REPOSITORY;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
