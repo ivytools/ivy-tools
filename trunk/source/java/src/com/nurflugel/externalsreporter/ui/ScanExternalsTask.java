@@ -63,14 +63,7 @@ public class ScanExternalsTask extends SwingWorker
     {
       try
       {
-        if (shallowSearch)
-        {
-          findShallowExternals(repositoryUrl);
-        }
-        else
-        {
-          findDeepExternals(repositoryUrl);
-        }
+          findExternals(repositoryUrl, !shallowSearch);
       }
       catch (Exception e)
       {
@@ -88,14 +81,8 @@ public class ScanExternalsTask extends SwingWorker
     return null;
   }
 
-  /** Go through all dirs recursively, and find any externals there. */
-  private void findDeepExternals(String repositoryUrl)
-  {
-    // something
-  }
 
-  /** Don't do a recursive search - just surface,. todo - do this in a task, so the UI will update */
-  private void findShallowExternals(String repositoryUrl) throws IOException, SVNException
+  private void findExternals(String repositoryUrl, boolean isRecursive) throws IOException, SVNException
   {
     SVNWCClient  wcClient = SVNClientManager.newInstance().getWCClient();
     List<String> files    = urlHandler.getFiles(repositoryUrl);
@@ -108,7 +95,7 @@ public class ScanExternalsTask extends SwingWorker
         boolean showTheBranch = file.endsWith("branches/") && showBranches;
         boolean showTheTag    = file.endsWith("tags/") && showTags;
 
-        if (showTheBranch || showTheTag)
+        if (showTheBranch || showTheTag )
         {
           List<String> branches = urlHandler.getFiles(file);
 
@@ -137,7 +124,7 @@ public class ScanExternalsTask extends SwingWorker
 
         if (isChildRoot)
         {
-          findShallowExternals(file);
+          findExternals(file, isRecursive);
         }
       }
     }
