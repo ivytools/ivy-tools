@@ -10,14 +10,17 @@ import java.util.List;
 
 public class FileDialog extends JDialog
 {
-  private JPanel  contentPane;
-  private JButton buttonOK;
-  private JButton buttonCancel;
-  private JList   fileList;
-  private boolean wasOk;
+  private JPanel             contentPane;
+  private JButton            buttonOK;
+  private JButton            buttonCancel;
+  private JList              fileList;
+  private boolean            wasOk;
+  private File               currentDir;
+  public static final String UP = ".. (up one level)";
 
-  public FileDialog(File currentDir)
+  public FileDialog(final File currentDir)
   {
+    this.currentDir = currentDir;
     setContentPane(contentPane);
     setModal(true);
     getRootPane().setDefaultButton(buttonOK);
@@ -61,7 +64,7 @@ public class FileDialog extends JDialog
     setSize(500, 1000);
     Util.center(this);
 
-    FileDialogListModel listModel = new FileDialogListModel(currentDir);
+    FileDialogListModel listModel = new FileDialogListModel(currentDir, this);
 
     fileList.setCellRenderer(new FileCellRenderer());
     fileList.setModel(listModel);
@@ -74,30 +77,37 @@ public class FileDialog extends JDialog
         {
           Object value = fileList.getSelectedValue();
 
+          System.out.println("value = " + value);
+
           if (value instanceof FileWrapper)
           {
-            File file = ((FileWrapper) value).getFile();
-
-            if (file.isDirectory())
-            {
-              ((FileDialogListModel) fileList.getModel()).setCurrentDir(file);
-            }
+            handleSelection(e, value);
           }
         }
       });
+  }
 
-    // if they double-click, they're done - simulate the "OK" event
-    fileList.addMouseListener(new MouseAdapter()
-      {
-        @Override
-        public void mouseClicked(MouseEvent e)
-        {
-          if (e.getClickCount() == 2)
-          {
-            onOK();
-          }
-        }
-      });
+  private void handleSelection(MouseEvent e, Object value)
+  {
+    File file = ((FileWrapper) value).getFile();
+
+    if (file.getName().equals(UP))
+    {
+      file = currentDir.getParentFile();
+    }
+
+    if (file.isDirectory())
+    {
+      System.out.println("file = " + file.getName());
+
+      fileList.clearSelection();
+      currentDir = file;
+      ((FileDialogListModel) fileList.getModel()).setCurrentDir(file);
+    }
+    else if (e.getClickCount() == 2)
+    {
+      onOK();
+    }
   }
 
   private void onCancel()

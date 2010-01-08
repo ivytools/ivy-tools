@@ -5,16 +5,19 @@ import javax.swing.event.ListDataListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import static com.nurflugel.ivygrapher.FileDialog.*;
 
 /** List model for the list dialog. */
 public class FileDialogListModel implements ListModel
 {
   private File              currentDir;
+  private FileDialog        fileDialog;
   private List<FileWrapper> files = new ArrayList<FileWrapper>();
 
-  public FileDialogListModel(File currentDir)
+  public FileDialogListModel(File currentDir, FileDialog fileDialog)
   {
     this.currentDir = currentDir;
+    this.fileDialog = fileDialog;
     scanFiles();
   }
 
@@ -22,7 +25,7 @@ public class FileDialogListModel implements ListModel
   private void scanFiles()
   {
     files.clear();
-    files.add(new FileWrapper(new File("..")));
+    files.add(new FileWrapper(new File(UP)));
 
     File[] fileList = currentDir.listFiles();
 
@@ -43,6 +46,11 @@ public class FileDialogListModel implements ListModel
         addToFiles(file);
       }
     }
+
+    fileDialog.invalidate();
+
+    // fileDialog.validate();
+    fileDialog.repaint();
   }
 
   private void addToFiles(File file)
@@ -92,6 +100,7 @@ public class FileDialogListModel implements ListModel
 
   public void setCurrentDir(File currentDir)
   {
+    System.out.println("setting currentDir = " + currentDir);
     this.currentDir = currentDir;
     scanFiles();
   }
