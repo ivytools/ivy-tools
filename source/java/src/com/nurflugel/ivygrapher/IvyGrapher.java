@@ -1,70 +1,56 @@
 package com.nurflugel.ivygrapher;
 
+import com.nurflugel.Os;
 import org.jdom.JDOMException;
+
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import static javax.swing.JOptionPane.showMessageDialog;
-import static javax.swing.JFileChooser.APPROVE_OPTION;
-import static javax.swing.JFileChooser.FILES_ONLY;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import static java.awt.Cursor.getPredefinedCursor;
+
 import static com.nurflugel.common.ui.Util.*;
-import static com.nurflugel.common.ui.Version.*;
-import com.nurflugel.Os;
-import static com.nurflugel.ivygrapher.OutputFormat.*;
+import static com.nurflugel.common.ui.Version.VERSION;
 import static com.nurflugel.ivygrapher.NodeOrder.*;
+import static com.nurflugel.ivygrapher.OutputFormat.*;
+import static java.awt.Cursor.getPredefinedCursor;
+import static javax.swing.JFileChooser.FILES_ONLY;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /** Engine for the Ivy Grapher. */
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class IvyGrapher extends JFrame
 {
-  private static final String DIR                      = "dir";
-  private static final String DOT_EXECUTABLE           = "dotExecutable";
-  private List<File>          filesToGraph;
-  private String              lastVisitedDir;
-  private Preferences         preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
-  private Os                  os;
-  private OutputFormat        outputFormat;
-  private NodeOrder           nodeOrder;
-  private JPanel              mainPanel;
-  private JButton             helpButton;
-  private JButton             selectFilesButton;
-  private JButton             findDotButton;
-  private JButton             quitButton;
-  private JRadioButton        tbButton;
-  private JRadioButton        btButton;
-  private JRadioButton        rlButton;
-  private JRadioButton        lrButton;
-  private JCheckBox           deleteDotButton;
-  private JRadioButton        pngButton;
-  private JRadioButton        pdfButtton;
-  private JRadioButton        svgButton;
-  private JCheckBox           concentrateEdgesCheckBox;
-  private String              dotExecutablePath;
-  private Cursor              normalCursor             = getPredefinedCursor(DEFAULT_CURSOR);
-  private Cursor              busyCursor               = getPredefinedCursor(WAIT_CURSOR);
+  private static final String DIR            = "dir";
+  private static final String DOT_EXECUTABLE = "dotExecutable";
+  private String       lastVisitedDir;
+  private Preferences  preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
+  private Os           os;
+  private OutputFormat outputFormat;
+  private NodeOrder    nodeOrder;
+  private JPanel       mainPanel;
+  private JButton      helpButton;
+  private JButton      selectFilesButton;
+  private JButton      findDotButton;
+  private JButton      quitButton;
+  private JRadioButton tbButton;
+  private JRadioButton btButton;
+  private JRadioButton rlButton;
+  private JRadioButton lrButton;
+  private JCheckBox    deleteDotButton;
+  private JRadioButton pngButton;
+  private JRadioButton pdfButtton;
+  private JRadioButton svgButton;
+  private JCheckBox    concentrateEdgesCheckBox;
+  private String       dotExecutablePath;
+  private Cursor       normalCursor             = getPredefinedCursor(DEFAULT_CURSOR);
+  private Cursor       busyCursor               = getPredefinedCursor(WAIT_CURSOR);
 
-  public IvyGrapher(String[] args)
+  public IvyGrapher()
   {
-    if (args.length > 0)
-    {
-      List<File> files = new ArrayList<File>();
-
-      for (String arg : args)
-      {
-        files.add(new File(arg));
-      }
-
-      filesToGraph = files;
-    }
-
     os          = Os.findOs(System.getProperty("os.name"));
     preferences = Preferences.userNodeForPackage(IvyGrapher.class);
     initializeUi();
@@ -255,19 +241,38 @@ public class IvyGrapher extends JFrame
         lastDir = new File(dirName);
       }
 
-      FileDialog fileDialog = new FileDialog(lastDir);
+      JFileChooser chooser = new JFileChooser(lastDir);
 
-      fileDialog.setVisible(true);
+      chooser.setFileHidingEnabled(false);
 
-      if (fileDialog.isWasOk())
-      {
-        filesToGraph = fileDialog.getFiles();
+      Dimension size = new Dimension(1000, 1100);
 
-        if (!filesToGraph.isEmpty())
+      chooser.setPreferredSize(size);
+      chooser.setFileSelectionMode(FILES_ONLY);
+      chooser.setMultiSelectionEnabled(true);
+      chooser.setApproveButtonText("Use this Ivy report");
+      chooser.setFileFilter(new FileFilter()
         {
-          dirName = filesToGraph.get(0).getParent();
-          preferences.put(DIR, dirName);
-        }
+          @Override
+          public boolean accept(File f)
+          {
+            return f.isDirectory() || f.getName().endsWith(".xml");
+          }
+
+          @Override
+          public String getDescription()
+          {
+            return "Ivy XML reports";
+          }
+        });
+      chooser.showOpenDialog(this);
+
+      File[] filesToGraph = chooser.getSelectedFiles();
+
+      if (filesToGraph.length > 0)
+      {
+        dirName = filesToGraph[0].getParent();
+        preferences.put(DIR, dirName);
       }
 
       System.out.println("Setting busy cursor");
@@ -276,13 +281,10 @@ public class IvyGrapher extends JFrame
 
       XmlHandler xmlHandler = new XmlHandler();
 
-      if (filesToGraph != null)
+      for (File fileToGraph : filesToGraph)
       {
-        for (File fileToGraph : filesToGraph)
-        {
-          xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected(),
-                                    concentrateEdgesCheckBox.isSelected());
-        }
+        xmlHandler.processXmlFile(fileToGraph, preferences, nodeOrder, os, outputFormat, dotExecutablePath, deleteDotButton.isSelected(),
+                                  concentrateEdgesCheckBox.isSelected());
       }
 
       System.out.println("Setting normal cursor");
@@ -313,8 +315,6 @@ public class IvyGrapher extends JFrame
 
   public static void main(String[] args)
   {
-    IvyGrapher grapher = new IvyGrapher(args);
-
-    // grapher.createGraph();
+    IvyGrapher grapher = new IvyGrapher();
   }
 }
