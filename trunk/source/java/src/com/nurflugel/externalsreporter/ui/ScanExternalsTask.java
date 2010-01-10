@@ -59,11 +59,13 @@ public class ScanExternalsTask extends SwingWorker
   @Override
   protected Object doInBackground() throws Exception
   {
+    SVNWCClient wcClient = SVNClientManager.newInstance().getWCClient();
+
     for (String repositoryUrl : repositoryUrls)
     {
       try
       {
-          findExternals(repositoryUrl, !shallowSearch);
+        findExternals(repositoryUrl, !shallowSearch, wcClient);
       }
       catch (Exception e)
       {
@@ -81,12 +83,10 @@ public class ScanExternalsTask extends SwingWorker
     return null;
   }
 
-
-  private void findExternals(String repositoryUrl, boolean isRecursive) throws IOException, SVNException
+  private void findExternals(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient) throws IOException, SVNException
   {
-    SVNWCClient  wcClient = SVNClientManager.newInstance().getWCClient();
-    List<String> files    = urlHandler.getFiles(repositoryUrl);
-    boolean      isRoot   = isProjectRoot(files);
+    List<String> files  = urlHandler.getFiles(repositoryUrl);
+    boolean      isRoot = isProjectRoot(files);
 
     if (isRoot)
     {
@@ -95,7 +95,7 @@ public class ScanExternalsTask extends SwingWorker
         boolean showTheBranch = file.endsWith("branches/") && showBranches;
         boolean showTheTag    = file.endsWith("tags/") && showTags;
 
-        if (showTheBranch || showTheTag )
+        if (showTheBranch || showTheTag)
         {
           List<String> branches = urlHandler.getFiles(file);
 
@@ -103,6 +103,11 @@ public class ScanExternalsTask extends SwingWorker
           {
             mainFrame.setStatus("Getting externals for " + branch);
             subversionHandler.getExternals(branch, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
+
+            if (isRecursive)
+            {
+              findExternals(branch, isRecursive, wcClient);
+            }
           }
         }
         else if (file.endsWith("trunk/") && showTrunks)
@@ -110,21 +115,30 @@ public class ScanExternalsTask extends SwingWorker
           // it's trunk
           mainFrame.setStatus("Getting externals for " + file);
           subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
+
+          if (isRecursive)
+          {
+            findExternals(file, isRecursive, wcClient);
+          }
         }
       }
     }
     else
     {
       // if it's not a project root, go down only one level (could be branches or trunk)
-      // try multiple projects
       for (String file : files)
       {
         List<String> childFiles  = urlHandler.getFiles(file);
         boolean      isChildRoot = isProjectRoot(childFiles);
 
-        if (isChildRoot)
+        if (isChildRoot || isRecursive)
         {
-          findExternals(file, isRecursive);
+          if (file.endsWith("/"))
+          {
+            mainFrame.setStatus("Getting externals for " + file);
+            subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
+            findExternals(file, isRecursive, wcClient);
+          }
         }
       }
     }
