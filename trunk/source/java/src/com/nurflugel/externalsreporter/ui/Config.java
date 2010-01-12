@@ -15,6 +15,7 @@ public class Config
   private static final String SHOW_TRUNKS         = "showTrunks";
   private static final String SHOW_BRANCHES       = "showBranches";
   private static final String SHOW_TAGS           = "showTags";
+    private static final String SHALLOW_SCAN = "shallowScan";
   private Preferences         preferences;
   private String              dotExecutablePath;
   private String              imageDir;
@@ -25,8 +26,9 @@ public class Config
   private boolean             showBranches;
   private boolean             showTrunks;
   private boolean             showTags;
+    private boolean shallowScan;
 
-  /** Todo how to deal with changed or wrong passwords? */
+    /** Todo how to deal with changed or wrong passwords? */
   public Config()
   {
     preferences       = Preferences.userNodeForPackage(MainFrame.class);
@@ -39,6 +41,7 @@ public class Config
     showTrunks        = preferences.getBoolean(SHOW_TRUNKS, true);
     showBranches      = preferences.getBoolean(SHOW_BRANCHES, false);
     showTags          = preferences.getBoolean(SHOW_TAGS, false);
+    shallowScan          = preferences.getBoolean(SHALLOW_SCAN, true);
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -129,6 +132,7 @@ public class Config
     preferences.putBoolean(SHOW_BRANCHES, showBranches);
     preferences.putBoolean(SHOW_TRUNKS, showTrunks);
     preferences.putBoolean(SHOW_TAGS, showTags);
+    preferences.putBoolean(SHALLOW_SCAN, shallowScan);
 
     saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
@@ -167,4 +171,12 @@ public class Config
     this.userName = userName;
     saveSettings();
   }
+
+    public void setShallowScan(boolean selected) {
+        shallowScan=selected;
+    }
+
+    public boolean isShallowScan() {
+        return shallowScan;
+    }
 }
