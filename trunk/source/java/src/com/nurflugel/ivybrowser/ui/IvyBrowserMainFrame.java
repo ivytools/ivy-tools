@@ -9,6 +9,7 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
@@ -202,8 +203,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   public void specifyRepository(Preferences appPreferences)
   {
-    // String ivyRepositoryPath = appPreferences.get(IVY_REPOSITORY, "");
-    FindIvyRepositoryDialog dialog = new FindIvyRepositoryDialog(appPreferences);
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(appPreferences,"Select Ivy Repository",IVY_REPOSITORY);
 
     dialog.setVisible(true);
 

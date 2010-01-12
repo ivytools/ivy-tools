@@ -1,7 +1,13 @@
 package com.nurflugel.externalsreporter.ui;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
+
+import static org.apache.commons.lang.StringUtils.*;
 
 /** Class to handle configuration persistence for the app. */
 public class Config
@@ -10,38 +16,57 @@ public class Config
   public static final String  IMAGE_DIR           = "imageDir";
   private static final String PASSWORD            = "password";
   private static final String USER_NAME           = "userName";
-  private static final String LAST_REPOSITORY     = "lastRepository";
+  static final String         REPOSITORY          = "lastRepository";
   private static final String TRIM_HTTP_FROM_URLS = "trimHttpFromUrls";
   private static final String SHOW_TRUNKS         = "showTrunks";
   private static final String SHOW_BRANCHES       = "showBranches";
   private static final String SHOW_TAGS           = "showTags";
-    private static final String SHALLOW_SCAN = "shallowScan";
+  private static final String SHALLOW_SCAN        = "shallowScan";
   private Preferences         preferences;
   private String              dotExecutablePath;
   private String              imageDir;
   private String              password;
   private String              userName;
-  private String              lastRepository;
+  private List<String>        repositories        = new ArrayList<String>();
   private boolean             trimHttpFromUrls;
   private boolean             showBranches;
   private boolean             showTrunks;
   private boolean             showTags;
-    private boolean shallowScan;
+  private boolean             shallowScan;
+  private static final String EMPTY_STRING        = "";
 
-    /** Todo how to deal with changed or wrong passwords? */
+  /** Todo how to deal with changed or wrong passwords? */
   public Config()
   {
     preferences       = Preferences.userNodeForPackage(MainFrame.class);
-    dotExecutablePath = preferences.get(DOT_EXECUTABLE, "");
-    imageDir          = preferences.get(IMAGE_DIR, "");
-    lastRepository    = preferences.get(LAST_REPOSITORY, "");
-    userName          = preferences.get(USER_NAME, "");
-    password          = preferences.get(PASSWORD, "");
-    trimHttpFromUrls  = preferences.getBoolean(TRIM_HTTP_FROM_URLS, true);
-    showTrunks        = preferences.getBoolean(SHOW_TRUNKS, true);
-    showBranches      = preferences.getBoolean(SHOW_BRANCHES, false);
-    showTags          = preferences.getBoolean(SHOW_TAGS, false);
-    shallowScan          = preferences.getBoolean(SHALLOW_SCAN, true);
+    dotExecutablePath = preferences.get(DOT_EXECUTABLE, EMPTY_STRING);
+    imageDir          = preferences.get(IMAGE_DIR, EMPTY_STRING);
+    getRepositories();
+    userName         = preferences.get(USER_NAME, EMPTY_STRING);
+    password         = preferences.get(PASSWORD, EMPTY_STRING);
+    trimHttpFromUrls = preferences.getBoolean(TRIM_HTTP_FROM_URLS, true);
+    showTrunks       = preferences.getBoolean(SHOW_TRUNKS, true);
+    showBranches     = preferences.getBoolean(SHOW_BRANCHES, false);
+    showTags         = preferences.getBoolean(SHOW_TAGS, false);
+    shallowScan      = preferences.getBoolean(SHALLOW_SCAN, true);
+  }
+
+  private void getRepositories()
+  {
+    for (int i = 0; i < 10; i++)
+    {
+      String key   = REPOSITORY + i;
+      String value = preferences.get(key, EMPTY_STRING);
+
+      if (isEmpty(value))
+      {
+        break;
+      }
+      else
+      {
+        repositories.add(value);
+      }
+    }
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -58,7 +83,7 @@ public class Config
 
   public String getLastRepository()
   {
-    return lastRepository;
+    return repositories.isEmpty()?EMPTY_STRING:repositories.get(repositories.size() - 1);
   }
 
   public String getPassword()
@@ -108,8 +133,9 @@ public class Config
 
   public void setLastRepository(String lastRepository)
   {
-    this.lastRepository = lastRepository;
-    saveSettings();
+      if(!repositories.contains(lastRepository))
+      {repositories.add(lastRepository);
+    saveSettings();}
   }
 
   public void setPassword(String password)
@@ -136,7 +162,27 @@ public class Config
 
     saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
-    saveNonNullValue(lastRepository, LAST_REPOSITORY);
+    saveRepositories();
+  }
+
+  /** Save only the 10 elements in the list. */
+  private void saveRepositories()
+  {
+    int beginIndex = Math.max(0, repositories.size() - 10);  // get either the 0th element or the length -10th
+
+    if (beginIndex >= 0)
+    {
+      for (int i = 0; i < repositories.size(); i++)
+      {
+        String key   = REPOSITORY + i;
+        String value = repositories.get(i + beginIndex);
+
+        if (!isEmpty(value))
+        {
+          preferences.put(key, value);
+        }
+      }
+    }
   }
 
   /** Only save the value to preferences if it's not null. */
@@ -172,11 +218,18 @@ public class Config
     saveSettings();
   }
 
-    public void setShallowScan(boolean selected) {
-        shallowScan=selected;
-    }
+  public void setShallowScan(boolean selected)
+  {
+    shallowScan = selected;
+  }
 
-    public boolean isShallowScan() {
-        return shallowScan;
-    }
+  public boolean isShallowScan()
+  {
+    return shallowScan;
+  }
+
+  public Preferences getPreferences()
+  {
+    return preferences;
+  }
 }

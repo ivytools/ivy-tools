@@ -6,6 +6,7 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
@@ -29,9 +30,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import static ca.odell.glazedlists.matchers.TextMatcherEditor.CONTAINS;
 import static ca.odell.glazedlists.matchers.TextMatcherEditor.REGULAR_EXPRESSION;
+import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.center;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
@@ -85,10 +88,10 @@ public class MainFrame extends JFrame implements UiMainFrame
   private FilterList<ProjectExternalReference> projectFilterList;
   private InfiniteProgressPanel                progressPanel                        = new InfiniteProgressPanel("Scanning the Subversion repository, please be patient - click to cancel",
                                                                                                                 this);
-    private UniqueList<External> uniqueExternalsList;
-    private UniqueList<ProjectExternalReference> uniqueProjectsList;
+  private UniqueList<External>                 uniqueExternalsList;
+  private UniqueList<ProjectExternalReference> uniqueProjectsList;
 
-    public MainFrame()
+  public MainFrame()
   {
     /** Todo how to deal with changed or wrong passwords? */
     Authenticator.setDefault(new WebAuthenticator(config));
@@ -147,11 +150,12 @@ public class MainFrame extends JFrame implements UiMainFrame
   @SuppressWarnings({ "unchecked" })
   private void setupGlazedLists()
   {
-    externalsList = new BasicEventList<External>();
+    externalsList       = new BasicEventList<External>();
 
-      uniqueExternalsList = new UniqueList<External>(externalsList);
-    SortedList<External>       sortedExternals     = new SortedList<External>(uniqueExternalsList);
-    TextComponentMatcherEditor externalsEditor     = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
+    uniqueExternalsList = new UniqueList<External>(externalsList);
+
+    SortedList<External>       sortedExternals = new SortedList<External>(uniqueExternalsList);
+    TextComponentMatcherEditor externalsEditor = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
 
     externalsEditor.setMode(externalContainsRadioButton.isSelected() ? CONTAINS
                                                                      : REGULAR_EXPRESSION);
@@ -166,11 +170,12 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     TableComparatorChooser<External> externalsTableSorter = new TableComparatorChooser<External>(externalsTable, sortedExternals, true);
 
-    projectsList = new BasicEventList<ProjectExternalReference>();
+    projectsList       = new BasicEventList<ProjectExternalReference>();
 
-      uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
-    final SortedList<ProjectExternalReference> sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
-    TextComponentMatcherEditor                 projectsEditor     = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
+    uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
+
+    final SortedList<ProjectExternalReference> sortedProjects = new SortedList<ProjectExternalReference>(uniqueProjectsList);
+    TextComponentMatcherEditor                 projectsEditor = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
 
     projectsEditor.setMode(projectContainsRadioButton.isSelected() ? CONTAINS
                                                                    : REGULAR_EXPRESSION);
@@ -485,12 +490,14 @@ public class MainFrame extends JFrame implements UiMainFrame
           config.setShallowScan(deepRecursiveSlowRadioButton.isSelected());
         }
       });
+       addHelpListener("externalsFinderHelp.hs", helpButton, this);
   }
 
   /** Cheesy, but this forces the list to redisplay. */
   private void refreshProjects()
   {
-      List<ProjectExternalReference> list = new ArrayList<ProjectExternalReference>(uniqueProjectsList);
+    List<ProjectExternalReference> list = new ArrayList<ProjectExternalReference>(uniqueProjectsList);
+
     for (ProjectExternalReference reference : list)
     {
       uniqueProjectsList.add(reference);
@@ -573,10 +580,21 @@ public class MainFrame extends JFrame implements UiMainFrame
   /** Add a repository to the list. */
   private void addRepository()
   {
-    String lastRepository = config.getLastRepository();
-    String newUrl         = JOptionPane.showInputDialog(this, "Enter repository URL", lastRepository);
+    String                             lastRepository = config.getLastRepository();
+    FindMultiplePreferencesItemsDialog dialog         = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
+                                                                                               Config.REPOSITORY);
 
-    addRepository(newUrl);
+    dialog.setVisible(true);
+
+    if (dialog.isOk())
+    {
+      String newUrl = dialog.getRepositoryLocation();
+
+      if (!isEmpty(newUrl))
+      {
+        addRepository(newUrl);
+      }
+    }
   }
 
   /** Add a repository to the list. */

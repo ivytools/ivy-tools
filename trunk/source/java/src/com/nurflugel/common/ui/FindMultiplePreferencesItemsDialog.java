@@ -1,31 +1,41 @@
-package com.nurflugel.ivybrowser.ui;
+package com.nurflugel.common.ui;
 
-import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Util.*;
-import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.*;
-import java.awt.*;
-import java.awt.event.*;
-import static java.awt.event.KeyEvent.*;
-import java.util.*;
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.*;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static javax.swing.KeyStroke.getKeyStroke;
 
-public class FindIvyRepositoryDialog extends JDialog
+public class FindMultiplePreferencesItemsDialog extends JDialog
 {
-  private static final String EMPTY_STRING   = "";
+  private static final String EMPTY_STRING     = "";
   private JPanel              contentPane;
   private JButton             buttonOK;
   private JButton             buttonCancel;
   private JComboBox           comboBox;
+  private JPanel              borderTitlePanel;
   private Preferences         appPreferences;
+  private String              keyBase;
   private List<String>        locations;
   private boolean             isOK;
 
-  public FindIvyRepositoryDialog(Preferences appPreferences)
+  public FindMultiplePreferencesItemsDialog(Preferences appPreferences, String borderTitle, String keyBase)
   {
     this.appPreferences = appPreferences;
+    this.keyBase        = keyBase;
+
+//    EtchedBorder border = (EtchedBorder) borderTitlePanel.getBorder();
+//    TitledBorder newBorder = BorderFactory.createTitledBorder(border, borderTitle);
+//
+//    borderTitlePanel.setBorder(newBorder);
     setContentPane(contentPane);
     setModal(true);
     getRootPane().setDefaultButton(buttonOK);
@@ -34,7 +44,7 @@ public class FindIvyRepositoryDialog extends JDialog
 
     for (int i = 0; i < 10; i++)
     {
-      String key   = IVY_REPOSITORY + i;
+      String key   = keyBase + i;
       String value = appPreferences.get(key, EMPTY_STRING);
 
       if (value.equalsIgnoreCase(EMPTY_STRING))
@@ -55,7 +65,7 @@ public class FindIvyRepositoryDialog extends JDialog
     centerApp(this);
   }
 
-  private void addListeners()
+    private void addListeners()
   {
     buttonOK.addActionListener(new ActionListener()
       {
@@ -112,7 +122,7 @@ public class FindIvyRepositoryDialog extends JDialog
 
     for (String value : locations)
     {
-      appPreferences.put(IVY_REPOSITORY + i++, value);
+      appPreferences.put(keyBase + i++, value);
     }
 
     dispose();
