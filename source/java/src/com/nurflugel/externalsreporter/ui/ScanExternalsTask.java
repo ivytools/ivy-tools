@@ -171,4 +171,7 @@ public class ScanExternalsTask extends SwingWorker
 
     return hasBranches && hasTags && hasTrunk;
   }
+
+
+
 }

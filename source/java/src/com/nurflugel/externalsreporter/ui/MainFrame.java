@@ -23,6 +23,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -84,8 +85,10 @@ public class MainFrame extends JFrame implements UiMainFrame
   private FilterList<ProjectExternalReference> projectFilterList;
   private InfiniteProgressPanel                progressPanel                        = new InfiniteProgressPanel("Scanning the Subversion repository, please be patient - click to cancel",
                                                                                                                 this);
+    private UniqueList<External> uniqueExternalsList;
+    private UniqueList<ProjectExternalReference> uniqueProjectsList;
 
-  public MainFrame()
+    public MainFrame()
   {
     /** Todo how to deal with changed or wrong passwords? */
     Authenticator.setDefault(new WebAuthenticator(config));
@@ -111,7 +114,17 @@ public class MainFrame extends JFrame implements UiMainFrame
       // todo set up checkbox with last saved repository like IvyBrowser
       setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
       trimHttpFromURLsCheckBox.setSelected(config.isTrimHttpFromUrls());
-      setSize(1200, 800);
+      shallowBranchTagsTrunkRadioButton.setSelected(config.isShallowScan());
+      deepRecursiveSlowRadioButton.setSelected(!config.isShallowScan());
+      showBranchesCheckBox.setSelected(config.isShowBranches());
+      showTrunksCheckBox.setSelected(config.isShowTrunks());
+      showTagsCheckBox.setSelected(config.isShowTags());
+
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int       maxWidth   = (int) Math.min(1500, screenSize.getWidth());
+      int       maxHeight  = (int) Math.min(1000, screenSize.getHeight());
+
+      setSize(new Dimension(maxWidth, maxHeight));
       setupGlazedLists();
       addListeners();
 
@@ -136,7 +149,7 @@ public class MainFrame extends JFrame implements UiMainFrame
   {
     externalsList = new BasicEventList<External>();
 
-    final UniqueList<External> uniqueExternalsList = new UniqueList<External>(externalsList);
+      uniqueExternalsList = new UniqueList<External>(externalsList);
     SortedList<External>       sortedExternals     = new SortedList<External>(uniqueExternalsList);
     TextComponentMatcherEditor externalsEditor     = new TextComponentMatcherEditor(externalsFilterField, new ExternalsFilterator());
 
@@ -155,7 +168,7 @@ public class MainFrame extends JFrame implements UiMainFrame
 
     projectsList = new BasicEventList<ProjectExternalReference>();
 
-    final UniqueList<ProjectExternalReference> uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
+      uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
     final SortedList<ProjectExternalReference> sortedProjects     = new SortedList<ProjectExternalReference>(uniqueProjectsList);
     TextComponentMatcherEditor                 projectsEditor     = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
 
@@ -396,6 +409,8 @@ public class MainFrame extends JFrame implements UiMainFrame
         public void actionPerformed(ActionEvent e)
         {
           config.setTrimHttpFromUrls(trimHttpFromURLsCheckBox.isSelected());
+          refreshExternals();
+          refreshProjects();
         }
       });
     externalSelectAllCheckBox.addActionListener(new ActionListener()
@@ -454,6 +469,43 @@ public class MainFrame extends JFrame implements UiMainFrame
           config.setShowTags(showTagsCheckBox.isSelected());
         }
       });
+    shallowBranchTagsTrunkRadioButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setShallowScan(shallowBranchTagsTrunkRadioButton.isSelected());
+        }
+      });
+    deepRecursiveSlowRadioButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+          config.setShallowScan(deepRecursiveSlowRadioButton.isSelected());
+        }
+      });
+  }
+
+  /** Cheesy, but this forces the list to redisplay. */
+  private void refreshProjects()
+  {
+      List<ProjectExternalReference> list = new ArrayList<ProjectExternalReference>(uniqueProjectsList);
+    for (ProjectExternalReference reference : list)
+    {
+      uniqueProjectsList.add(reference);
+    }
+  }
+
+  /** Cheesy, but this forces the list to redisplay. */
+  private void refreshExternals()
+  {
+    List<External> list = new ArrayList<External>(uniqueExternalsList);
+
+    for (External external : list)
+    {
+      uniqueExternalsList.add(external);
+    }
   }
 
   /** Switch all the items in the filter list to the value specified. */
