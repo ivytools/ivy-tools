@@ -1,12 +1,10 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.EventList;
-import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
+
 import javax.swing.*;
-import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /** Background task to get subversion externals so UI can refresh asynchronously. */
@@ -25,6 +23,7 @@ public class ScanExternalsTask extends SwingWorker
   private EventList<ProjectExternalReference> projectsList;
   private boolean                             isSelectAllExternals;
   private boolean                             isSelectAllProjects;
+  public static final int                     NUMBER_OF_THREADS    = 1;
 
   public ScanExternalsTask(Set<String> repositoryUrls, MainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
                            boolean showBranches, boolean showTags, boolean showTrunks, EventList<External> externalsList,
@@ -57,6 +56,7 @@ public class ScanExternalsTask extends SwingWorker
    * </ul>
    */
   @Override
+  @SuppressWarnings({ "ProhibitedExceptionDeclared" })
   protected Object doInBackground() throws Exception
   {
     SVNWCClient wcClient = SVNClientManager.newInstance().getWCClient();
@@ -65,11 +65,19 @@ public class ScanExternalsTask extends SwingWorker
     {
       try
       {
-        findExternals(repositoryUrl, !shallowSearch, wcClient);
+        RepositoryScanner scanner = new RepositoryScanner(repositoryUrl, !shallowSearch, wcClient, urlHandler, showBranches, showTags, showTrunks,
+                                                          subversionHandler, projectsList, mainFrame, isSelectAllExternals, isSelectAllProjects,
+                                                          externalsList);
+
+         scanner.run();
       }
       catch (Exception e)
       {
         e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+      }
+      finally
+      {
+        mainFrame.processResults();
       }
 
       for (External external : externalsList)
@@ -78,100 +86,6 @@ public class ScanExternalsTask extends SwingWorker
       }
     }
 
-    mainFrame.processResults();
-
     return null;
   }
-
-  private void findExternals(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient) throws IOException, SVNException
-  {
-    List<String> files  = urlHandler.getFiles(repositoryUrl);
-    boolean      isRoot = isProjectRoot(files);
-
-    if (isRoot)
-    {
-      for (String file : files)
-      {
-        boolean showTheBranch = file.endsWith("branches/") && showBranches;
-        boolean showTheTag    = file.endsWith("tags/") && showTags;
-
-        if (showTheBranch || showTheTag)
-        {
-          List<String> branches = urlHandler.getFiles(file);
-
-          for (String branch : branches)
-          {
-            mainFrame.setStatus("Getting externals for " + branch);
-            subversionHandler.getExternals(branch, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-
-            if (isRecursive)
-            {
-              findExternals(branch, isRecursive, wcClient);
-            }
-          }
-        }
-        else if (file.endsWith("trunk/") && showTrunks)
-        {
-          // it's trunk
-          mainFrame.setStatus("Getting externals for " + file);
-          subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-
-          if (isRecursive)
-          {
-            findExternals(file, isRecursive, wcClient);
-          }
-        }
-      }
-    }
-    else
-    {
-      // if it's not a project root, go down only one level (could be branches or trunk)
-      for (String file : files)
-      {
-        List<String> childFiles  = urlHandler.getFiles(file);
-        boolean      isChildRoot = isProjectRoot(childFiles);
-
-        if (isChildRoot || isRecursive)
-        {
-          if (file.endsWith("/"))
-          {
-            mainFrame.setStatus("Getting externals for " + file);
-            subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-            findExternals(file, isRecursive, wcClient);
-          }
-        }
-      }
-    }
-  }
-
-  /** If this is a project root, the children will consist of branches, trunk, and tags. */
-  private boolean isProjectRoot(List<String> files)
-  {
-    boolean hasBranches = false;
-    boolean hasTrunk    = false;
-    boolean hasTags     = false;
-
-    for (String file : files)
-    {
-      if (file.endsWith("branches/"))
-      {
-        hasBranches = true;
-      }
-
-      if (file.endsWith("tags/"))
-      {
-        hasTags = true;
-      }
-
-      if (file.endsWith("trunk/"))
-      {
-        hasTrunk = true;
-      }
-    }
-
-    return hasBranches && hasTags && hasTrunk;
-  }
-
-
-
 }

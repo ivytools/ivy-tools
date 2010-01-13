@@ -490,7 +490,7 @@ public class MainFrame extends JFrame implements UiMainFrame
           config.setShallowScan(deepRecursiveSlowRadioButton.isSelected());
         }
       });
-       addHelpListener("externalsFinderHelp.hs", helpButton, this);
+    addHelpListener("externalsFinderHelp.hs", helpButton, this);
   }
 
   /** Cheesy, but this forces the list to redisplay. */

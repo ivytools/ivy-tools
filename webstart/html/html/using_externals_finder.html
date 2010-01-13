@@ -1,92 +1,91 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
-<META NAME="Author" CONTENT="Douglas Bullard">
-<META NAME="Generator" CONTENT="NetObjects Fusion 7 for Windows">
-<META NAME="Keywords" CONTENT="Nurflugel, Ant, GraphViz">
-<TITLE>using_ant_script_visualizer</TITLE>
-<!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
+    <HEAD>
+        <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+        <META NAME="Author" CONTENT="Douglas Bullard">
+        <META NAME="Generator" CONTENT="NetObjects Fusion 7 for Windows">
+        <META NAME="Keywords" CONTENT="Nurflugel, Ant, GraphViz">
+        <TITLE>using_ant_script_visualizer</TITLE>
+        <!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
 
-<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../webstart/html/html/style.css">
-<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../webstart/html/html/site.css">
-<STYLE>
-:link { color: rgb(0,51,204);}
-:visited { color: rgb(153,0,153);}
-:active { color: rgb(255,0,0);}
-BODY { color: rgb(0,0,0);}
-</STYLE>
-</HEAD>
-<BODY  STYLE="background-color: rgb(255,255,255); background-image: url("'../../../../webstart/html/assets/images/wing1.jpg'");" >
-<P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Subversion Externals Finder</SPAN></B></P>
-<P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: medium;">Using Subversion Externals Finder</SPAN></B></P>
-<SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
+        <LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../webstart/html/html/style.css">
+        <LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../webstart/html/html/site.css">
+        <STYLE>
+            :link { color: rgb(0,51,204);}
+            :visited { color: rgb(153,0,153);}
+            :active { color: rgb(255,0,0);}
+            BODY { color: rgb(0,0,0);}
+        </STYLE>
+    </HEAD>
+    <BODY  STYLE="background-color: rgb(255,255,255); background-image: url('../../../../webstart/html/assets/images/wing1.jpg');" >
+        <P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Subversion Externals Finder</SPAN></B></P>
+        <P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: medium;">Using Subversion Externals Finder</SPAN></B></P>
+        <SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
 
-    If you fired up the program, , you'd get something like the following: <BR>
-    <IMG SRC="../assets/images/externalsFinder/1initialScreen.png" BORDER=1 ALT="">
+            If you fired up the program, , you'd get something like the following: <BR>
+            <IMG SRC="../assets/images/externalsFinder/1initialScreen.png" BORDER=1 ALT="">
 
-<P>
+        <P>
 
-    The app will remember the last repository you point it at, you can add more repositories by clicking the "Add repository" button, and enter the location in the dialog:<BR>
-    <IMG SRC="../assets/images/externalsFinder/2repositoriesDialog.png" BORDER=1 ALT="">
+            The app will remember the last repository you point it at, you can add more repositories by clicking the "Add repository" button, and enter the location in the dialog:<BR>
+            <IMG SRC="../assets/images/externalsFinder/2repositoriesDialog.png" BORDER=1 ALT="">
 
-<P>
-If you click on the dropdown, it remembers the 10 last locations:<br>
-    <IMG SRC="../assets/images/externalsFinder/3repositoriesDialog.png" BORDER=1 ALT="">
+        <P>
+        If you click on the dropdown, it remembers the 10 last locations:<br>
+            <IMG SRC="../assets/images/externalsFinder/3repositoriesDialog.png" BORDER=1 ALT="">
 
-<P>
-    As you add repositories, they show as checkboxes in the top of the app - you can unselect them if you made a mistake:<br>
-    <IMG SRC="../assets/images/externalsFinder/4twoRepositories.png" BORDER=1 ALT="">
-
-
-<P>
-    Now that you've got one or more repositories selected, you can click the "Parse repositories" button - it will go through the Subversion repositories and gather data:<br>
-    <IMG SRC="../assets/images/externalsFinder/5twoRepositories.png" BORDER=1 ALT="">
+        <P>
+            As you add repositories, they show as checkboxes in the top of the app - you can unselect them if you made a mistake:<br>
+            <IMG SRC="../assets/images/externalsFinder/4twoRepositories.png" BORDER=1 ALT="">
 
 
-<P>
-    Click the checkboxes for any items you want to show up in the report.  In the example shown, there are only several, but you may have hundreds or thousands showing up:<br>
-    <IMG SRC="../assets/images/externalsFinder/6selectedExternals.png" BORDER=1 ALT="">
+        <P>
+            Now that you've got one or more repositories selected, you can click the "Parse repositories" button - it will go through the Subversion repositories and gather data:<br>
+            <IMG SRC="../assets/images/externalsFinder/5twoRepositories.png" BORDER=1 ALT="">
 
 
-
-<P>
-    To easily filter the results, you can type in the text boxes, it will restrict the lists to matching text (still working on the regex stuff) - then, you can click the checkboxes.  This is a really fast way to
-    add lots of different stuff in your repository<br>
-    <IMG SRC="../assets/images/externalsFinder/7filteredText.png" BORDER=1 ALT="">
+        <P>
+            Click the checkboxes for any items you want to show up in the report.  In the example shown, there are only several, but you may have hundreds or thousands showing up:<br>
+            <IMG SRC="../assets/images/externalsFinder/6selectedExternals.png" BORDER=1 ALT="">
 
 
 
-<P>
-    Click on the "Generate report" button, and you'll get a graph like the one below.  <br>
-    <IMG SRC="../assets/images/externalsFinder/externalsReport.png" BORDER=1 ALT="">
+        <P>
+            To easily filter the results, you can type in the text boxes, it will restrict the lists to matching text (still working on the regex stuff) - then, you can click the checkboxes.  This is a really fast way to
+            add lots of different stuff in your repository<br>
+            <IMG SRC="../assets/images/externalsFinder/7filteredText.png" BORDER=1 ALT="">
 
 
 
-<P>
-    You can select several options.  The "Include level" checkboxes tell the Subversion browser whether to go into branches, trunk, or tags, and the shallow/deep radio buttons control whether it will stop
-    at the "root" (trunk, branches, or tags) of a repository, or keep going to a full recursive directory search.  Recursive searches are sloooow!<br>
-<P>
-    You can also check or uncheck the "Trim http..." checkbox.  This determines whether the entire URl is displayed or not.  If all your Subversion URLs start with the same http://xxxxxx stuff, you can choose not to show it and
-    save some screen real estate.<br>
-    <IMG SRC="../assets/images/externalsFinder/8noHttp.png" BORDER=1 ALT="">
+        <P>
+            Click on the "Generate report" button, and you'll get a graph like the one below.  <br>
+            <IMG SRC="../assets/images/externalsFinder/externalsReport.png" BORDER=1 ALT="">
 
 
-</P><P>
-    One last thing - you need AT&T's GraphViz to make the magic work.  Go to <a href="http://www.graphviz.org/">http://www.graphviz.org/</a> to download the app.  There are versions available for almost
-    every platform.  I've included default locations for Windows and OS X.  In any case, if you install it somewhere other then the default location for your platform, you'll need to use the
-    "Find Dot" button to tell the app where it is:<br>
 
-    <IMG SRC="../assets/images/externalsFinder/9dot.png" BORDER=1 ALT="">
-    <P>
-    When the program is run, it'll automatically generate the images using GraphViz's libraries, then open the image for viewing in both Windows and OS x.
-</P><P>
-    Enjoy!
+        <P>
+            You can select several options.  The "Include level" checkboxes tell the Subversion browser whether to go into branches, trunk, or tags, and the shallow/deep radio buttons control whether it will stop
+            at the "root" (trunk, branches, or tags) of a repository, or keep going to a full recursive directory search.  Recursive searches are sloooow!<br>
+        <P>
+            You can also check or uncheck the "Trim http..." checkbox.  This determines whether the entire URl is displayed or not.  If all your Subversion URLs start with the same http://xxxxxx stuff, you can choose not to show it and
+            save some screen real estate.<br>
+            <IMG SRC="../assets/images/externalsFinder/8noHttp.png" BORDER=1 ALT="">
 
 
-    </P>
-   </Span>
-   </Span>
-</BODY>
+        </P><P>
+            One last thing - you need AT&T's GraphViz to make the magic work.  Go to <a href="http://www.graphviz.org/">http://www.graphviz.org/</a> to download the app.  There are versions available for almost
+            every platform.  I've included default locations for Windows and OS X.  In any case, if you install it somewhere other then the default location for your platform, you'll need to use the
+            "Find Dot" button to tell the app where it is:<br>
+
+            <IMG SRC="../assets/images/externalsFinder/9dot.png" BORDER=1 ALT="">
+            <P>
+            When the program is run, it'll automatically generate the images using GraphViz's libraries, then open the image for viewing in both Windows and OS x.
+        </P><P>
+            Enjoy!
+
+
+            </P>
+        </SPAN>
+    </BODY>
 </HTML>
  
