@@ -27,7 +27,7 @@ public class RepositoryScanner implements Runnable
   private boolean                             selectAllExternals;
   private boolean                             selectAllProjects;
   private EventList<External>                 externalsList;
-  private ExecutorService                     threadPool = Executors.newFixedThreadPool(ScanExternalsTask.NUMBER_OF_THREADS);
+  private ExecutorService                     threadPool = Executors.newFixedThreadPool(1);
 
   public RepositoryScanner(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient, HtmlHandler urlHandler, boolean showBranches,
                            boolean showTags, boolean showTrunks, SubversionHandler subversionHandler,
