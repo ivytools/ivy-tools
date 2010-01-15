@@ -248,7 +248,7 @@
             <properties/>
             <border type="bevel-lowered" title=""/>
             <children>
-              <splitpane id="758c4">
+              <splitpane id="758c4" binding="splitPane">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="200" height="200"/>
@@ -344,7 +344,9 @@
                         <children>
                           <component id="14249" class="javax.swing.JTable" binding="externalsTable">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <toolTipText value="table of externals"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>
@@ -434,7 +436,9 @@
                         <children>
                           <component id="db20f" class="javax.swing.JTable" binding="projectsTable">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <toolTipText value="Table of projects using externals"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>

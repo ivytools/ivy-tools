@@ -9,14 +9,15 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.nurflugel.WebAuthenticator;
+import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import com.nurflugel.ivytracker.domain.CountValueMatcherEditor;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import com.nurflugel.ivytracker.domain.IvyFileComparator;
 import com.nurflugel.ivytracker.domain.IvyFileFilterator;
 import com.nurflugel.ivytracker.handlers.HtmlHandler;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -32,10 +33,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-
 import static com.nurflugel.common.ui.Util.centerApp;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVY_REPOSITORY;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
@@ -75,12 +76,17 @@ public class IvyTrackerMainFrame extends JFrame
   private List<IvyFile>              projectIvyFiles;
   private Map<String, IvyFile>       ivyFilesMap;
   private Set<String>                missingIvyFiles                    = new HashSet<String>();
-  private Preferences                preferences                        = Preferences.userNodeForPackage(IvyTrackerMainFrame.class);
+
+  // todo put into config
+  private Preferences preferences       = Preferences.userNodeForPackage(IvyTrackerMainFrame.class);
+  private String      ivyRepositoryPath;
 
   // --------------------------- CONSTRUCTORS ---------------------------
 
   public IvyTrackerMainFrame()
   {
+    Authenticator.setDefault(new WebAuthenticator());
+
     initializeComponents();
     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
     ivyFileComparator          = new IvyFileComparator();
@@ -99,7 +105,16 @@ public class IvyTrackerMainFrame extends JFrame
     try
     {
       progressPanel.start();
-      filterTable();
+
+      SortedList<IvyFile>      sortedPackages    = new SortedList<IvyFile>(repositoryList, ivyFileComparator);
+      FilterList<IvyFile>      filteredPackages  = new FilterList<IvyFile>(sortedPackages, textComponentMatcherEditor);
+      FilterList<IvyFile>      filteredPackages2 = new FilterList<IvyFile>(filteredPackages, countValueMatcherEditor);
+      EventTableModel<IvyFile> tableModel        = new EventTableModel<IvyFile>(filteredPackages2, ivyFileTableFormat);
+
+      resultsTable.setModel(tableModel);
+
+      TableComparatorChooser<IvyFile> tableSorter = new TableComparatorChooser<IvyFile>(resultsTable, sortedPackages, true);
+
       getBuildItems();
     }
     catch (MalformedURLException e)
@@ -149,14 +164,15 @@ public class IvyTrackerMainFrame extends JFrame
           showProjectsTree();
         }
       });
-    filterField.addKeyListener(new KeyAdapter()
-      {
-        @Override
-        public void keyReleased(KeyEvent e)
-        {
-          filterTable();
-        }
-      });
+
+    // filterField.addKeyListener(new KeyAdapter()
+    // {
+    // @Override
+    // public void keyReleased(KeyEvent e)
+    // {
+    // touchTa();
+    // }
+    // });
     quitButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -164,13 +180,14 @@ public class IvyTrackerMainFrame extends JFrame
           System.exit(0);
         }
       });
-    filterField.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
-          filterTable();
-        }
-      });
+
+    // filterField.addActionListener(new ActionListener()
+    // {
+    // public void actionPerformed(ActionEvent e)
+    // {
+    // filterTable();
+    // }
+    // });
     resultsTable.addMouseListener(new MouseAdapter()
       {
         @Override
@@ -192,21 +209,21 @@ public class IvyTrackerMainFrame extends JFrame
       {
         public void stateChanged(ChangeEvent changeEvent)
         {
-          filterTable();
+          // filterTable();
         }
       });
     showOnlyUsedLibrariesRadioButton.addChangeListener(new ChangeListener()
       {
         public void stateChanged(ChangeEvent changeEvent)
         {
-          filterTable();
+          // filterTable();
         }
       });
     showOnlyUnusedLibrariesRadioButton.addChangeListener(new ChangeListener()
       {
         public void stateChanged(ChangeEvent changeEvent)
         {
-          filterTable();
+          // filterTable();
         }
       });
     exportTableToClipboardButton.addActionListener(new ActionListener()
@@ -263,39 +280,35 @@ public class IvyTrackerMainFrame extends JFrame
     JOptionPane.showMessageDialog(this, sb.toString(), "Here are the missing files:", JOptionPane.PLAIN_MESSAGE);
   }
 
-  private void filterTable()
-  {
-    SortedList<IvyFile>      sortedPackages    = new SortedList<IvyFile>(repositoryList, ivyFileComparator);
-    FilterList<IvyFile>      filteredPackages  = new FilterList<IvyFile>(sortedPackages, textComponentMatcherEditor);
-    FilterList<IvyFile>      filteredPackages2 = new FilterList<IvyFile>(filteredPackages, countValueMatcherEditor);
-    EventTableModel<IvyFile> tableModel        = new EventTableModel<IvyFile>(filteredPackages2, ivyFileTableFormat);
-
-    resultsTable.setModel(tableModel);
-
-    TableComparatorChooser<IvyFile> tableSorter = new TableComparatorChooser<IvyFile>(resultsTable, sortedPackages, true);
-  }
-
   private void getBuildItems() throws MalformedURLException
   {
-    Authenticator.setDefault(new WebAuthenticator());
-
-    String ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
+    ivyRepositoryPath = preferences.get(IVY_REPOSITORY, "");
 
     if (ivyRepositoryPath.length() == 0)
     {
-      int i = 5 / 0;
+      FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(preferences, "Select Ivy Repository", IVY_REPOSITORY);
 
-      // ivyRepositoryPath = IvyBrowserMainFrame.specifyRepository(preferences);
+      dialog.setVisible(true);
+
+      if (dialog.isOk())
+      {
+        String location = dialog.getRepositoryLocation();
+
+        if (!isEmpty(location) && !location.equals(ivyRepositoryPath))
+        {
+          ivyRepositoryPath = location;
+        }
+
+        URL startingUrl = new URL(location);
+
+        // HtmlHandler handler = new HtmlHandler(this, startingUrl, repositoryList);
+        HtmlHandler handler = new HtmlHandler(this, startingUrl, new BasicEventList<IvyFile>(), missingIvyFiles);
+
+        // handler.doInBackground();
+        handler.execute();
+        System.out.println("Done!");
+      }
     }
-
-    URL startingUrl = new URL(ivyRepositoryPath);
-
-    // HtmlHandler handler = new HtmlHandler(this, startingUrl, repositoryList);
-    HtmlHandler handler = new HtmlHandler(this, startingUrl, new BasicEventList<IvyFile>(), missingIvyFiles);
-
-    // handler.doInBackground();
-    handler.execute();
-    System.out.println("Done!");
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -306,12 +319,12 @@ public class IvyTrackerMainFrame extends JFrame
   }
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  public void populateTable(Collection<IvyFile> allIvyFiles, List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
+  public void populateTable(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
   {
     this.projectIvyFiles = projectIvyFiles;
     this.ivyFilesMap     = ivyFilesMap;
-    repositoryList.addAll(allIvyFiles);
-    filterTable();
+
+    // repositoryList.addAll(allIvyFiles);
     progressPanel.stop();
     filterField.setEnabled(true);
   }

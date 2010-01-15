@@ -21,6 +21,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
@@ -77,6 +79,7 @@ public class MainFrame extends JFrame implements UiMainFrame
   private JCheckBox                            projectSelectAllCheckBox;
   private JButton                              clearProjectFilterFieldButton;
   private JButton                              clearExternalFilterFieldButton;
+  private JSplitPane                           splitPane;
   private Os                                   os                                   = Os.findOs(System.getProperty("os.name"));
   private Config                               config                               = new Config();
   private SubversionHandler                    subversionHandler                    = new SubversionHandler();
@@ -284,7 +287,7 @@ public class MainFrame extends JFrame implements UiMainFrame
     int              columnCount = table.getColumnCount();
     int              rowCount    = table.getRowCount();
     int[]            widths      = new int[columnCount];
-    int              tableWidth  = table.getWidth();
+    int              tableWidth  = table.getParent().getWidth();
     int              totalWidth  = 0;
 
     for (int col = 0; col < columnCount; col++)
@@ -491,6 +494,18 @@ public class MainFrame extends JFrame implements UiMainFrame
         }
       });
     addHelpListener("externalsFinderHelp.hs", helpButton, this);
+    splitPane.addPropertyChangeListener(new PropertyChangeListener()
+      {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+          if (evt.getPropertyName().equals("dividerLocation"))
+          {
+            resizeTableColumns(projectsTable);
+            resizeTableColumns(externalsTable);
+          }
+        }
+      });
   }
 
   /** Cheesy, but this forces the list to redisplay. */

@@ -70,7 +70,7 @@ public class HtmlHandler extends SwingWorker<Object, Object>
 
     touchAllUsedPackages(projectIvyFiles, ivyFilesMap, missingIvyFiles);
     generateReportOfUnusedIvyFiles(allIvyFiles);
-    mainFrame.populateTable(allIvyFiles, projectIvyFiles, ivyFilesMap);
+    mainFrame.populateTable(projectIvyFiles, ivyFilesMap);
     mainFrame.showNormal();
 
     return null;
