@@ -1,17 +1,14 @@
 package com.nurflugel.externalsreporter.ui;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /** Class to handle configuration persistence for the app. */
-public class Config
-{
+public class Config implements UserConfig {
   public static final String  DOT_EXECUTABLE      = "dotExecutable";
   public static final String  IMAGE_DIR           = "imageDir";
   private static final String PASSWORD            = "password";
@@ -86,11 +83,13 @@ public class Config
     return repositories.isEmpty()?EMPTY_STRING:repositories.get(repositories.size() - 1);
   }
 
+  @Override
   public String getPassword()
   {
     return password;
   }
 
+  @Override
   public String getUserName()
   {
     return userName;
@@ -138,6 +137,7 @@ public class Config
     saveSettings();}
   }
 
+  @Override
   public void setPassword(String password)
   {
     this.password = password;
@@ -212,6 +212,7 @@ public class Config
     saveSettings();
   }
 
+  @Override
   public void setUserName(String userName)
   {
     this.userName = userName;

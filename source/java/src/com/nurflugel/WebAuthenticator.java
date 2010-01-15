@@ -1,11 +1,12 @@
 package com.nurflugel;
 
-import com.nurflugel.externalsreporter.ui.Config;
+import com.nurflugel.externalsreporter.ui.UserConfig;
 import com.nurflugel.versionfinder.UsernamePasswordDialog;
-import org.apache.commons.lang.StringUtils;
+
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import static org.apache.commons.lang.StringUtils.*;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 5:38:09 PM To change this template use File | Settings | File Templates.
@@ -14,13 +15,13 @@ public class WebAuthenticator extends Authenticator
 {
   private static String userName;
   private static String password;
-  private static Config config;
+  private static UserConfig config;
 
   // -------------------------- STATIC METHODS --------------------------
 
   public WebAuthenticator() {}
 
-  public WebAuthenticator(Config config)
+  public WebAuthenticator(UserConfig config)
   {
     this.config = config;
     userName    = config.getUserName();
