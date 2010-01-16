@@ -35,7 +35,7 @@ public class Config implements UserConfig {
   /** Todo how to deal with changed or wrong passwords? */
   public Config()
   {
-    preferences       = Preferences.userNodeForPackage(MainFrame.class);
+    preferences       = Preferences.userNodeForPackage(ExternalsFinderMainFrame.class);
     dotExecutablePath = preferences.get(DOT_EXECUTABLE, EMPTY_STRING);
     imageDir          = preferences.get(IMAGE_DIR, EMPTY_STRING);
     getRepositories();

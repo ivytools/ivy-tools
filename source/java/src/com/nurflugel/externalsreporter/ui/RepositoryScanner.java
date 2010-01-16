@@ -23,7 +23,7 @@ public class RepositoryScanner implements Runnable
   private boolean                             showTrunks;
   private SubversionHandler                   subversionHandler;
   private EventList<ProjectExternalReference> projectsList;
-  private MainFrame                           mainFrame;
+  private ExternalsFinderMainFrame mainFrame;
   private boolean                             selectAllExternals;
   private boolean                             selectAllProjects;
   private EventList<External>                 externalsList;
@@ -31,7 +31,7 @@ public class RepositoryScanner implements Runnable
 
   public RepositoryScanner(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient, HtmlHandler urlHandler, boolean showBranches,
                            boolean showTags, boolean showTrunks, SubversionHandler subversionHandler,
-                           EventList<ProjectExternalReference> projectsList, MainFrame mainFrame, boolean selectAllExternals,
+                           EventList<ProjectExternalReference> projectsList, ExternalsFinderMainFrame mainFrame, boolean selectAllExternals,
                            boolean selectAllProjects, EventList<External> externalsList)
   {
     this.repositoryUrl      = repositoryUrl;

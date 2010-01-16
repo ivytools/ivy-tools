@@ -14,7 +14,7 @@ import java.util.Set;
 public class ScanExternalsTask extends SwingWorker
 {
   private Set<String>                         repositoryUrls;
-  private MainFrame                           mainFrame;
+  private ExternalsFinderMainFrame mainFrame;
   private boolean                             shallowSearch;
   private SubversionHandler                   subversionHandler;
   private HtmlHandler                         urlHandler           = new HtmlHandler();
@@ -26,7 +26,7 @@ public class ScanExternalsTask extends SwingWorker
   private boolean                             isSelectAllExternals;
   private boolean                             isSelectAllProjects;
 
-  public ScanExternalsTask(Set<String> repositoryUrls, MainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
+  public ScanExternalsTask(Set<String> repositoryUrls, ExternalsFinderMainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
                            boolean showBranches, boolean showTags, boolean showTrunks, EventList<External> externalsList,
                            EventList<ProjectExternalReference> projectsList, boolean selectAllExternals, boolean selectAllProjects)
   {

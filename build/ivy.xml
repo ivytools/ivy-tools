@@ -31,6 +31,7 @@
         <dependency org="com.ryangrier.ant"    name="version_tool" rev="1.1.4_fixed"     conf="build,javadoc" />
         <dependency org="com.nurflugel"        name="buildtasks"   rev="1.0-SNAPSHOT"    conf="build" />
         <dependency org="org.apache"           name="commons-lang" rev="2.4"             conf="build,dist" />
+        <dependency org="org.apache"           name="commons-io"   rev="1.4"             conf="build,dist" />
         <dependency org="com.intellij"         name="forms_rt"     rev="9.0.0"           conf="dist" />
         <dependency org="com.intellij"         name="javac2"       rev="9.0.0"           conf="build" />
         <dependency org="org.jdom"             name="jdom"         rev="1.0"             conf="build" />
