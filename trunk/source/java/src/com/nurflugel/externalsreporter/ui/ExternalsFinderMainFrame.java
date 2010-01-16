@@ -42,7 +42,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr", "IOResourceOpenedButNotSafelyClosed", "CallToSystemExit" })
-public class MainFrame extends JFrame implements UiMainFrame
+public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
   private static final long                    serialVersionUID                     = 7878527239782932441L;
@@ -94,14 +94,14 @@ public class MainFrame extends JFrame implements UiMainFrame
   private UniqueList<External>                 uniqueExternalsList;
   private UniqueList<ProjectExternalReference> uniqueProjectsList;
 
-  public MainFrame()
+  public ExternalsFinderMainFrame()
   {
     /** Todo how to deal with changed or wrong passwords? */
     Authenticator.setDefault(new WebAuthenticator(config));
     initializeUi();
   }
 
-  private void initializeUi()
+    private void initializeUi()
   {
     setTitle("Subversion Externals Finder v. " + Version.VERSION);
     addStatus("");
@@ -186,7 +186,7 @@ public class MainFrame extends JFrame implements UiMainFrame
     projectFilterList = new FilterList<ProjectExternalReference>(sortedProjects, projectsEditor);
 
     final EventTableModel<ProjectExternalReference> projectsTableModel = new EventTableModel<ProjectExternalReference>(projectFilterList,
-                                                                                                                       new ProjectsTableFormat(trimHttpFromURLsCheckBox));
+            new ProjectsTableFormat(trimHttpFromURLsCheckBox));
 
     projectsTable.setModel(projectsTableModel);
     projectsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
@@ -822,6 +822,6 @@ public class MainFrame extends JFrame implements UiMainFrame
 
   public static void main(String[] args)
   {
-    MainFrame mainFrame = new MainFrame();
+    ExternalsFinderMainFrame mainFrame = new ExternalsFinderMainFrame();
   }
 }

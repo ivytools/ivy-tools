@@ -25,9 +25,10 @@
         <jar href="lib/glazedlists.jar"/>
         <jar href="lib/forms_rt.jar"/>
         <jar href="lib/commons-lang.jar"/>
+        <jar href="lib/commons-io.jar"/>
         <jar href="lib/help.jar"/>
         <extension name="help" href="help.jnlp"/>
     </resources>
-    <application-desc main-class="com.nurflugel.externalsreporter.ui.MainFrame"/>
+    <application-desc main-class="com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame"/>
 </jnlp>
 

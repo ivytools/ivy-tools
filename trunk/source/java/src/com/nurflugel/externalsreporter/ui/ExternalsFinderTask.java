@@ -1,12 +1,9 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.BuildableItem;
-import com.nurflugel.BuildableProjects;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.common.ui.Util;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
+
 import java.util.*;
 import javax.swing.*;
 
@@ -18,7 +15,7 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
   private List<BranchNode> branches;
   private UiMainFrame      mainFrame;
 
-  public ExternalsFinderTask(MainFrame mainFrame, JProgressBar progressBar, List<BranchNode> branches)
+  public ExternalsFinderTask(ExternalsFinderMainFrame mainFrame, JProgressBar progressBar, List<BranchNode> branches)
   {
     this.progressBar = progressBar;
     this.branches    = branches;
