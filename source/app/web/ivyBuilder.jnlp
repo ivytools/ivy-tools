@@ -11,7 +11,7 @@
         <description>Ivy Repository Builder</description>
         <icon href="images/IvyBuilder-small.png"/>
         <icon kind="splash" href="images/IvyBuilder-splash.jpg"/>
-        <!--<offline-allowed/>-->
+        <offline-allowed/>
         <shortcut online="false">
 	      <desktop/>
     	</shortcut>

@@ -11,6 +11,7 @@
         <description>Ivy Grapher </description>
         <icon href="images/IvyGrapher-small.png"/>
         <icon kind="splash" href="images/IvyGrapher-splash.jpg"/>
+        <offline-allowed/>
         <shortcut online="false">
 	      <desktop/>
     	</shortcut>
