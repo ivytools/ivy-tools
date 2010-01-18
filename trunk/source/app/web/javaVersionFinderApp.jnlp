@@ -11,6 +11,7 @@
         <description>Java Version Finder</description>
         <icon href="images/VersionFinder-small.jpg"/>
         <icon kind="splash" href="images/VersionFinder-splash.jpg"/>
+        <offline-allowed/>
         <shortcut online="false">
 	      <desktop/>
     	</shortcut>
