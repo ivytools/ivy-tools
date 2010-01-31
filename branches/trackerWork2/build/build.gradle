@@ -1,0 +1,11 @@
+//ant.importBuild 'build.xml'
+ant.importBuild 'master-build.xml'
+
+task hello <<{
+  println 'Hello, world!'
+}
+
+task intro(dependsOn: hello)<<{
+  println "I'm Gradle"
+}
+
