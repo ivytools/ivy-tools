@@ -5,9 +5,6 @@ import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.externalsreporter.ui.*;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
@@ -17,25 +14,29 @@ import java.util.Set;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class ScanSubversionsRepositoriesTask extends SwingWorker
 {
-  private Set<String>                         repositoryUrls;
-  private UiMainFrame mainFrame;
-  private boolean                             shallowSearch;
-    private EventList<IvyPackage> foundIvyFilesList;
-    private HtmlHandler                         urlHandler           = new HtmlHandler();
-  private boolean                             showBranches;
-  private boolean                             showTags;
-  private boolean                             showTrunks;
-  private boolean                             isSelectAllExternals;
-  private boolean                             isSelectAllProjects;
+  private Set<String>           repositoryUrls;
+  private UiMainFrame           mainFrame;
+  private boolean               shallowSearch;
+  private EventList<IvyPackage> foundIvyFilesList;
+  private HtmlHandler           urlHandler           = new HtmlHandler();
+  private boolean               showBranches;
+  private boolean               showTags;
+  private boolean               showTrunks;
+  private boolean               isSelectAllExternals;
+  private boolean               isSelectAllProjects;
 
-  public ScanSubversionsRepositoriesTask(Set<String> repositoryUrls, UiMainFrame mainFrame, boolean isShallowSearch,
-                           boolean showBranches, boolean showTags, boolean showTrunks, EventList<IvyPackage> foundIvyFilesList
-                          )
+  public ScanSubversionsRepositoriesTask(Set<String>           repositoryUrls,
+                                         UiMainFrame           mainFrame,
+                                         boolean               isShallowSearch,
+                                         boolean               showBranches,
+                                         boolean               showTags,
+                                         boolean               showTrunks,
+                                         EventList<IvyPackage> foundIvyFilesList)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;
     shallowSearch          = isShallowSearch;
-      this.foundIvyFilesList = foundIvyFilesList;
+    this.foundIvyFilesList = foundIvyFilesList;
     this.showBranches      = showBranches;
     this.showTags          = showTags;
     this.showTrunks        = showTrunks;
@@ -57,7 +58,6 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
   @Override
   protected Object doInBackground() throws Exception
   {
-
     for (String repositoryUrl : repositoryUrls)
     {
       try
@@ -68,18 +68,16 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
       {
         e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
       }
-
-
     }
 
-//    mainFrame.processResults();todo
+    // mainFrame.processResults();todo
 
     return null;
   }
 
   private void findIvyFiles(String repositoryUrl, boolean isRecursive) throws IOException, SVNException
   {
-    List<String> files  = urlHandler.getFiles(repositoryUrl);
+    List<String> files  = urlHandler.getFiles(repositoryUrl, true);
     boolean      isRoot = isProjectRoot(files);
 
     if (isRoot)
@@ -91,12 +89,12 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
 
         if (showTheBranch || showTheTag)
         {
-          List<String> branches = urlHandler.getFiles(file);
+          List<String> branches = urlHandler.getFiles(file, true);
 
           for (String branch : branches)
           {
             mainFrame.setStatusLabel("Getting externals for " + branch);
-            getIvyFiles(repositoryUrl,file);
+            getIvyFiles(repositoryUrl, file);
 
             if (isRecursive)
             {
@@ -108,7 +106,7 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
         {
           // it's trunk
           mainFrame.setStatusLabel("Getting externals for " + file);
-            getIvyFiles(repositoryUrl,file);
+          getIvyFiles(repositoryUrl, file);
 
           if (isRecursive)
           {
@@ -122,7 +120,7 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
       // if it's not a project root, go down only one level (could be branches or trunk)
       for (String file : files)
       {
-        List<String> childFiles  = urlHandler.getFiles(file);
+        List<String> childFiles  = urlHandler.getFiles(file, true);
         boolean      isChildRoot = isProjectRoot(childFiles);
 
         if (isChildRoot || isRecursive)
@@ -130,7 +128,7 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
           if (file.endsWith("/"))
           {
             mainFrame.setStatusLabel("Getting externals for " + file);
-              getIvyFiles(repositoryUrl,file);
+            getIvyFiles(repositoryUrl, file);
             findIvyFiles(file, isRecursive);
           }
         }
@@ -138,28 +136,27 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
     }
   }
 
-    /**
-     * Find any Ivy files in the build directory.
-     */
-    private void getIvyFiles(String repositoryUrl, String file) throws IOException {
-         List<String> files  = urlHandler.getFiles(repositoryUrl+"/"+file+"/"+"build");
-        for (String buildFile : files) {
-            if(buildFile.endsWith("ivy.xml")){
-                handleFoundIvyFile(buildFile);
-            }
-        }
+  /** Find any Ivy files in the build directory. */
+  private void getIvyFiles(String repositoryUrl, String file) throws IOException
+  {
+    List<String> files = urlHandler.getFiles(repositoryUrl + "/" + file + "/" + "build", true);
+
+    for (String buildFile : files)
+    {
+      if (buildFile.endsWith("ivy.xml"))
+      {
+        handleFoundIvyFile(buildFile);
+      }
     }
+  }
 
-    /**
-     * Great - now we found an Ivy file, handle it.  We need to log what application this is, and the Ivy file(s).  Yes,
-     * some projects will have more than one ivy file (bad precedent, but it's happened)
-     */
-    private void handleFoundIvyFile(String ivyFile) {
-        
+  /**
+   * Great - now we found an Ivy file, handle it. We need to log what application this is, and the Ivy file(s). Yes, some projects will have more than
+   * one ivy file (bad precedent, but it's happened)
+   */
+  private void handleFoundIvyFile(String ivyFile) {}
 
-    }
-
-    /** If this is a project root, the children will consist of branches, trunk, and tags. */
+  /** If this is a project root, the children will consist of branches, trunk, and tags. */
   private boolean isProjectRoot(List<String> files)
   {
     boolean hasBranches = false;
@@ -186,7 +183,4 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
 
     return hasBranches && hasTags && hasTrunk;
   }
-
-
-
 }

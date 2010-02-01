@@ -14,13 +14,14 @@ import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
+import com.nurflugel.ivybrowser.domain.IvyFile;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.ui.HandlerFactory;
 import com.nurflugel.ivytracker.domain.IvyFileComparator;
 import com.nurflugel.ivytracker.domain.IvyFileFilterator;
+import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -53,11 +54,13 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 {
   private static final long          serialVersionUID                = 8982188831570838035L;
+  private static final String        NEW_LINE                        = "\n";
+  private static final String        TAB                             = "\t";
   private InfiniteProgressPanel      progressPanel                   = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient",
                                                                                                  this);
-  private boolean                    useTestData                     = false;  // if true, reads cannd data in from a file for fast testing
-  private boolean                    saveTestData                    = false;  // if true, reads cannd data in from a file for fast testing
-  private boolean                    isTest                          = false;  // if true, reads cannd data in from a file for fast testing
+  private boolean                    useTestData                     = false;  // if true, reads canned data in from a file for fast testing
+  private boolean                    saveTestData                    = false;  // if true, reads canned data in from a file for fast testing
+  private boolean                    isTest                          = false;  // if true, reads canned data in from a file for fast testing
   private Cursor                     busyCursor                      = getPredefinedCursor(Cursor.WAIT_CURSOR);
   private Cursor                     normalCursor                    = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private JButton                    quitButton;
@@ -78,16 +81,16 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   private IvyFileComparator          ivyFileComparator;
   private TextComponentMatcherEditor textComponentMatcherEditor;
   private IvyFileTableFormat         ivyFileTableFormat;
+  private ProjectFileTableFormat     projectsTableFormat;
   private Matcher<IvyPackage>        countValueMatcherEditor;
-  private List<IvyPackage>           projectIvyFiles;
   private Map<String, IvyPackage>    ivyFilesMap;
+  private EventList<String>          projectUrls                     = new BasicEventList<String>();
   private Set<String>                missingIvyFiles                 = new HashSet<String>();
 
   // todo put into a config object
-  private Preferences         preferences       = userNodeForPackage(IvyTrackerMainFrame.class);
-  private String              ivyRepositoryPath;
-  private static final String NEW_LINE          = "\n";
-  private static final String TAB               = "\t";
+  private Preferences                      preferences       = userNodeForPackage(IvyTrackerMainFrame.class);
+  private String                           ivyRepositoryPath;
+  private final Map<String, List<IvyFile>> projectIvyFiles   = new TreeMap<String, List<IvyFile>>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -100,6 +103,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     ivyFileComparator          = new IvyFileComparator();
     textComponentMatcherEditor = new TextComponentMatcherEditor(ivyFilterField, new IvyFileFilterator());
     ivyFileTableFormat         = new IvyFileTableFormat();
+    projectsTableFormat        = new ProjectFileTableFormat();
 
     // countValueMatcherEditor    = new CountValueMatcherEditor(showAllLibrariesRadioButton, showOnlyUsedLibrariesRadioButton,
     // showOnlyUnusedLibrariesRadioButton);
@@ -114,16 +118,23 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
     try
     {
-      // progressPanel.start();
+      SortedList<IvyPackage>      sortedPackages            = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
+      FilterList<IvyPackage>      filteredPackages          = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
+      FilterList<IvyPackage>      filteredPackages2         = new FilterList<IvyPackage>(filteredPackages, countValueMatcherEditor);
+      EventTableModel<IvyPackage> ivyPackageEventTableModel = new EventTableModel<IvyPackage>(filteredPackages2, ivyFileTableFormat);
 
-      SortedList<IvyPackage>      sortedPackages    = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
-      FilterList<IvyPackage>      filteredPackages  = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
-      FilterList<IvyPackage>      filteredPackages2 = new FilterList<IvyPackage>(filteredPackages, countValueMatcherEditor);
-      EventTableModel<IvyPackage> tableModel        = new EventTableModel<IvyPackage>(filteredPackages2, ivyFileTableFormat);
+      ivyResultsTable.setModel(ivyPackageEventTableModel);
 
-      ivyResultsTable.setModel(tableModel);
+      TableComparatorChooser<IvyPackage> tableSorter       = new TableComparatorChooser<IvyPackage>(ivyResultsTable, sortedPackages, true);
 
-      TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(ivyResultsTable, sortedPackages, true);
+      SortedList<String>                 sortedProjects    = new SortedList<String>(projectUrls);
+      FilterList<String>                 filteredProjects  = new FilterList<String>(sortedProjects);
+      FilterList<String>                 filteredProjects2 = new FilterList<String>(filteredProjects);
+      EventTableModel<String>            projectTableModel = new EventTableModel<String>(filteredProjects2, projectsTableFormat);
+
+      subversionResultsTable.setModel(projectTableModel);
+
+      TableComparatorChooser<String> subversionTableSorter = new TableComparatorChooser<String>(subversionResultsTable, sortedProjects, true);
     }
 
     // catch (MalformedURLException e)
@@ -259,42 +270,9 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     // });
   }
 
-  private void showProjectsTree()
+  private void setIvyRepositoryPanelTitle(String path)
   {
-    ShowProjectsDialog showProjectsDialog = new ShowProjectsDialog(projectIvyFiles, ivyFilesMap);
-
-    showProjectsDialog.setVisible(true);
-  }
-
-  private void exportTableToClipboard()
-  {
-    SortedList<IvyPackage> sortedPackages   = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
-    FilterList<IvyPackage> filteredPackages = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
-    FilterList<IvyPackage> list             = new FilterList<IvyPackage>(filteredPackages, countValueMatcherEditor);
-    StringBuilder          sb               = new StringBuilder();
-
-    sb.append("Org\tModule\tVersion\tCount\n");
-
-    for (IvyPackage ivyFile : list)
-    {
-      sb.append(ivyFile.getOrgName()).append(TAB).append(ivyFile.getModuleName()).append(TAB).append(ivyFile.getVersion()).append(TAB)
-        .append(ivyFile.getCount()).append(NEW_LINE);
-    }
-
-    getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sb.toString()), null);
-    showMessageDialog(this, "Formatted text has been pasted into your buffer");
-  }
-
-  private void findMissingIvyFiles()
-  {
-    StringBuilder sb = new StringBuilder();
-
-    for (String missingIvyFile : missingIvyFiles)
-    {
-      sb.append(missingIvyFile).append(NEW_LINE);
-    }
-
-    showMessageDialog(this, sb.toString(), "Here are the missing files:", JOptionPane.PLAIN_MESSAGE);
+    ivyRepositoryPanel.setBorder(createTitledBorder(createEtchedBorder(), "Ivy Repository: " + path));
   }
 
   public void specifyRepository()
@@ -312,8 +290,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
         this.ivyRepositoryPath = ivyRepositoryPath;
         preferences.put(IVY_REPOSITORY, ivyRepositoryPath);
         setIvyRepositoryPanelTitle(ivyRepositoryPath);
-        // todo reparse(); try { getBuildItems(); } catch (MalformedURLException e) { e.printStackTrace();  // To change body of catch statement use
-        // File | Settings | File Templates. }
+        // todo reparse(); try { getBuildItems(); } catch (MalformedURLException e) { e.printStackTrace();
       }
     }
   }
@@ -333,7 +310,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
     getAllIvyRepositoryPackages(packageMap);
 
-    // getAllIvyFilesInSubversionRepository();//todo add this when Ivy fetching is working
+    getAllIvyFilesInSubversionRepository();
 
     // todo get all ivy files in Subverison repository (reuse code if possible)
 
@@ -344,22 +321,16 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     System.out.println("Done!");
   }
 
-  private void startProgressPanel() {
+  private void startProgressPanel()
+  {
     setBusyCursor();
     progressPanel.start();
   }
 
-  private void setIvyRepositoryPanelTitle(String path)
+  @Override
+  public void setBusyCursor()
   {
-    ivyRepositoryPanel.setBorder(createTitledBorder(createEtchedBorder(), "Ivy Repository: " + path));
-  }
-
-  private void getAllIvyFilesInSubversionRepository()
-  {
-    String                  repositoryBase = "http://ivy-tools.googlecode.com/svn";
-    Map<String, IvyPackage> ivyFiles       = new HashMap<String, IvyPackage>();
-
-    HandlerFactory.getIvyFileFinderHandler(this, ivyFiles, repositoryBase);
+    setCursor(busyCursor);
   }
 
   /** get all Ivy repository (reuse code). */
@@ -407,18 +378,6 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   }
 
   @Override
-  public void setBusyCursor()
-  {
-   setCursor(busyCursor);
-  }
-
-  @Override
-  public void setNormalCursor()
-  {
-    // To change body of implemented methods use File | Settings | File Templates.
-  }
-
-  @Override
   public void setReady(boolean isReady)
   {
     // To change body of implemented methods use File | Settings | File Templates.
@@ -451,6 +410,47 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
   // -------------------------- OTHER METHODS --------------------------
 
+  private void exportTableToClipboard()
+  {
+    SortedList<IvyPackage> sortedPackages   = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
+    FilterList<IvyPackage> filteredPackages = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
+    FilterList<IvyPackage> list             = new FilterList<IvyPackage>(filteredPackages, countValueMatcherEditor);
+    StringBuilder          sb               = new StringBuilder();
+
+    sb.append("Org\tModule\tVersion\tCount\n");
+
+    for (IvyPackage ivyFile : list)
+    {
+      sb.append(ivyFile.getOrgName()).append(TAB).append(ivyFile.getModuleName()).append(TAB).append(ivyFile.getVersion()).append(TAB)
+        .append(ivyFile.getCount()).append(NEW_LINE);
+    }
+
+    getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sb.toString()), null);
+    showMessageDialog(this, "Formatted text has been pasted into your buffer");
+  }
+
+  private void findMissingIvyFiles()
+  {
+    StringBuilder sb = new StringBuilder();
+
+    for (String missingIvyFile : missingIvyFiles)
+    {
+      sb.append(missingIvyFile).append(NEW_LINE);
+    }
+
+    showMessageDialog(this, sb.toString(), "Here are the missing files:", JOptionPane.PLAIN_MESSAGE);
+  }
+
+  private void getAllIvyFilesInSubversionRepository()
+  {
+    String               repositoryBase       = "http://ivy-tools.googlecode.com/svn";  // todo add the list of projects?
+    IvyFileFinderHandler ivyFileFinderHandler = HandlerFactory.getIvyFileFinderHandler(this, projectIvyFiles, projectUrls, repositoryBase);
+
+    ivyFileFinderHandler.doIt();
+
+    // ivyFileFinderHandler.execute();
+  }
+
   public Preferences getPreferences()
   {
     return preferences;
@@ -459,8 +459,8 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
   public void populateTable(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
   {
-    this.projectIvyFiles = projectIvyFiles;
-    this.ivyFilesMap     = ivyFilesMap;
+    // this.projectIvyFiles = projectIvyFiles;
+    this.ivyFilesMap = ivyFilesMap;
 
     // repositoryList.addAll(allIvyFiles);
     progressPanel.stop();
@@ -479,6 +479,12 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     adjustColumnWidths();
     ivyFilterField.setEnabled(true);
     ivyFilterField.requestFocus();
+  }
+
+  @Override
+  public void setNormalCursor()
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
   }
 
   private void adjustColumnWidths()  // todo make more general and run both tables through it.  Put into utils?
@@ -503,6 +509,13 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
       column.setPreferredWidth(maxWidth);
     }
   }
+
+  // private void showProjectsTree()
+  // {
+  // ShowProjectsDialog showProjectsDialog = new ShowProjectsDialog(projectIvyFiles, ivyFilesMap);
+  //
+  // showProjectsDialog.setVisible(true);
+  // }
 
   public boolean useTestData()
   {

@@ -25,7 +25,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public HtmlHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
+  public HtmlHandler(UiMainFrame                                       mainFrame,
+                     String                                            ivyRepositoryPath,
+                     EventList<IvyPackage>                             ivyPackages,
                      Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);

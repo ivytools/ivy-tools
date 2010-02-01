@@ -2,7 +2,6 @@ package com.nurflugel.ivybrowser.handlers.tasks;
 
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;

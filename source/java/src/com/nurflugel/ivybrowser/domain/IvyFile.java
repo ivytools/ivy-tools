@@ -15,22 +15,15 @@ public class IvyFile
   private List<IvyPackage> dependencies = new ArrayList<IvyPackage>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
-  public IvyFile(URL versionUrl, String ivyFile)
+  public IvyFile(String ivyFile)
   {
     try
     {
-      SAXBuilder builder    = new SAXBuilder();
-      String     protocol   = versionUrl.getProtocol();
-      int        portNumber = versionUrl.getPort();
-      String     host       = versionUrl.getHost();
-      String     port       = (portNumber == -1) ? ""
-                                                 : (":" + portNumber);
-      String   dirPath = versionUrl.getPath();
-      String   path    = protocol + "://" + host + port + dirPath + "/" + ivyFile;
-      URL      url     = new URL(path);
-      Document doc     = builder.build(url);
-      Element  root    = doc.getRootElement();
-      Element  child1  = root.getChild("dependencies");
+      SAXBuilder builder = new SAXBuilder();
+      URL        url     = new URL(ivyFile);
+      Document   doc     = builder.build(url);
+      Element    root    = doc.getRootElement();
+      Element    child1  = root.getChild("dependencies");
 
       if (child1 != null)
       {

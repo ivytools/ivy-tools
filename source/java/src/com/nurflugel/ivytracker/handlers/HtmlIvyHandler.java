@@ -229,8 +229,8 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     URL ivyFileUrl = new URL(versionUrl + "/" + ivyFileName);
 
     // IvyPackage ivyFile    = new IvyPackage(org, module, revision, ivyFileUrl, ivyFiles, ivyFilesMap, mainFrame, repositoryList);
-    IvyPackage ivyFile = new IvyPackage(org, module, revision);     // todo what were these other things doing? ivyFileUrl, ivyFiles, ivyFilesMap,
-                                                                    // mainFrame, repositoryList);
+    IvyPackage ivyFile = new IvyPackage(org, module, revision);  // todo what were these other things doing? ivyFileUrl, ivyFiles, ivyFilesMap,
+                                                                 // mainFrame, repositoryList);
   }
 
   public Collection<IvyPackage> findIvyPackages(Collection<IvyPackage> ivyFiles, Map<String, IvyPackage> ivyFilesMap)

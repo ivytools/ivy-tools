@@ -23,16 +23,25 @@ public class RepositoryScanner implements Runnable
   private boolean                             showTrunks;
   private SubversionHandler                   subversionHandler;
   private EventList<ProjectExternalReference> projectsList;
-  private ExternalsFinderMainFrame mainFrame;
+  private ExternalsFinderMainFrame            mainFrame;
   private boolean                             selectAllExternals;
   private boolean                             selectAllProjects;
   private EventList<External>                 externalsList;
   private ExecutorService                     threadPool = Executors.newFixedThreadPool(1);
 
-  public RepositoryScanner(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient, HtmlHandler urlHandler, boolean showBranches,
-                           boolean showTags, boolean showTrunks, SubversionHandler subversionHandler,
-                           EventList<ProjectExternalReference> projectsList, ExternalsFinderMainFrame mainFrame, boolean selectAllExternals,
-                           boolean selectAllProjects, EventList<External> externalsList)
+  public RepositoryScanner(String                              repositoryUrl,
+                           boolean                             isRecursive,
+                           SVNWCClient                         wcClient,
+                           HtmlHandler                         urlHandler,
+                           boolean                             showBranches,
+                           boolean                             showTags,
+                           boolean                             showTrunks,
+                           SubversionHandler                   subversionHandler,
+                           EventList<ProjectExternalReference> projectsList,
+                           ExternalsFinderMainFrame            mainFrame,
+                           boolean                             selectAllExternals,
+                           boolean                             selectAllProjects,
+                           EventList<External>                 externalsList)
   {
     this.repositoryUrl      = repositoryUrl;
     this.recursive          = isRecursive;
@@ -54,7 +63,7 @@ public class RepositoryScanner implements Runnable
   {
     try
     {
-      List<String> files = urlHandler.getFiles(repositoryUrl);
+      List<String> files = urlHandler.getFiles(repositoryUrl, true);
 
       for (String file : files)
       {
@@ -78,7 +87,7 @@ public class RepositoryScanner implements Runnable
 
   void findExternals(String url) throws IOException, InterruptedException
   {
-    List<String> files  = urlHandler.getFiles(url);
+    List<String> files  = urlHandler.getFiles(url, true);
     boolean      isRoot = isProjectRoot(files);
 
     if (isRoot)
@@ -95,7 +104,7 @@ public class RepositoryScanner implements Runnable
       {
         try
         {
-          List<String> childFiles  = urlHandler.getFiles(file);
+          List<String> childFiles  = urlHandler.getFiles(file, true);
           boolean      isChildRoot = isProjectRoot(childFiles);
 
           if (isChildRoot || recursive)
@@ -125,7 +134,7 @@ public class RepositoryScanner implements Runnable
 
       if (showTheBranch || showTheTag)
       {
-        List<String> branches = urlHandler.getFiles(file);
+        List<String> branches = urlHandler.getFiles(file, true);
 
         for (String branch : branches)
         {

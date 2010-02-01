@@ -49,7 +49,9 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
+  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame                                       mainFrame,
+                                               EventList<IvyPackage>                             ivyPackages,
+                                               String                                            ivyRepositoryPath,
                                                Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     this.mainFrame         = mainFrame;
@@ -72,8 +74,12 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   public abstract void findIvyPackages();
 
   /** Download the actual jar file to wherever the user wants it. */
-  public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame theFrame,
-                                  String thePath) throws IOException
+  public static void downloadFile(JCheckBox           fileLabel,
+                                  String              orgName,
+                                  String              moduleName,
+                                  String              version,
+                                  IvyBrowserMainFrame theFrame,
+                                  String              thePath) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
     String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
@@ -273,7 +279,10 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
     }
   }
 
-  /** puts the package into the map of packages. If the package doesn't exist, create it.  If it already exists (i.e., it's a dependency of something else, merge the info from the declaration pacakge into the existing one in the map*/
+  /**
+   * puts the package into the map of packages. If the package doesn't exist, create it. If it already exists (i.e., it's a dependency of something
+   * else, merge the info from the declaration pacakge into the existing one in the map
+   */
   private void addPackageToMap(IvyPackage ivyPackage)
   {
     String                               orgName    = stripSlash(ivyPackage.getOrgName());
