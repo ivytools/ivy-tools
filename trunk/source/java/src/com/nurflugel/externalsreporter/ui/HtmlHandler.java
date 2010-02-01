@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Class to parse the URL for files and such. */
+@SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class HtmlHandler
 {
   // -------------------------- OTHER METHODS --------------------------
 
-  public List<String> getFiles(String repositoryUrl) throws IOException
+  public List<String> getFiles(String repositoryUrl, boolean dirsOnly) throws IOException
   {
     List<String>  files         = new ArrayList<String>();
     URL           versionUrl    = new URL(repositoryUrl);
@@ -43,9 +44,16 @@ public class HtmlHandler
           {
             String link = getLink(line);
 
-            if (isLinkADir(link))
-            {  // todo trim trailing slash???
-              files.add(repositoryUrl + link);
+            if (isLinkADir(link) || !dirsOnly)
+            {
+              if (repositoryUrl.endsWith("/"))
+              {
+                files.add(repositoryUrl + link);
+              }
+              else
+              {
+                files.add(repositoryUrl + "/" + link);
+              }
             }
           }
         }

@@ -1,5 +1,11 @@
 package com.nurflugel.ivybrowser.domain;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import static java.util.Collections.*;
 
@@ -18,9 +24,9 @@ public class IvyPackage implements Comparable<IvyPackage>
   private String          version;
   private Set<IvyPackage> dependencies = new TreeSet<IvyPackage>();
   private Set<String>     publications = new TreeSet<String>();
-    private int count;
+  private int             count;
 
-    // -------------------------- STATIC METHODS --------------------------
+  // -------------------------- STATIC METHODS --------------------------
 
   public static String getKey(String org, String module, String version)
   {
@@ -35,10 +41,9 @@ public class IvyPackage implements Comparable<IvyPackage>
     this.version    = version;
   }
 
-// ------------------------ INTERFACE METHODS ------------------------
+  // ------------------------ INTERFACE METHODS ------------------------
 
-
-// --------------------- Interface Comparable ---------------------
+  // --------------------- Interface Comparable ---------------------
 
   @Override
   public int compareTo(IvyPackage ivyPackage)
@@ -49,7 +54,7 @@ public class IvyPackage implements Comparable<IvyPackage>
     return moduleA.compareTo(moduleB);
   }
 
-// -------------------------- OTHER METHODS --------------------------
+  // -------------------------- OTHER METHODS --------------------------
 
   public void addDependency(IvyPackage dependencyPackage)
   {
@@ -68,7 +73,7 @@ public class IvyPackage implements Comparable<IvyPackage>
 
   public List<IvyPackage> getDependencies()
   {
-     return  new ArrayList<IvyPackage>(dependencies);
+    return new ArrayList<IvyPackage>(dependencies);
   }
 
   public String getModuleName()
@@ -132,7 +137,7 @@ public class IvyPackage implements Comparable<IvyPackage>
     return orgName + " " + moduleName + " " + version;
   }
 
-  @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
+  @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
   public void touch()
   {
     String text = "Touching " + getKey();
@@ -143,7 +148,7 @@ public class IvyPackage implements Comparable<IvyPackage>
     count++;
   }
 
-  public  String getKey()
+  public String getKey()
   {
     return orgName + " " + moduleName + " " + version;
   }

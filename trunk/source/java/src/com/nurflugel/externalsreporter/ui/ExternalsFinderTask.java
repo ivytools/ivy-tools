@@ -3,7 +3,6 @@ package com.nurflugel.externalsreporter.ui;
 import com.nurflugel.BuildableItem;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
-
 import java.util.*;
 import javax.swing.*;
 
@@ -23,41 +22,6 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
-  /** The map is a map of externals with the URL as the key, and a list of URLs to the dependent project dirs. */
-  // private void addToExternalsList(Map<BuildableProjects, Map<String, List<External>>> projectMap) throws SVNException
-  // {
-  // System.out.println("ExternalsFinderTask.addToExternalsList");
-  //
-  // // SVNWCClient wcClient = SVNClientManager.newInstance().getWCClient();
-  // SubversionHandler subversionHandler = new SubversionHandler(mainFrame);
-  //
-  // System.out.println("4");
-  //
-  // long startTime    = new Date().getTime();
-  // int  currentCount = 0;
-  //
-  // for (BranchNode branch : branches)
-  // {
-  // System.out.println("branch = " + branch);
-  //
-  // Map<String, List<External>> listHashMap = new HashMap<String, List<External>>();
-  //
-  // projectMap.put(branch.getProject(), listHashMap);
-  //
-  // String url = branch.getBranchUrl();
-  //
-  // mainFrame.addStatus("Getting externals for " + url + "        Time remaining: "
-  // + Util.calculateTimeRemaining(startTime, currentCount++, branches.size()));
-  // progressBar.setValue(progressBar.getValue() + 1);
-  // System.out.println("5");
-  //
-  // SVNWCClient    wcClient  = subversionHandler.getWcClient();
-  // List<External> externals = subversionHandler.getExternals(url, wcClient, externalList);
-  //
-  // listHashMap.put(url, externals);
-  // }
-  // }
 
   @Override
   protected Object doInBackground() throws Exception

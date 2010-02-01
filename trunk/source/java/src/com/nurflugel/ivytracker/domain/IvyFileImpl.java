@@ -24,8 +24,14 @@ public class IvyFileImpl implements IvyFile
   private String                     version;
   private int                        count;
 
-  public IvyFileImpl(String org, String module, String version, URL url, Collection<IvyFile> ivyFiles, Map<String, IvyFile> ivyFilesMap,
-                     IvyTrackerMainFrame mainFrame, EventList<IvyFile> repositoryList)
+  public IvyFileImpl(String               org,
+                     String               module,
+                     String               version,
+                     URL                  url,
+                     Collection<IvyFile>  ivyFiles,
+                     Map<String, IvyFile> ivyFilesMap,
+                     IvyTrackerMainFrame  mainFrame,
+                     EventList<IvyFile>   repositoryList)
   {
     this.org       = org;
     this.module    = module;
@@ -73,8 +79,13 @@ public class IvyFileImpl implements IvyFile
     }
   }
 
-  private IvyFile addToFiles(String org, String module, String version, Map<String, IvyFile> ivyFilesMap, Collection<IvyFile> ivyFiles,
-                             IvyFile ivyFile, EventList<IvyFile> repositoryList)
+  private IvyFile addToFiles(String               org,
+                             String               module,
+                             String               version,
+                             Map<String, IvyFile> ivyFilesMap,
+                             Collection<IvyFile>  ivyFiles,
+                             IvyFile              ivyFile,
+                             EventList<IvyFile>   repositoryList)
   {
     String key = getKey(org, module, version);
 

@@ -2,11 +2,14 @@ package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
+import com.nurflugel.ivybrowser.domain.IvyFile;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
+import com.nurflugel.ivytracker.handlers.SubversionIvyFileFinderHandler;
 import static javax.swing.JOptionPane.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -15,9 +18,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Map;
 
-/** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
+/** this is a factory to return the Subversion web dav handler by figuring out which one is which... (Subversion vs. html) */
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class HandlerFactory
 {
@@ -85,5 +89,11 @@ public class HandlerFactory
   private HandlerFactory() {}
 
   /** Return a handler which will find all of the Ivy files in the list of repositories. */
-  public static void getIvyFileFinderHandler(IvyTrackerMainFrame mainFrame, Map<String, IvyPackage> ivyFiles, String... repositories) {}
+  public static IvyFileFinderHandler getIvyFileFinderHandler(IvyTrackerMainFrame        mainFrame,
+                                                             Map<String, List<IvyFile>> ivyFiles,
+                                                             EventList<String>          projectUrls,
+                                                             String...                  repositories)
+  {
+    return new SubversionIvyFileFinderHandler(mainFrame, ivyFiles, projectUrls, repositories);
+  }
 }

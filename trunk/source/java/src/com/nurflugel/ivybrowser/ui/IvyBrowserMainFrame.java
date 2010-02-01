@@ -16,7 +16,6 @@ import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
-
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -29,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
-
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.centerApp;
 import static java.awt.BorderLayout.CENTER;
@@ -62,7 +60,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   private JScrollPane                                       scrollPane;
   private JPanel                                            holdingPanel;
   private String                                            ivyRepositoryPath;
-  private BaseWebIvyRepositoryBrowserHandler parsingHandler;
+  private BaseWebIvyRepositoryBrowserHandler                parsingHandler;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap          = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
   private InfiniteProgressPanel                             progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient - click to cancel",
                                                                                                             this);
@@ -71,7 +69,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   public IvyBrowserMainFrame()
   {
     initializeComponents();
-      pack();
+    pack();
     setSize(800, 600);
     centerApp(this);
 
@@ -122,7 +120,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     mainPanel.add(statusLabel, SOUTH);
     addListeners();
     setupTable();
-      Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
   }
 
   private void addListeners()
@@ -188,7 +186,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   public void specifyRepository(Preferences appPreferences)
   {
-    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(appPreferences,"Select Ivy Repository",IVY_REPOSITORY);
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(appPreferences, "Select Ivy Repository", IVY_REPOSITORY);
 
     dialog.setVisible(true);
 
@@ -241,7 +239,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   private void reparse()
   {
-    setCursor(busyCursor);
+    setBusyCursor();
     holdingPanel.remove(scrollPane);
     progressPanel.start();
     ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
@@ -263,10 +261,9 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     }
   }
 
-// ------------------------ INTERFACE METHODS ------------------------
+  // ------------------------ INTERFACE METHODS ------------------------
 
-
-// --------------------- Interface UiMainFrame ---------------------
+  // --------------------- Interface UiMainFrame ---------------------
 
   // tod implement these
   @Override
@@ -302,9 +299,10 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   @Override
   public void setBusyCursor()
   {
-    // To change body of implemented methods use File | Settings | File Templates.
+    setCursor(busyCursor);
   }
 
+  @Override
   public void setNormalCursor()
   {
     setCursor(normalCursor);
@@ -345,7 +343,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     progressPanel.stop();
   }
 
-// -------------------------- OTHER METHODS --------------------------
+  // -------------------------- OTHER METHODS --------------------------
 
   private void adjustColumnWidths()
   {
@@ -386,7 +384,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     preferences.put(SAVE_DIR, dir);
   }
 
-// --------------------------- main() method ---------------------------
+  // --------------------------- main() method ---------------------------
 
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
