@@ -1,27 +1,26 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
+import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
-import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 /** Subversion flavored handler. Subversion hosted repositories render HTML a bit differently than pure HTML-based repositories. */
-public class SubversionWebDavHandler extends BaseWebHandler
+public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public SubversionWebDavHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
+  public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
                                  Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);

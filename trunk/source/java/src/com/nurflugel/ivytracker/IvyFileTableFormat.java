@@ -1,6 +1,7 @@
 package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.IvyFile;
 
 /**
@@ -42,15 +43,15 @@ public class IvyFileTableFormat implements TableFormat
   @Override
   public Object getColumnValue(Object o, int i)
   {
-    IvyFile ivyFile = (IvyFile) o;
+    IvyPackage ivyFile = (IvyPackage) o;
 
     switch (i)
     {
       case ORG:
-        return ivyFile.getOrg();
+        return ivyFile.getOrgName();
 
       case MODULE:
-        return ivyFile.getModule();
+        return ivyFile.getModuleName();
 
       case REVISION:
         return ivyFile.getVersion();

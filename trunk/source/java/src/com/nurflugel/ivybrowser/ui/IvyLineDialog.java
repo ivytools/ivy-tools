@@ -1,9 +1,8 @@
 package com.nurflugel.ivybrowser.ui;
 
-import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import java.awt.*;
 import static java.awt.Cursor.*;
 import java.awt.datatransfer.StringSelection;
@@ -327,7 +326,7 @@ public class IvyLineDialog extends JDialog
     final String       moduleName    = ivyPackage.getModuleName();
     final String       version       = ivyPackage.getVersion();
 
-    // final BaseWebHandler handler       = HandlerFactory.getHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
+    // final BaseWebHandler handler       = HandlerFactory.getIvyRepositoryHandler(mainFrame, ivyRepositoryPath, null, mainFrame.getPackageMap());
     int height = 0;
 
     for (String includedFile : includedFiles)
@@ -347,7 +346,7 @@ public class IvyLineDialog extends JDialog
             {
               try
               {
-                BaseWebHandler.downloadFile(fileLabel, orgName, moduleName, version, mainFrame, ivyRepositoryPath);
+                BaseWebIvyRepositoryBrowserHandler.downloadFile(fileLabel, orgName, moduleName, version, mainFrame, ivyRepositoryPath);
               }
               catch (IOException e)
               {

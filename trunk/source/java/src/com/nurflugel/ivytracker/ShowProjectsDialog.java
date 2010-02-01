@@ -1,6 +1,8 @@
 package com.nurflugel.ivytracker;
 
 import static com.nurflugel.common.ui.Util.center;
+
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
@@ -19,7 +21,7 @@ public class ShowProjectsDialog extends JDialog
   private JButton           buttonOK;
   private JTree             projectsTree;
 
-  public ShowProjectsDialog(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
+  public ShowProjectsDialog(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
   {
     setContentPane(contentPane);
     setModal(true);
@@ -74,7 +76,7 @@ public class ShowProjectsDialog extends JDialog
     dispose();
   }
 
-  private void populateTree(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
+  private void populateTree(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
   {
     TreeModel treeModel = new IvyProjectTreeModel(projectIvyFiles, ivyFilesMap);
 
@@ -85,7 +87,7 @@ public class ShowProjectsDialog extends JDialog
 
   public static void main(String[] args)
   {
-    ShowProjectsDialog dialog = new ShowProjectsDialog(new ArrayList<IvyFile>(), new HashMap<String, IvyFile>());
+    ShowProjectsDialog dialog = new ShowProjectsDialog(new ArrayList<IvyPackage>(), new HashMap<String, IvyPackage>());
 
     dialog.pack();
     dialog.setVisible(true);

@@ -1,11 +1,12 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
+import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
-import javax.swing.*;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import static javax.swing.JOptionPane.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Map;
 
 /** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
@@ -23,8 +23,10 @@ public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
 
-  public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList,
-                                          Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+  public static BaseWebIvyRepositoryBrowserHandler getIvyRepositoryHandler(UiMainFrame                                       ivyBrowserMainFrame,
+                                                                           String                                            ivyRepositoryPath,
+                                                                           EventList<IvyPackage>                             repositoryList,
+                                                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
 
@@ -81,4 +83,7 @@ public class HandlerFactory
   }
 
   private HandlerFactory() {}
+
+  /** Return a handler which will find all of the Ivy files in the list of repositories. */
+  public static void getIvyFileFinderHandler(IvyTrackerMainFrame mainFrame, Map<String, IvyPackage> ivyFiles, String... repositories) {}
 }

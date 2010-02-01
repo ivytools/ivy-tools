@@ -1,14 +1,13 @@
 package com.nurflugel.ivytracker;
 
-import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Util.centerApp;
-import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
-import com.nurflugel.ivytracker.domain.IvyFile;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Map;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
+
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
+import java.awt.event.*;
+import java.util.Map;
+
+import static com.nurflugel.common.ui.Util.centerApp;
 
 public class FindUsingProjectsDialog extends JDialog
 {
@@ -18,7 +17,7 @@ public class FindUsingProjectsDialog extends JDialog
   private JButton           buttonOK;
   private JTree             projectsTree;
 
-  public FindUsingProjectsDialog(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
+  public FindUsingProjectsDialog(IvyPackage ivyFile, Map<String, IvyPackage> ivyFilesMap)
   {
     setContentPane(contentPane);
     setModal(true);
@@ -73,7 +72,7 @@ public class FindUsingProjectsDialog extends JDialog
     dispose();
   }
 
-  private void populateTree(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
+  private void populateTree(IvyPackage ivyFile, Map<String, IvyPackage> ivyFilesMap)
   {
     TreeModel treeModel = new FindUsingProjectsTreeModel(ivyFile, ivyFilesMap);
 
