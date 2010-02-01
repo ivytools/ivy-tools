@@ -17,10 +17,8 @@ public interface UiMainFrame
   void setReady(boolean isReady);
   void showSevereError(String message, Exception e);
   void stopThreads();
+  void setStatusLabel(String text);
+  void stopProgressPanel();
 
-    void setStatusLabel(String text);
-
-    void stopProgressPanel();
-
-//    void processResults();
+  // void processResults();
 }
