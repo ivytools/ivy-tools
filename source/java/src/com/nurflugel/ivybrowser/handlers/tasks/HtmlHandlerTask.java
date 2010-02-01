@@ -1,8 +1,8 @@
 package com.nurflugel.ivybrowser.handlers.tasks;
 
-import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
-import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -22,7 +22,7 @@ public class HtmlHandlerTask implements Runnable
   {
     this.htmlHandler   = htmlHandler;
     this.repositoryUrl = repositoryUrl;
-    this.orgName       = BaseWebHandler.stripSlash(orgName);
+    this.orgName       = BaseWebIvyRepositoryBrowserHandler.stripSlash(orgName);
   }
 
   @Override
@@ -67,6 +67,7 @@ public class HtmlHandlerTask implements Runnable
           catch (Exception e)
           {
             System.out.println("Had problem parsing package " + orgName + " " + moduleName);
+            e.printStackTrace();
           }
         }
       }

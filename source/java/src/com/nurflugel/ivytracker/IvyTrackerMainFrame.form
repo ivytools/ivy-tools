@@ -2,127 +2,120 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.nurflugel.ivytracker.IvyTrackerMainFrame">
   <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="595" height="400"/>
+      <xy x="20" y="20" width="643" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="8a66c" binding="buttonPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="8a66c" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="North"/>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="3fec4" layout-manager="GridBagLayout">
-            <constraints border-constraint="West"/>
-            <properties/>
-            <border type="etched" title="Ivy usage output"/>
-            <children>
-              <component id="460d" class="javax.swing.JRadioButton" binding="showAllLibrariesRadioButton" default-binding="true">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="1.0"/>
-                </constraints>
-                <properties>
-                  <selected value="true"/>
-                  <text value="Show all libraries"/>
-                </properties>
-              </component>
-              <component id="83742" class="javax.swing.JRadioButton" binding="showOnlyUsedLibrariesRadioButton" default-binding="true">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="1.0"/>
-                </constraints>
-                <properties>
-                  <text value="Show only used libraries"/>
-                </properties>
-              </component>
-              <component id="6941" class="javax.swing.JRadioButton" binding="showOnlyUnusedLibrariesRadioButton" default-binding="true">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="1.0"/>
-                </constraints>
-                <properties>
-                  <text value="Show only unused libraries"/>
-                </properties>
-              </component>
-            </children>
-          </grid>
-          <grid id="8f6d9" layout-manager="GridBagLayout">
-            <constraints border-constraint="Center"/>
-            <properties/>
-            <border type="etched" title="Filter text"/>
-            <children>
-              <component id="18be5" class="javax.swing.JTextField" binding="filterField">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
-                  </grid>
-                  <gridbag weightx="1.0" weighty="1.0"/>
-                </constraints>
-                <properties/>
-              </component>
-            </children>
-          </grid>
-          <grid id="7c582" layout-manager="GridBagLayout">
-            <constraints border-constraint="East"/>
+          <grid id="22cdb" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="a39a0" class="javax.swing.JButton" binding="quitButton" default-binding="true">
+              <grid id="694bc" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="0.0"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <text value="Quit"/>
-                </properties>
-              </component>
-              <component id="d2500" class="javax.swing.JButton" binding="showProjectsTreeButton" default-binding="true">
+                <properties/>
+                <border type="etched" title="Subversion Repositories"/>
+                <children>
+                  <grid id="c6108" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children/>
+                  </grid>
+                  <grid id="d2a38" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="eb8c8" class="javax.swing.JTextField" binding="subversionFilterField">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties/>
+                      </component>
+                      <component id="8221f" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Filter Subversion result:"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+              <grid id="38246" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="0.0"/>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <text value="Show projects tree"/>
-                  <toolTipText value="Show a tree of projects so you can drill down"/>
-                </properties>
-              </component>
-              <component id="de5e1" class="javax.swing.JButton" binding="exportTableToClipboardButton" default-binding="true">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="1.0" weighty="0.0"/>
-                </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <text value="Export table to clipboard"/>
-                  <toolTipText value="Export the visible table rows to your cut and paste clipboard"/>
-                </properties>
-              </component>
-              <component id="983d4" class="javax.swing.JButton" binding="findMissingIvyFilesButton" default-binding="true">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0"/>
-                </constraints>
-                <properties>
-                  <text value="Find missing Ivy files"/>
-                  <toolTipText value="Find Ivy files referred to by other Ivy files, but aren't in the repository"/>
-                </properties>
-              </component>
-              <component id="a7ed4" class="javax.swing.JButton" binding="specifyIvyReposioryButton" default-binding="true">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0"/>
-                </constraints>
-                <properties>
-                  <text value="Specify Ivy Reposiory"/>
-                </properties>
-              </component>
+                <properties/>
+                <border type="etched" title="Ivy Repository"/>
+                <children>
+                  <grid id="16e7e" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children/>
+                  </grid>
+                  <grid id="8b816" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="21e59" class="javax.swing.JTextField" binding="ivyFilterField">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties/>
+                      </component>
+                      <component id="aff1a" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Filter Ivy Packages"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
             </children>
           </grid>
         </children>
       </grid>
-      <grid id="cd15" binding="statusPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="cd15" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="South"/>
         <properties/>
         <border type="none"/>
@@ -134,26 +127,142 @@
               <text value="Please wait while the repository is scanned..."/>
             </properties>
           </component>
+          <grid id="59900" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints border-constraint="North"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ebe72" class="javax.swing.JButton" binding="quitButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Quit"/>
+                </properties>
+              </component>
+              <component id="f694d" class="javax.swing.JButton" binding="addSubversionRepositoryButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Add Subversion Repository"/>
+                </properties>
+              </component>
+              <grid id="9a3af" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="5039c" class="javax.swing.JButton" binding="showProjectsUsingSelectedButton" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Show projects using selected Ivy modules"/>
+                    </properties>
+                  </component>
+                  <component id="8f03f" class="javax.swing.JButton" binding="showIvyModulesUsedButton" default-binding="true">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Show Ivy modules used by project"/>
+                    </properties>
+                  </component>
+                  <component id="105cd" class="javax.swing.JButton" binding="showUnusedIvyModulesButton" default-binding="true">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Show unused Ivy modules"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="542d6" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="71aac" class="javax.swing.JButton" binding="specifyIvyRepositoryButton" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Specify Ivy Repository"/>
+                    </properties>
+                  </component>
+                  <vspacer id="82864">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </vspacer>
+                  <component id="c475" class="javax.swing.JButton" binding="parseRepositoriesButton" default-binding="true">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Parse repositories"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
         </children>
       </grid>
-      <grid id="d8465" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="d8465" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="dd2e9">
-            <constraints border-constraint="Center"/>
+          <splitpane id="2c6e1">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="200"/>
+              </grid>
+            </constraints>
             <properties>
-              <toolTipText value="Click on a row to see what projects use this item"/>
+              <dividerLocation value="350"/>
             </properties>
             <border type="none"/>
             <children>
-              <component id="e1506" class="javax.swing.JTable" binding="resultsTable">
-                <constraints/>
+              <scrollpane id="55f09">
+                <constraints>
+                  <splitpane position="left"/>
+                </constraints>
                 <properties/>
-              </component>
+                <border type="none"/>
+                <children>
+                  <component id="b2187" class="javax.swing.JTable" binding="subversionResultsTable">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="f6e1f">
+                <constraints>
+                  <splitpane position="right"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="dfe75" class="javax.swing.JTable" binding="ivyResultsTable">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
-          </scrollpane>
+          </splitpane>
         </children>
       </grid>
     </children>

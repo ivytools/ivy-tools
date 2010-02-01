@@ -15,7 +15,7 @@ import com.nurflugel.common.ui.Util;
 import com.nurflugel.common.ui.Version;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -62,7 +62,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   private JScrollPane                                       scrollPane;
   private JPanel                                            holdingPanel;
   private String                                            ivyRepositoryPath;
-  private BaseWebHandler                                    parsingHandler;
+  private BaseWebIvyRepositoryBrowserHandler parsingHandler;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap          = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
   private InfiniteProgressPanel                             progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient - click to cancel",
                                                                                                             this);
@@ -127,14 +127,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   private void addListeners()
   {
-    // libraryField.addKeyListener(new KeyAdapter()
-    // {
-    // @Override
-    // public void keyReleased(KeyEvent e)
-    // {
-    // filterTable();
-    // }
-    // });
     quitButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -157,13 +149,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
         }
       });
 
-    // libraryField.addActionListener(new ActionListener()
-    // {
-    // public void actionPerformed(ActionEvent e)
-    // {
-    // filterTable();
-    // }
-    // });
     resultsTable.addMouseListener(new MouseAdapter()
       {
         @Override
@@ -219,19 +204,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     }
   }
 
-  private void setupTable()
-  {
-    SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(repositoryList);
-    TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
-    FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
-    EventTableModel<IvyPackage> tableModel                 = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
-
-    resultsTable.setModel(tableModel);
-    resultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
-
-    TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
-  }
-
   @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
   private void showIvyLine(MouseEvent e) throws IOException
   {
@@ -254,6 +226,19 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     }
   }
 
+  private void setupTable()
+  {
+    SortedList<IvyPackage>      sortedPackages             = new SortedList<IvyPackage>(repositoryList);
+    TextComponentMatcherEditor  textComponentMatcherEditor = new TextComponentMatcherEditor(libraryField, new IvyPackageFilterator());
+    FilterList<IvyPackage>      filteredPackages           = new FilterList<IvyPackage>(sortedPackages, textComponentMatcherEditor);
+    EventTableModel<IvyPackage> tableModel                 = new EventTableModel<IvyPackage>(filteredPackages, new IvyPackageTableFormat());
+
+    resultsTable.setModel(tableModel);
+    resultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
+
+    TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
+  }
+
   private void reparse()
   {
     setCursor(busyCursor);
@@ -271,16 +256,17 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
       repositoryList.clear();
       packageMap.clear();
 
-      parsingHandler = HandlerFactory.getHandler(this, ivyRepositoryPath, repositoryList, packageMap);
+      parsingHandler = HandlerFactory.getIvyRepositoryHandler(this, ivyRepositoryPath, repositoryList, packageMap);
 
       parsingHandler.execute();
       holdingPanel.add(scrollPane);
     }
   }
 
-  // ------------------------ INTERFACE METHODS ------------------------
+// ------------------------ INTERFACE METHODS ------------------------
 
-  // --------------------- Interface UiMainFrame ---------------------
+
+// --------------------- Interface UiMainFrame ---------------------
 
   // tod implement these
   @Override
@@ -319,10 +305,13 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     // To change body of implemented methods use File | Settings | File Templates.
   }
 
-  @Override
   public void setNormalCursor()
   {
-    // To change body of implemented methods use File | Settings | File Templates.
+    setCursor(normalCursor);
+    statusLabel.setText("");
+    adjustColumnWidths();
+    libraryField.setEnabled(true);
+    libraryField.requestFocus();
   }
 
   @Override
@@ -343,37 +332,20 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     parsingHandler.halt();
   }
 
-  // -------------------------- OTHER METHODS --------------------------
-
-  public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
-  {
-    return packageMap;
-  }
-
-  public String getPreferredSaveDir()
-  {
-    return preferences.get(SAVE_DIR, null);
-  }
-
-  public void setPreferredSaveDir(String dir)
-  {
-    preferences.put(SAVE_DIR, dir);
-  }
-
+  @Override
   public void setStatusLabel(String text)
   {
     statusLabel.setText(text);
     progressPanel.setText(text);
   }
 
-  public void showNormal()
+  @Override
+  public void stopProgressPanel()
   {
-    setCursor(normalCursor);
-    statusLabel.setText("");
-    adjustColumnWidths();
-    libraryField.setEnabled(true);
-    libraryField.requestFocus();
+    progressPanel.stop();
   }
+
+// -------------------------- OTHER METHODS --------------------------
 
   private void adjustColumnWidths()
   {
@@ -399,12 +371,22 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     }
   }
 
-  public void stopProgressPanel()
+  public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
   {
-    progressPanel.stop();
+    return packageMap;
   }
 
-  // --------------------------- main() method ---------------------------
+  public String getPreferredSaveDir()
+  {
+    return preferences.get(SAVE_DIR, null);
+  }
+
+  public void setPreferredSaveDir(String dir)
+  {
+    preferences.put(SAVE_DIR, dir);
+  }
+
+// --------------------------- main() method ---------------------------
 
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)

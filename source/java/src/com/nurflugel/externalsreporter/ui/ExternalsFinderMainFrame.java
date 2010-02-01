@@ -150,6 +150,23 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     }
   }
 
+  /** toggle the buttons on/off based on the validity of the dot executable - don't let them proceed wihtout a valid value. */
+  private void validateDotPath()
+  {
+    File    dotPath        = config.getDotExecutablePath();
+    String  path           = dotPath.getName();
+    boolean isDotPathValid = dotPath.exists();
+
+    isDotPathValid &= path.startsWith("dot");
+    parseRepositoriesButton.setEnabled((repositoryCheckboxPanel.getComponents().length > 0) && isDotPathValid);
+    addRepositoryButton.setEnabled(isDotPathValid);
+
+    if (!isDotPathValid)
+    {
+      findDotButton.requestFocus();
+    }
+  }
+
   @SuppressWarnings({ "unchecked" })
   private void setupGlazedLists()
   {
@@ -238,116 +255,6 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
 
     TableComparatorChooser<ProjectExternalReference> projectsTableSorter = new TableComparatorChooser<ProjectExternalReference>(projectsTable,
                                                                                                                                 sortedProjects, true);
-  }
-
-  /** Size the table columns to be just big enough to hold what they need. */
-  private void sizeTableColumns(JTable table)
-  {
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-    TableColumnModel columnModel = table.getColumnModel();
-    int              columnCount = table.getColumnCount();
-    int[]            widths      = new int[columnCount];
-    int              tableWidth  = table.getWidth();
-
-    // if there are no rows, space the columns evenly
-    widths[0] = 70;
-
-    int totalWidth = widths[0];
-
-    for (int col = 1; col < columnCount; col++)
-    {
-      widths[col] = (tableWidth) / (columnCount - 1);
-      // widths[col] = (tableWidth - widths[0]) / (columnCount - 1);
-
-      if (col == (columnCount - 1))
-      {
-        widths[col] = tableWidth - totalWidth;
-      }
-      else
-      {
-        totalWidth += widths[col];
-      }
-    }
-
-    for (int col = 0; col < columnCount; col++)
-    {
-      TableColumn column = columnModel.getColumn(col);
-
-      column.setPreferredWidth(widths[col]);
-    }
-  }
-
-  /** Size the table columns to be just big enough to hold what they need. */
-  private void resizeTableColumns(JTable table)
-  {
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-    TableColumnModel columnModel = table.getColumnModel();
-    int              columnCount = table.getColumnCount();
-    int              rowCount    = table.getRowCount();
-    int[]            widths      = new int[columnCount];
-    int              tableWidth  = table.getParent().getWidth();
-    int              totalWidth  = 0;
-
-    for (int col = 0; col < columnCount; col++)
-    {
-      int maxWidth = 70;  // no column is less than 70 pixels wide
-
-      for (int row = 0; row < rowCount; row++)
-      {
-        TableCellRenderer cellRenderer      = table.getCellRenderer(row, col);
-        Object            value             = table.getValueAt(row, col);
-        Component         rendererComponent = cellRenderer.getTableCellRendererComponent(table, value, false, false, row, col);
-
-        maxWidth = Math.max(rendererComponent.getPreferredSize().width, maxWidth);
-      }
-
-      widths[col] = maxWidth;
-
-      if (col == (columnCount - 1))
-      {
-        widths[col] = tableWidth - totalWidth;
-      }
-      else
-      {
-        totalWidth += widths[col];
-      }
-    }
-
-    for (int col = 0; col < columnCount; col++)
-    {
-      TableColumn column = columnModel.getColumn(col);
-
-      column.setPreferredWidth(widths[col]);
-
-      // column.setMinWidth(widths[col]);
-    }
-  }
-
-  /** toggle the buttons on/off based on the validity of the dot executable - don't let them proceed wihtout a valid value. */
-  private void validateDotPath()
-  {
-    File    dotPath        = config.getDotExecutablePath();
-    String  path           = dotPath.getName();
-    boolean isDotPathValid = dotPath.exists();
-
-    isDotPathValid &= path.startsWith("dot");
-    parseRepositoriesButton.setEnabled((repositoryCheckboxPanel.getComponents().length > 0) && isDotPathValid);
-    addRepositoryButton.setEnabled(isDotPathValid);
-
-    if (!isDotPathValid)
-    {
-      findDotButton.requestFocus();
-    }
-  }
-
-  @Override
-  public void addStatus(String text)
-  {
-    System.out.println(text);
-    statusLabel.setText(text);
-    progressPanel.setText(text);
   }
 
   private void addListeners()
@@ -508,48 +415,6 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
       });
   }
 
-  /** Cheesy, but this forces the list to redisplay. */
-  private void refreshProjects()
-  {
-    List<ProjectExternalReference> list = new ArrayList<ProjectExternalReference>(uniqueProjectsList);
-
-    for (ProjectExternalReference reference : list)
-    {
-      uniqueProjectsList.add(reference);
-    }
-  }
-
-  /** Cheesy, but this forces the list to redisplay. */
-  private void refreshExternals()
-  {
-    List<External> list = new ArrayList<External>(uniqueExternalsList);
-
-    for (External external : list)
-    {
-      uniqueExternalsList.add(external);
-    }
-  }
-
-  /** Switch all the items in the filter list to the value specified. */
-  private void toggleAllExternalItems(boolean selected, FilterList<External> list)
-  {
-    for (External selectable : list)
-    {
-      selectable.setSelected(selected);
-      list.add(selectable);
-    }
-  }
-
-  /** Switch all the items in the filter list to the value specified. */
-  private void toggleAllItems(boolean selected, FilterList<ProjectExternalReference> list)
-  {
-    for (ProjectExternalReference selectable : list)
-    {
-      selectable.setSelected(selected);
-      list.add(selectable);
-    }
-  }
-
   private void doQuitAction()
   {
     config.saveSettings();
@@ -612,27 +477,6 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     }
   }
 
-  /** Add a repository to the list. */
-  private void addRepository(String newUrl)
-  {
-    if (!StringUtils.isEmpty(newUrl))
-    {
-      if (!newUrl.endsWith("/"))
-      {
-        newUrl += "/";
-      }
-
-      config.setLastRepository(newUrl);
-
-      JCheckBox box = new JCheckBox(newUrl, true);
-
-      repositoryCheckboxPanel.add(box);
-      thePanel.validate();
-      addStatus(" ");
-      parseRepositoriesButton.setEnabled(true);
-    }
-  }
-
   /** Go through the repositories and see what's there for externals. */
   private void scanRepositories()
   {
@@ -669,78 +513,6 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     {
       e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
     }
-  }
-
-  // ------------------------ INTERFACE METHODS ------------------------
-
-  // --------------------- Interface UiMainFrame ---------------------
-
-  /**  */
-  @Override
-  public Os getOs()
-  {
-    return os;
-  }
-
-  @Override
-  public void initializeStatusBar(int minimum, int maximum, int initialValue, boolean visible)
-  {
-    progressBar.setMinimum(minimum);
-    progressBar.setMaximum(maximum);
-    progressBar.setValue(initialValue);
-    progressBar.setVisible(visible);
-  }
-
-  @Override
-  public boolean isTest()
-  {
-    return isTest;
-  }
-
-  @Override
-  @SuppressWarnings({ "BooleanMethodNameMustStartWithQuestion" })
-  public boolean getTestDataFromFile()
-  {
-    return getTestDataFromFile;
-  }
-
-  @Override
-  public void setReady(boolean isReady) {}
-
-  @Override
-  public void showSevereError(String message, Exception e)
-  {
-    // todo
-  }
-
-  @Override
-  public void stopThreads() {}
-
-  // -------------------------- OTHER METHODS --------------------------
-
-  private void createUIComponents()
-  {
-    repositoryCheckboxPanel = new JPanel();
-
-    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, BoxLayout.Y_AXIS);
-
-    repositoryCheckboxPanel.setLayout(layout);
-  }
-
-  public Config getConfig()
-  {
-    return config;
-  }
-
-  void processResults()
-  {
-    generateReportButton.setEnabled(true);
-    clearPreviousResultsButton.setEnabled(true);
-    setStatus("");
-    resizeTableColumns(externalsTable);
-    resizeTableColumns(projectsTable);
-
-    setNormalCursor();
   }
 
   private void generateReport()
@@ -787,17 +559,232 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     setCursor(Util.busyCursor);
   }
 
-  @Override
-  public void setNormalCursor()
+  /** Cheesy, but this forces the list to redisplay. */
+  private void refreshExternals()
   {
-    setCursor(Util.normalCursor);
-    progressPanel.stop();
+    List<External> list = new ArrayList<External>(uniqueExternalsList);
+
+    for (External external : list)
+    {
+      uniqueExternalsList.add(external);
+    }
   }
 
-  public void setStatus(String text)
+  /** Cheesy, but this forces the list to redisplay. */
+  private void refreshProjects()
   {
+    List<ProjectExternalReference> list = new ArrayList<ProjectExternalReference>(uniqueProjectsList);
+
+    for (ProjectExternalReference reference : list)
+    {
+      uniqueProjectsList.add(reference);
+    }
+  }
+
+  /** Switch all the items in the filter list to the value specified. */
+  private void toggleAllExternalItems(boolean selected, FilterList<External> list)
+  {
+    for (External selectable : list)
+    {
+      selectable.setSelected(selected);
+      list.add(selectable);
+    }
+  }
+
+  /** Switch all the items in the filter list to the value specified. */
+  private void toggleAllItems(boolean selected, FilterList<ProjectExternalReference> list)
+  {
+    for (ProjectExternalReference selectable : list)
+    {
+      selectable.setSelected(selected);
+      list.add(selectable);
+    }
+  }
+
+  /** Size the table columns to be just big enough to hold what they need. */
+  private void resizeTableColumns(JTable table)
+  {
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+    TableColumnModel columnModel = table.getColumnModel();
+    int              columnCount = table.getColumnCount();
+    int              rowCount    = table.getRowCount();
+    int[]            widths      = new int[columnCount];
+    int              tableWidth  = table.getParent().getWidth();
+    int              totalWidth  = 0;
+
+    for (int col = 0; col < columnCount; col++)
+    {
+      int maxWidth = 70;  // no column is less than 70 pixels wide
+
+      for (int row = 0; row < rowCount; row++)
+      {
+        TableCellRenderer cellRenderer      = table.getCellRenderer(row, col);
+        Object            value             = table.getValueAt(row, col);
+        Component         rendererComponent = cellRenderer.getTableCellRendererComponent(table, value, false, false, row, col);
+
+        maxWidth = Math.max(rendererComponent.getPreferredSize().width, maxWidth);
+      }
+
+      widths[col] = maxWidth;
+
+      if (col == (columnCount - 1))
+      {
+        widths[col] = tableWidth - totalWidth;
+      }
+      else
+      {
+        totalWidth += widths[col];
+      }
+    }
+
+    for (int col = 0; col < columnCount; col++)
+    {
+      TableColumn column = columnModel.getColumn(col);
+
+      column.setPreferredWidth(widths[col]);
+
+      // column.setMinWidth(widths[col]);
+    }
+  }
+
+  /** Add a repository to the list. */
+  private void addRepository(String newUrl)
+  {
+    if (!StringUtils.isEmpty(newUrl))
+    {
+      if (!newUrl.endsWith("/"))
+      {
+        newUrl += "/";
+      }
+
+      config.setLastRepository(newUrl);
+
+      JCheckBox box = new JCheckBox(newUrl, true);
+
+      repositoryCheckboxPanel.add(box);
+      thePanel.validate();
+      addStatus(" ");
+      parseRepositoriesButton.setEnabled(true);
+    }
+  }
+
+  /** Size the table columns to be just big enough to hold what they need. */
+  private void sizeTableColumns(JTable table)
+  {
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+    TableColumnModel columnModel = table.getColumnModel();
+    int              columnCount = table.getColumnCount();
+    int[]            widths      = new int[columnCount];
+    int              tableWidth  = table.getWidth();
+
+    // if there are no rows, space the columns evenly
+    widths[0] = 70;
+
+    int totalWidth = widths[0];
+
+    for (int col = 1; col < columnCount; col++)
+    {
+      widths[col] = (tableWidth) / (columnCount - 1);
+      // widths[col] = (tableWidth - widths[0]) / (columnCount - 1);
+
+      if (col == (columnCount - 1))
+      {
+        widths[col] = tableWidth - totalWidth;
+      }
+      else
+      {
+        totalWidth += widths[col];
+      }
+    }
+
+    for (int col = 0; col < columnCount; col++)
+    {
+      TableColumn column = columnModel.getColumn(col);
+
+      column.setPreferredWidth(widths[col]);
+    }
+  }
+
+  @Override
+  public void addStatus(String text)
+  {
+    System.out.println(text);
     statusLabel.setText(text);
     progressPanel.setText(text);
+  }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface UiMainFrame ---------------------
+
+  /**  */
+  @Override
+  public Os getOs()
+  {
+    return os;
+  }
+
+  @Override
+  @SuppressWarnings({ "BooleanMethodNameMustStartWithQuestion" })
+  public boolean getTestDataFromFile()
+  {
+    return getTestDataFromFile;
+  }
+
+  @Override
+  public void initializeStatusBar(int minimum, int maximum, int initialValue, boolean visible)
+  {
+    progressBar.setMinimum(minimum);
+    progressBar.setMaximum(maximum);
+    progressBar.setValue(initialValue);
+    progressBar.setVisible(visible);
+  }
+
+  @Override
+  public boolean isTest()
+  {
+    return isTest;
+  }
+
+  @Override
+  public void setReady(boolean isReady) {}
+
+  @Override
+  public void showSevereError(String message, Exception e)
+  {
+    // todo
+  }
+
+  @Override
+  public void stopThreads() {}
+
+    @Override
+    public void setStatusLabel(String text) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void stopProgressPanel() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+  private void createUIComponents()
+  {
+    repositoryCheckboxPanel = new JPanel();
+
+    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, BoxLayout.Y_AXIS);
+
+    repositoryCheckboxPanel.setLayout(layout);
+  }
+
+  public Config getConfig()
+  {
+    return config;
   }
 
   private void getExternals(List<BranchNode> branches)
@@ -818,7 +805,31 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     }
   }
 
-  // --------------------------- main() method ---------------------------
+  void processResults()
+  {
+    generateReportButton.setEnabled(true);
+    clearPreviousResultsButton.setEnabled(true);
+    setStatus("");
+    resizeTableColumns(externalsTable);
+    resizeTableColumns(projectsTable);
+
+    setNormalCursor();
+  }
+
+  public void setStatus(String text)
+  {
+    statusLabel.setText(text);
+    progressPanel.setText(text);
+  }
+
+  @Override
+  public void setNormalCursor()
+  {
+    setCursor(Util.normalCursor);
+    progressPanel.stop();
+  }
+
+// --------------------------- main() method ---------------------------
 
   public static void main(String[] args)
   {

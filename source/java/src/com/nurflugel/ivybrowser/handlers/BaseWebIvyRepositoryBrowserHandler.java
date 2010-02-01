@@ -1,35 +1,33 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
+import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-import org.apache.commons.lang.StringUtils;
-import static org.apache.commons.lang.StringUtils.*;
-import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import java.awt.*;
+import org.jdom.input.SAXBuilder;
+import javax.swing.*;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.*;
-import static javax.swing.JFileChooser.*;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
+import static org.apache.commons.lang.StringUtils.substringAfterLast;
+import static org.apache.commons.lang.StringUtils.substringBeforeLast;
 
 /** The parent class of all the handlers that parse the repository. */
 @SuppressWarnings({ "ProtectedField", "UseOfSystemOutOrSystemErr" })
-public abstract class BaseWebHandler extends SwingWorker<Object, Object>
+public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Object, Object>
 {
   public static final int NUMBER_OF_THREADS = 5;
 
   // public static final int NUMBER_OF_THREADS = 1;
   private static final int                                  BLOCK_SIZE        = 1024;
-  protected IvyBrowserMainFrame                             mainFrame;
+  protected UiMainFrame                                     mainFrame;
   protected boolean                                         isTest;
   protected boolean                                         shouldRun         = true;
   protected String                                          ivyRepositoryPath;
@@ -51,8 +49,8 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  protected BaseWebHandler(IvyBrowserMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
-                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
+                                               Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     this.mainFrame         = mainFrame;
     this.ivyPackages       = ivyPackages;
@@ -66,7 +64,7 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
   public Object doInBackground()
   {
     findIvyPackages();
-    mainFrame.showNormal();
+    mainFrame.setNormalCursor();
 
     return null;
   }
@@ -271,12 +269,12 @@ public abstract class BaseWebHandler extends SwingWorker<Object, Object>
 
     for (IvyPackage localPackage : localPackages)
     {
-      addPackage(localPackage);
+      addPackageToMap(localPackage);
     }
   }
 
-  /** puts the package into the map of packages. */
-  private void addPackage(IvyPackage ivyPackage)
+  /** puts the package into the map of packages. If the package doesn't exist, create it.  If it already exists (i.e., it's a dependency of something else, merge the info from the declaration pacakge into the existing one in the map*/
+  private void addPackageToMap(IvyPackage ivyPackage)
   {
     String                               orgName    = stripSlash(ivyPackage.getOrgName());
     String                               moduleName = stripSlash(ivyPackage.getModuleName());

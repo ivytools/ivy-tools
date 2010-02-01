@@ -1,6 +1,8 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.TextFilterator;
+import com.nurflugel.ivybrowser.domain.IvyPackage;
+
 import java.util.List;
 
 /**
@@ -16,10 +18,10 @@ public class IvyFileFilterator implements TextFilterator
   @Override
   public void getFilterStrings(List list, Object o)
   {
-    IvyFile item = (IvyFile) o;
+    IvyPackage item = (IvyPackage) o;
 
-    list.add(item.getModule());
+    list.add(item.getModuleName());
     list.add(item.getVersion());
-    list.add(item.getOrg());
+    list.add(item.getOrgName());
   }
 }

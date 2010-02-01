@@ -1,10 +1,9 @@
 package com.nurflugel.ivytracker;
 
+import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.IvyFile;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -14,10 +13,10 @@ import javax.swing.tree.TreePath;
  */
 public class FindUsingProjectsTreeModel implements TreeModel
 {
-  private Map<String, IvyFile> ivyFilesMap;
-  private IvyFile              ivyFile;
+  private Map<String, IvyPackage> ivyFilesMap;
+  private IvyPackage              ivyFile;
 
-  public FindUsingProjectsTreeModel(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
+  public FindUsingProjectsTreeModel(IvyPackage ivyFile, Map<String, IvyPackage> ivyFilesMap)
   {
     this.ivyFile     = ivyFile;
     this.ivyFilesMap = Collections.unmodifiableMap(ivyFilesMap);
@@ -36,9 +35,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public Object getChild(Object o, int i)
   {
-    if (o instanceof IvyFile)
+    if (o instanceof IvyPackage)
     {
-      List<IvyFile> usingIvyFiles = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
+      List<IvyPackage> usingIvyFiles = findAllIvyFilesUsingThisAsDependency((IvyPackage) o);
 
       return usingIvyFiles.get(i);
     }
@@ -49,9 +48,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public int getChildCount(Object o)
   {
-    if (o instanceof IvyFile)
+    if (o instanceof IvyPackage)
     {
-      return findAllIvyFilesUsingThisAsDependency((IvyFile) o).size();
+      return findAllIvyFilesUsingThisAsDependency((IvyPackage) o).size();
     }
 
     return 0;
@@ -60,9 +59,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public boolean isLeaf(Object o)
   {
-    if (o instanceof IvyFile)
+    if (o instanceof IvyPackage)
     {
-      return findAllIvyFilesUsingThisAsDependency((IvyFile) o).isEmpty();
+      return findAllIvyFilesUsingThisAsDependency((IvyPackage) o).isEmpty();
     }
 
     return false;
@@ -76,10 +75,10 @@ public class FindUsingProjectsTreeModel implements TreeModel
   {
     if (o instanceof IvyFile)
     {
-      List<IvyFile> files = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
+      List<IvyPackage> files = findAllIvyFilesUsingThisAsDependency((IvyPackage) o);
       int           i     = 0;
 
-      for (IvyFile file : files)
+      for (IvyPackage file : files)
       {
         if (o1 instanceof IvyFile)
         {
@@ -106,18 +105,18 @@ public class FindUsingProjectsTreeModel implements TreeModel
 
   // -------------------------- OTHER METHODS --------------------------
 
-  private List<IvyFile> findAllIvyFilesUsingThisAsDependency(IvyFile childIvyFile)
+  private List<IvyPackage> findAllIvyFilesUsingThisAsDependency(IvyPackage childIvyFile)
   {
     String        key      = childIvyFile.getKey();
-    List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
+    List<IvyPackage> ivyFiles = new ArrayList<IvyPackage>();
 
-    for (IvyFile file : ivyFilesMap.values())
+    for (IvyPackage file : ivyFilesMap.values())
     {
-      List<String> dependencies = file.getDependencies();
+      Collection<IvyPackage> dependencies = file.getDependencies();
 
-      for (String dependency : dependencies)
+      for (IvyPackage dependency : dependencies)
       {
-        if (dependency.equals(key))
+        if (dependency.getKey().equals(key))
         {
           ivyFiles.add(file);
 

@@ -1,5 +1,7 @@
 package com.nurflugel.ivytracker.domain;
 
+import com.nurflugel.ivybrowser.domain.IvyPackage;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -17,10 +19,10 @@ public class IvyFileComparator implements Comparator, Serializable
   @Override
   public int compare(Object o1, Object o2)
   {
-    IvyFile itemA   = (IvyFile) o1;
-    IvyFile itemB   = (IvyFile) o2;
-    String  moduleA = itemA.getOrg() + itemA.getModule() + itemA.getVersion();
-    String  moduleB = itemB.getOrg() + itemA.getModule() + itemA.getVersion();
+    IvyPackage itemA   = (IvyPackage) o1;
+    IvyPackage itemB   = (IvyPackage) o2;
+    String  moduleA = itemA.getOrgName() + itemA.getModuleName() + itemA.getVersion();
+    String  moduleB = itemB.getOrgName() + itemA.getModuleName() + itemA.getVersion();
 
     return moduleA.compareTo(moduleB);
   }
