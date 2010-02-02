@@ -2,14 +2,14 @@ package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivytracker.domain.Project;
 
-/**
- * Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 7:12:02 PM To change this template use File | Settings | File Templates.
- */
+/** Table format to determine how the Project table gets displayed. */
 public class ProjectFileTableFormat implements TableFormat
 {
-  static final int PROJECT_NAME = 0;
-  private String[] columnNames  = { "Project" };
+  static final int INCLUDE      = 0;
+  static final int PROJECT_NAME = 1;
+  private String[] columnNames  = { "Include?", "Project" };
 
   // ------------------------ INTERFACE METHODS ------------------------
 
@@ -18,7 +18,7 @@ public class ProjectFileTableFormat implements TableFormat
   @Override
   public int getColumnCount()
   {
-    return 1;
+    return 2;
   }
 
   @Override
@@ -35,12 +35,15 @@ public class ProjectFileTableFormat implements TableFormat
   @Override
   public Object getColumnValue(Object o, int i)
   {
-    String project = (String) o;
+    Project project = (Project) o;
 
     switch (i)
     {
+      case INCLUDE:
+        return project.isIncluded();
+
       case PROJECT_NAME:
-        return project;
+        return project.getProjectUrl();
 
       default:
         throw new IllegalStateException();

@@ -66,7 +66,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   public Object doInBackground()
   {
     findIvyPackages();
-    mainFrame.setNormalCursor();
+    mainFrame.setReady(true);
 
     return null;
   }

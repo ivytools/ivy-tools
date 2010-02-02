@@ -1,19 +1,16 @@
 package com.nurflugel.ivybrowser.domain;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableSet;
 
-/** Representation of . */
+/** Representation of an Ivy library's file. */
 public class IvyPackage implements Comparable<IvyPackage>
 {
   private boolean hasJavaDocs;
   private boolean hasSourceCode;
+
+  /** If true, this item is to be included in the GUI activity - this is set by the user by clicking on the checkbox which is rendered. */
+  private boolean isIncluded;
 
   /**
    * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where more
@@ -151,5 +148,15 @@ public class IvyPackage implements Comparable<IvyPackage>
   public String getKey()
   {
     return orgName + " " + moduleName + " " + version;
+  }
+
+  public boolean isIncluded()
+  {
+    return isIncluded;
+  }
+
+  public void setIncluded(boolean included)
+  {
+    isIncluded = included;
   }
 }

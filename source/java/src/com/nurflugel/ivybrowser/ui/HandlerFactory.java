@@ -8,6 +8,7 @@ import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+import com.nurflugel.ivytracker.domain.Project;
 import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
 import com.nurflugel.ivytracker.handlers.SubversionIvyFileFinderHandler;
 import static javax.swing.JOptionPane.*;
@@ -89,10 +90,10 @@ public class HandlerFactory
   private HandlerFactory() {}
 
   /** Return a handler which will find all of the Ivy files in the list of repositories. */
-  public static IvyFileFinderHandler getIvyFileFinderHandler(IvyTrackerMainFrame        mainFrame,
-                                                             Map<String, List<IvyFile>> ivyFiles,
-                                                             EventList<String>          projectUrls,
-                                                             String...                  repositories)
+  public static IvyFileFinderHandler getIvyFileFinderHandler(IvyTrackerMainFrame         mainFrame,
+                                                             Map<Project, List<IvyFile>> ivyFiles,
+                                                             EventList<Project>          projectUrls,
+                                                             String                      repositories)
   {
     return new SubversionIvyFileFinderHandler(mainFrame, ivyFiles, projectUrls, repositories);
   }

@@ -14,6 +14,8 @@ public interface UiMainFrame
   boolean isTest();
   void setBusyCursor();
   void setNormalCursor();
+
+  /** everthing is ready for user input. */
   void setReady(boolean isReady);
   void showSevereError(String message, Exception e);
   void stopThreads();
