@@ -5,6 +5,7 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import com.nurflugel.ivytracker.domain.IvyFile;
 import com.nurflugel.ivytracker.domain.IvyFileImpl;
+import com.nurflugel.ivytracker.domain.Project;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.*;
@@ -51,14 +52,14 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
   @SuppressWarnings({ "unchecked" })
   public Object doInBackground()
   {
-    Map<String, IvyPackage> ivyFilesMap     = new TreeMap<String, IvyPackage>();
-    List<IvyPackage>        projectIvyFiles = new ArrayList<IvyPackage>();
-    Collection<IvyPackage>  allIvyFiles     = new HashSet<IvyPackage>();
+    Map<Project, IvyPackage> ivyFilesMap     = new TreeMap<Project, IvyPackage>();
+    List<IvyPackage>         projectIvyFiles = new ArrayList<IvyPackage>();
+    Collection<IvyPackage>   allIvyFiles     = new HashSet<IvyPackage>();
 
     if (mainFrame.useTestData())
     {
       projectIvyFiles.addAll((Collection<? extends IvyPackage>) readTestData(PROJECT_IVY_FILES_DATA_FILE));
-      ivyFilesMap.putAll((Map<String, IvyPackage>) readTestData(IVY_FILES_MAP_FILE));
+      ivyFilesMap.putAll((Map<Project, IvyPackage>) readTestData(IVY_FILES_MAP_FILE));
       allIvyFiles.addAll(ivyFilesMap.values());
     }
     else
@@ -110,12 +111,12 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
    *
    * <p>todo most of this!</p>
    */
-  private void getProjectIvyFiles(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
+  private void getProjectIvyFiles(List<IvyPackage> projectIvyFiles, Map<Project, IvyPackage> ivyFilesMap)
   {
     // todo - get list from text box...
     try
     {
-      Preferences preferences        = mainFrame.getPreferences();
+      Preferences preferences        = null;  // mainFrame.getPreferences();
       String      projectFilesString = preferences.get(PROJECT_IVY_FILES, "");
 
       projectFilesString = getProjectIvyFilesFromDialog(projectFilesString);
@@ -148,7 +149,7 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     return null;
   }
 
-  private void getIvyFileFromUrl(Map<String, IvyPackage> ivyFilesMap, List<IvyPackage> projectIvyFiles, String urlPath, String projectName)
+  private void getIvyFileFromUrl(Map<Project, IvyPackage> ivyFilesMap, List<IvyPackage> projectIvyFiles, String urlPath, String projectName)
                           throws IOException
   {
     // get any ivy files (*.ivy.xml)
@@ -218,13 +219,13 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     return result;
   }
 
-  private void getIvyFile(URL                     versionUrl,
-                          String                  ivyFileName,
-                          Collection<IvyPackage>  ivyFiles,
-                          String                  org,
-                          String                  module,
-                          String                  revision,
-                          Map<String, IvyPackage> ivyFilesMap) throws IOException
+  private void getIvyFile(URL                      versionUrl,
+                          String                   ivyFileName,
+                          Collection<IvyPackage>   ivyFiles,
+                          String                   org,
+                          String                   module,
+                          String                   revision,
+                          Map<Project, IvyPackage> ivyFilesMap) throws IOException
   {
     URL ivyFileUrl = new URL(versionUrl + "/" + ivyFileName);
 
@@ -233,7 +234,7 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
                                                                  // mainFrame, repositoryList);
   }
 
-  public Collection<IvyPackage> findIvyPackages(Collection<IvyPackage> ivyFiles, Map<String, IvyPackage> ivyFilesMap)
+  public Collection<IvyPackage> findIvyPackages(Collection<IvyPackage> ivyFiles, Map<Project, IvyPackage> ivyFilesMap)
   {
     try
     {
@@ -286,7 +287,8 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     return ivyFiles;
   }
 
-  private void findModules(URL repositoryUrl, String orgName, Collection<IvyPackage> ivyFiles, Map<String, IvyPackage> ivyFilesMap) throws IOException
+  private void findModules(URL repositoryUrl, String orgName, Collection<IvyPackage> ivyFiles, Map<Project, IvyPackage> ivyFilesMap)
+                    throws IOException
   {
     URL           moduleUrl     = new URL(repositoryUrl + "/" + orgName);
     URLConnection urlConnection = moduleUrl.openConnection();
@@ -316,11 +318,11 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     reader.close();
   }
 
-  private void findVersions(URL                     repositoryUrl,
-                            String                  orgName,
-                            String                  moduleName,
-                            Collection<IvyPackage>  ivyFiles,
-                            Map<String, IvyPackage> ivyFilesMap) throws IOException
+  private void findVersions(URL                      repositoryUrl,
+                            String                   orgName,
+                            String                   moduleName,
+                            Collection<IvyPackage>   ivyFiles,
+                            Map<Project, IvyPackage> ivyFilesMap) throws IOException
   {
     URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
     URLConnection urlConnection = versionUrl.openConnection();
@@ -353,12 +355,12 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
 
   /** Get the actual Ivy xml file for this dude. */
   @SuppressWarnings({ "OverlyComplexBooleanExpression" })
-  private void findVersionedLibrary(URL                     repositoryUrl,
-                                    String                  orgName,
-                                    String                  moduleName,
-                                    String                  version,
-                                    Collection<IvyPackage>  ivyFiles,
-                                    Map<String, IvyPackage> ivyFilesMap) throws IOException
+  private void findVersionedLibrary(URL                      repositoryUrl,
+                                    String                   orgName,
+                                    String                   moduleName,
+                                    String                   version,
+                                    Collection<IvyPackage>   ivyFiles,
+                                    Map<Project, IvyPackage> ivyFilesMap) throws IOException
   {
     URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
     URLConnection urlConnection = versionUrl.openConnection();
@@ -417,7 +419,7 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
   }
 
   /** Walk through all the project ivy files and down the dependency trees, touching anything used. */
-  private void touchAllUsedPackages(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap, Set<String> missingIvyFiles)
+  private void touchAllUsedPackages(List<IvyPackage> projectIvyFiles, Map<Project, IvyPackage> ivyFilesMap, Set<String> missingIvyFiles)
   {
     System.out.println("HtmlHandler.touchAllUsedPackages");
 
@@ -427,7 +429,7 @@ public class HtmlIvyHandler extends SwingWorker<Object, Object>
     }
   }
 
-  private void touchDependency(IvyPackage ivyFile, Map<String, IvyPackage> ivyFilesMap, Set<String> missingIvyFiles)
+  private void touchDependency(IvyPackage ivyFile, Map<Project, IvyPackage> ivyFilesMap, Set<String> missingIvyFiles)
   {
     System.out.println("HtmlHandler.touchDependency");
     ivyFile.touch();

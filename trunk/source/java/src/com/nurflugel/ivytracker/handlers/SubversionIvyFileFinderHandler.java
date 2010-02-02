@@ -5,6 +5,7 @@ import com.nurflugel.externalsreporter.ui.HtmlHandler;
 import com.nurflugel.externalsreporter.ui.ScanExternalsTask;
 import com.nurflugel.ivybrowser.domain.IvyFile;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+import com.nurflugel.ivytracker.domain.Project;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +18,18 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
   private final IvyTrackerMainFrame mainFrame;
 
   /** Map of Ivy files keyed by project URL. */
-  private final Map<String, List<IvyFile>> ivyFiles;
-  private final EventList<String>          projectUrls;
-  private final String[]                   repositories;
-  private HtmlHandler                      urlHandler;
-  private boolean                          showBranches = true;
-  private boolean                          showTags     = true;
-  private boolean                          showTrunks   = true;
+  private final Map<Project, List<IvyFile>> ivyFiles;
+  private final EventList<Project>          projectUrls;
+  private final String[]                    repositories;
+  private HtmlHandler                       urlHandler;
+  private boolean                           showBranches = false;
+  private boolean                           showTags     = false;
+  private boolean                           showTrunks   = true;
 
-  public SubversionIvyFileFinderHandler(IvyTrackerMainFrame        mainFrame,
-                                        Map<String, List<IvyFile>> ivyFiles,
-                                        EventList<String>          projectUrls,
-                                        String...                  repositories)
+  public SubversionIvyFileFinderHandler(IvyTrackerMainFrame         mainFrame,
+                                        Map<Project, List<IvyFile>> ivyFiles,
+                                        EventList<Project>          projectUrls,
+                                        String...                   repositories)
   {
     this.mainFrame    = mainFrame;
     this.ivyFiles     = ivyFiles;
@@ -76,8 +77,11 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
               {
                 if (file.endsWith("/"))
                 {
-                  mainFrame.setStatusLabel("Getting ivy files for " + file);
-                  getIvyFiles(file);
+                  for (String childFile : childFiles)
+                  {
+                    mainFrame.setStatusLabel("Getting ivy files for " + file);
+                    scanRootFile(childFile);
+                  }
                 }
               }
             }
@@ -103,7 +107,8 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
       root += "/";
     }
 
-    List<String> files = urlHandler.getFiles(root + "build", false);
+    Project      project = new Project(root);
+    List<String> files   = urlHandler.getFiles(root + "build", false);
 
     if (!files.isEmpty())  // we found some files
     {
@@ -111,13 +116,13 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
       {
         if (file.endsWith("ivy.xml"))
         {
-          List<IvyFile> list = ivyFiles.get(root);
+          List<IvyFile> list = ivyFiles.get(project);
 
           if (list == null)
           {
             list = new ArrayList<IvyFile>();
-            ivyFiles.put(root, list);
-            projectUrls.add(root);
+            ivyFiles.put(project, list);
+            projectUrls.add(project);
           }
 
           IvyFile ivyPackage = new IvyFile(file);

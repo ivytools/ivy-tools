@@ -2,7 +2,7 @@ package com.nurflugel.ivytracker;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.IvyFile;
-
+import com.nurflugel.ivytracker.domain.Project;
 import java.util.*;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -13,10 +13,10 @@ import javax.swing.tree.TreePath;
  */
 public class FindUsingProjectsTreeModel implements TreeModel
 {
-  private Map<String, IvyPackage> ivyFilesMap;
-  private IvyPackage              ivyFile;
+  private Map<Project, IvyPackage> ivyFilesMap;
+  private IvyPackage               ivyFile;
 
-  public FindUsingProjectsTreeModel(IvyPackage ivyFile, Map<String, IvyPackage> ivyFilesMap)
+  public FindUsingProjectsTreeModel(IvyPackage ivyFile, Map<Project, IvyPackage> ivyFilesMap)
   {
     this.ivyFile     = ivyFile;
     this.ivyFilesMap = Collections.unmodifiableMap(ivyFilesMap);
@@ -76,7 +76,7 @@ public class FindUsingProjectsTreeModel implements TreeModel
     if (o instanceof IvyFile)
     {
       List<IvyPackage> files = findAllIvyFilesUsingThisAsDependency((IvyPackage) o);
-      int           i     = 0;
+      int              i     = 0;
 
       for (IvyPackage file : files)
       {
@@ -107,7 +107,7 @@ public class FindUsingProjectsTreeModel implements TreeModel
 
   private List<IvyPackage> findAllIvyFilesUsingThisAsDependency(IvyPackage childIvyFile)
   {
-    String        key      = childIvyFile.getKey();
+    String           key      = childIvyFile.getKey();
     List<IvyPackage> ivyFiles = new ArrayList<IvyPackage>();
 
     for (IvyPackage file : ivyFilesMap.values())
