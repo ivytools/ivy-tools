@@ -107,12 +107,16 @@ public class SubversionMergeGrapher
       {
         System.out.println("<><><><><><> info = " + info);
       }
+
+      GraphVizOutput graphVizOutput=new GraphVizOutput(pathMap, copyInfo);
     }
     catch (SVNException e)
     {
       e.printStackTrace();
     }
   }
+
+
 
   /** find creation and deletion of all trunk, branches, tags - record revisions at each event. */
   private Map<Long, SVNLogEntry> findAllRevisionsWithAddDeletes(SVNClientManager svnClientManager, String url) throws SVNException

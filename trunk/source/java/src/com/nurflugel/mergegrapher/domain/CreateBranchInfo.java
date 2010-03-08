@@ -1,5 +1,7 @@
 package com.nurflugel.mergegrapher.domain;
 
+import java.util.List;
+
 /** This represents the creation of a branch. */
 public class CreateBranchInfo extends CopyInfo
 {
@@ -29,5 +31,10 @@ public class CreateBranchInfo extends CopyInfo
   {
     return "CreateBranchInfo{"
            + "createdPath=" + createdPath + "} " + super.toString();
+  }
+
+  @Override
+  public void writeInfo(List<String> lines) {
+    //todo something
   }
 }

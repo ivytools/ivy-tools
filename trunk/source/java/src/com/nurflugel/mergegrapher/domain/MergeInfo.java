@@ -1,5 +1,8 @@
 package com.nurflugel.mergegrapher.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Representation of a merge. */
 public class MergeInfo extends CopyInfo
 {
@@ -46,5 +49,19 @@ public class MergeInfo extends CopyInfo
   {
     return "MergeInfo{"
            + "destinationPath=" + destinationPath + ", mergeRevisions='" + mergeRevisions + '\'' + "} " + super.toString();
+  }
+
+   public List< Long> getInterestingRevisions(){
+    List<Long> revisions=new ArrayList<Long>();
+    if(getSourceRevision()!=null)revisions.add(getSourceRevision());
+    if(getCopyRevision()!=null)revisions.add(getCopyRevision());
+    //todo merge revisions?
+
+    return revisions;
+  }
+
+  @Override
+  public void writeInfo(List<String> lines) {
+    //todo something
   }
 }

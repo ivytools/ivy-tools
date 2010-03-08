@@ -224,4 +224,38 @@ public class Path implements Comparable
 
     System.out.println("---->deltaValue = " + deltaValue + " old=" + oldTextValue + "  new=" + textValue);
   }
+
+  public List<Long> getInterestingRevisions()
+  {
+    Set<Long> interestingRevisions = new TreeSet<Long>();
+
+    if (creationRevision != null)
+    {
+      interestingRevisions.add(creationRevision);
+    }
+
+    if (deleteRevision != null)
+    {
+      interestingRevisions.add(deleteRevision);
+    }
+    return new ArrayList<Long>(interestingRevisions);
+  }
+
+  // todo the declaration for any revisions in this will be the pathName + revision
+  public void writePath(List<String> lines)
+  {
+    //432  [label="432\ntrunk" style=filled ];
+    // todo something
+  }
+
+  /** If this path has anything interesting concerning this revision, add it to the list. */
+  public void addToRanking(Long revision, StringBuffer sb)
+  {
+    List<Long> interestingRevisions = getInterestingRevisions();
+
+    if (interestingRevisions.contains(revision))
+    {
+      sb.append(pathName).append(revision).append("; ");
+    }
+  }
 }
