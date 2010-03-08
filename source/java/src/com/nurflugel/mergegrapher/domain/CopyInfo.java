@@ -1,11 +1,15 @@
 package com.nurflugel.mergegrapher.domain;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /** Abstract class for representing the copying of information (creation or merge). */
 public abstract class CopyInfo
 {
   private Path sourcePath;
-  private long sourceRevision;
-  private long copyRevision;
+  private Long sourceRevision;
+  private Long copyRevision;
 
   protected CopyInfo(Path sourcePath, long sourceRevision, long copyRevision)
   {
@@ -16,12 +20,12 @@ public abstract class CopyInfo
 
   // --------------------- GETTER / SETTER METHODS ---------------------
 
-  public long getCopyRevision()
+  public Long getCopyRevision()
   {
     return copyRevision;
   }
 
-  public void setCopyRevision(long copyRevision)
+  public void setCopyRevision(Long copyRevision)
   {
     this.copyRevision = copyRevision;
   }
@@ -36,12 +40,12 @@ public abstract class CopyInfo
     this.sourcePath = sourcePath;
   }
 
-  public long getSourceRevision()
+  public Long getSourceRevision()
   {
     return sourceRevision;
   }
 
-  public void setSourceRevision(long sourceRevision)
+  public void setSourceRevision(Long sourceRevision)
   {
     this.sourceRevision = sourceRevision;
   }
@@ -52,4 +56,15 @@ public abstract class CopyInfo
     return "CopyInfo{"
            + "sourcePath=" + sourcePath + ", sourceRevision=" + sourceRevision + ", copyRevision=" + copyRevision + '}';
   }
+
+  public  List< Long> getInterestingRevisions(){
+    List<Long> revisions=new ArrayList<Long>();
+    if(sourceRevision!=null)revisions.add(sourceRevision);
+    if(copyRevision!=null)revisions.add(copyRevision);
+
+
+    return revisions;
+  }
+
+  public abstract void writeInfo(List<String> lines);
 }
