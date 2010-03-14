@@ -108,15 +108,13 @@ public class SubversionMergeGrapher
         System.out.println("<><><><><><> info = " + info);
       }
 
-      GraphVizOutput graphVizOutput=new GraphVizOutput(pathMap, copyInfo);
+      GraphVizOutput graphVizOutput = new GraphVizOutput(pathMap, copyInfo);
     }
     catch (SVNException e)
     {
       e.printStackTrace();
     }
   }
-
-
 
   /** find creation and deletion of all trunk, branches, tags - record revisions at each event. */
   private Map<Long, SVNLogEntry> findAllRevisionsWithAddDeletes(SVNClientManager svnClientManager, String url) throws SVNException
@@ -205,10 +203,13 @@ public class SubversionMergeGrapher
           {
             Path path = getPath(pathName);
 
-            path.modifyPath(this, pathMap, copyPath, copyRevision, type, revision, copyInfo);
+            if (path != null)
+            {
+              path.modifyPath(this, pathMap, copyPath, copyRevision, type, revision, copyInfo);
 
-            System.out.println("    Revision " + revision + " changed path " + type + " : = " + pathName + " copyPath= " + copyPath
-                               + " copyRevision= " + copyRevision);
+              System.out.println("    Revision " + revision + " changed path " + type + " : = " + pathName + " copyPath= " + copyPath
+                                 + " copyRevision= " + copyRevision);
+            }
           }
         }
       }
@@ -235,7 +236,7 @@ public class SubversionMergeGrapher
   /** If the path exists, return that. If not, create a new one and add it to the map */
   public Path getPath(String pathName)
   {
-    Path path;
+    Path path = null;
 
     if (pathMap.containsKey(pathName))
     {
@@ -243,8 +244,11 @@ public class SubversionMergeGrapher
     }
     else
     {
-      path = new Path(pathName);
-      pathMap.put(pathName, path);
+      if (shouldProcessPath(pathName))
+      {
+        path = new Path(pathName);
+        pathMap.put(pathName, path);
+      }
     }
 
     return path;

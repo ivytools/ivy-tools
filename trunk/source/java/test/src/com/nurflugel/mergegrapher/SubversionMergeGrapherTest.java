@@ -17,4 +17,19 @@ public class SubversionMergeGrapherTest
     assertFalse(grapher.isNewBranch("/branches/newBranch/newDir", "/branches"));
     assertFalse(grapher.isNewBranch("/branches/newBranch/newDir/diddkd", "/branches"));
   }
+
+  @Test
+  public void testShouldProcess()
+  {
+    SubversionMergeGrapher grapher = new SubversionMergeGrapher();
+
+    assertTrue(grapher.shouldProcessPath("/trunk"));
+    assertTrue(grapher.shouldProcessPath("/branches/newBranch"));
+    assertTrue(grapher.shouldProcessPath("/tags/Branches_"));
+
+    assertFalse(grapher.shouldProcessPath("/branches"));
+    assertFalse(grapher.shouldProcessPath("/tags"));
+    assertFalse(grapher.shouldProcessPath("/tags/newBranch"));
+    assertFalse(grapher.shouldProcessPath("/tags/Production"));
+  }
 }
