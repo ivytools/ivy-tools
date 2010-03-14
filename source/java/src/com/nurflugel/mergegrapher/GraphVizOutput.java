@@ -7,20 +7,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static org.apache.commons.io.FileUtils.writeLines;
+
 /** Handler to deal with GraphViz. */
 public class GraphVizOutput
 {
   public GraphVizOutput(Map<String, Path> pathMap, List<CopyInfo> copyInfo) throws IOException
   {
     List<String> lines                = new ArrayList<String>();
-    List<Long>   interestingRevisions = findAllInterestingRevisions(pathMap, copyInfo);
+    List<Long>   allInterestingRevisions = findAllInterestingRevisions(pathMap, copyInfo);
 
     writeOpeningText(lines);
-    writeRevisionsGraph(interestingRevisions, lines);
+    writeRevisionsGraph(allInterestingRevisions, lines);
 
     for (Path path : pathMap.values())
     {
-      path.writePath(lines);
+      path.writePath(lines,allInterestingRevisions);
     }
 
     for (CopyInfo info : copyInfo)
@@ -28,11 +30,11 @@ public class GraphVizOutput
       info.writeInfo(lines);
     }
 
-    writeRanking(lines, interestingRevisions, pathMap);
+    writeRanking(lines, allInterestingRevisions, pathMap);
 
     lines.add("}");
 
-    FileUtils.writeLines(new File("output.dot"), lines);
+    writeLines(new File("output.dot"), lines);
   }
 
   /**
