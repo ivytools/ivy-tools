@@ -12,14 +12,15 @@
         <icon href="images/IvyBrowser-small.png"/>
         <icon kind="splash" href="images/IvyBrowser-splash.jpg"/>
         <offline-allowed/>
-        <shortcut online="false">
-	      <desktop/>
-    	</shortcut>
+        <shortcut online="true">
+           <desktop/>
+         </shortcut>
     </information>
     <offline-allowed/>
     <security>
         <all-permissions/>
     </security>
+    <update check="timeout" policy="always"/>
     <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
