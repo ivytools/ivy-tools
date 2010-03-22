@@ -11,14 +11,15 @@
         <icon href="images/ExternalsFinder-small.png"/>
         <icon kind="splash" href="images/ExternalsFinder-splash.jpg"/>
         <offline-allowed/>
-        <shortcut online="false">
-	      <desktop/>
-    	</shortcut>
+        <shortcut online="true">
+           <desktop/>
+         </shortcut>
     </information>
+    <offline-allowed/>
     <security>
         <all-permissions/>
     </security>
-    <resources>
+    <update check="timeout" policy="always"/>    <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/xstream.jar"/>
