@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="com.nurflugel"
+		module="ivy-tools"
+		revision="snapshot"
+		conf="dibble"
+		confs="dibble, build, dist, javadoc, test, source"
+		date="20090930090810"/>
+	<dependencies>
+		<module organisation="org.jdom" name="jdom" >
+			<revision name="1.0" status="release" pubdate="20070210220133" resolver="nurflugel-repository" artresolver="nurflugel-repository" downloaded="true" searched="true" default="true" conf="default" position="3">
+				<metadata-artifact status="successful" details="" size="342" time="587" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.jdom/jdom/ivy-1.0.xml" searched="true" original-local-location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.jdom/jdom/ivy-1.0.xml.original" origin-is-local="false" origin-location="http://www.nurflugel.com/Home/repository/org.jdom/jdom/1.0/jdom-1.0.ivy.xml"/>
+				<caller organisation="com.nurflugel" name="ivy-tools" conf="dibble" rev="1.0" rev-constraint-default="1.0" rev-constraint-dynamic="1.0" callerrev="snapshot"/>
+				<artifacts>
+					<artifact name="jdom" type="jar" ext="jar" status="no" details="" size="153253" time="0" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.jdom/jdom/jars/jdom-1.0.jar">
+						<origin-location is-local="false" location="http://www.nurflugel.com/Home/repository/org.jdom/jdom/1.0/jdom-1.0.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache" name="commons-dbcp" >
+			<revision name="1.2.1" status="release" pubdate="20070214100532" resolver="nurflugel-repository" artresolver="nurflugel-repository" downloaded="true" searched="true" default="true" conf="default" position="0">
+				<metadata-artifact status="successful" details="" size="715" time="667" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-dbcp/ivy-1.2.1.xml" searched="true" original-local-location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-dbcp/ivy-1.2.1.xml.original" origin-is-local="false" origin-location="http://www.nurflugel.com/Home/repository/org.apache/commons-dbcp/1.2.1/commons-dbcp-1.2.1.ivy.xml"/>
+				<caller organisation="com.nurflugel" name="ivy-tools" conf="dibble" rev="1.2.1" rev-constraint-default="1.2.1" rev-constraint-dynamic="1.2.1" callerrev="snapshot"/>
+				<artifacts>
+					<artifact name="commons-dbcp" type="jar" ext="jar" status="no" details="" size="107631" time="0" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-dbcp/jars/commons-dbcp-1.2.1.jar">
+						<origin-location is-local="false" location="UNKNOWN"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache" name="commons-pool" >
+			<revision name="1.3" status="release" pubdate="20061102145405" resolver="nurflugel-repository" artresolver="nurflugel-repository" downloaded="true" searched="true" default="true" conf="default" position="2">
+				<metadata-artifact status="successful" details="" size="478" time="680" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-pool/ivy-1.3.xml" searched="true" original-local-location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-pool/ivy-1.3.xml.original" origin-is-local="false" origin-location="http://www.nurflugel.com/Home/repository/org.apache/commons-pool/1.3/commons-pool-1.3.ivy.xml"/>
+				<caller organisation="com.nurflugel" name="ivy-tools" conf="dibble" rev="1.0.1" rev-constraint-default="1.0.1" rev-constraint-dynamic="1.0.1" callerrev="snapshot"/>
+				<caller organisation="org.apache" name="commons-dbcp" conf="default" rev="1.3" rev-constraint-default="1.3" rev-constraint-dynamic="1.3" callerrev="1.2.1"/>
+				<artifacts>
+					<artifact name="commons-pool" type="jar" ext="jar" status="no" details="" size="62086" time="0" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-pool/jars/commons-pool-1.3.jar">
+						<origin-location is-local="false" location="UNKNOWN"/>
+					</artifact>
+				</artifacts>
+			</revision>
+			<revision name="1.0.1" evicted="latest-revision" evicted-reason="" downloaded="false" searched="false" conf="default" position="-1">
+				<evicted-by rev="1.3"/>
+				<caller organisation="com.nurflugel" name="ivy-tools" conf="dibble" rev="1.0.1" rev-constraint-default="1.0.1" rev-constraint-dynamic="1.0.1" callerrev="snapshot"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache" name="commons-collections" >
+			<revision name="3.2" status="release" pubdate="20061102145402" resolver="nurflugel-repository" artresolver="nurflugel-repository" downloaded="true" searched="true" default="true" conf="default" position="1">
+				<metadata-artifact status="successful" details="" size="498" time="660" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-collections/ivy-3.2.xml" searched="true" original-local-location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-collections/ivy-3.2.xml.original" origin-is-local="false" origin-location="http://www.nurflugel.com/Home/repository/org.apache/commons-collections/3.2/commons-collections-3.2.ivy.xml"/>
+				<caller organisation="org.apache" name="commons-dbcp" conf="default" rev="3.2" rev-constraint-default="3.2" rev-constraint-dynamic="3.2" callerrev="1.2.1"/>
+				<caller organisation="com.nurflugel" name="ivy-tools" conf="dibble" rev="3.2" rev-constraint-default="3.2" rev-constraint-dynamic="3.2" callerrev="snapshot"/>
+				<artifacts>
+					<artifact name="commons-collections" type="jar" ext="jar" status="no" details="" size="571259" time="0" location="/Users/douglasbullard/Documents/JavaStuff/Nike_Subversion_Projects/userprofile/.ivy/org.apache/commons-collections/jars/commons-collections-3.2.jar">
+						<origin-location is-local="false" location="UNKNOWN"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+	</dependencies>
+</ivy-report>
