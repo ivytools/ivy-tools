@@ -13,7 +13,6 @@ public class IvyRepositoryItemFilterator implements TextFilterator
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TextFilterator ---------------------
-
   @Override
   public void getFilterStrings(List list, Object o)
   {

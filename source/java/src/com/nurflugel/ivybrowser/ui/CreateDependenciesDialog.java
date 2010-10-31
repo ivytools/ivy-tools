@@ -7,14 +7,13 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
-import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
+import static com.nurflugel.common.ui.Util.centerApp;
 
 @SuppressWarnings({ "RefusedBequest" })
 public class CreateDependenciesDialog extends JDialog
@@ -30,7 +29,6 @@ public class CreateDependenciesDialog extends JDialog
   private EventList<IvyRepositoryItem> ivyPackages;
 
   // --------------------------- CONSTRUCTORS ---------------------------
-
   public CreateDependenciesDialog(List<IvyRepositoryItem> packages)
   {
     ivyPackages = new BasicEventList<IvyRepositoryItem>();
@@ -162,7 +160,6 @@ public class CreateDependenciesDialog extends JDialog
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public List<IvyRepositoryItem> getDependancies()
   {
     Object[]                selectedObjects = dependenciesPanel.getComponents();
@@ -185,7 +182,6 @@ public class CreateDependenciesDialog extends JDialog
   }
 
   // --------------------------- main() method ---------------------------
-
   public static void main(String[] args)
   {
     CreateDependenciesDialog dialog = new CreateDependenciesDialog(new ArrayList<IvyRepositoryItem>());

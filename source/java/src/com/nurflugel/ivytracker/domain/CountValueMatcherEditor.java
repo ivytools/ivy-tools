@@ -13,8 +13,7 @@ public class CountValueMatcherEditor implements Matcher<IvyPackage>
   private JRadioButton showOnlyUsedLibrariesRadioButton;
   private JRadioButton showOnlyUnusedLibrariesRadioButton;
 
-  public CountValueMatcherEditor(JRadioButton showAllLibrariesRadioButton,
-                                 JRadioButton showOnlyUsedLibrariesRadioButton,
+  public CountValueMatcherEditor(JRadioButton showAllLibrariesRadioButton, JRadioButton showOnlyUsedLibrariesRadioButton,
                                  JRadioButton showOnlyUnusedLibrariesRadioButton)
   {
     this.showAllLibrariesRadioButton        = showAllLibrariesRadioButton;
@@ -23,9 +22,7 @@ public class CountValueMatcherEditor implements Matcher<IvyPackage>
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Matcher ---------------------
-
   @Override
   public boolean matches(IvyPackage item)
   {

@@ -3,8 +3,9 @@ package com.nurflugel.externalsreporter.ui;
 import com.nurflugel.BuildableItem;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.externalsreporter.ui.tree.BranchNode;
-import java.util.*;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jun 2, 2008 Time: 9:15:47 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
@@ -22,7 +23,6 @@ public class ExternalsFinderTask extends SwingWorker<Object, Object>
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   protected Object doInBackground() throws Exception
   {

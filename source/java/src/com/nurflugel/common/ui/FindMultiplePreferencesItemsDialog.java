@@ -1,8 +1,6 @@
 package com.nurflugel.common.ui;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -32,10 +30,10 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
     this.appPreferences = appPreferences;
     this.keyBase        = keyBase;
 
-//    EtchedBorder border = (EtchedBorder) borderTitlePanel.getBorder();
-//    TitledBorder newBorder = BorderFactory.createTitledBorder(border, borderTitle);
-//
-//    borderTitlePanel.setBorder(newBorder);
+    // EtchedBorder border = (EtchedBorder) borderTitlePanel.getBorder();
+    // TitledBorder newBorder = BorderFactory.createTitledBorder(border, borderTitle);
+    //
+    // borderTitlePanel.setBorder(newBorder);
     setContentPane(contentPane);
     setModal(true);
     getRootPane().setDefaultButton(buttonOK);
@@ -65,7 +63,7 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
     centerApp(this);
   }
 
-    private void addListeners()
+  private void addListeners()
   {
     buttonOK.addActionListener(new ActionListener()
       {
@@ -136,7 +134,6 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public String getRepositoryLocation()
   {
     return (String) comboBox.getSelectedItem();

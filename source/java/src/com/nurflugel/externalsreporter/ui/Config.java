@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /** Class to handle configuration persistence for the app. */
-public class Config implements UserConfig {
+public class Config implements UserConfig
+{
   public static final String  DOT_EXECUTABLE      = "dotExecutable";
   public static final String  IMAGE_DIR           = "imageDir";
   private static final String PASSWORD            = "password";
@@ -67,7 +67,6 @@ public class Config implements UserConfig {
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public File getDotExecutablePath()
   {
     return new File(dotExecutablePath);
@@ -80,7 +79,8 @@ public class Config implements UserConfig {
 
   public String getLastRepository()
   {
-    return repositories.isEmpty()?EMPTY_STRING:repositories.get(repositories.size() - 1);
+    return repositories.isEmpty() ? EMPTY_STRING
+                                  : repositories.get(repositories.size() - 1);
   }
 
   @Override
@@ -132,9 +132,11 @@ public class Config implements UserConfig {
 
   public void setLastRepository(String lastRepository)
   {
-      if(!repositories.contains(lastRepository))
-      {repositories.add(lastRepository);
-    saveSettings();}
+    if (!repositories.contains(lastRepository))
+    {
+      repositories.add(lastRepository);
+      saveSettings();
+    }
   }
 
   @Override
@@ -159,7 +161,6 @@ public class Config implements UserConfig {
     preferences.putBoolean(SHOW_TRUNKS, showTrunks);
     preferences.putBoolean(SHOW_TAGS, showTags);
     preferences.putBoolean(SHALLOW_SCAN, shallowScan);
-
     saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
     saveRepositories();

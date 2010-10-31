@@ -3,6 +3,7 @@ package com.nurflugel.ivybrowser.ui;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import static java.awt.Color.WHITE;
 
 /** Table renderer for Booleans to show as checkbox. */
 public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
@@ -28,12 +29,12 @@ public class CheckboxCellRenderer extends JCheckBox implements TableCellRenderer
       if (!background)
       {
         setOpaque(true);
-        setBackground(Color.WHITE);
+        setBackground(WHITE);
       }
 
       return this;
     }
 
-    return new JLabel((String) theObject);
+    return new JLabel(theObject.toString());
   }
 }

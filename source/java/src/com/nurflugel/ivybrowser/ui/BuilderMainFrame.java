@@ -1,13 +1,8 @@
 package com.nurflugel.ivybrowser.ui;
 
-import static com.nurflugel.common.ui.Util.*;
-import com.nurflugel.common.ui.Version;
-import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Version.*;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.handlers.FileHandler;
-import com.nurflugel.ivytracker.IvyTrackerMainFrame;
-import java.awt.*;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,13 +11,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.net.URL;
-import javax.swing.*;
+import static com.nurflugel.common.ui.Util.*;
+import static com.nurflugel.common.ui.Version.VERSION;
 import static javax.swing.JOptionPane.showConfirmDialog;
-import javax.help.HelpSet;
-import javax.help.HelpBroker;
-import javax.help.CSH;
-import javax.help.HelpSetException;
 
 /** Created by IntelliJ IDEA. User: dbulla Date: Jan 18, 2008 Time: 9:36:34 PM To change this template use File | Settings | File Templates. */
 public class BuilderMainFrame extends JFrame
@@ -43,7 +34,6 @@ public class BuilderMainFrame extends JFrame
   private Preferences             preferences;
 
   // --------------------------- CONSTRUCTORS ---------------------------
-
   public BuilderMainFrame()
   {
     setTitle("IvyBuild v. " + VERSION);
@@ -184,18 +174,15 @@ public class BuilderMainFrame extends JFrame
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public void showNormal() {}
 
   // --------------------------- main() method ---------------------------
-
   public static void main(String[] args)
   {
     BuilderMainFrame builderMainFrame = new BuilderMainFrame();
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public void setStatusLabel(String text)
   {
     statusLabel.setText(text);

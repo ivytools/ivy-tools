@@ -1,20 +1,20 @@
 package com.nurflugel.ivybrowser.ui;
 
-import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
+import javax.swing.*;
 import java.awt.*;
-import static java.awt.Cursor.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
-import static java.awt.event.KeyEvent.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import javax.swing.*;
-import static javax.swing.BoxLayout.*;
-import static javax.swing.JComponent.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static java.awt.Cursor.*;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static javax.swing.BoxLayout.Y_AXIS;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import static org.apache.commons.lang.StringUtils.substringBeforeLast;
 
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyLineDialog extends JDialog
@@ -175,14 +175,14 @@ public class IvyLineDialog extends JDialog
     if (excludedPackages.isEmpty() && excludedFiles.isEmpty())
     {
       text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
-             + "\"  conf=\"build,dist-war,test" + sourceTag + javadocTag + "\"" + forceText + "/>";
+               + "\"  conf=\"build,dist-war,test" + sourceTag + javadocTag + "\"" + forceText + "/>";
       ivyTextPanel.add(new JLabel(text));
       pasteText.append(text);
     }
     else
     {
       text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
-             + "\"  conf=\"dist-ear" + sourceTag + javadocTag + "\"" + forceText + ">";
+               + "\"  conf=\"dist-ear" + sourceTag + javadocTag + "\"" + forceText + ">";
       ivyTextPanel.add(new JLabel(text));
       pasteText.append(text);
 

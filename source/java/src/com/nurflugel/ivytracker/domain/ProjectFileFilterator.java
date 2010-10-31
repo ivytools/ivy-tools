@@ -1,7 +1,6 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.TextFilterator;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
 import java.util.List;
 
 /**
@@ -13,7 +12,6 @@ public class ProjectFileFilterator implements TextFilterator
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TextFilterator ---------------------
-
   @Override
   public void getFilterStrings(List list, Object o)
   {

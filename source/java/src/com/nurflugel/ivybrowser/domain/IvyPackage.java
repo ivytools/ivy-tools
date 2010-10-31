@@ -1,58 +1,108 @@
 package com.nurflugel.ivybrowser.domain;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import static java.util.Collections.unmodifiableSet;
 
 /** Representation of an Ivy library's file. */
+@SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyPackage implements Comparable<IvyPackage>
 {
   private boolean hasJavaDocs;
   private boolean hasSourceCode;
 
   /** If true, this item is to be included in the GUI activity - this is set by the user by clicking on the checkbox which is rendered. */
-  private boolean isIncluded;
-
-  /**
-   * this is the .ivy.xml file which is associated with the library. Most of the time it'll be the same as the library, but there are cases where more
-   * than one jar or zip file is in the ivy repository, represented by this ivy file.
-   */
-  private String          moduleName;
-  private String          orgName;
-  private String          version;
-  private Set<IvyPackage> dependencies = new TreeSet<IvyPackage>();
-  private Set<String>     publications = new TreeSet<String>();
+  private boolean         isIncluded;
+  private IvyKey          key;
+  private Set<IvyPackage> dependencies   = new TreeSet<IvyPackage>();
+  private Set<IvyPackage> excludes       = new TreeSet<IvyPackage>();
+  private Set<IvyPackage> globalExcludes = new TreeSet<IvyPackage>();
+  private Set<String>     publications   = new TreeSet<String>();
   private int             count;
 
   // -------------------------- STATIC METHODS --------------------------
-
-  public static String getKey(String org, String module, String version)
+  public static IvyKey getKey(String org, String module, String version)
   {
-    return org + " " + module + " " + version;
+    return new IvyKey(org, module, version);
   }
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyPackage(String orgName, String moduleName, String version)
   {
-    this.orgName    = orgName;
-    this.moduleName = moduleName;
-    this.version    = version;
+    key = new IvyKey(orgName, moduleName, version);
+  }
+
+  public IvyPackage(String ivyFileUrl)
+  {
+    try
+    {
+      SAXBuilder builder = new SAXBuilder();
+      URL        url     = new URL(ivyFileUrl);
+      Document   doc     = builder.build(url);
+      Element    root    = doc.getRootElement();
+      Element    child1  = root.getChild("dependencies");
+
+      if (child1 != null)
+      {
+        List children = child1.getChildren("dependency");
+
+        for (Object child : children)
+        {
+          Element    childElement = (Element) child;
+          String     org          = childElement.getAttribute("org").getValue();
+          String     name         = childElement.getAttribute("name").getValue();
+          String     rev          = childElement.getAttribute("rev").getValue();
+          IvyPackage ivyPackage   = new IvyPackage(org, name, rev);
+
+          dependencies.add(ivyPackage);
+        }
+      }
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+    }
+    catch (JDOMException e)
+    {
+      e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+    }
+  }
+
+  /**
+   * Although it seems like we could just query the set of dependencies to see if we have a matching item as a dependency, that's not quite so simple
+   * when we start considering exludes and global excludes. I'm not doing that yet, but when I do, this method will make much more sense.
+   *
+   * @param   ivyKey  The key of the dependency we're checking
+   *
+   * @return  true if it's a dependency of this Ivy file, false if not.
+   */
+  public boolean containsDependency(IvyKey ivyKey)
+  {
+    for (IvyPackage dependency : dependencies)
+    {
+      if (dependency.getKey().equals(ivyKey))
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Comparable ---------------------
-
   @Override
-  public int compareTo(IvyPackage ivyPackage)
+  public int compareTo(IvyPackage other)
   {
-    String moduleA = getOrgName() + getModuleName() + getVersion();
-    String moduleB = ivyPackage.getOrgName() + ivyPackage.getModuleName() + ivyPackage.getVersion();
-
-    return moduleA.compareTo(moduleB);
+    return key.compareTo(other.getKey());
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public void addDependency(IvyPackage dependencyPackage)
   {
     dependencies.add(dependencyPackage);
@@ -73,19 +123,19 @@ public class IvyPackage implements Comparable<IvyPackage>
     return new ArrayList<IvyPackage>(dependencies);
   }
 
+  public IvyKey getKey()
+  {
+    return key;
+  }
+
   public String getModuleName()
   {
-    return moduleName;
+    return key.getModule();
   }
 
   public String getOrgName()
   {
-    return orgName;
-  }
-
-  public String getPrettyText()
-  {
-    return orgName + " " + moduleName + " " + version;
+    return key.getOrg();
   }
 
   public Collection<String> getPublications()
@@ -95,7 +145,7 @@ public class IvyPackage implements Comparable<IvyPackage>
 
   public String getVersion()
   {
-    return version;
+    return key.getVersion();
   }
 
   public boolean hasJavaDocs()
@@ -106,6 +156,11 @@ public class IvyPackage implements Comparable<IvyPackage>
   public boolean hasSourceCode()
   {
     return hasSourceCode;
+  }
+
+  public boolean isIncluded()
+  {
+    return isIncluded;
   }
 
   public void setDependencies(Collection<IvyPackage> dependencies)
@@ -123,6 +178,11 @@ public class IvyPackage implements Comparable<IvyPackage>
     this.hasSourceCode = hasSourceCode;
   }
 
+  public void setIncluded(boolean included)
+  {
+    isIncluded = included;
+  }
+
   public void setPublications(Collection<String> publications)
   {
     this.publications.addAll(publications);
@@ -131,32 +191,22 @@ public class IvyPackage implements Comparable<IvyPackage>
   @Override
   public String toString()
   {
-    return orgName + " " + moduleName + " " + version;
+    return getPrettyText();
+  }
+
+  public String getPrettyText()
+  {
+    return key.getOrg() + " " + key.getModule() + " " + key.getVersion();
   }
 
   @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
   public void touch()
   {
-    String text = "Touching " + getKey();
+    String text = "Touching " + key;
 
     System.out.println(text);
 
     // mainFrame.setStatusLabel(text);
     count++;
-  }
-
-  public String getKey()
-  {
-    return orgName + " " + moduleName + " " + version;
-  }
-
-  public boolean isIncluded()
-  {
-    return isIncluded;
-  }
-
-  public void setIncluded(boolean included)
-  {
-    isIncluded = included;
   }
 }

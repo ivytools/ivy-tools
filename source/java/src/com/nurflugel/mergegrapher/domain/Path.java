@@ -1,25 +1,30 @@
 package com.nurflugel.mergegrapher.domain;
 
+import com.nurflugel.ivybrowser.domain.Revision;
 import com.nurflugel.mergegrapher.SubversionMergeGrapher;
 import org.apache.commons.lang.StringUtils;
 import org.tmatesoft.svn.core.SVNPropertyValue;
 import java.util.*;
-import static com.nurflugel.mergegrapher.SubversionMergeGrapher.BRANCHES;
-import static com.nurflugel.mergegrapher.SubversionMergeGrapher.TAGS;
-import static com.nurflugel.mergegrapher.SubversionMergeGrapher.TRUNK;
+import static com.nurflugel.ivybrowser.domain.Revision.NO_REVISION;
+import static com.nurflugel.mergegrapher.SubversionMergeGrapher.*;
 import static com.nurflugel.mergegrapher.domain.Type.A;
 import static com.nurflugel.mergegrapher.domain.Type.D;
-import static org.apache.commons.lang.StringUtils.replaceChars;
+import static org.apache.commons.lang.StringUtils.replace;
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 
 /** This is a representation of a path - could be trunk a branch, or a tag. You can get the full URL by adding this to the project base URL. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class Path implements Comparable
 {
   /** the revision the path was created in. */
-  private Long creationRevision;
+  private Revision creationRevision;
+
+  /** last revision where somebody did something. */
+  private Revision lastActiveRevision;
 
   /** the revision the path was deleted in. */
-  private Long deleteRevision;
+  private Revision deleteRevision;
 
   /** the branch this was created from. */
   private Path copyPath;
@@ -27,6 +32,9 @@ public class Path implements Comparable
   // headRevision???
   /** the path, minus the base URL of the project. */
   private String pathName;
+
+  // contains the set of revisions for this path - all good stuff, plus any merges
+  private Set<Revision> interestingRevisions = new TreeSet<Revision>();
 
   /** is the path active? Tags aren't, unless a branch was made from one */
   private boolean                 active       = true;
@@ -43,44 +51,50 @@ public class Path implements Comparable
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Comparable ---------------------
-
   @Override
   @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
   public int compareTo(Object o)
   {
     return pathName.compareTo(((Path) o).pathName);
   }
-
   // -------------------------- OTHER METHODS --------------------------
 
   /** If this path has anything interesting concerning this revision, add it to the list. */
-  public void addToRanking(Long revision, StringBuffer sb)
+  public void addToRanking(Revision revision, StringBuffer sb)
   {
-    List<Long> interestingRevisions = getInterestingRevisions();
-
     if (interestingRevisions.contains(revision))
     {
       sb.append(getGraphVizName()).append(revision).append("; ");
     }
   }
 
-  public List<Long> getInterestingRevisions()
+  public List<Revision> getInterestingRevisions(List<CopyInfo> copyInfoList)
   {
-    Set<Long> interestingRevisions = new TreeSet<Long>();
+    Set<Revision> revisions = new TreeSet<Revision>();
 
-    if (creationRevision != null)
+    revisions.addAll(interestingRevisions);
+
+    for (CopyInfo copyInfo : copyInfoList)
     {
-      interestingRevisions.add(creationRevision);
+      if (copyInfo instanceof CreateBranchInfo)
+      {
+        if (equals(((CreateBranchInfo) copyInfo).getCreatedPath()))
+        {
+          revisions.add(copyInfo.getCopyRevision());
+        }
+      }
     }
 
-    if (deleteRevision != null)
-    {
-      interestingRevisions.add(deleteRevision);
-    }
+    return new ArrayList<Revision>(revisions);
+  }
 
-    return new ArrayList<Long>(interestingRevisions);
+  private void addInterestingRevision(Set<Revision> revisions, Revision revision)
+  {
+    if (revision != null)
+    {
+      revisions.add(revision);
+    }
   }
 
   public String getDisplayName()
@@ -96,35 +110,38 @@ public class Path implements Comparable
   /** Take a name like branch 1.28 and return something like branch_1_28. */
   public static String processSafeName(String name)
   {
-    String badChars = " `-=[]\\;',.~!@/#$%^&*()_+|}{\":<>?)";
-    String results  = name;
+    String results = name;
 
-    if(results.startsWith("/")){
-     results=StringUtils.substringAfter(results,"/");
+    if (results.startsWith("/"))
+    {
+      results = substringAfter(results, "/");
     }
+
+    String badChars = " `-=[]\\;',.~!@/#$%^&*()_+|}{\":<>?)";
+
     for (int i = 0; i < badChars.length(); i++)
     {
-      results = StringUtils.replace(results, badChars.substring(i, i + 1), "_");
+      results = replace(results, badChars.substring(i, i + 1), "_");
     }
 
     return results;
   }
 
-  public void handleMergeInfoChange(SubversionMergeGrapher grapher, SVNPropertyValue value, SVNPropertyValue oldValue, Long revision,
+  // dbulla CODEREVIEW - unit test this method
+  public void handleMergeInfoChange(SubversionMergeGrapher grapher, SVNPropertyValue value, SVNPropertyValue oldValue, Revision revision,
                                     List<CopyInfo> copyInfo)
   {
-    String textValue = value.toString();
+    String textValue    = value.toString();
     String oldTextValue = (oldValue == null) ? ""
                                              : oldValue.toString();
     String[] values     = textValue.split("\n");
-
     String   deltaValue = StringUtils.remove(textValue, oldTextValue);
 
     for (String theValue : values)
     {
-      String       mergePathName  = StringUtils.substringBefore(theValue, ":");
+      String       mergePathName  = substringBefore(theValue, ":");
       Path         path           = grapher.getPath(mergePathName);
-      String       newMergeValues = StringUtils.substringAfter(theValue, ":");
+      String       newMergeValues = substringAfter(theValue, ":");
       List<String> mergeValues    = null;
 
       if (mergeHistory.containsKey(path))
@@ -138,10 +155,11 @@ public class Path implements Comparable
       }
 
       // newMergerValues=determineNewMergeValues(mergeValues, newMergeValues);
-      mergeValues.add(newMergeValues);                                                // todo I still want to figure out what revisions were actually
-                                                                                      // added to this.
+      mergeValues.add(newMergeValues);                                                         // todo I still want to figure out what
+                                                                                               // revisions were actually
+                                                                                               // added to this.
 
-      MergeInfo mergeInfo = new MergeInfo(path, -1, revision, this, newMergeValues);  // todo how does source revision fit in here?
+      MergeInfo mergeInfo = new MergeInfo(path, NO_REVISION, revision, this, newMergeValues);  // todo how does source revision fit in here?
 
       copyInfo.add(mergeInfo);
 
@@ -163,8 +181,8 @@ public class Path implements Comparable
    * @param  revision      the revision of whatever action is taking place (creation or deletion)
    * @param  copyInfo      the list of creation and merge changes.
    */
-  public void modifyPath(SubversionMergeGrapher grapher, Map<String, Path> pathMap, String copyPathName, long copyRevision, Type type, long revision,
-                         List<CopyInfo> copyInfo)
+  public void modifyPath(SubversionMergeGrapher grapher, Map<String, Path> pathMap, String copyPathName, Revision copyRevision, Type type,
+                         Revision revision, List<CopyInfo> copyInfo)
   {
     Path theCopyPath = (copyPathName == null) ? null
                                               : pathMap.get(copyPathName);
@@ -176,62 +194,70 @@ public class Path implements Comparable
 
     if (type == A)
     {
-      if ((theCopyPath != null) && (getCopyPath() == null))
+      Path copypath = getCopyPath();
+
+      if ((theCopyPath != null) && (copypath == null))
       {
         setCopyPath(theCopyPath);
       }
 
-      if (getCreationRevision() == null)
+      Revision theCreationRevision = getCreationRevision();
+
+      if (theCreationRevision == null)
       {
         // if it's trunk/branches/tags, there's no copy revision, use the revision
         if (pathName.equals(TRUNK) || pathName.equals(TAGS) || pathName.equals(BRANCHES))
         {
           setCreationRevision(revision);
         }
-        else if ((copyRevision != -1))
+        else if ((copyRevision.isRealRevision()))
         {
           setCreationRevision(copyRevision);
           copyInfo.add(new CreateBranchInfo(theCopyPath, copyRevision, revision, this));
         }
       }
     }
-
-    if ((type == D) && (getDeleteRevision() == null) && (revision != -1))
+    else if ((type == D) && (getDeleteRevision() == null) && (revision.isRealRevision()))
     {
       setDeleteRevision(revision);
     }
   }
 
   // todo the declaration for any revisions in this will be the pathName + revision
-  public void writePath(List<String> lines, List<Long> allInterestingRevisions)
+  public void writePath(List<String> lines)
   {
     String graphVizName = getGraphVizName();
 
+    lines.add(graphVizName + " [label=\"\" shape=plaintext];");
+
     // write the declarations
-    for (Long interestingRevision : allInterestingRevisions)
+    for (Revision revision : interestingRevisions)
     {
-      String line = graphVizName + interestingRevision + " [label=\"" + pathName + "\\n" + interestingRevision + "\" style=filled color=yellow];";
+      String line = graphVizName + revision + " [label=\"" + pathName + "\\n" + revision + "\" style=filled color=yellow];";
 
       lines.add(line);
     }
 
     // now write the dependencies of the timeline
-    if (allInterestingRevisions.size() > 1)
+    if (interestingRevisions.size() > 1)
     {
-      StringBuilder sb = new StringBuilder(graphVizName + allInterestingRevisions.get(0));
+      List<Revision> revisions = new ArrayList<Revision>();
 
-      for (int i = 1; i < allInterestingRevisions.size(); i++)
+      revisions.addAll(interestingRevisions);
+
+      StringBuilder sb = new StringBuilder(graphVizName + revisions.get(0));
+
+      for (int i = 1; i < interestingRevisions.size(); i++)
       {
-        sb.append("->").append(graphVizName).append(allInterestingRevisions.get(i));
+        sb.append("->").append(graphVizName).append(revisions.get(i));
       }
 
-      sb.append(";");
+      sb.append("[weight=9999];");
       lines.add(sb.toString());
     }
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
   public boolean equals(Object o)
@@ -263,12 +289,11 @@ public class Path implements Comparable
   public String toString()
   {
     return "Path{"
-           + "pathName='" + pathName + '\'' + ", creationRevision=" + creationRevision + ", deleteRevision=" + deleteRevision + ", copyPath="
-           + copyPath + '}';
+             + "pathName='" + pathName + '\'' + ", creationRevision=" + creationRevision + ", deleteRevision=" + deleteRevision + ", copyPath="
+             + copyPath + '}';
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public Path getCopyPath()
   {
     return copyPath;
@@ -279,24 +304,26 @@ public class Path implements Comparable
     this.copyPath = copyPath;
   }
 
-  public Long getCreationRevision()
+  public Revision getCreationRevision()
   {
     return creationRevision;
   }
 
-  public void setCreationRevision(Long creationRevision)
+  public void setCreationRevision(Revision creationRevision)
   {
     this.creationRevision = creationRevision;
+    interestingRevisions.add(creationRevision);
   }
 
-  public Long getDeleteRevision()
+  public Revision getDeleteRevision()
   {
     return deleteRevision;
   }
 
-  public void setDeleteRevision(Long deleteRevision)
+  public void setDeleteRevision(Revision deleteRevision)
   {
     this.deleteRevision = deleteRevision;
+    interestingRevisions.add(deleteRevision);
   }
 
   public String getPathName()
@@ -307,5 +334,19 @@ public class Path implements Comparable
   public boolean isActive()
   {
     return active;
+  }
+
+  public void setLastActiveRevision(Revision lastActiveRevision)
+  {
+    // remove the old last revision
+    if (this.lastActiveRevision != null)
+    {
+      interestingRevisions.remove(this.lastActiveRevision);
+    }
+
+    this.lastActiveRevision = lastActiveRevision;
+
+    // now add the new one
+    interestingRevisions.add(lastActiveRevision);
   }
 }

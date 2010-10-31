@@ -12,9 +12,7 @@ public class IvyPackageComparator implements Comparator<IvyPackage>, Serializabl
   private static final long serialVersionUID = -1887579627945133474L;
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Comparator ---------------------
-
   @Override
   public int compare(IvyPackage itemA, IvyPackage itemB)
   {

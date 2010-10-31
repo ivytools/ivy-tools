@@ -35,8 +35,8 @@ public class Config implements UserConfig
     userName     = preferences.get(USER_NAME, EMPTY_STRING);
     password     = preferences.get(PASSWORD, EMPTY_STRING);
     showTrunks   = preferences.getBoolean(SHOW_TRUNKS, true);
-    showBranches = preferences.getBoolean(SHOW_BRANCHES, false);
-    showTags     = preferences.getBoolean(SHOW_TAGS, false);
+    showBranches = preferences.getBoolean(SHOW_BRANCHES, true);
+    showTags     = preferences.getBoolean(SHOW_TAGS, true);
   }
 
   private void getRepositories(String repository, List<String> repositoryList)
@@ -58,7 +58,6 @@ public class Config implements UserConfig
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public String getLastIvyRepository()
   {
     return ivyRepositories.isEmpty() ? EMPTY_STRING
@@ -83,37 +82,41 @@ public class Config implements UserConfig
     return userName;
   }
 
-  public boolean isShowBranches()
+  public boolean showBranches()
   {
     return showBranches;
   }
 
-  public boolean isShowTags()
+  public boolean showTags()
   {
     return showTags;
   }
 
-  public boolean isShowTrunks()
+  public boolean showTrunks()
   {
     return showTrunks;
   }
 
   public void setLastIvyRepository(String lastRepository)
   {
-    if (!ivyRepositories.contains(lastRepository))
+    if (ivyRepositories.contains(lastRepository))
     {
-      ivyRepositories.add(lastRepository);
-      saveSettings();
+      ivyRepositories.remove(lastRepository);
     }
+
+    ivyRepositories.add(lastRepository);
+    saveSettings();
   }
 
   public void setLastSubversionRepository(String lastRepository)
   {
-    if (!subversionRepositories.contains(lastRepository))
+    if (subversionRepositories.contains(lastRepository))
     {
-      subversionRepositories.add(lastRepository);
-      saveSettings();
+      subversionRepositories.remove(lastRepository);
     }
+
+    subversionRepositories.add(lastRepository);
+    saveSettings();
   }
 
   @Override

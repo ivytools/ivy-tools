@@ -1,10 +1,13 @@
 package com.nurflugel.externalsreporter.ui;
 
+import com.nurflugel.WebAuthenticator;
 import org.apache.commons.lang.StringUtils;
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -14,8 +17,14 @@ import java.util.List;
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
 public class HtmlHandler
 {
-  // -------------------------- OTHER METHODS --------------------------
-
+  /**
+   * Get the list of files for this URL.
+   *
+   * @param   repositoryUrl  the URL to scan. Should be a directory
+   * @param   dirsOnly       if true, will only return links that are directories
+   *
+   * @return  a list of the URLs
+   */
   public List<String> getFiles(String repositoryUrl, boolean dirsOnly) throws IOException
   {
     List<String>  files         = new ArrayList<String>();
@@ -23,7 +32,6 @@ public class HtmlHandler
     URLConnection urlConnection = versionUrl.openConnection();
 
     // Authenticator.setDefault(new WebAuthenticator());
-
     urlConnection.setAllowUserInteraction(true);
     urlConnection.connect();
 
@@ -39,7 +47,6 @@ public class HtmlHandler
         {
           // mainFrame.setStatusLabel("Parsing " + repositoryUrl + " for " + moduleName + " version " + version);
           // System.out.println("line = " + line);
-
           if (hasLinkText(line))
           {
             String link = getLink(line);
@@ -66,6 +73,13 @@ public class HtmlHandler
     catch (IOException e)
     {
       System.out.println("Error contacting server at URL " + versionUrl + " " + e.getMessage());
+
+      // this gets us around a bad password, but never saves it...
+      if (e.getMessage().contains("redirected"))
+      {
+        Authenticator.setDefault(new WebAuthenticator());
+        JOptionPane.showMessageDialog(null, "Username/password authentication failed, try again", "Nice try", JOptionPane.WARNING_MESSAGE);
+      }
     }
 
     return files;

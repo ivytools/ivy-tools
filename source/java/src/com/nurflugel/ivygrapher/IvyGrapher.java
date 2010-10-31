@@ -2,7 +2,6 @@ package com.nurflugel.ivygrapher;
 
 import com.nurflugel.Os;
 import org.jdom.JDOMException;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
@@ -11,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
-
 import static com.nurflugel.common.ui.Util.*;
 import static com.nurflugel.common.ui.Version.VERSION;
 import static com.nurflugel.ivygrapher.NodeOrder.*;
@@ -24,34 +22,34 @@ import static javax.swing.JOptionPane.showMessageDialog;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class IvyGrapher extends JFrame
 {
-  private static final String DIR            = "dir";
-  private static final String DOT_EXECUTABLE = "dotExecutable";
-  private String       lastVisitedDir;
-  private Preferences  preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
-  private Os           os;
-  private OutputFormat outputFormat;
-  private NodeOrder    nodeOrder;
-  private JPanel       mainPanel;
-  private JButton      helpButton;
-  private JButton      selectFilesButton;
-  private JButton      findDotButton;
-  private JButton      quitButton;
-  private JRadioButton tbButton;
-  private JRadioButton btButton;
-  private JRadioButton rlButton;
-  private JRadioButton lrButton;
-  private JCheckBox    deleteDotButton;
-  private JRadioButton pngButton;
-  private JRadioButton pdfButtton;
-  private JRadioButton svgButton;
-  private JCheckBox    concentrateEdgesCheckBox;
-  private String       dotExecutablePath;
-  private Cursor       normalCursor             = getPredefinedCursor(DEFAULT_CURSOR);
-  private Cursor       busyCursor               = getPredefinedCursor(WAIT_CURSOR);
+  private static final String DIR                      = "dir";
+  private static final String DOT_EXECUTABLE           = "dotExecutable";
+  private String              lastVisitedDir;
+  private Preferences         preferences              = Preferences.userNodeForPackage(IvyGrapher.class);
+  private Os                  os;
+  private OutputFormat        outputFormat;
+  private NodeOrder           nodeOrder;
+  private JPanel              mainPanel;
+  private JButton             helpButton;
+  private JButton             selectFilesButton;
+  private JButton             findDotButton;
+  private JButton             quitButton;
+  private JRadioButton        tbButton;
+  private JRadioButton        btButton;
+  private JRadioButton        rlButton;
+  private JRadioButton        lrButton;
+  private JCheckBox           deleteDotButton;
+  private JRadioButton        pngButton;
+  private JRadioButton        pdfButtton;
+  private JRadioButton        svgButton;
+  private JCheckBox           concentrateEdgesCheckBox;
+  private String              dotExecutablePath;
+  private Cursor              normalCursor             = getPredefinedCursor(DEFAULT_CURSOR);
+  private Cursor              busyCursor               = getPredefinedCursor(WAIT_CURSOR);
 
   public IvyGrapher()
   {
-    os          = Os.findOs(System.getProperty("os.name"));
+    os          = Os.findOs();
     preferences = Preferences.userNodeForPackage(IvyGrapher.class);
     initializeUi();
     setContentPane(mainPanel);
@@ -133,7 +131,6 @@ public class IvyGrapher extends JFrame
           findDotLocation();
         }
       });
-
     selectFilesButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent actionEvent)
@@ -276,7 +273,6 @@ public class IvyGrapher extends JFrame
       }
 
       System.out.println("Setting busy cursor");
-
       setCursor(busyCursor);
 
       XmlHandler xmlHandler = new XmlHandler();
@@ -312,7 +308,6 @@ public class IvyGrapher extends JFrame
   }
 
   // --------------------------- main() method ---------------------------
-
   public static void main(String[] args)
   {
     IvyGrapher grapher = new IvyGrapher();

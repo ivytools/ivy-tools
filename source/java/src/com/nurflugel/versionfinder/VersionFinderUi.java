@@ -2,20 +2,9 @@ package com.nurflugel.versionfinder;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
-import ca.odell.glazedlists.swing.TableComparatorChooser;
-import static com.nurflugel.common.ui.Util.*;
-import static com.nurflugel.common.ui.Version.VERSION;
-import static com.nurflugel.versionfinder.Jdk.*;
-import static com.nurflugel.versionfinder.PathLength.*;
-import com.nurflugel.common.ui.Util;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
-import static java.awt.Cursor.*;
-import static javax.swing.BoxLayout.*;
-import static javax.swing.JFileChooser.*;
-import static javax.swing.JOptionPane.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,6 +17,15 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import static com.nurflugel.common.ui.Util.*;
+import static com.nurflugel.common.ui.Version.VERSION;
+import static com.nurflugel.versionfinder.Jdk.JDK15;
+import static com.nurflugel.versionfinder.Jdk.findByVersion;
+import static com.nurflugel.versionfinder.PathLength.*;
+import static javax.swing.BoxLayout.Y_AXIS;
+import static javax.swing.JFileChooser.*;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /** Find class versions in libraries. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
@@ -75,7 +73,6 @@ public class VersionFinderUi extends JFrame
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   private void createUIComponents()
   {
     resultsTable = new JTable();
@@ -127,7 +124,6 @@ public class VersionFinderUi extends JFrame
   }
 
   // --------------------------- main() method ---------------------------
-
   public static void main(String[] args)
   {
     VersionFinderUi ui = new VersionFinderUi();
@@ -275,7 +271,6 @@ public class VersionFinderUi extends JFrame
   }
 
   // todo thread task
-
   private void processJarFile(File jarFile, Map<File, Set<MajorMinor>> jarResults)
   {
     if (jarFile.getName().endsWith(".jar"))
@@ -363,7 +358,6 @@ public class VersionFinderUi extends JFrame
 
       // now this works - go figure...
       String[] command = { "javap", "-verbose", "-classpath", tempDir.getAbsolutePath(), className };
-
       Process  process = runtime.exec(command);
 
       printOutput(file, process, jarFile, jarResults);
@@ -400,7 +394,6 @@ public class VersionFinderUi extends JFrame
     while (line != null)
     {
       // System.out.println("line[" + i++ + "] = " + line);
-
       if (StringUtils.contains(line, "major version:"))
       {
         major = StringUtils.substringAfter(line, "major version:").trim();
@@ -545,7 +538,6 @@ public class VersionFinderUi extends JFrame
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getCommonText()
   {
     return commonText;

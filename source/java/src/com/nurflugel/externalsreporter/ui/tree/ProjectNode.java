@@ -8,7 +8,7 @@ import java.util.List;
 public class ProjectNode extends CheckableNode
 {
   private BuildableProjects buildableProject;
-  private List<BranchNode>  branches    = new ArrayList<BranchNode>();
+  private List<BranchNode> branches    = new ArrayList<BranchNode>();
   private List<ProjectNode> subProjects = new ArrayList<ProjectNode>();
 
   public ProjectNode(BuildableProjects buildableProject)
@@ -23,7 +23,6 @@ public class ProjectNode extends CheckableNode
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   public void add(CheckableNode node)
   {
@@ -105,7 +104,6 @@ public class ProjectNode extends CheckableNode
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public List<BranchNode> getBranches()
   {
     return branches;

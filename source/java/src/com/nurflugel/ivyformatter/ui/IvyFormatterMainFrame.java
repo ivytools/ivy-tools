@@ -1,23 +1,18 @@
 package com.nurflugel.ivyformatter.ui;
 
-import static com.nurflugel.common.ui.Util.addHelpListener;
-import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.common.ui.Util;
-import static com.nurflugel.common.ui.Version.*;
+import javax.swing.*;
 import java.awt.*;
-import static java.awt.datatransfer.DataFlavor.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URL;
-import javax.swing.*;
-import javax.help.HelpSet;
-import javax.help.HelpBroker;
-import javax.help.CSH;
-import javax.help.HelpSetException;
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Version.VERSION;
+import static java.awt.datatransfer.DataFlavor.stringFlavor;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jul 28, 2008 Time: 5:57:02 PM To change this template use File | Settings | File Templates.
