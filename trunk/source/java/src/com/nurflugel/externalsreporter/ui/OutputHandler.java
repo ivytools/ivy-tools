@@ -3,13 +3,11 @@ package com.nurflugel.externalsreporter.ui;
 import com.nurflugel.Os;
 import com.nurflugel.ivygrapher.OutputFormat;
 import org.apache.commons.io.FileUtils;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
-/**
- * Output handler for making the dot file and image.
- */
+/** Output handler for making the dot file and image. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class OutputHandler
 {
@@ -29,7 +27,6 @@ public class OutputHandler
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public File launchDot(File dotFile, File dotExecutable) throws IOException, InterruptedException
   {
     String outputFileName    = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
@@ -108,7 +105,6 @@ public class OutputHandler
 
     writeDotFileTargetDeclarations(lines, externals, projectsList);
     writeDotFileDependencies(projectsList, lines);
-
     lines.add(CLOSING_LINE_DOTGRAPH);
     FileUtils.writeLines(dotFile, lines);
 
@@ -149,7 +145,7 @@ public class OutputHandler
       if (external.isSelected())
       {
         String line = "\t\t" + QUOTE + external.getKey() + QUOTE + " [label=" + QUOTE + external.getLabel() + QUOTE + " shape=box color=black ]; "
-                      + NEW_LINE;
+                        + NEW_LINE;
 
         lines.add(line);
       }

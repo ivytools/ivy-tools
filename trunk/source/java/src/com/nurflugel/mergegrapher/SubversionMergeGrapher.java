@@ -1,7 +1,9 @@
 package com.nurflugel.mergegrapher;
 
+import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
+import com.nurflugel.ivybrowser.domain.Revision;
 import com.nurflugel.mergegrapher.domain.CopyInfo;
 import com.nurflugel.mergegrapher.domain.Path;
 import com.nurflugel.mergegrapher.domain.Type;
@@ -9,13 +11,16 @@ import org.apache.commons.lang.StringUtils;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.wc.*;
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.net.Authenticator;
+import java.util.*;
+import static com.nurflugel.ivygrapher.NodeOrder.TOP_TO_BOTTOM;
+import static com.nurflugel.ivygrapher.OutputFormat.PDF;
 import static com.nurflugel.mergegrapher.domain.Type.*;
-import static org.apache.commons.lang.StringUtils.countMatches;
-import static org.apache.commons.lang.StringUtils.remove;
-import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.equals;
+import static org.apache.commons.lang.StringUtils.substringAfterLast;
 import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
 
 /** Lets see if we can get Subversion merge information, etc from properties! */
@@ -27,27 +32,28 @@ public class SubversionMergeGrapher
   public static final String  BRANCHES            = "/branches";
   private static final String MERGE_INFO_PROPERTY = "svn:mergeinfo";
   private static final String WIKI                = "/wiki";
-
   // private String              projectBaseUrl      = "http://subversion/svn/cdmII";
 
   // private static final String projectBaseUrl      = "http://subversion/svn/admin";
   // private String projectBaseUrl = "http://subversion/svn/ordercapturerunk";
   // private String projectBaseUrl = "http://subversion/svn/buildtasks";
-  private String projectBaseUrl = "http://localhost/svn/mergeTest";
+  private String projectBaseUrl = "http://localhost/svn/grapher04";
 
   // private String projectBaseUrl = "http://ivy-tools.googlecode.com/svn";
   private Map<String, Path> pathMap  = new TreeMap<String, Path>();
   private List<CopyInfo>    copyInfo = new ArrayList<CopyInfo>();
 
   // --------------------------- main() method ---------------------------
-
   public static void main(String[] args)
   {
     SubversionMergeGrapher grapher = new SubversionMergeGrapher();
 
     try
     {
-      grapher.doIt();
+      GraphVizOutput graphVizOutput = grapher.getGraphVizOutput();
+      File           dotFile        = grapher.generateDotFile(graphVizOutput);
+
+      grapher.processDotFile(graphVizOutput, dotFile);
     }
     catch (IOException e)
     {
@@ -55,7 +61,7 @@ public class SubversionMergeGrapher
     }
   }
 
-  private void doIt() throws IOException
+  File generateDotFile(GraphVizOutput graphVizOutput) throws IOException
   {
     try
     {
@@ -66,7 +72,7 @@ public class SubversionMergeGrapher
       SVNWCClient      wcClient         = svnClientManager.getWCClient();
 
       // find creation and deletion of all trunk, branches, tags - record revisions at each event.
-      findAllRevisionsWithAddDeletes(svnClientManager, projectBaseUrl);
+      Map<Revision, SVNLogEntry> entryMap = findAllRevisionsWithAddDeletes(svnClientManager, projectBaseUrl);
 
       for (String pathKey : pathMap.keySet())
       {
@@ -86,44 +92,67 @@ public class SubversionMergeGrapher
        * <li>for each revision find if a merge has taken place capture that revision and merge from info (branch, revisions, etc)
        */
       List<Path>  allPaths    = new ArrayList<Path>();
-
       HtmlHandler htmlHandler = new HtmlHandler();
 
-      findAllPaths(true, allPaths, projectBaseUrl, htmlHandler);
+      findAllPathsInRepository(true, allPaths, projectBaseUrl, htmlHandler);
 
-      Map<Path, Set<Long>> pathRevisions = getAllRevisionsForPaths(allPaths, svnClientManager);
+      Map<Path, Set<Revision>> pathRevisions = getAllRevisionsForPaths(allPaths, svnClientManager);
 
-      for (Path path : pathRevisions.keySet())
-      {
-        if (!path.getPathName().equals(BRANCHES) && !path.getPathName().equals(TAGS))
-        {
-          Set<Long> revisions = pathRevisions.get(path);
-
-          findMergeInfoForBranch(wcClient, path, revisions);
-        }
-      }
+      findMergeInfo(wcClient, pathRevisions);
 
       for (CopyInfo info : copyInfo)
       {
         System.out.println("<><><><><><> info = " + info);
       }
 
-      GraphVizOutput graphVizOutput = new GraphVizOutput(pathMap, copyInfo);
+      String repositoryName = substringAfterLast(projectBaseUrl, "/");
+      File   file           = graphVizOutput.makeDotFile(pathMap, copyInfo, repositoryName);
+
+      return file;
     }
     catch (SVNException e)
     {
       e.printStackTrace();
+
+      // dbulla CODEREVIEW - icky - fix this
+      return null;
     }
   }
 
-  /** find creation and deletion of all trunk, branches, tags - record revisions at each event. */
-  private Map<Long, SVNLogEntry> findAllRevisionsWithAddDeletes(SVNClientManager svnClientManager, String url) throws SVNException
+  private void findMergeInfo(SVNWCClient wcClient, Map<Path, Set<Revision>> pathRevisions) throws SVNException
   {
-    final Map<Long, SVNLogEntry> logEntries = findAllRevisionsForUrl(svnClientManager, url);
-
-    for (Long aLong : logEntries.keySet())
+    for (Path path : pathRevisions.keySet())
     {
-      handleLogEntries(aLong, logEntries);
+      if (!path.getPathName().equals(BRANCHES) && !path.getPathName().equals(TAGS))
+      {
+        Set<Revision> revisions = pathRevisions.get(path);
+
+        findMergeInfoForBranch(wcClient, path, revisions);
+      }
+    }
+  }
+
+  GraphVizOutput getGraphVizOutput()
+  {
+    Os             os             = Os.findOs();
+    GraphVizOutput graphVizOutput = new GraphVizOutput(os, PDF, false, os.getDefaultDotPath(), true, TOP_TO_BOTTOM);
+
+    return graphVizOutput;
+  }
+
+  private void processDotFile(GraphVizOutput graphVizOutput, File file)
+  {
+    graphVizOutput.processDotFile(file);
+  }
+
+  /** find creation and deletion of all trunk, branches, tags - record revisions at each event. */
+  private Map<Revision, SVNLogEntry> findAllRevisionsWithAddDeletes(SVNClientManager svnClientManager, String url) throws SVNException
+  {
+    final Map<Revision, SVNLogEntry> logEntries = findAllRevisionsForUrl(svnClientManager, url);
+
+    for (Revision revision : logEntries.keySet())
+    {
+      parseLogEntriesForPathMap(revision, logEntries);
     }
 
     return logEntries;
@@ -135,23 +164,27 @@ public class SubversionMergeGrapher
    * @param  svnClientManager  Previously created client manager
    * @param  urlString         the URL of interest
    */
-  private Map<Long, SVNLogEntry> findAllRevisionsForUrl(SVNClientManager svnClientManager, String urlString) throws SVNException
+  private Map<Revision, SVNLogEntry> findAllRevisionsForUrl(SVNClientManager svnClientManager, String urlString) throws SVNException
   {
-    SVNURL                       url        = SVNURL.parseURIDecoded(urlString);
-    SVNLogClient                 logClient  = svnClientManager.getLogClient();
-    final Map<Long, SVNLogEntry> logEntries = new TreeMap<Long, SVNLogEntry>();
-
-    ISVNLogEntryHandler          handler    = new ISVNLogEntryHandler()
+    SVNURL                           url        = SVNURL.parseURIDecoded(urlString);
+    SVNLogClient                     logClient  = svnClientManager.getLogClient();
+    final Map<Revision, SVNLogEntry> logEntries = new TreeMap<Revision, SVNLogEntry>();
+    ISVNLogEntryHandler              handler    = new ISVNLogEntryHandler()
     {
       @Override
       public void handleLogEntry(SVNLogEntry logEntry) throws SVNException
       {
-        logEntries.put(logEntry.getRevision(), logEntry);
+        processLogEntryForRevision(logEntry, logEntries);
       }
     };
     logClient.doLog(url, null, HEAD, SVNRevision.create(0), HEAD, true, true, 999999999, handler);
 
     return logEntries;
+  }
+
+  private void processLogEntryForRevision(SVNLogEntry logEntry, Map<Revision, SVNLogEntry> logEntries)
+  {
+    logEntries.put(new Revision(logEntry.getRevision()), logEntry);
   }
 
   //J-
@@ -172,7 +205,7 @@ public class SubversionMergeGrapher
    *
    */
   //J+
-  private void handleLogEntries(Long revision, Map<Long, SVNLogEntry> logEntries)
+  private void parseLogEntriesForPathMap(Revision revision, Map<Revision, SVNLogEntry> logEntries)
   {
     SVNLogEntry logEntry = logEntries.get(revision);
     String      author   = logEntry.getAuthor();
@@ -184,37 +217,42 @@ public class SubversionMergeGrapher
 
     for (Object key : changedPaths.keySet())
     {
-      SVNLogEntryPath entryPath    = (SVNLogEntryPath) changedPaths.get(key);
-      char            typeChar     = entryPath.getType();
-      Type            type         = findByValue(typeChar);
-      String          pathName     = entryPath.getPath();
-      String          copyPath     = entryPath.getCopyPath();
-      long            copyRevision = entryPath.getCopyRevision();
+      parseLogEntryForPath(revision, changedPaths, key);
+    }
+  }
 
-      if ((type == A) || (type == D))
+  private void parseLogEntryForPath(Revision revision, Map changedPaths, Object key)
+  {
+    SVNLogEntryPath entryPath    = (SVNLogEntryPath) changedPaths.get(key);
+    char            typeChar     = entryPath.getType();
+    Type            type         = findByValue(typeChar);
+    String          pathName     = entryPath.getPath();
+    String          copyPath     = entryPath.getCopyPath();
+    Revision        copyRevision = new Revision(entryPath.getCopyRevision());
+
+    // dbulla CODEREVIEW - what is this doing? break out into method
+    if ((type == A) || (type == D))
+    {
+      if (pathName.contains(BRANCHES) || pathName.equals(TRUNK) || pathName.contains(TAGS))
       {
-        if (pathName.contains(BRANCHES) || pathName.equals(TRUNK) || pathName.contains(TAGS))
+        boolean isTrunk     = StringUtils.equals(pathName, TRUNK);
+        boolean isNewBranch = isNewBranch(pathName, BRANCHES);
+        boolean isNewTag    = isNewBranch(pathName, TAGS);
+
+        if (isTrunk || isNewBranch || isNewTag)
         {
-          boolean isTrunk     = StringUtils.equals(pathName, TRUNK);
-          boolean isNewBranch = isNewBranch(pathName, BRANCHES);
-          boolean isNewTag    = isNewBranch(pathName, TAGS);
+          Path path = getPath(pathName);
 
-          if (isTrunk || isNewBranch || isNewTag)
+          if (path != null)
           {
-            Path path = getPath(pathName);
-
-            if (path != null)
-            {
-              path.modifyPath(this, pathMap, copyPath, copyRevision, type, revision, copyInfo);
-
-              System.out.println("    Revision " + revision + " changed path " + type + " : = " + pathName + " copyPath= " + copyPath
+            path.modifyPath(this, pathMap, copyPath, copyRevision, type, revision, copyInfo);
+            System.out.println("    Revision " + revision + " changed path " + type + " : = " + pathName + " copyPath= " + copyPath
                                  + " copyRevision= " + copyRevision);
-            }
           }
         }
       }
-      // System.out.println("Revision " + revision + ", author " + author + " Date " + logEntry.getDate());
     }
+    // System.out.println("Revision " + revision + ", author " + author + " Date " + logEntry.getDate());
   }
 
   /** is this path JUST a branch? */
@@ -262,7 +300,7 @@ public class SubversionMergeGrapher
    * @param  url              the URL to search in
    * @param  htmlHandler      the handler which will do the work
    */
-  private void findAllPaths(boolean browseNextLevel, List<Path> paths, String url, HtmlHandler htmlHandler) throws IOException
+  private void findAllPathsInRepository(boolean browseNextLevel, List<Path> paths, String url, HtmlHandler htmlHandler) throws IOException
   {
     // this should return trunk, branches, tags (assuming they were created)
     List<String> rootDirs = htmlHandler.getFiles(url, true);
@@ -287,7 +325,7 @@ public class SubversionMergeGrapher
 
       if (browseNextLevel && !pathName.equals(TRUNK) && !pathName.equals(WIKI))
       {
-        findAllPaths(false, paths, projectBaseUrl + pathName, htmlHandler);
+        findAllPathsInRepository(false, paths, projectBaseUrl + pathName, htmlHandler);
       }
     }
   }
@@ -326,16 +364,20 @@ public class SubversionMergeGrapher
   }
 
   /** For the list of paths, make a map of all the revisions for each path. */
-  private Map<Path, Set<Long>> getAllRevisionsForPaths(List<Path> allPaths, SVNClientManager svnClientManager) throws SVNException
+  private Map<Path, Set<Revision>> getAllRevisionsForPaths(List<Path> allPaths, SVNClientManager svnClientManager) throws SVNException
   {
-    Map<Path, Set<Long>> pathRevisions = new TreeMap<Path, Set<Long>>();
+    Map<Path, Set<Revision>> pathRevisions = new TreeMap<Path, Set<Revision>>();
 
     for (Path path : allPaths)
-    {
-      Map<Long, SVNLogEntry> logEntryMap    = findAllRevisionsForUrl(svnClientManager, projectBaseUrl + path.getPathName());
-      Set<Long>              revisions      = logEntryMap.keySet();
-      Set<Long>              sortedRevisons = new TreeSet<Long>(revisions);
+    {  // doesn't seem to be getting all revisions - check on this...
 
+      Map<Revision, SVNLogEntry> logEntryMap    = findAllRevisionsForUrl(svnClientManager, projectBaseUrl + path.getPathName());
+      Set<Revision>              revisions      = logEntryMap.keySet();
+      Set<Revision>              sortedRevisons = new TreeSet<Revision>(revisions);
+      List<Revision>             tempList       = new ArrayList<Revision>(sortedRevisons);
+      Revision                   lastRevision   = tempList.get(tempList.size() - 1);
+
+      path.setLastActiveRevision(lastRevision);
       pathRevisions.put(path, sortedRevisons);
     }
 
@@ -343,36 +385,46 @@ public class SubversionMergeGrapher
   }
 
   /** Find the merge info details for all the given revisions on the URL. */
-  private void findMergeInfoForBranch(SVNWCClient wcClient, Path path, Set<Long> revisionsForBranch) throws SVNException
+  private void findMergeInfoForBranch(SVNWCClient wcClient, Path path, Set<Revision> revisionsForBranch) throws SVNException
   {
     String           urlText  = projectBaseUrl + path.getPathName();
     SVNURL           url      = SVNURL.parseURIDecoded(urlText);
     SVNPropertyValue oldValue = null;
 
-    for (Long revision : revisionsForBranch)
+    for (Revision revision : revisionsForBranch)
     {
-      SVNRevision     svnRevision     = SVNRevision.create(revision);
-      SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, MERGE_INFO_PROPERTY, svnRevision, svnRevision);
+      oldValue = findMergeInfoForBranchRevision(wcClient, path, url, oldValue, revision);
+    }
+  }
 
-      // System.out.println("Revision = " + revision);
+  private SVNPropertyValue findMergeInfoForBranchRevision(SVNWCClient wcClient, Path path, SVNURL url, SVNPropertyValue oldValue, Revision revision)
+                                                   throws SVNException
+  {
+    SVNRevision     svnRevision     = SVNRevision.create(revision.getRevisionNumber());
+    SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, MERGE_INFO_PROPERTY, svnRevision, svnRevision);
 
-      if (svnPropertyData != null)
+    // System.out.println("Revision = " + revision);
+    if (svnPropertyData != null)
+    {
+      SVNPropertyValue value = svnPropertyData.getValue();
+
+      if (!value.equals(oldValue))
       {
-        SVNPropertyValue value = svnPropertyData.getValue();
-
-        if (!value.equals(oldValue))
-        {
-          System.out.println("Path " + path.getPathName() + ",  revision " + revision + " had a change to merge info");
-
-          path.handleMergeInfoChange(this, value, oldValue, revision, copyInfo);
-
-          oldValue = value;
-        }
-      }
-      else
-      {
-        // System.out.println("Didn't get any merge data for " + url);
+        System.out.println("Path " + path.getPathName() + ",  revision " + revision + " had a change to merge info");
+        path.handleMergeInfoChange(this, value, oldValue, revision, copyInfo);
+        oldValue = value;
       }
     }
+    else
+    {
+      // System.out.println("Didn't get any merge data for " + url);
+    }
+
+    return oldValue;
+  }
+
+  public void setProjectBaseUrl(String projectBaseUrl)
+  {
+    this.projectBaseUrl = projectBaseUrl;
   }
 }

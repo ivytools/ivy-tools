@@ -18,9 +18,7 @@ public class ExternalsTableFormat implements TableFormat
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

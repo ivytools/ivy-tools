@@ -29,19 +29,10 @@ public class RepositoryScanner implements Runnable
   private EventList<External>                 externalsList;
   private ExecutorService                     threadPool = Executors.newFixedThreadPool(1);
 
-  public RepositoryScanner(String                              repositoryUrl,
-                           boolean                             isRecursive,
-                           SVNWCClient                         wcClient,
-                           HtmlHandler                         urlHandler,
-                           boolean                             showBranches,
-                           boolean                             showTags,
-                           boolean                             showTrunks,
-                           SubversionHandler                   subversionHandler,
-                           EventList<ProjectExternalReference> projectsList,
-                           ExternalsFinderMainFrame            mainFrame,
-                           boolean                             selectAllExternals,
-                           boolean                             selectAllProjects,
-                           EventList<External>                 externalsList)
+  public RepositoryScanner(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient, HtmlHandler urlHandler, boolean showBranches,
+                           boolean showTags, boolean showTrunks, SubversionHandler subversionHandler,
+                           EventList<ProjectExternalReference> projectsList, ExternalsFinderMainFrame mainFrame, boolean selectAllExternals,
+                           boolean selectAllProjects, EventList<External> externalsList)
   {
     this.repositoryUrl      = repositoryUrl;
     this.recursive          = isRecursive;

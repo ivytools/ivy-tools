@@ -5,9 +5,9 @@ import com.nurflugel.externalsreporter.ui.tree.BranchNode;
 import com.nurflugel.externalsreporter.ui.tree.CheckableNode;
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
 import com.nurflugel.externalsreporter.ui.tree.ProjectNode;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
-import javax.swing.*;
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jun 2, 2008 Time: 9:15:47 PM To change this template use File | Settings | File Templates. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
@@ -27,7 +27,6 @@ public class ProjectFinderTask extends SwingWorker<Object, Object>
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   private void addToUi(MasterProjects masterProject, long startTime) throws IOException
   {
     List<BuildableProjects> projects = null;  // BuildableProjects.getProjectsForMaster(masterProject);

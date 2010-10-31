@@ -52,7 +52,6 @@ public class IvyFile
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public List<IvyPackage> getDependencies()
   {
     return dependencies;

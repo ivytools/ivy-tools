@@ -1,0 +1,16 @@
+
+digraph G {
+    node [shape=ellipse,fontname="Arial",fontsize="10"];
+    edge [fontname="Arial",fontsize="8"];
+    headline [label="grapher03 Merge History", shape=none, fontsize="20"];
+r [label="" shape=plaintext];
+r1 [label="1" shape=plaintext];
+r8 [label="8" shape=plaintext];
+r1->r8[weight=9999];
+trunk [label="" shape=plaintext];
+trunk1 [label="/trunk\n1" style=filled color=yellow];
+trunk8 [label="/trunk\n8" style=filled color=yellow];
+trunk1->trunk8[weight=9999];
+{ rank = same; r1; trunk1; };
+{ rank = same; r8; trunk8; };
+}

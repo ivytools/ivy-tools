@@ -1,150 +1,48 @@
 package com.nurflugel.ivygrapher;
 
 import com.nurflugel.Os;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import static org.apache.commons.io.FileUtils.writeLines;
 
-/** Outputs the .dot file to GraphViz's "dot" - this converts it into the desired format (PDF, PNG, etc). */
-@SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
-public class GraphVizHandler
+/** Superclass for all the common GraphViz stuff. */
+public abstract class GraphVizHandler
 {
-  public static final String NEW_LINE            = "\n";
-  private NodeOrder          nodeOrder;
-  private Os                 os;
-  private OutputFormat       outputFormat;
-  private String             dotExecutablePath;
-  private boolean            deleteDotFileOnExit;
-  private boolean            concentrateEdges;
+  protected Os           os;
+  protected OutputFormat outputFormat;
+  protected String       dotExecutablePath;
+  protected boolean      deleteDotFileOnExit;
+  protected NodeOrder    nodeOrder;
+  protected boolean      concentrateEdges;
 
-  public GraphVizHandler(NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath, boolean deleteDotFileOnExit,
-                         boolean concentrateEdges)
+  public GraphVizHandler(Os os, OutputFormat outputFormat, boolean deleteDotFileOnExit, String dotExecutablePath, boolean concentrateEdges,
+                         NodeOrder nodeOrder)
   {
-    this.nodeOrder           = nodeOrder;
     this.os                  = os;
     this.outputFormat        = outputFormat;
-    this.dotExecutablePath   = dotExecutablePath;
     this.deleteDotFileOnExit = deleteDotFileOnExit;
+    this.dotExecutablePath   = dotExecutablePath;
     this.concentrateEdges    = concentrateEdges;
+    this.nodeOrder           = nodeOrder;
   }
 
-  // -------------------------- OTHER METHODS --------------------------
-
-  public File generateDotFile(File xmlFile, Module ivyModule, Map<String, Module> moduleMap) throws IOException
-  {
-    String fileName = xmlFile.getAbsolutePath().replace(".xml", "");
-    File   dotFile  = new File(fileName + ".dot");
-
-    // logger.debug("Writing output to file " + dotFile.getAbsolutePath());
-
-    OutputStream     outputStream = new FileOutputStream(dotFile);
-    DataOutputStream out          = new DataOutputStream(outputStream);
-
-    // open a new .dot file
-    String openingLine = "digraph G {\nnode [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];\n"
-                         + "edge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=" + nodeOrder.getOrder() + ";\n\n"
-                         + "concentrate=" + concentrateEdges + ";\n";
-
-    write(out, openingLine);
-
-    writeDotFileTargetDeclarations(ivyModule, moduleMap, out);
-
-    writeDotDependencies(moduleMap, out, ivyModule);
-
-    write(out, "}");
-
-    outputStream.close();
-
-    return dotFile;
-  }
-
-  private void writeDotFileTargetDeclarations(Module ivyModule, Map<String, Module> moduleMap, DataOutputStream out) throws IOException
-  {
-    // out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_0"  + " {" + NEW_LINE);
-
-    String line = "\t\t" + ivyModule.getNiceXmlKey() + " [label=\"" + ivyModule.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "red"
-                  + " ]; ";
-
-    write(out, line + NEW_LINE);
-
-    for (Module module : moduleMap.values())
-    {
-      if (!module.equals(ivyModule))
-      {
-        line = "\t\t" + module.getNiceXmlKey() + " [label=\"" + module.getPrettyLabel() + "\" shape=" + "ellipse" + " color=" + "black" + " ]; ";
-
-        write(out, line + NEW_LINE);
-      }
-    }
-    // write(out,"\t}" + NEW_LINE);
-  }
-
-  private void writeDotDependencies(Map<String, Module> moduleMap, DataOutputStream out, Module ivyModule) throws IOException
-  {
-    // iterate through the map for each module
-    // see if it's a caller for any other module - if so, add that module as a dependency
-    for (Module callingModule : moduleMap.values())
-    {
-      for (Module calledModule : moduleMap.values())
-      {
-        Map<Module, String> callersMap = calledModule.getCallers();
-
-        if (callersMap.containsKey(callingModule))
-        {
-          String callingRev      = callersMap.get(callingModule);
-          String calledModuleRev = calledModule.getRevision();
-          String color           = "black";
-
-          if (callingModule.equals(ivyModule))
-          {
-            // if the ivy script is calling out a rev which was evicted, make it red
-            int result = callingRev.compareTo(calledModuleRev);
-
-            color = (result < 0) ? "red"
-                                 : "black";
-
-            // if there is another caller with the same revision, make it red
-            for (Module module : callersMap.keySet())
-            {
-              if (!module.equals(ivyModule))
-              {
-                String otherRev = callersMap.get(module);
-
-                if (otherRev.equals(callingRev))
-                {
-                  color = "red";
-
-                  break;
-                }
-              }
-            }
-          }
-
-          String line = "\t\t" + callingModule.getNiceXmlKey() + " -> " + calledModule.getNiceXmlKey() + "[color=" + color + " label=\"" + callingRev
-                        + "\"];" + NEW_LINE;
-
-          write(out, line);
-        }
-      }
-    }
-  }
-
-  private void write(DataOutputStream out, String text) throws IOException
-  {
-    out.writeBytes(text);
-
-    // System.out.println(text);
-  }
+  protected abstract void writeDotFileTargetDeclarations(Module ivyModule, Map<String, Module> moduleMap, List<String> lines);
+  protected abstract void writeDotDependencies(Map<String, Module> moduleMap, List<String> lines, Module ivyModule);
 
   /** Convert the .dot file into png, pdf, svg, whatever. */
-  @SuppressWarnings({ "OverlyLongMethod" })
+  @SuppressWarnings({ "OverlyLongMethod", "CallToPrintStackTrace" })
   public void processDotFile(File dotFile)
   {
     try
     {
       String outputFileName = getOutputFileName(dotFile, outputFormat.getExtension());
       File   outputFile     = new File(dotFile.getParent(), outputFileName);
-      File   parentFile     = outputFile.getParentFile();
+      File   parentFile     = dotFile.getParentFile();
       String dotFilePath    = dotFile.getAbsolutePath();
       String outputFilePath = outputFile.getAbsolutePath();
 
@@ -165,7 +63,7 @@ public class GraphVizHandler
 
       String[] command = { dotExecutablePath, "-T" + outputFormatName, dotFilePath, "-o" + outputFilePath };
 
-      System.out.println("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
+      System.out.println("Command to run: " + concatenate(command));  // +" parent file is " + parentFile.getPath());
 
       Runtime runtime = Runtime.getRuntime();
       long    start   = new Date().getTime();
@@ -175,9 +73,7 @@ public class GraphVizHandler
       long end = new Date().getTime();
 
       // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
-
-      os.openFile(outputFilePath);
-
+      // viewFile(outputFilePath);
       if (deleteDotFileOnExit)
       {
         dotFile.deleteOnExit();
@@ -190,6 +86,12 @@ public class GraphVizHandler
       e.printStackTrace();
       System.err.println("exception = " + e);
     }
+  }
+
+  public void viewFile(String outputFilePath) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException,
+                                                     ClassNotFoundException
+  {
+    os.openFile(outputFilePath);
   }
 
   private String concatenate(String[] command)
@@ -213,5 +115,25 @@ public class GraphVizHandler
     results = results.substring(0, index) + outputExtension;
 
     return results;
+  }
+
+  public File generateDotFile(File xmlFile, Module ivyModule, Map<String, Module> moduleMap) throws IOException
+  {
+    String       fileName = xmlFile.getAbsolutePath().replace(".xml", "");
+    File         dotFile  = new File(fileName + ".dot");
+    List<String> lines    = new ArrayList<String>();
+
+    // open a new .dot file
+    lines.add("digraph G {\nnode [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];");
+    lines.add("edge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=" + nodeOrder.getOrder() + ";\n");
+    lines.add("concentrate=" + concentrateEdges + ";");
+    writeDotFileTargetDeclarations(ivyModule, moduleMap, lines);
+    writeDotDependencies(moduleMap, lines, ivyModule);
+    lines.add("}");
+
+    // write the lines to the file
+    writeLines(dotFile, lines);
+
+    return dotFile;
   }
 }

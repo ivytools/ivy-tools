@@ -2,7 +2,6 @@ package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.common.ui.Util;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
 
 /** Representation of an external and the project that uses it. */
@@ -22,7 +21,6 @@ public class ProjectExternalReference implements Comparable, Selectable
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public External getExternal()
   {
     return external;
@@ -62,15 +60,12 @@ public class ProjectExternalReference implements Comparable, Selectable
     return Util.filterUrlNames(baseUrl) + "\\n" + externalDir;
   }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).
-                append("baseUrl", baseUrl).
-                append("externalDir", externalDir).
-                append("external", external).
-                append("isSelected", isSelected).
-                toString();
-    }
+  @Override
+  public String toString()
+  {
+    return new ToStringBuilder(this).append("baseUrl", baseUrl).append("externalDir", externalDir).append("external", external)
+                                    .append("isSelected", isSelected).toString();
+  }
 
   @Override
   public int compareTo(Object o)
@@ -94,7 +89,6 @@ public class ProjectExternalReference implements Comparable, Selectable
     }
 
     ProjectExternalReference other        = (ProjectExternalReference) o;
-
     String                   otherBaseUrl = getUrlNoTrailingSlash(other.baseUrl);
     String                   myUrl        = getUrlNoTrailingSlash(baseUrl);
 

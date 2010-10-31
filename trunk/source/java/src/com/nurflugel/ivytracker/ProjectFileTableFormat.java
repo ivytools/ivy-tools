@@ -1,7 +1,6 @@
 package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.Project;
 
 /** Table format to determine how the Project table gets displayed. */
@@ -12,9 +11,7 @@ public class ProjectFileTableFormat implements TableFormat
   private String[] columnNames  = { "Include?", "Project" };
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

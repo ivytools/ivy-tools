@@ -2,7 +2,7 @@ package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.externalsreporter.ui.*;
+import com.nurflugel.externalsreporter.ui.HtmlHandler;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import org.tmatesoft.svn.core.SVNException;
 import javax.swing.*;
@@ -25,13 +25,8 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
   private boolean               isSelectAllExternals;
   private boolean               isSelectAllProjects;
 
-  public ScanSubversionsRepositoriesTask(Set<String>           repositoryUrls,
-                                         UiMainFrame           mainFrame,
-                                         boolean               isShallowSearch,
-                                         boolean               showBranches,
-                                         boolean               showTags,
-                                         boolean               showTrunks,
-                                         EventList<IvyPackage> foundIvyFilesList)
+  public ScanSubversionsRepositoriesTask(Set<String> repositoryUrls, UiMainFrame mainFrame, boolean isShallowSearch, boolean showBranches,
+                                         boolean showTags, boolean showTrunks, EventList<IvyPackage> foundIvyFilesList)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;
@@ -71,7 +66,6 @@ public class ScanSubversionsRepositoriesTask extends SwingWorker
     }
 
     // mainFrame.processResults();todo
-
     return null;
   }
 

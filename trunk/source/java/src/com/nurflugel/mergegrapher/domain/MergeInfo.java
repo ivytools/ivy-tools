@@ -1,5 +1,6 @@
 package com.nurflugel.mergegrapher.domain;
 
+import com.nurflugel.ivybrowser.domain.Revision;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class MergeInfo extends CopyInfo
    */
   private String mergeRevisions;
 
-  protected MergeInfo(Path sourcePath, long sourceRevision, long copyRevision, Path destinationPath, String mergeRevisions)
+  protected MergeInfo(Path sourcePath, Revision sourceRevision, Revision copyRevision, Path destinationPath, String mergeRevisions)
   {
     super(sourcePath, sourceRevision, copyRevision);
     this.destinationPath = destinationPath;
@@ -23,7 +24,6 @@ public class MergeInfo extends CopyInfo
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public Path getDestinationPath()
   {
     return destinationPath;
@@ -48,20 +48,29 @@ public class MergeInfo extends CopyInfo
   public String toString()
   {
     return "MergeInfo{"
-           + "destinationPath=" + destinationPath + ", mergeRevisions='" + mergeRevisions + '\'' + "} " + super.toString();
+             + "destinationPath=" + destinationPath + ", mergeRevisions='" + mergeRevisions + '\'' + "} " + super.toString();
   }
 
-   public List< Long> getInterestingRevisions(){
-    List<Long> revisions=new ArrayList<Long>();
-    if(getSourceRevision()!=null)revisions.add(getSourceRevision());
-    if(getCopyRevision()!=null)revisions.add(getCopyRevision());
-    //todo merge revisions?
+  public List<Revision> getInterestingRevisions()
+  {
+    List<Revision> revisions = new ArrayList<Revision>();
 
+    if (getSourceRevision() != null)
+    {
+      revisions.add(getSourceRevision());
+    }
+
+    if (getCopyRevision() != null)
+    {
+      revisions.add(getCopyRevision());
+    }
+    // todo merge revisions?
     return revisions;
   }
 
   @Override
-  public void writeInfo(List<String> lines) {
-    //todo something
+  public void writeInfo(List<String> lines)
+  {
+    // todo something
   }
 }

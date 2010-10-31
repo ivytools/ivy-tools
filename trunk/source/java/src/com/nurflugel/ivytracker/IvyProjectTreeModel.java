@@ -1,5 +1,6 @@
 package com.nurflugel.ivytracker;
 
+import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -14,19 +15,17 @@ import java.util.Map;
 public class IvyProjectTreeModel implements TreeModel
 {
   private List<IvyPackage>        projectIvyFiles;
-  private Map<String, IvyPackage> ivyFilesMap;
+  private Map<IvyKey, IvyPackage> ivyFilesMap;
   private final String            rootText = "Nike build projects";
 
-  public IvyProjectTreeModel(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
+  public IvyProjectTreeModel(List<IvyPackage> projectIvyFiles, Map<IvyKey, IvyPackage> ivyFilesMap)
   {
     this.projectIvyFiles = Collections.unmodifiableList(projectIvyFiles);
     this.ivyFilesMap     = Collections.unmodifiableMap(ivyFilesMap);
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TreeModel ---------------------
-
   @Override
   public Object getRoot()
   {
@@ -43,7 +42,7 @@ public class IvyProjectTreeModel implements TreeModel
     else if (o instanceof IvyPackage)
     {
       IvyPackage ivyFile = (IvyPackage) o;
-      String     key     = ivyFile.getDependencies().get(i).getKey();
+      IvyKey     key     = ivyFile.getDependencies().get(i).getKey();
 
       return ivyFilesMap.get(key);
     }
@@ -102,7 +101,7 @@ public class IvyProjectTreeModel implements TreeModel
       if (o1 instanceof IvyPackage)
       {
         IvyPackage child = (IvyPackage) o1;
-        String     key   = child.getKey();
+        IvyKey     key   = child.getKey();
 
         return ivyFile.getDependencies().indexOf(key);
       }

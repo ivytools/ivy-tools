@@ -18,7 +18,6 @@ public class TargetNode extends CheckableNode
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   public void add(CheckableNode node)
   {

@@ -18,9 +18,7 @@ public class IvyPackageCheckbox extends JCheckBox implements Comparable
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Comparable ---------------------
-
   @Override
   public int compareTo(Object o)
   {
@@ -30,7 +28,6 @@ public class IvyPackageCheckbox extends JCheckBox implements Comparable
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public IvyPackage getIvyPackage()
   {
     return ivyPackage;

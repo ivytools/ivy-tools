@@ -16,7 +16,6 @@ public class HtmlParser
 {
   private static final String TRUNK    = "trunk";
   private static final String BRANCHES = "branches";
-
   // -------------------------- OTHER METHODS --------------------------
 
   /**

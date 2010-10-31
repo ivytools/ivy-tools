@@ -3,9 +3,9 @@ package com.nurflugel.common.ui.tree;
 import com.nurflugel.externalsreporter.ui.tree.CheckableNode;
 import com.nurflugel.externalsreporter.ui.tree.ProjectNode;
 import com.nurflugel.externalsreporter.ui.tree.TopNode;
-import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
+import java.awt.*;
 
 /** Renderer for the tree nodes. */
 public class CheckRenderer extends JPanel implements TreeCellRenderer
@@ -26,9 +26,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TreeCellRenderer ---------------------
-
   @Override
   @SuppressWarnings({ "ReturnOfThis" })
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row,
@@ -68,7 +66,6 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   public void doLayout()
   {

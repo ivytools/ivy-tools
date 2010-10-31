@@ -13,30 +13,23 @@ import java.util.Set;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class ScanExternalsTask extends SwingWorker
 {
-  private Set<String>                         repositoryUrls;
-  private ExternalsFinderMainFrame            mainFrame;
-  private boolean                             shallowSearch;
-  private SubversionHandler                   subversionHandler;
-  private HtmlHandler                         urlHandler           = new HtmlHandler();
-  private boolean                             showBranches;
-  private boolean                             showTags;
-  private boolean                             showTrunks;
-  private EventList<External>                 externalsList;
+  private Set<String>              repositoryUrls;
+  private ExternalsFinderMainFrame mainFrame;
+  private boolean                  shallowSearch;
+  private SubversionHandler        subversionHandler;
+  private HtmlHandler              urlHandler              = new HtmlHandler();
+  private boolean                  showBranches;
+  private boolean                  showTags;
+  private boolean                  showTrunks;
+  private EventList<External>      externalsList;
   private EventList<ProjectExternalReference> projectsList;
-  private boolean                             isSelectAllExternals;
-  private boolean                             isSelectAllProjects;
+  private boolean                  isSelectAllExternals;
+  private boolean                  isSelectAllProjects;
 
-  public ScanExternalsTask(Set<String>                         repositoryUrls,
-                           ExternalsFinderMainFrame            mainFrame,
-                           boolean                             isShallowSearch,
-                           SubversionHandler                   subversionHandler,
-                           boolean                             showBranches,
-                           boolean                             showTags,
-                           boolean                             showTrunks,
-                           EventList<External>                 externalsList,
-                           EventList<ProjectExternalReference> projectsList,
-                           boolean                             selectAllExternals,
-                           boolean                             selectAllProjects)
+  public ScanExternalsTask(Set<String> repositoryUrls, ExternalsFinderMainFrame mainFrame, boolean isShallowSearch,
+                           SubversionHandler subversionHandler, boolean showBranches, boolean showTags, boolean showTrunks,
+                           EventList<External> externalsList, EventList<ProjectExternalReference> projectsList, boolean selectAllExternals,
+                           boolean selectAllProjects)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;

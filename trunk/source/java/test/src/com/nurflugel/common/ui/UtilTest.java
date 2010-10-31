@@ -1,9 +1,7 @@
 package com.nurflugel.common.ui;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class UtilTest
 {

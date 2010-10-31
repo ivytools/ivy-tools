@@ -1,7 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
-import java.io.File;
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 1:31:10 PM To change this template use File | Settings | File Templates.
@@ -21,7 +21,6 @@ public class IvyFileCheckbox extends JCheckBox
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public File getFile()
   {
     return file;

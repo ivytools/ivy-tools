@@ -1,17 +1,20 @@
 package com.nurflugel.ivytracker;
 
-import static com.nurflugel.common.ui.Util.center;
-
+import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivytracker.domain.IvyFile;
+import com.nurflugel.ivytracker.domain.Project;
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Map;
+import static com.nurflugel.common.ui.Util.center;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import static javax.swing.KeyStroke.getKeyStroke;
 
 public class ShowProjectsDialog extends JDialog
 {
@@ -21,13 +24,14 @@ public class ShowProjectsDialog extends JDialog
   private JButton           buttonOK;
   private JTree             projectsTree;
 
-  public ShowProjectsDialog(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
+  public ShowProjectsDialog(List<IvyPackage> projectIvyFiles, Map<Project, List<IvyPackage>> ivyFilesMap)
   {
     setContentPane(contentPane);
     setModal(true);
     getRootPane().setDefaultButton(buttonOK);
     addListeners();
-    populateTree(projectIvyFiles, ivyFilesMap);
+
+    // populateTree(projectIvyFiles, ivyFilesMap);//todo
     pack();
     setSize(1000, 800);
     center(this);
@@ -61,7 +65,7 @@ public class ShowProjectsDialog extends JDialog
         {
           onCancel();
         }
-      }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+      }, getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
   }
 
   private void onOK()
@@ -76,21 +80,11 @@ public class ShowProjectsDialog extends JDialog
     dispose();
   }
 
-  private void populateTree(List<IvyPackage> projectIvyFiles, Map<String, IvyPackage> ivyFilesMap)
+  // todo start from selected Ivy files, show projects
+  private void populateTree(List<IvyPackage> projectIvyFiles, Map<IvyKey, IvyPackage> ivyFilesMap)
   {
     TreeModel treeModel = new IvyProjectTreeModel(projectIvyFiles, ivyFilesMap);
 
     projectsTree.setModel(treeModel);
-  }
-
-  // --------------------------- main() method ---------------------------
-
-  public static void main(String[] args)
-  {
-    ShowProjectsDialog dialog = new ShowProjectsDialog(new ArrayList<IvyPackage>(), new HashMap<String, IvyPackage>());
-
-    dialog.pack();
-    dialog.setVisible(true);
-    System.exit(0);
   }
 }

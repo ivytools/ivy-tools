@@ -1,8 +1,6 @@
 package com.nurflugel.ivygrapher;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Module
@@ -20,7 +18,6 @@ public class Module
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public void addCaller(Module caller, String callerPreferredRev)
   {
     callers.put(caller, callerPreferredRev);
@@ -40,7 +37,6 @@ public class Module
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   public String toString()
   {
@@ -64,7 +60,6 @@ public class Module
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public Map<Module, String> getCallers()
   {
     return callers;

@@ -2,7 +2,6 @@ package com.nurflugel.versionfinder;
 
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 public class UsernamePasswordDialog extends JDialog
@@ -20,7 +19,6 @@ public class UsernamePasswordDialog extends JDialog
     getRootPane().setDefaultButton(buttonOK);
     usernameField.setText(userName);
     passwordField.setText(password);
-
     buttonOK.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -28,7 +26,6 @@ public class UsernamePasswordDialog extends JDialog
           onOK();
         }
       });
-
     buttonCancel.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -59,7 +56,6 @@ public class UsernamePasswordDialog extends JDialog
     setTitle("Enter username/password for Subversion");
     pack();
     setSize(400, (int) getSize().getHeight());
-
     Util.center(this);
     setVisible(true);
   }

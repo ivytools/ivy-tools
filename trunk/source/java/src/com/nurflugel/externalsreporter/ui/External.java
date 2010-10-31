@@ -2,13 +2,12 @@ package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.common.ui.Util;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
 
 /** Representation of an external and the project that uses it. */
 public class External implements Comparable, Selectable
 {
-  private String  url;
+  private String url;
   private boolean selected = true;
 
   public External(String url, boolean selected)
@@ -18,7 +17,6 @@ public class External implements Comparable, Selectable
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public String getUrl()
   {
     return url;
@@ -48,13 +46,11 @@ public class External implements Comparable, Selectable
     return Util.filterUrlNames(url);
   }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).
-                append("url", url).
-                append("selected", selected).
-                toString();
-    }
+  @Override
+  public String toString()
+  {
+    return new ToStringBuilder(this).append("url", url).append("selected", selected).toString();
+  }
 
   @Override
   public int compareTo(Object o)
@@ -96,6 +92,4 @@ public class External implements Comparable, Selectable
 
     return result;
   }
-
-
 }

@@ -1,28 +1,40 @@
 package com.nurflugel.mergegrapher;
 
+import com.nurflugel.Os;
+import com.nurflugel.ivybrowser.domain.Revision;
+import com.nurflugel.ivygrapher.GraphVizHandler;
+import com.nurflugel.ivygrapher.Module;
+import com.nurflugel.ivygrapher.NodeOrder;
+import com.nurflugel.ivygrapher.OutputFormat;
 import com.nurflugel.mergegrapher.domain.CopyInfo;
 import com.nurflugel.mergegrapher.domain.Path;
-import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
 import static org.apache.commons.io.FileUtils.writeLines;
 
 /** Handler to deal with GraphViz. */
-public class GraphVizOutput
+public class GraphVizOutput extends GraphVizHandler
 {
-  public GraphVizOutput(Map<String, Path> pathMap, List<CopyInfo> copyInfo) throws IOException
+  public GraphVizOutput(Os os, OutputFormat outputFormat, boolean deleteDotFileOnExit, String dotExecutablePath, boolean concentrateEdges,
+                        NodeOrder nodeOrder)
   {
-    List<String> lines                = new ArrayList<String>();
-    List<Long>   allInterestingRevisions = findAllInterestingRevisions(pathMap, copyInfo);
+    super(os, outputFormat, deleteDotFileOnExit, dotExecutablePath, concentrateEdges, nodeOrder);
+  }
 
-    writeOpeningText(lines);
+  public File makeDotFile(Map<String, Path> pathMap, List<CopyInfo> copyInfo, String repositoryName) throws IOException
+  {
+    String         fileName                = repositoryName + ".dot";
+    List<String>   lines                   = new ArrayList<String>();
+    List<Revision> allInterestingRevisions = findAllInterestingRevisions(pathMap, copyInfo);
+
+    writeOpeningText(lines, repositoryName);
     writeRevisionsGraph(allInterestingRevisions, lines);
 
     for (Path path : pathMap.values())
     {
-      path.writePath(lines,allInterestingRevisions);
+      // we just want to write the interesting revisions for this path.  Should we have a collection of merges?
+      path.writePath(lines);
     }
 
     for (CopyInfo info : copyInfo)
@@ -31,10 +43,14 @@ public class GraphVizOutput
     }
 
     writeRanking(lines, allInterestingRevisions, pathMap);
-
     lines.add("}");
 
-    writeLines(new File("output.dot"), lines);
+    File file = new File(fileName);
+
+    System.out.println("Writing output file " + file.getAbsolutePath());
+    writeLines(file, lines);
+
+    return file;
   }
 
   /**
@@ -45,11 +61,11 @@ public class GraphVizOutput
    *
    * <p>The output should be a line like this: { rank = same; r432 ;432};</p>
    */
-  private void writeRanking(List<String> lines, List<Long> interestingRevisions, Map<String, Path> pathMap)
+  private void writeRanking(List<String> lines, List<Revision> interestingRevisions, Map<String, Path> pathMap)
   {
-    for (Long revision : interestingRevisions)
+    for (Revision revision : interestingRevisions)
     {
-      if (revision != -1)
+      if (revision.isRealRevision())
       {
         StringBuffer sb = new StringBuffer("{ rank = same; ");
 
@@ -67,27 +83,28 @@ public class GraphVizOutput
   }
 
   /** Write the lines of the revisions. */
-  private void writeRevisionsGraph(List<Long> interestingRevisions, List<String> lines)
+  private void writeRevisionsGraph(List<Revision> interestingRevisions, List<String> lines)
   {
+    lines.add("r [label=\"\" shape=plaintext];");
+
     // write the declarations
-    for (Long interestingRevision : interestingRevisions)
+    for (Revision interestingRevision : interestingRevisions)
     {
-      if (interestingRevision != -1)
+      if (interestingRevision.isRealRevision())
       {
         lines.add("r" + interestingRevision + " [label=\"" + interestingRevision + "\" shape=plaintext];");
       }
     }
 
     // write the dependencies
-    lines.add("node [shape=plaintext, fontsize=16];");
-
+    // lines.add("node [shape=plaintext, fontsize=16];");
     StringBuilder sb = new StringBuilder();
 
     for (int i = 0; i < interestingRevisions.size(); i++)
     {
-      Long interestingRevision = interestingRevisions.get(i);
+      Revision interestingRevision = interestingRevisions.get(i);
 
-      if (interestingRevision != -1)
+      if (interestingRevision.isRealRevision())
       {
         sb.append("r").append(interestingRevision);
 
@@ -98,32 +115,33 @@ public class GraphVizOutput
       }
     }
 
-    sb.append(";");
+    sb.append("[weight=9999];");
     lines.add(sb.toString());
   }
 
   /**
    * Write the opening lines of the graph.
    *
-   * @param  lines  the list to add to
+   * @param  lines           the list to add to
+   * @param  repositoryName  the name of the repository
    */
-  private void writeOpeningText(List<String> lines)
+  private void writeOpeningText(List<String> lines, String repositoryName)
   {
     lines.add("");
     lines.add("digraph G {");
     lines.add("    node [shape=ellipse,fontname=\"Arial\",fontsize=\"10\"];");
     lines.add("    edge [fontname=\"Arial\",fontsize=\"8\"];");
-    lines.add("    headline [label=\"CDM Branch Merge History\", shape=none, fontsize=\"20\"];");
+    lines.add("    headline [label=\"" + repositoryName + " Merge History\", shape=none, fontsize=\"20\"];");
   }
 
   /** Go through all the items and find anything of interest that we'll need to show in the graph. */
-  private List<Long> findAllInterestingRevisions(Map<String, Path> pathMap, List<CopyInfo> copyInfo)
+  private List<Revision> findAllInterestingRevisions(Map<String, Path> pathMap, List<CopyInfo> copyInfo)
   {
-    List<Long> interestingRevisions = new ArrayList<Long>();
+    List<Revision> interestingRevisions = new ArrayList<Revision>();
 
     for (Path path : pathMap.values())
     {
-      interestingRevisions.addAll(path.getInterestingRevisions());
+      interestingRevisions.addAll(path.getInterestingRevisions(copyInfo));
     }
 
     for (CopyInfo info : copyInfo)
@@ -132,11 +150,23 @@ public class GraphVizOutput
     }
 
     // quick and dirty way to remove all duplicates
-    Set<Long> set = new TreeSet<Long>(interestingRevisions);
+    Set<Revision> set = new TreeSet<Revision>(interestingRevisions);
 
     interestingRevisions.clear();
     interestingRevisions.addAll(set);
 
     return interestingRevisions;
+  }
+
+  @Override
+  protected void writeDotFileTargetDeclarations(Module ivyModule, Map<String, Module> moduleMap, List<String> lines)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  protected void writeDotDependencies(Map<String, Module> moduleMap, List<String> lines, Module ivyModule)
+  {
+    // To change body of implemented methods use File | Settings | File Templates.
   }
 }

@@ -6,7 +6,6 @@ import com.nurflugel.Os;
 public interface UiMainFrame
 {
   // -------------------------- OTHER METHODS --------------------------
-
   void addStatus(String statusLine);
   Os getOs();
   boolean getTestDataFromFile();
@@ -22,5 +21,6 @@ public interface UiMainFrame
   void setStatusLabel(String text);
   void stopProgressPanel();
 
-  // void processResults();
+  /** Resize any table columns needed. */
+  void resizeTableColumns();
 }

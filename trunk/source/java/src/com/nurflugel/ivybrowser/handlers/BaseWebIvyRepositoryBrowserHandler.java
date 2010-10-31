@@ -2,8 +2,10 @@ package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
+import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -33,7 +35,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   protected String                                          ivyRepositoryPath;
   protected EventList<IvyPackage>                           ivyPackages;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
-  private Map<String, IvyPackage>                           allPackages       = Collections.synchronizedMap(new HashMap<String, IvyPackage>());
+  private Map<IvyKey, IvyPackage>                           allPackages       = Collections.synchronizedMap(new HashMap<IvyKey, IvyPackage>());
   public static final String                                JAVADOC           = "javadoc";
   public static final String                                SOURCE            = "source";
   public static final String                                DEFAULT           = "default";
@@ -49,9 +51,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame                                       mainFrame,
-                                               EventList<IvyPackage>                             ivyPackages,
-                                               String                                            ivyRepositoryPath,
+  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
                                                Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     this.mainFrame         = mainFrame;
@@ -61,11 +61,16 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   public Object doInBackground()
   {
     findIvyPackages();
+
+    if (mainFrame instanceof IvyTrackerMainFrame)
+    {
+      ((IvyTrackerMainFrame) mainFrame).setIvyDone(true);
+    }
+
     mainFrame.setReady(true);
 
     return null;
@@ -74,12 +79,8 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   public abstract void findIvyPackages();
 
   /** Download the actual jar file to wherever the user wants it. */
-  public static void downloadFile(JCheckBox           fileLabel,
-                                  String              orgName,
-                                  String              moduleName,
-                                  String              version,
-                                  IvyBrowserMainFrame theFrame,
-                                  String              thePath) throws IOException
+  public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame theFrame,
+                                  String thePath) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
     String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
@@ -159,12 +160,12 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
           catch (IOException e)
           {
             System.out.println("You have a version with a missing XML file: " + stripSlash(orgName) + " " + stripSlash(moduleName) + " "
-                               + stripSlash(version) + " " + e.getMessage());
+                                 + stripSlash(version) + " " + e.getMessage());
           }
           catch (JDOMException e)
           {
             System.out.println("JDom couldn't parse the file for this library (probably a 0-byte file): " + stripSlash(orgName) + " "
-                               + stripSlash(moduleName) + " " + stripSlash(version) + " " + e.getMessage());
+                                 + stripSlash(moduleName) + " " + stripSlash(version) + " " + e.getMessage());
           }
         }
 
@@ -249,7 +250,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
   private IvyPackage getIvyPackage(String orgName, String moduleName, String version)
   {
-    String key = IvyPackage.getKey(orgName, moduleName, version);
+    IvyKey key = IvyPackage.getKey(orgName, moduleName, version);
 
     if (allPackages.containsKey(key))
     {
@@ -271,6 +272,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   {
     ivyPackages.getReadWriteLock().writeLock().lock();
     ivyPackages.addAll(localPackages);
+    mainFrame.resizeTableColumns();
     ivyPackages.getReadWriteLock().writeLock().unlock();
 
     for (IvyPackage localPackage : localPackages)

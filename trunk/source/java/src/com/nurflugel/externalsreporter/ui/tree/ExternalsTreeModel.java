@@ -1,11 +1,11 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 20, 2008 Time: 8:59:07 AM To change this template use File | Settings | File Templates.
@@ -13,16 +13,14 @@ import javax.swing.tree.TreePath;
 @SuppressWarnings({ "ChainOfInstanceofChecks", "UseOfSystemOutOrSystemErr" })
 public class ExternalsTreeModel implements TreeModel
 {
-  private TopNode                 root;
+  private TopNode root;
   private List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
 
   public ExternalsTreeModel()
   {
     root = new TopNode("Available Projects");
   }
-
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TreeModel ---------------------
 
   /** Returns the root of the tree. */
@@ -79,7 +77,6 @@ public class ExternalsTreeModel implements TreeModel
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public void addItem(ProjectNode item)
   {
     root.add(item);

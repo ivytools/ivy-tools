@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
+import static com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame.sizeTableColumns;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Cursor.getPredefinedCursor;
@@ -72,7 +74,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     pack();
     setSize(800, 600);
     centerApp(this);
-
     Authenticator.setDefault(new WebAuthenticator());
     libraryField.setEnabled(false);
     setVisible(true);
@@ -120,7 +121,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     mainPanel.add(statusLabel, SOUTH);
     addListeners();
     setupTable();
-    Util.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
   }
 
   private void addListeners()
@@ -146,7 +147,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
           specifyRepository(preferences);
         }
       });
-
     resultsTable.addMouseListener(new MouseAdapter()
       {
         @Override
@@ -180,7 +180,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
           preferences.putBoolean(PARSE_ON_OPEN, isSelected);
         }
       });
-
     addHelpListener("ivyBrowserHelp.hs", helpButton, this);
   }
 
@@ -253,18 +252,14 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     {
       repositoryList.clear();
       packageMap.clear();
-
       parsingHandler = HandlerFactory.getIvyRepositoryHandler(this, ivyRepositoryPath, repositoryList, packageMap);
-
       parsingHandler.execute();
       holdingPanel.add(scrollPane);
     }
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface UiMainFrame ---------------------
-
   // tod implement these
   @Override
   public void addStatus(String statusLine)
@@ -343,8 +338,13 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     progressPanel.stop();
   }
 
-  // -------------------------- OTHER METHODS --------------------------
+  @Override
+  public void resizeTableColumns()
+  {
+    sizeTableColumns(resultsTable);
+  }
 
+  // -------------------------- OTHER METHODS --------------------------
   private void adjustColumnWidths()
   {
     TableColumnModel columnModel = resultsTable.getColumnModel();
@@ -385,7 +385,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   }
 
   // --------------------------- main() method ---------------------------
-
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
   {
