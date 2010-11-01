@@ -33,7 +33,7 @@ public class SubversionMergeGrapherTest
     File dotFile = grapher.generateDotFile(graphVizOutput);
 
     // todo compare dot file with some expected value
-    assertEquals(readLines(dotFile), readLines(new File("source/java/test/data/" + name + "_expected.dot")), "Should have got expected results");
+    assertEquals(readLines(dotFile), readLines(new File("src/test/resources/" + name + "_expected.dot")), "Should have got expected results");
   }
 
   @Test(groups = "mergeGrapher")

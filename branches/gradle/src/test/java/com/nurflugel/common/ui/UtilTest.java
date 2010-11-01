@@ -3,6 +3,7 @@ package com.nurflugel.common.ui;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
+@Test(groups = { "unit" })
 public class UtilTest
 {
   @Test(groups = { "unit" })
