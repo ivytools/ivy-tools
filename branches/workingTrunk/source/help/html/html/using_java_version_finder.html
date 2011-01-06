@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META NAME="Author" CONTENT="Douglas Bullard">
+<META NAME="Generator" CONTENT="NetObjects Fusion 7 for Windows">
+<META NAME="Keywords" CONTENT="Nurflugel, Ant, ">
+<TITLE>using_ant_script_visualizer</TITLE>
+<!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
+
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/style.css">
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/site.css">
+<STYLE>
+:link { color: rgb(0,51,204);}
+:visited { color: rgb(153,0,153);}
+:active { color: rgb(255,0,0);}
+BODY { color: rgb(0,0,0);}
+</STYLE>
+</HEAD>
+<BODY  STYLE="background-color: rgb(255,255,255); background-image: url('../assets/images/wing1.jpg');" >
+<P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Java Version Finder</SPAN></B></P>
+<P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: large;">Using Java Version Finder</SPAN></B></P>
+<SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
+
+    If you fired up the program, you should see the following: <BR>
+    <IMG SRC="../assets/images/versionFinder/01-openingScreen.png" BORDER=1 ALT="">
+<p>
+
+You can select a threshold - this will highlight any results that are at this level or above (show anything at JDK 1.5 or above).
+
+  <p>
+  Let's pick a directory - the program is recursive, and it will examine any directory, subdirectory, jar, or class file found:<br>
+    <IMG SRC="../assets/images/versionFinder/02-selectDirs.png" BORDER=1 ALT=""><P>
+
+The jars in this directory are shown in the results table, with JDK 1.5 versions highlighted in red:<br>
+    <IMG SRC="../assets/images/versionFinder/03-results.png" BORDER=1 ALT=""><P>
+
+  Moving the threshold to JDK 1.2 highlights more jars:<br>
+    <IMG SRC="../assets/images/versionFinder/04-resultsThreshold.png" BORDER=1 ALT=""><P>
+
+  Let's select multiple directories:<br>
+    <IMG SRC="../assets/images/versionFinder/05-multipleDirs.png" BORDER=1 ALT=""><P>
+
+  The results with the "Just file names" radio button selected are confusing - we see apparent duplicates.<br>
+
+    <IMG SRC="../assets/images/versionFinder/06-resultsJustNames.png" BORDER=1 ALT=""><P>
+
+  Let's change that to "Long file names"<br>
+    <IMG SRC="../assets/images/versionFinder/07-longPaths.png" BORDER=1 ALT=""><P>
+
+Still too long for my tastes, but might be useful for some.  My favorite is the "Short file paths" - it'll show just the unique differences between the paths selected:<br>
+    <IMG SRC="../assets/images/versionFinder/08-resultsShortPaths.png" BORDER=1 ALT=""><P>
+Now we see the directories the jars are in, without all the redundant path info.
+
+  <p>
+
+    Wasn't that easy?
+
+   </Span>
+   </BODY>
+</HTML>
