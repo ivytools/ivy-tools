@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
-        spec="6.0+"
+        spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="ivyBrowserApp.jnlp">
     <information>
@@ -11,16 +11,14 @@
         <description>Ivy Repository Browser</description>
         <icon href="images/IvyBrowser-small.png"/>
         <icon kind="splash" href="images/IvyBrowser-splash.jpg"/>
-        <offline-allowed/>
-        <shortcut online="true">
-           <desktop/>
-         </shortcut>
+        <shortcut online="false">
+	      <desktop/>
+    	</shortcut>
     </information>
     <offline-allowed/>
     <security>
         <all-permissions/>
     </security>
-    <update check="timeout" policy="always"/>
     <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>

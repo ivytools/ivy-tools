@@ -42,6 +42,7 @@ public class IvyRepositoryItem
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   public List<IvyRepositoryItem> getDependencies()
   {
     return Collections.unmodifiableList(dependencies);
@@ -312,6 +313,7 @@ public class IvyRepositoryItem
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
+
   @Override
   public String toString()
   {
@@ -319,6 +321,7 @@ public class IvyRepositoryItem
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public String getRev()
   {
     return rev;

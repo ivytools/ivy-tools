@@ -3,9 +3,8 @@ package com.nurflugel.versionfinder;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import static java.awt.Color.*;
 import java.util.List;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.RED;
 
 /** Renderer to highlight rows which exceed the threshold. */
 public class VersionTableCellRenderer extends JLabel implements TableCellRenderer
@@ -18,7 +17,9 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface TableCellRenderer ---------------------
+
   @Override
   public Component getTableCellRendererComponent(JTable jTable, Object whatToRender, boolean isSelected, boolean b1, int row, int col)
   {
@@ -26,6 +27,7 @@ public class VersionTableCellRenderer extends JLabel implements TableCellRendere
 
     List<ResultRow> list      = ui.getResults();
     ResultRow       resultRow = list.get(row);
+
     String          text      = resultRow.getVersion().getMajorVersion();
     int             level     = Integer.parseInt(text.trim());
     Jdk             threshold = ui.getJdkThreshold();

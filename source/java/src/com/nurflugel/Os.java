@@ -1,27 +1,22 @@
 package com.nurflugel;
 
-import com.nurflugel.common.ui.Util;
 import com.nurflugel.ivygrapher.OutputFormat;
-import org.apache.commons.lang.SystemUtils;
-import java.awt.*;
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.ivygrapher.OutputFormat.*;
 import java.io.File;
+import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import static com.nurflugel.ivygrapher.OutputFormat.PDF;
-import static com.nurflugel.ivygrapher.OutputFormat.PNG;
 
 /** Enum of operating systems, and methods to deal with differenes between them. */
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
 public enum Os
 {
   OS_X   ("Mac OS X", "build.sh", new String[] {}, "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",
-          "/Applications/Graphviz_old.app/Contents/MacOS/dot",
-
-          // "/usr/local/bin/dot",
-          PDF),
+          "/Applications/Graphviz.app/Contents/MacOS/dot", PDF),
   WINDOWS("Windows", "build.cmd", new String[] { "cmd.exe", "/C" }, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
           "\"C:\\Program Files\\Graphviz2.24\\bin\\dot.exe\"", PNG);
 
@@ -33,10 +28,20 @@ public enum Os
   private OutputFormat outputFormat;
 
   // -------------------------- STATIC METHODS --------------------------
-  public static Os findOs()
+
+  public static Os findOs(String osName)
   {
-    return SystemUtils.IS_OS_WINDOWS ? WINDOWS
-                                     : OS_X;
+    Os[] oses = values();
+
+    for (Os ose : oses)
+    {
+      if (osName.toLowerCase().startsWith(ose.getName().toLowerCase()))
+      {
+        return ose;
+      }
+    }
+
+    return WINDOWS;
   }
 
   // --------------------------- CONSTRUCTORS ---------------------------
@@ -51,6 +56,7 @@ public enum Os
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   public String getBuildCommandPath(String basePath)
   {
     return basePath + File.separator + buildCommand;
@@ -78,7 +84,9 @@ public enum Os
     {
       // calling FileManager to open the URL works, if we replace spaces with %20
       String   outputFilePath = filePath.replace(" ", "%20");
+
       String   fileUrl        = "file://" + outputFilePath;
+
       Class<?> aClass         = Class.forName("com.apple.eio.FileManager");
       Method   method         = aClass.getMethod("openURL", String.class);
 

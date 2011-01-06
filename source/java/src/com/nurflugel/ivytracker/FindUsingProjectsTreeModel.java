@@ -1,31 +1,32 @@
 package com.nurflugel.ivytracker;
 
-import com.nurflugel.ivybrowser.domain.IvyKey;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivytracker.domain.Project;
+import com.nurflugel.ivytracker.domain.IvyFile;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Nov 28, 2008 Time: 10:43:35 PM To change this template use File | Settings | File Templates.
  */
 public class FindUsingProjectsTreeModel implements TreeModel
 {
-  private Map<Project, List<IvyPackage>> ivyFilesMap;
-  private IvyPackage                     ivyFile;
-  private final List<IvyPackage>         ivyRepositoryList;
+  private Map<String, IvyFile> ivyFilesMap;
+  private IvyFile              ivyFile;
 
-  public FindUsingProjectsTreeModel(IvyPackage ivyFile, Map<Project, List<IvyPackage>> ivyFilesMap, List<IvyPackage> ivyRepositoryList)
+  public FindUsingProjectsTreeModel(IvyFile ivyFile, Map<String, IvyFile> ivyFilesMap)
   {
-    this.ivyFile           = ivyFile;
-    this.ivyRepositoryList = ivyRepositoryList;
-    this.ivyFilesMap       = Collections.unmodifiableMap(ivyFilesMap);
+    this.ivyFile     = ivyFile;
+    this.ivyFilesMap = Collections.unmodifiableMap(ivyFilesMap);
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface TreeModel ---------------------
+
   @Override
   public Object getRoot()
   {
@@ -35,16 +36,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public Object getChild(Object o, int i)
   {
-    // if (o instanceof Project)
-    // {
-    // there is only one child, the Ivy file for the project itself
-    // IvyPackage ivyPackage = ivyFilesMap.get(o);
-    //
-    // return ivyPackage;
-    // }
-    if (o instanceof IvyPackage)
+    if (o instanceof IvyFile)
     {
-      List<Object> usingIvyFiles = findAllUsagesOfThisAsDependency((IvyPackage) o);
+      List<IvyFile> usingIvyFiles = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
 
       return usingIvyFiles.get(i);
     }
@@ -55,15 +49,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public int getChildCount(Object o)
   {
-    if (o instanceof Project)
+    if (o instanceof IvyFile)
     {
-      // there is only one child, the Ivy file for the project itself
-      return 0;
-    }
-
-    if (o instanceof IvyPackage)
-    {
-      return findAllUsagesOfThisAsDependency((IvyPackage) o).size();
+      return findAllIvyFilesUsingThisAsDependency((IvyFile) o).size();
     }
 
     return 0;
@@ -72,9 +60,9 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public boolean isLeaf(Object o)
   {
-    if (o instanceof IvyPackage)  // todo or Project
+    if (o instanceof IvyFile)
     {
-      return findAllUsagesOfThisAsDependency((IvyPackage) o).isEmpty();
+      return findAllIvyFilesUsingThisAsDependency((IvyFile) o).isEmpty();
     }
 
     return false;
@@ -86,18 +74,18 @@ public class FindUsingProjectsTreeModel implements TreeModel
   @Override
   public int getIndexOfChild(Object o, Object o1)
   {
-    if ((o instanceof IvyPackage) || (o instanceof Project))
+    if (o instanceof IvyFile)
     {
-      List<Object> files = findAllUsagesOfThisAsDependency((IvyPackage) o);
-      int          i     = 0;
+      List<IvyFile> files = findAllIvyFilesUsingThisAsDependency((IvyFile) o);
+      int           i     = 0;
 
-      for (Object file : files)
+      for (IvyFile file : files)
       {
-        if (o1 instanceof IvyPackage)
+        if (o1 instanceof IvyFile)
         {
-          IvyPackage childFile = (IvyPackage) o1;
+          IvyFile childFile = (IvyFile) o1;
 
-          if (file.equals(childFile))
+          if (file.getKey().equals(childFile.getKey()))
           {
             return i;
           }
@@ -117,35 +105,27 @@ public class FindUsingProjectsTreeModel implements TreeModel
   public void removeTreeModelListener(TreeModelListener treeModelListener) {}
 
   // -------------------------- OTHER METHODS --------------------------
-  private List<Object> findAllUsagesOfThisAsDependency(IvyPackage childIvyFile)  // todo also somehow return Project
+
+  private List<IvyFile> findAllIvyFilesUsingThisAsDependency(IvyFile childIvyFile)
   {
-    IvyKey       key    = childIvyFile.getKey();
-    List<Object> usages = new ArrayList<Object>();
+    String        key      = childIvyFile.getKey();
+    List<IvyFile> ivyFiles = new ArrayList<IvyFile>();
 
-    // for (Project project : ivyFilesMap.keySet())
-    // {
-    // IvyPackage ivyPackage = ivyFilesMap.get(project);
-    //
-    // if (ivyPackage.getKey().equals(key))
-    // {
-    // usages.add(project);
-    // }
-    // }
-    for (IvyPackage file : ivyRepositoryList)
+    for (IvyFile file : ivyFilesMap.values())
     {
-      Collection<IvyPackage> dependencies = file.getDependencies();
+      List<String> dependencies = file.getDependencies();
 
-      for (IvyPackage dependency : dependencies)
+      for (String dependency : dependencies)
       {
-        if (dependency.getKey().equals(key))
+        if (dependency.equals(key))
         {
-          usages.add(file);
+          ivyFiles.add(file);
 
           break;
         }
       }
     }
 
-    return usages;
+    return ivyFiles;
   }
 }

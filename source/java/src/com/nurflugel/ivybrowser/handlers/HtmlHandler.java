@@ -1,19 +1,23 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
-import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.HtmlHandlerTask;
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
 
 @SuppressWarnings({
                     "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod",
@@ -22,16 +26,17 @@ import static org.apache.commons.lang.StringUtils.substringBefore;
 /**
  * The HTML handler for a HTML based repository.
  */
-public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
+public class HtmlHandler extends BaseWebHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public HtmlHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
+  public HtmlHandler(IvyBrowserMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
                      Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public void findIvyPackages()
   {
@@ -70,8 +75,7 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
           {
             HtmlHandlerTask task = new HtmlHandlerTask(this, repositoryUrl, orgName);
 
-            task.run();
-            // threadPool.execute(task);
+            threadPool.execute(task);
 
             // if left in, this populates the display real time
             // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
@@ -90,8 +94,7 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 
       // block until all threads are done, or until time limit is reached
       threadPool.awaitTermination(5, MINUTES);
-
-      // mainFrame.filterTable();
+//      mainFrame.filterTable();
       System.out.println("ivyPackages = " + ivyPackages.size());
 
       Date  endTime  = new Date();
@@ -107,17 +110,6 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
     mainFrame.stopProgressPanel();
   }
 
-  //J-
-  /**
-   * Get the contents of the link - in effect, where is this going? For example, the string
-   *
-   * <code>
-   *    <IMG SRC="/icons/folder.gif" ALT="[DIR]"> <A HREF="aspectj/">aspectj/</A> 30-Jan-2010 23:54 -
-   * </code>
-   *
-   * <p>would return "aspectj" as the contents.</p>
-   */
-  //J+
   @Override
   public String getContents(String packageLine)
   {

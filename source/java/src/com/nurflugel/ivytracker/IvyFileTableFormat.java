@@ -1,24 +1,31 @@
 package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
+import com.nurflugel.ivytracker.domain.IvyFile;
 
-/** Format for the Ivy table. */
+/**
+ * Created by IntelliJ IDEA. User: douglasbullard Date: Jan 25, 2008 Time: 7:12:02 PM To change this template use File | Settings | File Templates.
+ */
 public class IvyFileTableFormat implements TableFormat
 {
-  static final int IS_INCLUDED = 0;
-  static final int ORG         = 1;
-  static final int MODULE      = 2;
-  static final int REVISION    = 3;
-  static final int COUNT       = 4;
-  private String[] columnNames = { "Include?", "Org", "Module", "Revision", "Usage Count" };
+  static final int ORG      = 0;
+  static final int MODULE   = 1;
+  static final int REVISION = 2;
+  static final int COUNT    = 3;
+
+  // static final int FILE        = 3;
+  // static final int SOURCE      = 4;
+  // static final int JAVADOCS    = 5;
+  private String[] columnNames = { "Org", "Module", "Revision", "Usage Count" };
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface TableFormat ---------------------
+
   @Override
   public int getColumnCount()
   {
-    return columnNames.length;
+    return 4;
   }
 
   @Override
@@ -35,18 +42,15 @@ public class IvyFileTableFormat implements TableFormat
   @Override
   public Object getColumnValue(Object o, int i)
   {
-    IvyPackage ivyFile = (IvyPackage) o;
+    IvyFile ivyFile = (IvyFile) o;
 
     switch (i)
     {
-      case IS_INCLUDED:
-        return ivyFile.isIncluded();
-
       case ORG:
-        return ivyFile.getOrgName();
+        return ivyFile.getOrg();
 
       case MODULE:
-        return ivyFile.getModuleName();
+        return ivyFile.getModule();
 
       case REVISION:
         return ivyFile.getVersion();
@@ -54,6 +58,14 @@ public class IvyFileTableFormat implements TableFormat
       case COUNT:
         return ivyFile.getCount();
 
+      // case FILE:
+      // return ivyPackage.getLibrary();
+      //
+      // case SOURCE:
+      // return ivyPackage.hasSourceCode();
+      //
+      // case JAVADOCS:
+      // return ivyPackage.hasJavaDocs();
       default:
         throw new IllegalStateException();
     }

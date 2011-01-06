@@ -2,13 +2,11 @@ package com.nurflugel.ivygrapher;
 
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import static javax.swing.JComponent.*;
+import java.awt.event.*;
+import java.awt.*;
+import static java.awt.event.KeyEvent.*;
 import java.io.File;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
-import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 public class NoDotDialog extends JDialog
 {
@@ -25,6 +23,7 @@ public class NoDotDialog extends JDialog
     setModal(true);
     getRootPane().setDefaultButton(useTextBoxButton);
     pathTextField.setText(dotExecutablePath);
+
     useTextBoxButton.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -33,6 +32,7 @@ public class NoDotDialog extends JDialog
           dispose();
         }
       });
+
     buttonCancel.addActionListener(new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
@@ -92,6 +92,7 @@ public class NoDotDialog extends JDialog
   }
 
   // --------------------------- main() method ---------------------------
+
   public static void main(String[] args)
   {
     NoDotDialog dialog = new NoDotDialog("Test message for not finding path");
@@ -102,6 +103,7 @@ public class NoDotDialog extends JDialog
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public File getFile()
   {
     return file;

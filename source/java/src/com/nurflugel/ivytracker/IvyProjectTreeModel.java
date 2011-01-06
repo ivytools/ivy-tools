@@ -1,31 +1,32 @@
 package com.nurflugel.ivytracker;
 
-import com.nurflugel.ivybrowser.domain.IvyKey;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import com.nurflugel.ivytracker.domain.IvyFile;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Nov 28, 2008 Time: 10:43:35 PM To change this template use File | Settings | File Templates.
  */
 public class IvyProjectTreeModel implements TreeModel
 {
-  private List<IvyPackage>        projectIvyFiles;
-  private Map<IvyKey, IvyPackage> ivyFilesMap;
-  private final String            rootText = "Nike build projects";
+  private List<IvyFile>        projectIvyFiles;
+  private Map<String, IvyFile> ivyFilesMap;
+  private final String         rootText = "Nike build projects";
 
-  public IvyProjectTreeModel(List<IvyPackage> projectIvyFiles, Map<IvyKey, IvyPackage> ivyFilesMap)
+  public IvyProjectTreeModel(List<IvyFile> projectIvyFiles, Map<String, IvyFile> ivyFilesMap)
   {
     this.projectIvyFiles = Collections.unmodifiableList(projectIvyFiles);
     this.ivyFilesMap     = Collections.unmodifiableMap(ivyFilesMap);
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface TreeModel ---------------------
+
   @Override
   public Object getRoot()
   {
@@ -39,10 +40,10 @@ public class IvyProjectTreeModel implements TreeModel
     {
       return projectIvyFiles.get(i);
     }
-    else if (o instanceof IvyPackage)
+    else if (o instanceof IvyFile)
     {
-      IvyPackage ivyFile = (IvyPackage) o;
-      IvyKey     key     = ivyFile.getDependencies().get(i).getKey();
+      IvyFile ivyFile = (IvyFile) o;
+      String  key     = ivyFile.getDependencies().get(i);
 
       return ivyFilesMap.get(key);
     }
@@ -57,9 +58,9 @@ public class IvyProjectTreeModel implements TreeModel
     {
       return projectIvyFiles.size();
     }
-    else if (o instanceof IvyPackage)
+    else if (o instanceof IvyFile)
     {
-      IvyPackage ivyFile = (IvyPackage) o;
+      IvyFile ivyFile = (IvyFile) o;
 
       return ivyFile.getDependencies().size();
     }
@@ -74,9 +75,9 @@ public class IvyProjectTreeModel implements TreeModel
     {
       return projectIvyFiles.isEmpty();
     }
-    else if (o instanceof IvyPackage)
+    else if (o instanceof IvyFile)
     {
-      IvyPackage ivyFile = (IvyPackage) o;
+      IvyFile ivyFile = (IvyFile) o;
 
       return ivyFile.getDependencies().isEmpty();
     }
@@ -94,14 +95,14 @@ public class IvyProjectTreeModel implements TreeModel
     {
       return projectIvyFiles.indexOf(o1);
     }
-    else if (o instanceof IvyPackage)
+    else if (o instanceof IvyFile)
     {
-      IvyPackage ivyFile = (IvyPackage) o;
+      IvyFile ivyFile = (IvyFile) o;
 
-      if (o1 instanceof IvyPackage)
+      if (o1 instanceof IvyFile)
       {
-        IvyPackage child = (IvyPackage) o1;
-        IvyKey     key   = child.getKey();
+        IvyFile child = (IvyFile) o1;
+        String  key   = child.getKey();
 
         return ivyFile.getDependencies().indexOf(key);
       }

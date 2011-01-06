@@ -6,6 +6,7 @@ import com.nurflugel.Os;
 public interface UiMainFrame
 {
   // -------------------------- OTHER METHODS --------------------------
+
   void addStatus(String statusLine);
   Os getOs();
   boolean getTestDataFromFile();
@@ -13,14 +14,7 @@ public interface UiMainFrame
   boolean isTest();
   void setBusyCursor();
   void setNormalCursor();
-
-  /** everthing is ready for user input. */
   void setReady(boolean isReady);
   void showSevereError(String message, Exception e);
   void stopThreads();
-  void setStatusLabel(String text);
-  void stopProgressPanel();
-
-  /** Resize any table columns needed. */
-  void resizeTableColumns();
 }

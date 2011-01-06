@@ -5,10 +5,9 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNPropertyData;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
+import org.tmatesoft.svn.core.wc.*;
 import java.util.Date;
-import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
+import static org.tmatesoft.svn.core.wc.SVNRevision.*;
 
 /** Handler for all the Subversion tasks. */
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
@@ -18,6 +17,7 @@ public class SubversionHandler
   {
     DAVRepositoryFactory.setup();
   }
+
   // -------------------------- OTHER METHODS --------------------------
 
   /** Get any externals used in this URL's project. */
@@ -63,6 +63,7 @@ public class SubversionHandler
           externalsList.getReadWriteLock().writeLock().lock();
           externalsList.add(newExternal);
           externalsList.getReadWriteLock().writeLock().unlock();
+
           projectsList.getReadWriteLock().writeLock().lock();
           projectsList.add(newReference);
           projectsList.getReadWriteLock().writeLock().unlock();

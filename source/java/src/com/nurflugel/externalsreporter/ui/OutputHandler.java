@@ -2,31 +2,36 @@ package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.Os;
 import com.nurflugel.ivygrapher.OutputFormat;
-import org.apache.commons.io.FileUtils;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
-/** Output handler for making the dot file and image. */
+import java.io.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Created by IntelliJ IDEA. User: douglasbullard Date: Jun 17, 2008 Time: 10:10:22 PM To change this template use File | Settings | File Templates.
+ */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
 public class OutputHandler
 {
-  public static final String       NEW_LINE                = "\n";
-  protected static final String    CLOSING_LINE_DOTGRAPH   = "}";
-  protected static final String    OPENING_LINE_DOTGRAPH   = "digraph G {\nnode [shape=box,fontname=\"Arial\",fontsize=\"10\"];\nedge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=RL;\n\n";
-  protected static final String    OPENING_LINE_SUBGRAPH   = "subgraph ";
-  private static final String      QUOTE                   = "\"";
-  private boolean                  shouldGroupByBuildfiles = false;
-  private ExternalsFinderMainFrame mainFrame;
-  private Os                       os;
+  public static final String    NEW_LINE                = "\n";
+  protected static final String CLOSING_LINE_DOTGRAPH   = "}";
+  protected static final String OPENING_LINE_DOTGRAPH   = "digraph G {\nnode [shape=box,fontname=\"Arial\",fontsize=\"10\"];\nedge [fontname=\"Arial\",fontsize=\"8\"];\nrankdir=RL;\n\n";
+  protected static final String OPENING_LINE_SUBGRAPH   = "subgraph ";
+  private static final String   QUOTE                   = "\"";
+  private boolean               shouldGroupByBuildfiles = false;
+  private MainFrame             mainFrame;
+  private Os                    os;
 
-  public OutputHandler(ExternalsFinderMainFrame mainFrame)
+  public OutputHandler(MainFrame mainFrame)
   {
     this.mainFrame = mainFrame;
     os             = mainFrame.getOs();
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   public File launchDot(File dotFile, File dotExecutable) throws IOException, InterruptedException
   {
     String outputFileName    = "externals" + mainFrame.getOs().getOutputFormat().getExtension();
@@ -53,7 +58,6 @@ public class OutputHandler
     String[] command = { dotExecutable.getAbsolutePath(), "-T" + outputFormatName, dotExecutablePath, "-o" + outputFilePath };
 
     // String[] command = { dotExecutable.getAbsolutePath(), "-T" + outputFormatName, dotExecutablePath, "-o" + outputFilePath };
-    System.out.println("Dot file is " + dotFile.getAbsolutePath() + ", output file is " + outputFilePath);
 
     // logger.debug("Command to run: " + concatenate(command) + " parent file is " + parentFile.getPath());
     Runtime runtime = Runtime.getRuntime();
@@ -84,59 +88,75 @@ public class OutputHandler
 
   public File writeDotFile(List<External> externals, List<ProjectExternalReference> projectsList) throws IOException
   {
-    // todo use FileUtils and just write collections of lines
-    File imageDir = mainFrame.getConfig().getImageDir();
+    File         imageDir    = mainFrame.getConfig().getImageDir();
+//    JFileChooser fileChooser = new JFileChooser(imageDir);
+//
+//    fileChooser.setDialogTitle("Choose a location for your image");
+//    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//    fileChooser.setMultiSelectionEnabled(false);
+//    fileChooser.ensureFileIsVisible(imageDir);
+//
+//    int returnVal = fileChooser.showDialog(mainFrame, "Save image here");
+//
+//    if (returnVal == JFileChooser.APPROVE_OPTION)
+//    {
+//      imageDir = fileChooser.getSelectedFile();
 
-    mainFrame.getConfig().setImageDir(imageDir);
+      mainFrame.getConfig().setImageDir(imageDir);
 
-    File dotFile = new File(imageDir, "externals.dot");
+      File dotFile = new File(imageDir, "externals.dot");
 
-    System.out.println("Writing output to file " + dotFile.getAbsolutePath());
+      System.out.println("Writing output to file " + dotFile.getAbsolutePath());
 
-    List<String> lines = new ArrayList<String>();
+      OutputStream     outputStream = new FileOutputStream(dotFile);
+      DataOutputStream out          = new DataOutputStream(outputStream);
 
-    // open a new .dot file
-    lines.add(OPENING_LINE_DOTGRAPH);
+      // open a new .dot file
+      out.writeBytes(OPENING_LINE_DOTGRAPH);
 
-    if (!shouldGroupByBuildfiles)
-    {
-      lines.add("clusterrank=none;\n");
-    }
-
-    writeDotFileTargetDeclarations(lines, externals, projectsList);
-    writeDotFileDependencies(projectsList, lines);
-    lines.add(CLOSING_LINE_DOTGRAPH);
-    FileUtils.writeLines(dotFile, lines);
-
-    return dotFile;
-  }
-
-  private void writeDotFileDependencies(List<ProjectExternalReference> projectsList, List<String> fileLines)
-  {
-    Set<String> lines = new HashSet<String>();
-
-    // we do this because we seem to have duplicates - todo figure out why "uniquelist" isn't
-    for (ProjectExternalReference reference : projectsList)
-    {
-      if (reference.isSelected() || reference.getExternal().isSelected())
+      if (!shouldGroupByBuildfiles)
       {
-        String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
-
-        lines.add(line);
+        out.writeBytes("clusterrank=none;\n");
       }
-    }
 
-    for (String line : lines)
-    {
-      fileLines.add(line);
-    }
+      writeDotFileTargetDeclarations(out, externals, projectsList);
+      writeDotFileDependencies(projectsList, out);
+
+      out.writeBytes(CLOSING_LINE_DOTGRAPH);
+      outputStream.close();
+
+      return dotFile;
+//    }
+//
+//    return null;
   }
 
-  private void writeDotFileTargetDeclarations(List<String> fileLines, List<External> externals, List<ProjectExternalReference> projectsList)
+    private void writeDotFileDependencies(List<ProjectExternalReference> projectsList, DataOutputStream out) throws IOException {
+        Set<String> lines = new HashSet<String>();
+
+        // we do this becasue we seem to have duplicates - todo figure out why "uniquelist" isn't
+        for (ProjectExternalReference reference : projectsList)
+        {
+          if (reference.isSelected() || reference.getExternal().isSelected())
+          {
+            String line = QUOTE + reference.getKey() + QUOTE + " -> " + QUOTE + reference.getExternal().getKey() + QUOTE + NEW_LINE;
+
+            lines.add(line);
+          }
+        }
+
+        for (String line : lines)
+        {
+          out.writeBytes(line);
+        }
+    }
+
+    private void writeDotFileTargetDeclarations(DataOutputStream out, List<External> externals, List<ProjectExternalReference> projectsList)
+                                       throws IOException
   {
     int clusterIndex = 0;
 
-    fileLines.add("\t" + OPENING_LINE_SUBGRAPH + "cluster_" + clusterIndex + " {" + NEW_LINE);
+    out.writeBytes("\t" + OPENING_LINE_SUBGRAPH + "cluster_" + clusterIndex + " {" + NEW_LINE);
 
     Set<String> lines = new HashSet<String>();
 
@@ -145,7 +165,7 @@ public class OutputHandler
       if (external.isSelected())
       {
         String line = "\t\t" + QUOTE + external.getKey() + QUOTE + " [label=" + QUOTE + external.getLabel() + QUOTE + " shape=box color=black ]; "
-                        + NEW_LINE;
+                      + NEW_LINE;
 
         lines.add(line);
       }
@@ -153,14 +173,14 @@ public class OutputHandler
 
     for (String line : lines)
     {
-      fileLines.add(line);
+      out.writeBytes(line);
     }
 
     lines.clear();
 
     for (ProjectExternalReference project : projectsList)
     {
-      if (project.isSelected() || project.getExternal().isSelected())
+      if (project.isSelected())
       {
         String line = "\t\t" + QUOTE + project.getKey() + QUOTE + " [label=" + QUOTE + project.getLabel() + QUOTE + " shape=box color=black ]; ";
 
@@ -170,10 +190,10 @@ public class OutputHandler
 
     for (String line : lines)
     {
-      fileLines.add(line + NEW_LINE);
+      out.writeBytes(line + NEW_LINE);
     }
 
-    fileLines.add("\t}" + NEW_LINE);
+    out.writeBytes("\t}" + NEW_LINE);
     clusterIndex++;
   }  // end for
 }

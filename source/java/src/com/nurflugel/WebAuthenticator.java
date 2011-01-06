@@ -1,33 +1,26 @@
 package com.nurflugel;
 
-import com.nurflugel.externalsreporter.ui.UserConfig;
+import com.nurflugel.externalsreporter.ui.Config;
 import com.nurflugel.versionfinder.UsernamePasswordDialog;
+import org.apache.commons.lang.StringUtils;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.*;
 
 /**
- * This class deals with the need for user authentication when required. If the username and password are null (they get fetched from the UserConfig
- * class if you passed than into the constructor) or if you used the default constructor, then you'll get a username/password dialog box popup.
- *
- * <p>If the values aren't null (both of them), you never see anything.</p>
- *
- * <p>todo - add a "reset" option to flush passwords.</p>
+ * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 5:38:09 PM To change this template use File | Settings | File Templates.
  */
 public class WebAuthenticator extends Authenticator
 {
-  private static String     userName;
-  private static String     password;
-  private static UserConfig config;
+  private static String userName;
+  private static String password;
+  private static Config config;
 
   // -------------------------- STATIC METHODS --------------------------
-  public WebAuthenticator()
-  {
-    userName = "";
-    password = "";
-  }
 
-  public WebAuthenticator(UserConfig config)
+  public WebAuthenticator() {}
+
+  public WebAuthenticator(Config config)
   {
     this.config = config;
     userName    = config.getUserName();
@@ -35,10 +28,10 @@ public class WebAuthenticator extends Authenticator
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public PasswordAuthentication getPasswordAuthentication()
   {
-    // todo one way of doing this is to get X many requests within so many seconds...
     if (isEmpty(userName) || isEmpty(password))
     {
       showDialog();
@@ -79,15 +72,5 @@ public class WebAuthenticator extends Authenticator
     }
 
     return password;
-  }
-
-  public void setUserName(String userName)
-  {
-    WebAuthenticator.userName = userName;
-  }
-
-  public void setPassword(String password)
-  {
-    WebAuthenticator.password = password;
   }
 }

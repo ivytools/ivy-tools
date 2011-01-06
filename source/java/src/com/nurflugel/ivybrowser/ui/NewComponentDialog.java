@@ -1,17 +1,18 @@
 package com.nurflugel.ivybrowser.ui;
 
+import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-import javax.swing.*;
 import java.awt.*;
+import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-import static com.nurflugel.common.ui.Util.centerApp;
-import static java.awt.Toolkit.getDefaultToolkit;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
+import javax.swing.*;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
@@ -20,24 +21,25 @@ import static javax.swing.JFileChooser.FILES_ONLY;
 public class NewComponentDialog extends JDialog
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long       serialVersionUID                 = 2069426482124193511L;
-  private JPanel                  contentPane;
-  private JButton                 buttonOK;
-  private JButton                 buttonCancel;
-  private JTextField              orgField;
-  private JTextField              moduleField;
-  private JTextField              revField;
-  private JButton                 addFilesToComponentButton;
-  private JButton                 addDependenciesToComponentButton;
-  private JPanel                  dependenciesPanel;
-  private JPanel                  filesPanel;
-  private List<IvyRepositoryItem> ivyPackages                      = new ArrayList<IvyRepositoryItem>();
-  private File                    repositoryDir;
-  private Preferences             preferences;
-  private Map<String, IvyFileCheckbox> filesMap                    = new TreeMap<String, IvyFileCheckbox>();
-  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap   = new TreeMap<String, IvyRepositoryItemCheckbox>();
+  private static final long                      serialVersionUID                 = 2069426482124193511L;
+  private JPanel                                 contentPane;
+  private JButton                                buttonOK;
+  private JButton                                buttonCancel;
+  private JTextField                             orgField;
+  private JTextField                             moduleField;
+  private JTextField                             revField;
+  private JButton                                addFilesToComponentButton;
+  private JButton                                addDependenciesToComponentButton;
+  private JPanel                                 dependenciesPanel;
+  private JPanel                                 filesPanel;
+  private List<IvyRepositoryItem>                ivyPackages                      = new ArrayList<IvyRepositoryItem>();
+  private File                                   repositoryDir;
+  private Preferences                            preferences;
+  private Map<String, IvyFileCheckbox>           filesMap                         = new TreeMap<String, IvyFileCheckbox>();
+  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap                  = new TreeMap<String, IvyRepositoryItemCheckbox>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
+
   public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)
   {
     this.ivyPackages   = ivyPackages;
@@ -301,6 +303,7 @@ public class NewComponentDialog extends JDialog
   }
 
   // --------------------------- main() method ---------------------------
+
   @SuppressWarnings({ "CallToSystemExit" })
   public static void main(String[] args)
   {

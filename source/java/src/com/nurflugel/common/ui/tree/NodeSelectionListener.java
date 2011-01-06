@@ -1,11 +1,11 @@
 package com.nurflugel.common.ui.tree;
 
 import com.nurflugel.externalsreporter.ui.tree.CheckableNode;
-import javax.swing.*;
-import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.tree.TreePath;
 
 /** Listener for the tree nodes. */
 public class NodeSelectionListener extends MouseAdapter
@@ -16,7 +16,9 @@ public class NodeSelectionListener extends MouseAdapter
   {
     this.tree = tree;
   }
+
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface MouseListener ---------------------
 
   /** If this node has children, and it's checked, check all the children, too. Or uncheck them, if the node is unchecked. */
@@ -57,6 +59,7 @@ public class NodeSelectionListener extends MouseAdapter
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   private void setAllChildren(CheckableNode node, boolean selected)
   {
     node.setSelected(selected);

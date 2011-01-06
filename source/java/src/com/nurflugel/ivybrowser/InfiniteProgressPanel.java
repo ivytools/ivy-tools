@@ -6,14 +6,15 @@ package com.nurflugel.ivybrowser;
  * Subject to the BSD license.
  */
 import com.nurflugel.common.ui.UiMainFrame;
-import javax.swing.*;
+import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
 import java.awt.*;
+import static java.awt.RenderingHints.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.*;
-import static java.awt.RenderingHints.*;
+import javax.swing.*;
 
 /**
  * An infinite progress panel displays a rotating figure and a message to notice the user of a long, duration unknown task. The shape and the text are
@@ -130,6 +131,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   public InfiniteProgressPanel(String text, UiMainFrame mainFrame)
   {
     this(text);
+
     this.mainFrame = mainFrame;
   }
 
@@ -178,7 +180,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
    */
   public InfiniteProgressPanel(String text, int barsCount, float shield, float fps, int rampDelay)
   {
-    this.text      = text;
+    this.text = text;
     this.rampDelay = (rampDelay >= 0) ? rampDelay
                                       : 0;
     this.shield = (shield >= 0.0f) ? shield
@@ -193,7 +195,9 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface MouseListener ---------------------
+
   @Override
   public void mouseClicked(MouseEvent e)
   {
@@ -212,6 +216,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
 
   @Override
   public void mouseExited(MouseEvent e) {}
+
   // -------------------------- OTHER METHODS --------------------------
 
   /** Returns the current displayed message. */
@@ -362,6 +367,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
       animation.start();
     }
   }
+
   // -------------------------- INNER CLASSES --------------------------
 
   /** Animation thread. */

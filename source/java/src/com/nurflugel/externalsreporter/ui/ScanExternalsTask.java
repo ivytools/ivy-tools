@@ -13,23 +13,22 @@ import java.util.Set;
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class ScanExternalsTask extends SwingWorker
 {
-  private Set<String>              repositoryUrls;
-  private ExternalsFinderMainFrame mainFrame;
-  private boolean                  shallowSearch;
-  private SubversionHandler        subversionHandler;
-  private HtmlHandler              urlHandler              = new HtmlHandler();
-  private boolean                  showBranches;
-  private boolean                  showTags;
-  private boolean                  showTrunks;
-  private EventList<External>      externalsList;
+  private Set<String>                         repositoryUrls;
+  private MainFrame                           mainFrame;
+  private boolean                             shallowSearch;
+  private SubversionHandler                   subversionHandler;
+  private HtmlHandler                         urlHandler           = new HtmlHandler();
+  private boolean                             showBranches;
+  private boolean                             showTags;
+  private boolean                             showTrunks;
+  private EventList<External>                 externalsList;
   private EventList<ProjectExternalReference> projectsList;
-  private boolean                  isSelectAllExternals;
-  private boolean                  isSelectAllProjects;
+  private boolean                             isSelectAllExternals;
+  private boolean                             isSelectAllProjects;
 
-  public ScanExternalsTask(Set<String> repositoryUrls, ExternalsFinderMainFrame mainFrame, boolean isShallowSearch,
-                           SubversionHandler subversionHandler, boolean showBranches, boolean showTags, boolean showTrunks,
-                           EventList<External> externalsList, EventList<ProjectExternalReference> projectsList, boolean selectAllExternals,
-                           boolean selectAllProjects)
+  public ScanExternalsTask(Set<String> repositoryUrls, MainFrame mainFrame, boolean isShallowSearch, SubversionHandler subversionHandler,
+                           boolean showBranches, boolean showTags, boolean showTrunks, EventList<External> externalsList,
+                           EventList<ProjectExternalReference> projectsList, boolean selectAllExternals, boolean selectAllProjects)
   {
     this.repositoryUrls    = repositoryUrls;
     this.mainFrame         = mainFrame;
@@ -60,13 +59,18 @@ public class ScanExternalsTask extends SwingWorker
   @Override
   protected Object doInBackground() throws Exception
   {
-    SVNWCClient wcClient = SVNClientManager.newInstance().getWCClient();
-
     for (String repositoryUrl : repositoryUrls)
     {
       try
       {
-        findExternals(repositoryUrl, !shallowSearch, wcClient);
+        if (shallowSearch)
+        {
+          findShallowExternals(repositoryUrl);
+        }
+        else
+        {
+          findDeepExternals(repositoryUrl);
+        }
       }
       catch (Exception e)
       {
@@ -84,10 +88,18 @@ public class ScanExternalsTask extends SwingWorker
     return null;
   }
 
-  private void findExternals(String repositoryUrl, boolean isRecursive, SVNWCClient wcClient) throws IOException, SVNException
+  /** Go through all dirs recursively, and find any externals there. */
+  private void findDeepExternals(String repositoryUrl)
   {
-    List<String> files  = urlHandler.getFiles(repositoryUrl, true);
-    boolean      isRoot = isProjectRoot(files);
+    // something
+  }
+
+  /** Don't do a recursive search - just surface,. todo - do this in a task, so the UI will update */
+  private void findShallowExternals(String repositoryUrl) throws IOException, SVNException
+  {
+    SVNWCClient  wcClient = SVNClientManager.newInstance().getWCClient();
+    List<String> files    = urlHandler.getFiles(repositoryUrl);
+    boolean      isRoot   = isProjectRoot(files);
 
     if (isRoot)
     {
@@ -98,17 +110,12 @@ public class ScanExternalsTask extends SwingWorker
 
         if (showTheBranch || showTheTag)
         {
-          List<String> branches = urlHandler.getFiles(file, true);
+          List<String> branches = urlHandler.getFiles(file);
 
           for (String branch : branches)
           {
             mainFrame.setStatus("Getting externals for " + branch);
             subversionHandler.getExternals(branch, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-
-            if (isRecursive)
-            {
-              findExternals(branch, isRecursive, wcClient);
-            }
           }
         }
         else if (file.endsWith("trunk/") && showTrunks)
@@ -116,37 +123,28 @@ public class ScanExternalsTask extends SwingWorker
           // it's trunk
           mainFrame.setStatus("Getting externals for " + file);
           subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-
-          if (isRecursive)
-          {
-            findExternals(file, isRecursive, wcClient);
-          }
         }
       }
     }
     else
     {
       // if it's not a project root, go down only one level (could be branches or trunk)
+      // try multiple projects
       for (String file : files)
       {
-        List<String> childFiles  = urlHandler.getFiles(file, true);
+        List<String> childFiles  = urlHandler.getFiles(file);
         boolean      isChildRoot = isProjectRoot(childFiles);
 
-        if (isChildRoot || isRecursive)
+        if (isChildRoot)
         {
-          if (file.endsWith("/"))
-          {
-            mainFrame.setStatus("Getting externals for " + file);
-            subversionHandler.getExternals(file, wcClient, externalsList, projectsList, isSelectAllExternals, isSelectAllProjects);
-            findExternals(file, isRecursive, wcClient);
-          }
+          findShallowExternals(file);
         }
       }
     }
   }
 
   /** If this is a project root, the children will consist of branches, trunk, and tags. */
-  public static boolean isProjectRoot(List<String> files)
+  private boolean isProjectRoot(List<String> files)
   {
     boolean hasBranches = false;
     boolean hasTrunk    = false;

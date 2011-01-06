@@ -22,6 +22,7 @@ public class BranchNode extends CheckableNode
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public void add(CheckableNode targetNode)
   {
@@ -71,6 +72,7 @@ public class BranchNode extends CheckableNode
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public Branch getBranch()
   {
     return branch;

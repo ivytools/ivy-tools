@@ -11,6 +11,7 @@ public class IvyPackageFilterator implements TextFilterator
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TextFilterator ---------------------
+
   @Override
   public void getFilterStrings(List list, Object o)
   {

@@ -18,7 +18,9 @@ public class ResultRowTableFormat implements TableFormat
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface TableFormat ---------------------
+
   @Override
   public int getColumnCount()
   {

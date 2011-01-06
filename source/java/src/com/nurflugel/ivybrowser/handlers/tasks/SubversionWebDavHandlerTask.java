@@ -2,10 +2,13 @@ package com.nurflugel.ivybrowser.handlers.tasks;
 
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.MalformedURLException;
+import org.jdom.JDOMException;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Apr 27, 2009 Time: 10:19:45 PM To change this template use File | Settings | File Templates.
@@ -25,7 +28,9 @@ public class SubversionWebDavHandlerTask implements Runnable
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface Runnable ---------------------
+
   @Override
   public void run()
   {

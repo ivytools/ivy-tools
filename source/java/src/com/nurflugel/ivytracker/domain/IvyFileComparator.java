@@ -1,6 +1,5 @@
 package com.nurflugel.ivytracker.domain;
 
-import com.nurflugel.ivybrowser.domain.IvyPackage;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -12,14 +11,16 @@ public class IvyFileComparator implements Comparator, Serializable
   private static final long serialVersionUID = -1887579627945133474L;
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface Comparator ---------------------
+
   @Override
   public int compare(Object o1, Object o2)
   {
-    IvyPackage itemA   = (IvyPackage) o1;
-    IvyPackage itemB   = (IvyPackage) o2;
-    String     moduleA = itemA.getOrgName() + itemA.getModuleName() + itemA.getVersion();
-    String     moduleB = itemB.getOrgName() + itemA.getModuleName() + itemA.getVersion();
+    IvyFile itemA   = (IvyFile) o1;
+    IvyFile itemB   = (IvyFile) o2;
+    String  moduleA = itemA.getOrg() + itemA.getModule() + itemA.getVersion();
+    String  moduleB = itemB.getOrg() + itemA.getModule() + itemA.getVersion();
 
     return moduleA.compareTo(moduleB);
   }

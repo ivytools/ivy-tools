@@ -1,7 +1,7 @@
 package com.nurflugel.common.ui.tree;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /** Extension of label that gives a little border space around it, and has the idea of being selected or not. */
 class TreeLabel extends JLabel
@@ -10,6 +10,7 @@ class TreeLabel extends JLabel
   private static final long serialVersionUID = -5147458747018926490L;
   private boolean           isSelected;
   private boolean           hasFocus;
+
   // -------------------------- OTHER METHODS --------------------------
 
   // @Override public void setBackground(Color color)
@@ -67,6 +68,7 @@ class TreeLabel extends JLabel
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public void setFocus(boolean hasFocus)
   {
     this.hasFocus = hasFocus;

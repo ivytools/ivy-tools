@@ -1,13 +1,12 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.matchers.Matcher;
-import com.nurflugel.ivybrowser.domain.IvyPackage;
 import javax.swing.*;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: Nov 28, 2008 Time: 6:47:40 PM To change this template use File | Settings | File Templates.
  */
-public class CountValueMatcherEditor implements Matcher<IvyPackage>
+public class CountValueMatcherEditor implements Matcher<IvyFile>
 {
   private JRadioButton showAllLibrariesRadioButton;
   private JRadioButton showOnlyUsedLibrariesRadioButton;
@@ -22,9 +21,11 @@ public class CountValueMatcherEditor implements Matcher<IvyPackage>
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface Matcher ---------------------
+
   @Override
-  public boolean matches(IvyPackage item)
+  public boolean matches(IvyFile item)
   {
     int count = item.getCount();
 

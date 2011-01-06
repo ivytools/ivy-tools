@@ -16,6 +16,7 @@ public class IvyFormatterProcess
   private IvyFormatterProcess() {}
 
   // --------------------------- main() method ---------------------------
+
   public static void main(String[] args)
   {
     if ((args.length == 2) && args[0].equalsIgnoreCase("-file"))
@@ -109,11 +110,6 @@ public class IvyFormatterProcess
     formatPublications(lines);
     formatDependencyLines(lines);
     formatExcludeLines(lines);
-    formatFieldLines(lines);
-    formatFilterLines(lines);
-    formatFieldTypeLines(lines);
-    formatDynamicFieldLines(lines);
-    formatCopyFieldLines(lines);
     unindentExcludes(lines);
     text = pasteLinesTogether(lines);
 
@@ -129,120 +125,14 @@ public class IvyFormatterProcess
    */
   private static void formatConfLines(String[] lines)
   {
-    List<Integer> confLines = getAffectedLines(lines, "<conf", "name");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
+    List<Integer> confLines = getAffectedLines(lines, new String[] { "<conf", "name" });
 
     indent(confLines, lines, 8);
     alignLinesOnWord(confLines, lines, "visibility=");
     alignLinesOnWord(confLines, lines, "description=");
   }
 
-  /** Align fieldtype lines. */
-  private static void formatFieldTypeLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, "<fieldType");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
-
-    // indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "name=");
-    alignLinesOnWord(confLines, lines, "class=");
-    alignLinesOnWord(confLines, lines, "sortMissingLast=");
-    alignLinesOnWord(confLines, lines, "precisionStep=");
-    alignLinesOnWord(confLines, lines, "omitNorms=");
-    alignLinesOnWord(confLines, lines, "positionIncrementGap=");
-  }
-
-  /** Align fieldtype lines. */
-  private static void formatFilterLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, "<filter");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
-
-    // indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "class=");
-    alignLinesOnWord(confLines, lines, "generateWordParts=");
-    alignLinesOnWord(confLines, lines, "precisionStep=");
-    alignLinesOnWord(confLines, lines, "omitNorms=");
-    alignLinesOnWord(confLines, lines, "positionIncrementGap=");
-  }
-
-  /** Align field lines. */
-  private static void formatFieldLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, "<field", "name");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
-
-    // indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "name=");
-    alignLinesOnWord(confLines, lines, "type=");
-    alignLinesOnWord(confLines, lines, "indexed=");
-    alignLinesOnWord(confLines, lines, "stored=");
-    alignLinesOnWord(confLines, lines, "compressed=");
-    alignLinesOnWord(confLines, lines, "multiValued=");
-    alignLinesOnWord(confLines, lines, "omitNorms=");
-    alignLinesOnWord(confLines, lines, "termVectors=");
-    alignLinesOnWord(confLines, lines, "termPositions=");
-    alignLinesOnWord(confLines, lines, "termOffsets=");
-    alignLinesOnWord(confLines, lines, "default=");
-  }
-
-  /** Align dynamic field lines. */
-  private static void formatDynamicFieldLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, "<dynamicField");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
-
-    // indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "name=");
-    alignLinesOnWord(confLines, lines, "type=");
-    alignLinesOnWord(confLines, lines, "indexed=");
-    alignLinesOnWord(confLines, lines, "stored=");
-  }
-
-  /** Align dynamic field lines. */
-  private static void formatCopyFieldLines(String[] lines)
-  {
-    List<Integer> confLines = getAffectedLines(lines, "<copyField");
-
-    if (confLines.isEmpty())
-    {
-      return;
-    }
-
-    // indent(confLines, lines, 8);
-    alignLinesOnWord(confLines, lines, "source=");
-    alignLinesOnWord(confLines, lines, "dest=");
-  }
-
-  /**
-   * Find any lines that start with the given keywords.
-   *
-   * @param   lines     - an array of lines to search from
-   * @param   keyWords  - the list of key words
-   *
-   * @return  the list of matching lines
-   */
-  private static List<Integer> getAffectedLines(String[] lines, String... keyWords)
+  private static List<Integer> getAffectedLines(String[] lines, String[] keyWords)
   {
     List<Integer> contentLines = new ArrayList<Integer>();
     int           i            = 0;
@@ -318,7 +208,7 @@ public class IvyFormatterProcess
   // <artifact name="nurflugel-resourcebundler-source" type="source" ext="zip" conf="source"/>
   private static void formatPublications(String[] lines)
   {
-    List<Integer> confLines = getAffectedLines(lines, "<artifact", "name");
+    List<Integer> confLines = getAffectedLines(lines, new String[] { "<artifact", "name" });
 
     indent(confLines, lines, 8);
     alignLinesOnWord(confLines, lines, "name=");
@@ -334,7 +224,7 @@ public class IvyFormatterProcess
    */
   private static void formatDependencyLines(String[] lines)
   {
-    List<Integer> dependencyLines = getAffectedLines(lines, "<dependency", "org");
+    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<dependency", "org" });
 
     indent(dependencyLines, lines, 8);
     alignLinesOnWord(dependencyLines, lines, "name=");
@@ -353,7 +243,7 @@ public class IvyFormatterProcess
    */
   private static void formatExcludeLines(String[] lines)
   {
-    List<Integer> dependencyLines = getAffectedLines(lines, "<exclude");
+    List<Integer> dependencyLines = getAffectedLines(lines, new String[] { "<exclude" });
 
     indent(dependencyLines, lines, 12);
     alignLinesOnWord(dependencyLines, lines, "org=");
@@ -398,6 +288,7 @@ public class IvyFormatterProcess
   private static String indent(String lineToIndent, int numberOfLeadingSpaces)
   {
     String spaces = getLeadingSpaces(numberOfLeadingSpaces);
+
     String line   = lineToIndent.trim();
 
     line = spaces + line;
@@ -432,7 +323,6 @@ public class IvyFormatterProcess
     return builder.toString();
   }
 
-  // todo use file utils and writelines
   private static void writeFile(String fileName, String text) throws IOException
   {
     File       outFile = new File(fileName);

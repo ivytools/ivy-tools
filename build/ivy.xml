@@ -26,12 +26,11 @@
         <dependency org="ca.odell.glazedlists" name="jdk_1.5"      rev="1.8.0"           conf="build,dist,source" />
         <dependency org="org.jdom"             name="jdom"         rev="1.0"             conf="build,dist" />
         <dependency org="org.codehaus.xstream" name="xstream"      rev="1.2"             conf="build,dist" />
-        <dependency org="org.tmate"            name="svnkit"       rev="1.3.0"           conf="build,dist,source,javadoc" />
+        <dependency org="org.tmate"            name="svnkit"       rev="1.3.0"           conf="build,javadoc" />
         <dependency org="w3c"                  name="jtidy"        rev="04aug2000r7-dev" conf="build,dist,source" />
         <dependency org="com.ryangrier.ant"    name="version_tool" rev="1.1.4_fixed"     conf="build,javadoc" />
         <dependency org="com.nurflugel"        name="buildtasks"   rev="1.0-SNAPSHOT"    conf="build" />
         <dependency org="org.apache"           name="commons-lang" rev="2.4"             conf="build,dist" />
-        <dependency org="org.apache"           name="commons-io"   rev="1.4"             conf="build,dist" />
         <dependency org="com.intellij"         name="forms_rt"     rev="9.0.0"           conf="dist" />
         <dependency org="com.intellij"         name="javac2"       rev="9.0.0"           conf="build" />
         <dependency org="org.jdom"             name="jdom"         rev="1.0"             conf="build" />

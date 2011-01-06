@@ -11,16 +11,13 @@
         <description>Java Version Finder</description>
         <icon href="images/VersionFinder-small.jpg"/>
         <icon kind="splash" href="images/VersionFinder-splash.jpg"/>
-        <offline-allowed/>
-        <shortcut online="true">
-           <desktop/>
-         </shortcut>
+        <shortcut online="false">
+	      <desktop/>
+    	</shortcut>
     </information>
-    <offline-allowed/>
     <security>
         <all-permissions/>
     </security>
-    <update check="timeout" policy="always"/>
     <resources>
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>

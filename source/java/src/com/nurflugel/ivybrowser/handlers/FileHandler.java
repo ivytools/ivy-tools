@@ -2,9 +2,9 @@ package com.nurflugel.ivybrowser.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
-import javax.swing.*;
 import java.io.File;
 import java.util.List;
+import javax.swing.*;
 
 @SuppressWarnings({
                     "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr",
@@ -25,6 +25,7 @@ public class FileHandler extends SwingWorker<Object, Object>
   }
 
   // -------------------------- OTHER METHODS --------------------------
+
   @Override
   public Object doInBackground()
   {

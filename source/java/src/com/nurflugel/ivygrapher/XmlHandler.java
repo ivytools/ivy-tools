@@ -1,6 +1,5 @@
 package com.nurflugel.ivygrapher;
 
-import com.nurflugel.Os;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -11,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
+import com.nurflugel.Os;
 
 /** Engine for the Ivy Grapher. */
 @SuppressWarnings({ "CallToPrintStackTrace" })
@@ -28,6 +28,7 @@ public class XmlHandler
   private static final String REV          = "rev";
 
   // -------------------------- OTHER METHODS --------------------------
+
   void processXmlFile(File fileToGraph, Preferences preferences, NodeOrder nodeOrder, Os os, OutputFormat outputFormat, String dotExecutablePath,
                       boolean deleteDotFileOnExit, boolean concentrateEdges) throws JDOMException, IOException
   {
@@ -50,9 +51,8 @@ public class XmlHandler
       parseModule(moduleMap, oModule);
     }
 
-    IvyGrapherGraphVizHandler handler = new IvyGrapherGraphVizHandler(nodeOrder, os, outputFormat, dotExecutablePath, deleteDotFileOnExit,
-                                                                      concentrateEdges);
-    File dotFile = handler.generateDotFile(fileToGraph, ivyModule, moduleMap);
+    GraphVizHandler handler = new GraphVizHandler(nodeOrder, os, outputFormat, dotExecutablePath, deleteDotFileOnExit, concentrateEdges);
+    File            dotFile = handler.generateDotFile(fileToGraph, ivyModule, moduleMap);
 
     handler.processDotFile(dotFile);
   }
@@ -110,6 +110,7 @@ public class XmlHandler
   private Module addModuleToMap(String organization, String name, String revision, Map<String, Module> moduleMap)
   {
     String key    = Module.generateKey(organization, name);
+
     Module module = moduleMap.get(key);
 
     if (module == null)

@@ -20,6 +20,7 @@ public class Util
   public static final Cursor  busyCursor           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
   public static final Cursor  normalCursor         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private static final String SLASH                = "/";
+
   // -------------------------- STATIC METHODS --------------------------
 
   /** Firgures out how much time is remaining in the task. */
@@ -40,11 +41,11 @@ public class Util
         seconds = deltaTime / 1000;
       }
 
-      timeRemainingString = ""                        //
-                              + ((minutes > 0) ? (minutes + " minutes")
-                                               : "")  //
-                              + ((seconds > 0) ? (seconds + " seconds")
-                                               : "");
+      timeRemainingString = ""                      //
+                            + ((minutes > 0) ? (minutes + " minutes")
+                                             : "")  //
+                            + ((seconds > 0) ? (seconds + " seconds")
+                                             : "");
     }
 
     return timeRemainingString;
@@ -136,7 +137,6 @@ public class Util
     }
   }
 
-  /** True recursive file deletes - will get rid of this file or dir, and everything in it. */
   public static void rmDirs(File theFile)
   {
     if (theFile.isFile())

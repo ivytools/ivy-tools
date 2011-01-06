@@ -20,7 +20,9 @@ class ResultRow implements Comparable
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface Comparable ---------------------
+
   @Override
   public int compareTo(Object o)
   {
@@ -30,9 +32,11 @@ class ResultRow implements Comparable
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public String getPath(List<ResultRow> results)
   {
     PathLength pathLength = versionFinderUi.getPathLength();
+
     String     fileName   = file.getName();
 
     if (pathLength == PathLength.FILE_NAME)

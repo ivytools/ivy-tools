@@ -19,6 +19,7 @@ public class IvyRepositoryItemCheckbox extends JCheckBox
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
+
   public IvyRepositoryItem getItem()
   {
     return item;

@@ -1,36 +1,30 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
-import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
+import com.nurflugel.ivybrowser.handlers.BaseWebHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
 import com.nurflugel.ivybrowser.handlers.SubversionWebDavHandler;
-import com.nurflugel.ivytracker.Config;
-import com.nurflugel.ivytracker.IvyTrackerMainFrame;
-import com.nurflugel.ivytracker.domain.Project;
-import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
-import com.nurflugel.ivytracker.handlers.SubversionIvyFileFinderHandler;
+import javax.swing.*;
+import static javax.swing.JOptionPane.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 
-/** this is a factory to return the Subversion web dav handler by figuring out which one is which... (Subversion vs. html) */
+/** todo make this a factory to return the Subversion web dav handler by figuring out which one is which... */
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
-  public static BaseWebIvyRepositoryBrowserHandler getIvyRepositoryHandler(UiMainFrame ivyBrowserMainFrame, String ivyRepositoryPath,
-                                                                           EventList<IvyPackage> repositoryList,
-                                                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+
+  public static BaseWebHandler getHandler(IvyBrowserMainFrame ivyBrowserMainFrame, String ivyRepositoryPath, EventList<IvyPackage> repositoryList,
+                                          Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
 
@@ -87,11 +81,4 @@ public class HandlerFactory
   }
 
   private HandlerFactory() {}
-
-  /** Return a handler which will find all of the Ivy files in the list of repositories. */
-  public static IvyFileFinderHandler getIvyFileFinderHandler(IvyTrackerMainFrame mainFrame, Map<Project, List<IvyPackage>> ivyFiles,
-                                                             EventList<Project> projectUrls, Config config, String... repositories)
-  {
-    return new SubversionIvyFileFinderHandler(mainFrame, ivyFiles, projectUrls, config, repositories);
-  }
 }
