@@ -1,25 +1,39 @@
 package com.nurflugel.common.ui;
 
 import org.apache.commons.lang.StringUtils;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import java.io.File;
+
+import java.net.URL;
+
+import java.util.Date;
+
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.net.URL;
-import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /** Util class. */
 public class Util
 {
-  public static final String  OSX_DOT_LOCATION     = "/Applications/Graphviz.app/Contents/MacOS/dot";
-  public static final String  PREVIEW_LOCATION     = "/Applications/Preview.app/Contents/MacOS/Preview";
-  public static final String  WINDOWS_DOT_LOCATION = "\"\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"";
-  public static final Cursor  busyCursor           = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-  public static final Cursor  normalCursor         = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private static final String SLASH                = "/";
+  // public static final String  OSX_DOT_LOCATION     = "/Applications/Graphviz.app/Contents/MacOS/dot";
+  // public static final String  PREVIEW_LOCATION     = "/Applications/Preview.app/Contents/MacOS/Preview";
+  // public static final String  WINDOWS_DOT_LOCATION = "\"\\Program Files\\ATT\\Graphviz\\bin\\dot.exe\"";
+  public static final Cursor  busyCursor   = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+  public static final Cursor  normalCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private static final String SLASH        = "/";
   // -------------------------- STATIC METHODS --------------------------
 
   /** Firgures out how much time is remaining in the task. */
@@ -115,6 +129,7 @@ public class Util
   }
 
   /** Add the help listener - link to the help files. */
+  @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
   public static void addHelpListener(String helpSetName, JButton helpButton, JFrame theFrame)
   {
     ClassLoader classLoader = theFrame.getClass().getClassLoader();
@@ -137,6 +152,7 @@ public class Util
   }
 
   /** True recursive file deletes - will get rid of this file or dir, and everything in it. */
+  @SuppressWarnings({ "ResultOfMethodCallIgnored" })
   public static void rmDirs(File theFile)
   {
     if (theFile.isFile())

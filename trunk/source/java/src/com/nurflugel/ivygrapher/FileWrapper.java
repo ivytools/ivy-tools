@@ -13,7 +13,6 @@ public class FileWrapper
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public File getFile()
   {
     return file;

@@ -1,41 +1,82 @@
 package com.nurflugel.externalsreporter.ui;
 
-import ca.odell.glazedlists.*;
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.UniqueList;
+import static ca.odell.glazedlists.matchers.TextMatcherEditor.CONTAINS;
+import static ca.odell.glazedlists.matchers.TextMatcherEditor.REGULAR_EXPRESSION;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
+
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.busyCursor;
+import static com.nurflugel.common.ui.Util.center;
+import static com.nurflugel.common.ui.Util.normalCursor;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import com.nurflugel.common.ui.Version;
+
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
+
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.ui.CheckboxCellRenderer;
-import org.apache.commons.lang.StringUtils;
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.*;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import static java.awt.Cursor.getPredefinedCursor;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.File;
 import java.io.IOException;
+
+import static java.lang.Math.max;
+
 import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import static ca.odell.glazedlists.matchers.TextMatcherEditor.CONTAINS;
-import static ca.odell.glazedlists.matchers.TextMatcherEditor.REGULAR_EXPRESSION;
-import static com.nurflugel.common.ui.Util.*;
-import static java.awt.Cursor.getPredefinedCursor;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.OPEN_DIALOG;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
@@ -44,53 +85,53 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long                   serialVersionUID                     = 7878527239782932441L;
-  private boolean                             getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
-  private boolean                             isTest;  // if true, reads canned data in from a file for fast testing
-  private ExternalTreeHandler                 treeHandler                          = new ExternalTreeHandler(true);
-  private JButton                             quitButton;
-  private JButton                             findDotButton;
-  private JLabel                              statusLabel;
-  private JPanel                              thePanel;
-  private JProgressBar                        progressBar;
-  private JButton                             addRepositoryButton;
-  private JButton                             helpButton;
-  private JRadioButton                        deepRecursiveSlowRadioButton;
-  private JRadioButton                        shallowBranchTagsTrunkRadioButton;
-  private JPanel                              repositoryCheckboxPanel;
-  private JButton                             parseRepositoriesButton;
-  private JCheckBox                           showAllExternalsForCheckBox;
-  private JCheckBox                           showTagsCheckBox;
-  private JCheckBox                           showBranchesCheckBox;
-  private JCheckBox                           showTrunksCheckBox;
-  private JTextField                          projectsFilterField;
-  private JTextField                          externalsFilterField;
-  private JTable                              projectsTable;
-  private JTable                              externalsTable;
-  private JButton                             generateReportButton;
-  private JCheckBox                           trimHttpFromURLsCheckBox;
-  private JButton                             clearPreviousResultsButton;
-  private JRadioButton                        externalContainsRadioButton;
-  private JRadioButton                        externalRegularExpressionRadioButton;
-  private JRadioButton                        projectContainsRadioButton;
-  private JRadioButton                        projectRegularExpressionRadioButton;
-  private JCheckBox                           externalSelectAllCheckBox;
-  private JCheckBox                           projectSelectAllCheckBox;
-  private JButton                             clearProjectFilterFieldButton;
-  private JButton                             clearExternalFilterFieldButton;
-  private JSplitPane                          splitPane;
-  private Os                                  os                                   = Os.findOs();
-  private Config                              config                               = new Config();
-  private SubversionHandler                   subversionHandler                    = new SubversionHandler();
-  private EventList<External>                 externalsList;
-  private EventList<ProjectExternalReference> projectsList;
-  private Cursor                              busyCursor                           = getPredefinedCursor(WAIT_CURSOR);
-  private Cursor                              normalCursor                         = getPredefinedCursor(DEFAULT_CURSOR);
-  private FilterList<External>                externalFilterList;
+  private static final long                    serialVersionUID                     = 7878527239782932441L;
+  private boolean                              getTestDataFromFile;  // if true, reads canned data in from a file for fast testing
+  private boolean                              isTest;               // if true, reads canned data in from a file for fast testing
+  private ExternalTreeHandler                  treeHandler                          = new ExternalTreeHandler(true);
+  private JButton                              quitButton;
+  private JButton                              findDotButton;
+  private JLabel                               statusLabel;
+  private JPanel                               thePanel;
+  private JProgressBar                         progressBar;
+  private JButton                              addRepositoryButton;
+  private JButton                              helpButton;
+  private JRadioButton                         deepRecursiveSlowRadioButton;
+  private JRadioButton                         shallowBranchTagsTrunkRadioButton;
+  private JPanel                               repositoryCheckboxPanel;
+  private JButton                              parseRepositoriesButton;
+  private JCheckBox                            showAllExternalsForCheckBox;
+  private JCheckBox                            showTagsCheckBox;
+  private JCheckBox                            showBranchesCheckBox;
+  private JCheckBox                            showTrunksCheckBox;
+  private JTextField                           projectsFilterField;
+  private JTextField                           externalsFilterField;
+  private JTable                               projectsTable;
+  private JTable                               externalsTable;
+  private JButton                              generateReportButton;
+  private JCheckBox                            trimHttpFromURLsCheckBox;
+  private JButton                              clearPreviousResultsButton;
+  private JRadioButton                         externalContainsRadioButton;
+  private JRadioButton                         externalRegularExpressionRadioButton;
+  private JRadioButton                         projectContainsRadioButton;
+  private JRadioButton                         projectRegularExpressionRadioButton;
+  private JCheckBox                            externalSelectAllCheckBox;
+  private JCheckBox                            projectSelectAllCheckBox;
+  private JButton                              clearProjectFilterFieldButton;
+  private JButton                              clearExternalFilterFieldButton;
+  private JSplitPane                           splitPane;
+  private Os                                   os                                   = Os.findOs();
+  private Config                               config                               = new Config();
+  private SubversionHandler                    subversionHandler                    = new SubversionHandler();
+  private EventList<External>                  externalsList;
+  private EventList<ProjectExternalReference>  projectsList;
+  private Cursor                               busyCursor                           = getPredefinedCursor(WAIT_CURSOR);
+  private Cursor                               normalCursor                         = getPredefinedCursor(DEFAULT_CURSOR);
+  private FilterList<External>                 externalFilterList;
   private FilterList<ProjectExternalReference> projectFilterList;
-  private InfiniteProgressPanel               progressPanel                        = new InfiniteProgressPanel("Scanning the Subversion repository, please be patient - click to cancel",
-                                                                                                               this);
-  private UniqueList<External>                 uniqueExternalsList;
+  private InfiniteProgressPanel                progressPanel                        = new InfiniteProgressPanel("Scanning the Subversion repository, please be patient - click to cancel",
+                                                                                                                this);
+  private UniqueList<External> uniqueExternalsList;
   private UniqueList<ProjectExternalReference> uniqueProjectsList;
 
   public ExternalsFinderMainFrame()
@@ -99,7 +140,10 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     // WebAuthenticator webAuthenticator = new WebAuthenticator();
     // PasswordAuthentication authentication = webAuthenticator.getPasswordAuthentication();
     // Authenticator.setDefault(webAuthenticator);
-    Authenticator.setDefault(new WebAuthenticator(config));
+    // Authenticator.setDefault(new WebAuthenticator(config));
+    Authenticator.setDefault(new WebAuthenticator());
+
+    // Authenticator.setDefault(new WebAuthenticator());
     initializeUi();
   }
 
@@ -108,6 +152,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     setTitle("Subversion Externals Finder v. " + Version.VERSION);
     addStatus("");
     setCursor(busyCursor);
+
     // os.setLookAndFeel(this);why doesn't this work???
     try
     {
@@ -146,7 +191,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     catch (Exception e)
     {
       e.printStackTrace();
-      JOptionPane.showMessageDialog(this, "The application has experienced a fatal error\n" + e.toString());
+      showMessageDialog(this, "The application has experienced a fatal error\n" + e.toString());
       System.exit(1);
     }
   }
@@ -192,8 +237,8 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     projectsList       = new BasicEventList<ProjectExternalReference>();
     uniqueProjectsList = new UniqueList<ProjectExternalReference>(projectsList);
 
-    final SortedList<ProjectExternalReference> sortedProjects = new SortedList<ProjectExternalReference>(uniqueProjectsList);
-    TextComponentMatcherEditor                 projectsEditor = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
+    SortedList<ProjectExternalReference> sortedProjects = new SortedList<ProjectExternalReference>(uniqueProjectsList);
+    TextComponentMatcherEditor           projectsEditor = new TextComponentMatcherEditor(projectsFilterField, new ProjectsFilterator());
 
     projectsEditor.setMode(projectContainsRadioButton.isSelected() ? CONTAINS
                                                                    : REGULAR_EXPRESSION);
@@ -439,8 +484,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
       }
       else
       {
-        JOptionPane.showMessageDialog(this,
-                                      "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
+        showMessageDialog(this, "Sorry, this program can't run without the GraphViz installation.\n" + "  Please install that and try again");
       }
     }
 
@@ -450,9 +494,10 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   /** Add a repository to the list. */
   private void addRepository()
   {
-    String                             lastRepository = config.getLastRepository();
-    FindMultiplePreferencesItemsDialog dialog         = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
-                                                                                               Config.REPOSITORY);
+    String lastRepository = config.getLastRepository();
+
+    // FindMultiplePreferencesItemsDialog dialog         = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(null, "Select Ivy Repository", Config.REPOSITORY);
 
     dialog.setVisible(true);
 
@@ -613,7 +658,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
         Object            value             = table.getValueAt(row, col);
         Component         rendererComponent = cellRenderer.getTableCellRendererComponent(table, value, false, false, row, col);
 
-        maxWidth = Math.max(rendererComponent.getPreferredSize().width, maxWidth);
+        maxWidth = max(rendererComponent.getPreferredSize().width, maxWidth);
       }
 
       widths[col] = maxWidth;
@@ -641,22 +686,24 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   /** Add a repository to the list. */
   private void addRepository(String newUrl)
   {
-    if (!StringUtils.isEmpty(newUrl))
+    if (isEmpty(newUrl))
     {
-      if (!newUrl.endsWith("/"))
-      {
-        newUrl += "/";
-      }
-
-      config.setLastRepository(newUrl);
-
-      JCheckBox box = new JCheckBox(newUrl, true);
-
-      repositoryCheckboxPanel.add(box);
-      thePanel.validate();
-      addStatus(" ");
-      parseRepositoriesButton.setEnabled(true);
+      return;
     }
+
+    if (!newUrl.endsWith("/"))
+    {
+      newUrl += "/";
+    }
+
+    config.setLastRepository(newUrl);
+
+    JCheckBox box = new JCheckBox(newUrl, true);
+
+    repositoryCheckboxPanel.add(box);
+    thePanel.validate();
+    addStatus(" ");
+    parseRepositoriesButton.setEnabled(true);
   }
 
   /** Size the table columns to be just big enough to hold what they need. */
@@ -676,7 +723,8 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
 
     for (int col = 1; col < columnCount; col++)
     {
-      widths[col] = (tableWidth) / (columnCount - 1);
+      widths[col] = tableWidth / (columnCount - 1);
+
       // widths[col] = (tableWidth - widths[0]) / (columnCount - 1);
       if (col == (columnCount - 1))
       {

@@ -3,11 +3,19 @@ package com.nurflugel.ivybrowser.domain;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import org.jdom.input.SAXBuilder;
+
 import java.io.IOException;
+
 import java.net.URL;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import static java.util.Collections.unmodifiableSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Representation of an Ivy library's file. */
 @SuppressWarnings({ "CallToPrintStackTrace" })
@@ -24,6 +32,7 @@ public class IvyPackage implements Comparable<IvyPackage>
   private Set<IvyPackage> globalExcludes = new TreeSet<IvyPackage>();
   private Set<String>     publications   = new TreeSet<String>();
   private int             count;
+  private String          ivyFileUrl;
 
   // -------------------------- STATIC METHODS --------------------------
   public static IvyKey getKey(String org, String module, String version)
@@ -39,6 +48,8 @@ public class IvyPackage implements Comparable<IvyPackage>
 
   public IvyPackage(String ivyFileUrl)
   {
+    this.ivyFileUrl = ivyFileUrl;
+
     try
     {
       SAXBuilder builder = new SAXBuilder();
@@ -208,5 +219,10 @@ public class IvyPackage implements Comparable<IvyPackage>
 
     // mainFrame.setStatusLabel(text);
     count++;
+  }
+
+  public String getIvyFileUrl()
+  {
+    return ivyFileUrl;
   }
 }

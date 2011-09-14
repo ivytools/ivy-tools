@@ -1,6 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.gui.TableFormat;
+
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 
 /**
@@ -18,9 +19,7 @@ public class IvyPackageTableFormat implements TableFormat
   private String[] columnNames = { "Org", "Module", "Revision", "Source?", "Javadocs?" };
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

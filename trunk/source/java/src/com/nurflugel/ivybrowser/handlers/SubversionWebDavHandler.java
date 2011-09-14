@@ -1,15 +1,23 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
+
 import com.nurflugel.common.ui.UiMainFrame;
+
+import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
+
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -19,11 +27,14 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 /** Subversion flavored handler. Subversion hosted repositories render HTML a bit differently than pure HTML-based repositories. */
 public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
+  private Preferences preferences;
+
   // --------------------------- CONSTRUCTORS ---------------------------
   public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
-                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap, Preferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
+    this.preferences = preferences;
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -99,6 +110,10 @@ public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
       ((IvyTrackerMainFrame) mainFrame).setIvyDone(true);
     }
 
+    // todo if desired, serialize results
+    DataSerializer dataSerializer = new DataSerializer(ivyPackages);
+
+    dataSerializer.saveToXml();
     mainFrame.stopProgressPanel();
   }
 

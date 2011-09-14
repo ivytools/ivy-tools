@@ -13,7 +13,6 @@ public class BuildableProjects
 
   // private MasterProjects projectMaster;
   private String projectAbr;
-
   // ------------------------ CANONICAL METHODS ------------------------
 
   // // todo this really doesn't belong here... but it's a nice way for all targets of a project to get the same tag name
@@ -33,7 +32,6 @@ public class BuildableProjects
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getProjectAbr()
   {
     return projectAbr;

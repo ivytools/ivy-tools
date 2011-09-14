@@ -1,6 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.gui.TableFormat;
+
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
 /**
@@ -11,7 +12,6 @@ public class IvyRepositoryItemTableFormat implements TableFormat
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

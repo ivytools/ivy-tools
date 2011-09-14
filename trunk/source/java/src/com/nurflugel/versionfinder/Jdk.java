@@ -17,7 +17,6 @@ public enum Jdk
   private String name;
 
   // -------------------------- STATIC METHODS --------------------------
-
   public static Jdk findByVersion(int version)
   {
     Jdk[] jdks = values();
@@ -40,16 +39,14 @@ public enum Jdk
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   public String toString()
   {
     return "Jdk{"
-           + "name='" + name + '\'' + ", version=" + version + '}';
+             + "name='" + name + '\'' + ", version=" + version + '}';
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getName()
   {
     return name;

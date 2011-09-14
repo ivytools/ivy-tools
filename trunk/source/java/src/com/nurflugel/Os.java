@@ -1,27 +1,30 @@
 package com.nurflugel;
 
 import com.nurflugel.common.ui.Util;
+
 import com.nurflugel.ivygrapher.OutputFormat;
-import org.apache.commons.lang.SystemUtils;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import static com.nurflugel.ivygrapher.OutputFormat.PDF;
 import static com.nurflugel.ivygrapher.OutputFormat.PNG;
+
+import org.apache.commons.lang.SystemUtils;
+
+import java.awt.Component;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Enum of operating systems, and methods to deal with differenes between them. */
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
 public enum Os
 {
   OS_X   ("Mac OS X", "build.sh", new String[] {}, "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",
-          "/Applications/Graphviz_old.app/Contents/MacOS/dot",
-
-          // "/usr/local/bin/dot",
-          PDF),
+          "/Applications/Graphviz_old.app/Contents/MacOS/Graphviz", PDF),
   WINDOWS("Windows", "build.cmd", new String[] { "cmd.exe", "/C" }, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
           "\"C:\\Program Files\\Graphviz2.24\\bin\\dot.exe\"", PNG);
 

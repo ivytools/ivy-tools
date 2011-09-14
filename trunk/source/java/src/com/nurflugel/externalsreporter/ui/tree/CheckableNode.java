@@ -16,7 +16,6 @@ public abstract class CheckableNode
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   public abstract void add(CheckableNode node);
   public abstract List<? extends CheckableNode> getChildren();
 
@@ -36,7 +35,6 @@ public abstract class CheckableNode
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   public String toString()
   {
@@ -44,7 +42,6 @@ public abstract class CheckableNode
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getName()
   {
     return name;

@@ -10,7 +10,6 @@ public class Branch
   {
     name = branchName;
   }
-
   // -------------------------- OTHER METHODS --------------------------
 
   /** Gets the path of the branch relative to the reposlitory root. */
@@ -27,7 +26,6 @@ public class Branch
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   public String toString()
   {
@@ -35,7 +33,6 @@ public class Branch
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getName()
   {
     return name;

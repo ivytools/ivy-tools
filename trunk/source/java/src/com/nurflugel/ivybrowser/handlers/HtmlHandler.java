@@ -1,19 +1,27 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
+
 import com.nurflugel.common.ui.UiMainFrame;
+
+import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.HtmlHandlerTask;
+
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.Date;
 import java.util.Map;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
 
 @SuppressWarnings({
                     "CallToPrintStackTrace", "IOResourceOpenedButNotSafelyClosed", "UseOfSystemOutOrSystemErr", "OverlyComplexMethod",
@@ -26,7 +34,7 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
   public HtmlHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
-                     Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+                     Map<String, Map<String, Map<String, IvyPackage>>> packageMap, Preferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
   }
@@ -104,6 +112,10 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
       e.printStackTrace();
     }
 
+    // todo if desired, serialize results
+    DataSerializer dataSerializer = new DataSerializer(ivyPackages);
+
+    dataSerializer.saveToXml();
     mainFrame.stopProgressPanel();
   }
 

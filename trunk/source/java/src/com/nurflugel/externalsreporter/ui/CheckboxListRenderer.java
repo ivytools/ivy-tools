@@ -1,7 +1,11 @@
 package com.nurflugel.externalsreporter.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /** Created by IntelliJ IDEA. User: douglasbullard Date: Jan 1, 2010 Time: 7:42:34 PM To change this template use File | Settings | File Templates. */
 public class CheckboxListRenderer extends JCheckBox implements ListCellRenderer
@@ -12,7 +16,6 @@ public class CheckboxListRenderer extends JCheckBox implements ListCellRenderer
   // {
   // background = isBackground;
   // }
-
   @Override
   public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus)
   {
@@ -20,6 +23,7 @@ public class CheckboxListRenderer extends JCheckBox implements ListCellRenderer
     if (value instanceof JCheckBox)
     {
       JCheckBox dibble = (JCheckBox) value;
+
       //
       // setSelected(dibble);
       // setHorizontalAlignment(CENTER);
@@ -29,7 +33,6 @@ public class CheckboxListRenderer extends JCheckBox implements ListCellRenderer
       // setOpaque(true);
       // setBackground(Color.WHITE);
       // }
-
       return dibble;
     }
 

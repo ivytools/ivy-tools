@@ -1,10 +1,12 @@
 package com.nurflugel.ivytracker;
 
 import com.nurflugel.externalsreporter.ui.UserConfig;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /** Class to handle configuration persistence for the app. */
 public class Config implements UserConfig
@@ -16,6 +18,7 @@ public class Config implements UserConfig
   private static final String SHOW_TRUNKS                = "showTrunks";
   private static final String SHOW_BRANCHES              = "showBranches";
   private static final String SHOW_TAGS                  = "showTags";
+  private static final String RECURSE_DIRS               = "recurseDirs";
   private Preferences         preferences;
   private String              password;
   private String              userName;
@@ -24,6 +27,7 @@ public class Config implements UserConfig
   private boolean             showBranches;
   private boolean             showTrunks;
   private boolean             showTags;
+  private boolean             recurseDirs;
   private static final String EMPTY_STRING               = "";
 
   /** Todo how to deal with changed or wrong passwords? */
@@ -37,6 +41,7 @@ public class Config implements UserConfig
     showTrunks   = preferences.getBoolean(SHOW_TRUNKS, true);
     showBranches = preferences.getBoolean(SHOW_BRANCHES, true);
     showTags     = preferences.getBoolean(SHOW_TAGS, true);
+    recurseDirs  = preferences.getBoolean(RECURSE_DIRS, false);
   }
 
   private void getRepositories(String repository, List<String> repositoryList)
@@ -97,6 +102,11 @@ public class Config implements UserConfig
     return showTrunks;
   }
 
+  public boolean recurseDirs()
+  {
+    return recurseDirs;
+  }
+
   public void setLastIvyRepository(String lastRepository)
   {
     if (ivyRepositories.contains(lastRepository))
@@ -137,6 +147,7 @@ public class Config implements UserConfig
     preferences.putBoolean(SHOW_BRANCHES, showBranches);
     preferences.putBoolean(SHOW_TRUNKS, showTrunks);
     preferences.putBoolean(SHOW_TAGS, showTags);
+    preferences.putBoolean(RECURSE_DIRS, recurseDirs);
     saveNonNullValue(password, PASSWORD);
     saveNonNullValue(userName, USER_NAME);
     saveRepositories(LAST_IVY_REPOSITORY, ivyRepositories);
@@ -175,6 +186,12 @@ public class Config implements UserConfig
   public void setShowTags(boolean showTags)
   {
     this.showTags = showTags;
+    saveSettings();
+  }
+
+  public void setRecurseDirs(boolean recurseDirs)
+  {
+    this.recurseDirs = recurseDirs;
     saveSettings();
   }
 
