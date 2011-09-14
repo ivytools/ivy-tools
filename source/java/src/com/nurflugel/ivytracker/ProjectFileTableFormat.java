@@ -1,21 +1,23 @@
 package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
+
 import com.nurflugel.ivytracker.domain.Project;
 
 /** Table format to determine how the Project table gets displayed. */
 public class ProjectFileTableFormat implements TableFormat
 {
-  static final int INCLUDE      = 0;
-  static final int PROJECT_NAME = 1;
-  private String[] columnNames  = { "Include?", "Project" };
+  static final int INCLUDE          = 0;
+  static final int PROJECT_NAME     = 1;
+  static final int PROJECT_IVY_FILE = 2;
+  private String[] columnNames      = { "Include?", "Project", "Ivy File" };
 
   // ------------------------ INTERFACE METHODS ------------------------
   // --------------------- Interface TableFormat ---------------------
   @Override
   public int getColumnCount()
   {
-    return 2;
+    return 3;
   }
 
   @Override
@@ -41,6 +43,9 @@ public class ProjectFileTableFormat implements TableFormat
 
       case PROJECT_NAME:
         return project.getProjectUrl();
+
+      case PROJECT_IVY_FILE:
+        return project.getIvyFile();
 
       default:
         throw new IllegalStateException();

@@ -21,9 +21,7 @@ public class BuildableItem implements CheckableItem
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface CheckableItem ---------------------
-
   @Override
   public Branch getBranch()
   {
@@ -49,7 +47,6 @@ public class BuildableItem implements CheckableItem
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   public String toString()
   {
@@ -57,7 +54,6 @@ public class BuildableItem implements CheckableItem
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public Targets getBuildTarget()
   {
     return buildTarget;

@@ -5,6 +5,7 @@ public class Project implements Comparable
 {
   private boolean isIncluded;
   private String  projectUrl;
+  private String  ivyFile;
 
   public Project(String projectUrl)
   {
@@ -35,5 +36,15 @@ public class Project implements Comparable
   public int compareTo(Object o)
   {
     return projectUrl.compareTo(((Project) o).getProjectUrl());
+  }
+
+  public void setIvyFile(String ivyFile)
+  {
+    this.ivyFile = ivyFile;
+  }
+
+  public String getIvyFile()
+  {
+    return ivyFile;
   }
 }

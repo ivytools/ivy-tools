@@ -1,30 +1,34 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.EventList;
+
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
-import javax.swing.*;
+
 import java.io.IOException;
+
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.SwingWorker;
 
 /** Background task to get subversion externals so UI can refresh asynchronously. */
 @SuppressWarnings({ "CallToPrintStackTrace", "UseOfSystemOutOrSystemErr" })
 public class ScanExternalsTask extends SwingWorker
 {
-  private Set<String>              repositoryUrls;
-  private ExternalsFinderMainFrame mainFrame;
-  private boolean                  shallowSearch;
-  private SubversionHandler        subversionHandler;
-  private HtmlHandler              urlHandler              = new HtmlHandler();
-  private boolean                  showBranches;
-  private boolean                  showTags;
-  private boolean                  showTrunks;
-  private EventList<External>      externalsList;
+  private Set<String>                         repositoryUrls;
+  private ExternalsFinderMainFrame            mainFrame;
+  private boolean                             shallowSearch;
+  private SubversionHandler                   subversionHandler;
+  private HtmlHandler                         urlHandler           = new HtmlHandler();
+  private boolean                             showBranches;
+  private boolean                             showTags;
+  private boolean                             showTrunks;
+  private EventList<External>                 externalsList;
   private EventList<ProjectExternalReference> projectsList;
-  private boolean                  isSelectAllExternals;
-  private boolean                  isSelectAllProjects;
+  private boolean                             isSelectAllExternals;
+  private boolean                             isSelectAllProjects;
 
   public ScanExternalsTask(Set<String> repositoryUrls, ExternalsFinderMainFrame mainFrame, boolean isShallowSearch,
                            SubversionHandler subversionHandler, boolean showBranches, boolean showTags, boolean showTrunks,

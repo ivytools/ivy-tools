@@ -11,7 +11,6 @@ public enum NodeOrder
   private String order;
 
   // -------------------------- STATIC METHODS --------------------------
-
   public static NodeOrder find(String text)
   {
     NodeOrder[] nodeOrders = values();
@@ -33,7 +32,6 @@ public enum NodeOrder
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getOrder()
   {
     return order;

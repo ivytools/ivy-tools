@@ -1,27 +1,57 @@
 package com.nurflugel.mergegrapher;
 
 import com.nurflugel.Os;
+
+import static com.nurflugel.Os.findOs;
+
 import com.nurflugel.WebAuthenticator;
+
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
+
 import com.nurflugel.ivybrowser.domain.Revision;
+
+import static com.nurflugel.ivygrapher.NodeOrder.TOP_TO_BOTTOM;
+import static com.nurflugel.ivygrapher.OutputFormat.PDF;
+
 import com.nurflugel.mergegrapher.domain.CopyInfo;
 import com.nurflugel.mergegrapher.domain.Path;
 import com.nurflugel.mergegrapher.domain.Type;
+import static com.nurflugel.mergegrapher.domain.Type.A;
+import static com.nurflugel.mergegrapher.domain.Type.D;
+import static com.nurflugel.mergegrapher.domain.Type.findByValue;
+
 import org.apache.commons.lang.StringUtils;
-import org.tmatesoft.svn.core.*;
+import static org.apache.commons.lang.StringUtils.countMatches;
+import static org.apache.commons.lang.StringUtils.equals;
+import static org.apache.commons.lang.StringUtils.remove;
+import static org.apache.commons.lang.StringUtils.substringAfterLast;
+import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+
+import org.tmatesoft.svn.core.ISVNLogEntryHandler;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
+import org.tmatesoft.svn.core.SVNPropertyValue;
+import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.wc.*;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNLogClient;
+import org.tmatesoft.svn.core.wc.SVNPropertyData;
+import org.tmatesoft.svn.core.wc.SVNRevision;
+import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
+import org.tmatesoft.svn.core.wc.SVNWCClient;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.net.Authenticator;
-import java.util.*;
-import static com.nurflugel.ivygrapher.NodeOrder.TOP_TO_BOTTOM;
-import static com.nurflugel.ivygrapher.OutputFormat.PDF;
-import static com.nurflugel.mergegrapher.domain.Type.*;
-import static org.apache.commons.lang.StringUtils.*;
-import static org.apache.commons.lang.StringUtils.equals;
-import static org.apache.commons.lang.StringUtils.substringAfterLast;
-import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** Lets see if we can get Subversion merge information, etc from properties! */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
@@ -134,7 +164,7 @@ public class SubversionMergeGrapher
 
   GraphVizOutput getGraphVizOutput()
   {
-    Os             os             = Os.findOs();
+    Os             os             = findOs();
     GraphVizOutput graphVizOutput = new GraphVizOutput(os, PDF, false, os.getDefaultDotPath(), true, TOP_TO_BOTTOM);
 
     return graphVizOutput;
@@ -230,7 +260,7 @@ public class SubversionMergeGrapher
     String          copyPath     = entryPath.getCopyPath();
     Revision        copyRevision = new Revision(entryPath.getCopyRevision());
 
-    // dbulla CODEREVIEW - what is this doing? break out into method
+    // dbulla CODEREVIEW - what is this doing? break out into a method
     if ((type == A) || (type == D))
     {
       if (pathName.contains(BRANCHES) || pathName.equals(TRUNK) || pathName.contains(TAGS))

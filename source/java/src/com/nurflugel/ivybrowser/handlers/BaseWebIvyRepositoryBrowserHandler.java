@@ -1,25 +1,48 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
+
 import com.nurflugel.common.ui.UiMainFrame;
+
+import com.nurflugel.ivybrowser.Preferences;
 import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
+
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+
+import static org.apache.commons.lang.StringUtils.substringAfterLast;
+import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import org.jdom.input.SAXBuilder;
-import javax.swing.*;
-import java.io.*;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
-import static org.apache.commons.lang.StringUtils.substringAfterLast;
-import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+import javax.swing.SwingWorker;
 
 /** The parent class of all the handlers that parse the repository. */
 @SuppressWarnings({ "ProtectedField", "UseOfSystemOutOrSystemErr" })
@@ -80,23 +103,15 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
   /** Download the actual jar file to wherever the user wants it. */
   public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame theFrame,
-                                  String thePath) throws IOException
+                                  String thePath, Preferences preferences) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
-    String       newText         = substringBeforeLast(text, ".") + "-" + version + "." + substringAfterLast(text, ".");
-    URL          fileUrl         = new URL(thePath + "/" + orgName + "/" + moduleName + "/" + version + "/" + newText);
+    String       newText         = substringBeforeLast(text, ".") + '-' + version + '.' + substringAfterLast(text, ".");
+    URL          fileUrl         = new URL(thePath + '/' + orgName + '/' + moduleName + '/' + version + '/' + newText);
     JFileChooser fileChooser     = new JFileChooser("Save file as...");
-    String       previousSaveDir = theFrame.getPreferredSaveDir();  // todo get dir preference from Preferences, save if changed
-    File         suggestedFile   = null;
-
-    if (previousSaveDir == null)
-    {
-      suggestedFile = new File(text);
-    }
-    else
-    {
-      suggestedFile = new File(previousSaveDir, text);
-    }
+    String       previousSaveDir = preferences.getPreferredSaveDir();
+    File         suggestedFile   = (previousSaveDir == null) ? new File(text)
+                                                             : new File(previousSaveDir, text);
 
     fileChooser.setSelectedFile(suggestedFile);
 
@@ -106,13 +121,13 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
     {
       File selectedFile = fileChooser.getSelectedFile();
 
-      downloadFile(fileUrl, selectedFile, theFrame);
+      downloadFile(fileUrl, selectedFile, preferences);
     }
   }
 
-  private static void downloadFile(URL fileUrl, File selectedFile, IvyBrowserMainFrame theFrame) throws IOException
+  private static void downloadFile(URL fileUrl, File selectedFile, Preferences preferences) throws IOException
   {
-    theFrame.setPreferredSaveDir(selectedFile.getParent());
+    preferences.setPreferredSaveDir(selectedFile.getParent());
 
     FileOutputStream     fos       = new FileOutputStream(selectedFile);
     BufferedOutputStream bout      = new BufferedOutputStream(fos, BLOCK_SIZE);
@@ -131,7 +146,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
   public void findVersions(URL repositoryUrl, String orgName, String moduleName) throws IOException
   {
-    URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName);
+    URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + '/' + moduleName);
     URLConnection urlConnection = versionUrl.openConnection();
 
     urlConnection.setAllowUserInteraction(true);
@@ -159,13 +174,13 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
           }
           catch (IOException e)
           {
-            System.out.println("You have a version with a missing XML file: " + stripSlash(orgName) + " " + stripSlash(moduleName) + " "
-                                 + stripSlash(version) + " " + e.getMessage());
+            System.out.println("You have a version with a missing XML file: " + stripSlash(orgName) + ' ' + stripSlash(moduleName) + ' '
+                                 + stripSlash(version) + ' ' + e.getMessage());
           }
           catch (JDOMException e)
           {
-            System.out.println("JDom couldn't parse the file for this library (probably a 0-byte file): " + stripSlash(orgName) + " "
-                                 + stripSlash(moduleName) + " " + stripSlash(version) + " " + e.getMessage());
+            System.out.println("JDom couldn't parse the file for this library (probably a 0-byte file): " + stripSlash(orgName) + ' '
+                                 + stripSlash(moduleName) + ' ' + stripSlash(version) + ' ' + e.getMessage());
           }
         }
 
@@ -176,7 +191,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
     }
     catch (IOException e)
     {
-      System.out.println("You have a missing versionUrl " + versionUrl + " " + e.getMessage());
+      System.out.println("You have a missing versionUrl " + versionUrl + ' ' + e.getMessage());
     }
   }
 
@@ -185,7 +200,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   /** Read the .ivy file for the version and see what's there. */
   protected void findVersionedLibrary(URL repositoryUrl, String orgName, String moduleName, String version) throws IOException, JDOMException
   {
-    URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version);
+    URL           versionUrl    = new URL(repositoryUrl + "/" + orgName + '/' + moduleName + '/' + version);
     URLConnection urlConnection = versionUrl.openConnection();
 
     urlConnection.setAllowUserInteraction(true);
@@ -193,7 +208,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
     List<IvyPackage> localPackages = new ArrayList<IvyPackage>();
     SAXBuilder       builder       = new SAXBuilder();
-    String           path          = repositoryUrl + "/" + orgName + "/" + moduleName + "/" + version + "/" + moduleName + "-" + version + ".ivy.xml";
+    String           path          = repositoryUrl + "/" + orgName + '/' + moduleName + '/' + version + '/' + moduleName + '-' + version + ".ivy.xml";
     URL              url           = new URL(path);
     Document         doc           = builder.build(url);
     Element          root          = doc.getRootElement();
@@ -224,7 +239,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
           ivyPackage.setHasSourceCode(true);
         }
 
-        ivyPackage.addPublication(name + "." + ext);
+        ivyPackage.addPublication(name + '.' + ext);
       }
 
       if (dependencies != null)

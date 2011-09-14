@@ -1,20 +1,47 @@
 package com.nurflugel.ivybrowser.ui;
 
+import static com.nurflugel.common.ui.Util.centerApp;
+
+import com.nurflugel.ivybrowser.Preferences;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import static com.nurflugel.common.ui.Util.centerApp;
-import static java.awt.Cursor.*;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
-import static javax.swing.BoxLayout.Y_AXIS;
-import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+
 import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+
+import java.awt.Component;
+import static java.awt.Cursor.DEFAULT_CURSOR;
+import static java.awt.Cursor.WAIT_CURSOR;
+import static java.awt.Cursor.getPredefinedCursor;
+import java.awt.Dimension;
+import java.awt.LayoutManager;
+import static java.awt.Toolkit.getDefaultToolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.BoxLayout;
+import static javax.swing.BoxLayout.Y_AXIS;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyLineDialog extends JDialog
@@ -32,7 +59,7 @@ public class IvyLineDialog extends JDialog
   private IvyBrowserMainFrame mainFrame;
   private boolean             isOk;
 
-  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame) throws IOException
+  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame, Preferences preferences) throws IOException
   {
     this.ivyPackage        = ivyPackage;
     this.ivyRepositoryPath = ivyRepositoryPath;
@@ -49,7 +76,7 @@ public class IvyLineDialog extends JDialog
     dependenciesPanel.setLayout(boxLayout);
     publicationsPanel.setLayout(filesLayout);
     addListeners();
-    createText();
+    createText(preferences);
     pack();
     setSize(getSize().width, (int) (getSize().height * 1.25));
     centerApp(this);
@@ -59,7 +86,7 @@ public class IvyLineDialog extends JDialog
   private void adjustSize()
   {
     Dimension requestedSize = getSize();
-    Dimension screenSize    = Toolkit.getDefaultToolkit().getScreenSize();
+    Dimension screenSize    = getDefaultToolkit().getScreenSize();
 
     if (requestedSize.height < screenSize.height)
     {
@@ -127,6 +154,7 @@ public class IvyLineDialog extends JDialog
     dispose();
   }
 
+  /** Generate the text to paste into the buffer. */
   private void getPasteText()
   {
     String sourceTag = ivyPackage.hasSourceCode() ? ",source"
@@ -143,71 +171,96 @@ public class IvyLineDialog extends JDialog
 
     for (Component component : packageComponents)
     {
-      if (component instanceof IvyPackageCheckbox)
-      {
-        IvyPackageCheckbox checkbox = (IvyPackageCheckbox) component;
-
-        if (!checkbox.isSelected())
-        {
-          excludedPackages.add(checkbox.getIvyPackage());
-        }
-      }
+      addExcludedPackages(excludedPackages, component);
     }
 
     for (Component fileComponent : fileComponents)
     {
-      if (fileComponent instanceof JCheckBox)
-      {
-        JCheckBox checkBox = (JCheckBox) fileComponent;
-
-        if (!checkBox.isSelected())
-        {
-          String file = checkBox.getText();
-
-          file = substringBeforeLast(file, ".");
-          excludedFiles.add(file);
-        }
-      }
+      addExcludedFiles(excludedFiles, fileComponent);
     }
 
     String text = "";
 
     if (excludedPackages.isEmpty() && excludedFiles.isEmpty())
     {
-      text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
-               + "\"  conf=\"build,dist-war,test" + sourceTag + javadocTag + "\"" + forceText + "/>";
-      ivyTextPanel.add(new JLabel(text));
-      pasteText.append(text);
+      generateIvyLineNoExcludes(sourceTag, javadocTag, forceText, pasteText);
     }
     else
     {
-      text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
-               + "\"  conf=\"dist-ear" + sourceTag + javadocTag + "\"" + forceText + ">";
-      ivyTextPanel.add(new JLabel(text));
-      pasteText.append(text);
+      generateIvyLineWithExcludes(sourceTag, javadocTag, forceText, pasteText, excludedPackages, excludedFiles);
+    }
 
-      for (IvyPackage excludedPackage : excludedPackages)
-      {
-        text = "    <exclude org=\"" + excludedPackage.getOrgName() + "\" name=\"" + excludedPackage.getModuleName() + "\"/>";
-        ivyTextPanel.add(new JLabel(text));
-        pasteText.append("\n").append(text);
-      }
+    // convert the text to a StringSelection
+    StringSelection ivyLine = new StringSelection(pasteText.toString());
 
-      for (String excludedFile : excludedFiles)
-      {
-        text = "    <exclude  name=\"" + excludedFile + "\"/>";
-        ivyTextPanel.add(new JLabel(text));
-        pasteText.append("\n").append(text);
-      }
+    // and paste it into the buffer
+    getDefaultToolkit().getSystemClipboard().setContents(ivyLine, null);
+  }
 
-      text = "</dependency>";
+  private void generateIvyLineWithExcludes(String sourceTag, String javadocTag, String forceText, StringBuilder pasteText,
+                                           List<IvyPackage> excludedPackages, List<String> excludedFiles)
+  {
+    String text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
+                    + "\"  conf=\"dist-ear" + sourceTag + javadocTag + "\"" + forceText + ">";
+
+    ivyTextPanel.add(new JLabel(text));
+    pasteText.append(text);
+
+    for (IvyPackage excludedPackage : excludedPackages)
+    {
+      text = "    <exclude org=\"" + excludedPackage.getOrgName() + "\" name=\"" + excludedPackage.getModuleName() + "\"/>";
       ivyTextPanel.add(new JLabel(text));
       pasteText.append("\n").append(text);
     }
 
-    StringSelection ivyLine = new StringSelection(pasteText.toString());
+    for (String excludedFile : excludedFiles)
+    {
+      text = "    <exclude  name=\"" + excludedFile + "\"/>";
+      ivyTextPanel.add(new JLabel(text));
+      pasteText.append("\n").append(text);
+    }
 
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ivyLine, null);
+    text = "</dependency>";
+    ivyTextPanel.add(new JLabel(text));
+    pasteText.append("\n").append(text);
+  }
+
+  private void generateIvyLineNoExcludes(String sourceTag, String javadocTag, String forceText, StringBuilder pasteText)
+  {
+    String text = "<dependency org=\"" + ivyPackage.getOrgName() + "\"  name=\"" + ivyPackage.getModuleName() + "\"  rev=\"" + ivyPackage.getVersion()
+                    + "\"  conf=\"build,dist-war,test" + sourceTag + javadocTag + "\"" + forceText + "/>";
+
+    ivyTextPanel.add(new JLabel(text));
+    pasteText.append(text);
+  }
+
+  private void addExcludedFiles(List<String> excludedFiles, Component fileComponent)
+  {
+    if (fileComponent instanceof JCheckBox)
+    {
+      JCheckBox checkBox = (JCheckBox) fileComponent;
+
+      if (!checkBox.isSelected())
+      {
+        String file = checkBox.getText();
+
+        file = substringBeforeLast(file, ".");
+        excludedFiles.add(file);
+      }
+    }
+  }
+
+  private void addExcludedPackages(List<IvyPackage> excludedPackages, Component component)
+  {
+    if (component instanceof IvyPackageCheckbox)
+    {
+      IvyPackageCheckbox checkbox = (IvyPackageCheckbox) component;
+
+      if (!checkbox.isSelected())
+      {
+        excludedPackages.add(checkbox.getIvyPackage());
+      }
+    }
   }
 
   private void onCancel()
@@ -234,7 +287,7 @@ public class IvyLineDialog extends JDialog
     // centerApp(this);
   }
 
-  private void createText() throws IOException
+  private void createText(Preferences preferences) throws IOException
   {
     Set<IvyPackage> dependencies = (Set<IvyPackage>) ivyPackage.getDependencies();
 
@@ -246,14 +299,14 @@ public class IvyLineDialog extends JDialog
     }
     else  // todo put this into a method "populate dependencies
     {
-      populateDependenciesPanel(dependencies);
+      populateDependenciesPanel(dependencies, preferences);
     }
 
-    populateIncludedJarsPanel();
+    populateIncludedJarsPanel(preferences);
     updatePastedText();
   }
 
-  private void populateDependenciesPanel(Set<IvyPackage> dependencies)
+  private void populateDependenciesPanel(Set<IvyPackage> dependencies, final Preferences preferences)
   {
     List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
 
@@ -284,7 +337,7 @@ public class IvyLineDialog extends JDialog
 
               try
               {
-                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame);
+                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame, preferences);
 
                 lineDialog.setVisible(true);
                 setCursor(getPredefinedCursor(DEFAULT_CURSOR));
@@ -319,7 +372,7 @@ public class IvyLineDialog extends JDialog
     return aPackage;
   }
 
-  private void populateIncludedJarsPanel()
+  private void populateIncludedJarsPanel(final Preferences preferences)
   {
     Collection<String> includedFiles = ivyPackage.getPublications();
     final String       orgName       = ivyPackage.getOrgName();
@@ -346,7 +399,7 @@ public class IvyLineDialog extends JDialog
             {
               try
               {
-                BaseWebIvyRepositoryBrowserHandler.downloadFile(fileLabel, orgName, moduleName, version, mainFrame, ivyRepositoryPath);
+                BaseWebIvyRepositoryBrowserHandler.downloadFile(fileLabel, orgName, moduleName, version, mainFrame, ivyRepositoryPath, preferences);
               }
               catch (IOException e)
               {

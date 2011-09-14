@@ -1,10 +1,11 @@
 package com.nurflugel;
 
-import com.nurflugel.externalsreporter.ui.UserConfig;
 import com.nurflugel.versionfinder.UsernamePasswordDialog;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /**
  * This class deals with the need for user authentication when required. If the username and password are null (they get fetched from the UserConfig
@@ -16,22 +17,15 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
  */
 public class WebAuthenticator extends Authenticator
 {
-  private static String     userName;
-  private static String     password;
-  private static UserConfig config;
+  private static String userName;
+  private static String password;
+  // private static UserConfig config;
 
   // -------------------------- STATIC METHODS --------------------------
   public WebAuthenticator()
   {
     userName = "";
     password = "";
-  }
-
-  public WebAuthenticator(UserConfig config)
-  {
-    this.config = config;
-    userName    = config.getUserName();
-    password    = config.getPassword();
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -47,18 +41,12 @@ public class WebAuthenticator extends Authenticator
     return new PasswordAuthentication(userName, (password.toCharArray()));
   }
 
-  private static void showDialog()
+  public static void showDialog()
   {
     UsernamePasswordDialog dialog = new UsernamePasswordDialog(userName, password);
 
     userName = dialog.getUsername();
     password = dialog.getPassword();
-
-    if (config != null)
-    {
-      config.setUserName(userName);
-      config.setPassword(password);
-    }
   }
 
   public static String getUsername()

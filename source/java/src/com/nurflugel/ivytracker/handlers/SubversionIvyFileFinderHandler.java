@@ -1,12 +1,17 @@
 package com.nurflugel.ivytracker.handlers;
 
 import ca.odell.glazedlists.EventList;
+
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
 import com.nurflugel.externalsreporter.ui.ScanExternalsTask;
+
 import com.nurflugel.ivybrowser.domain.IvyPackage;
+
 import com.nurflugel.ivytracker.Config;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
+import static com.nurflugel.ivytracker.IvyTrackerMainFrame.useSingleThread;
 import com.nurflugel.ivytracker.domain.Project;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -25,7 +30,8 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
   private final Config                         config;
   private final String[]                       repositories;
   private HtmlHandler                          urlHandler;
-  private ExecutorService                      threadPool = Executors.newFixedThreadPool(5);
+  private ExecutorService                      threadPool  = Executors.newFixedThreadPool(5);
+  private boolean                              recurseDirs;
 
   public SubversionIvyFileFinderHandler(IvyTrackerMainFrame mainFrame, Map<Project, List<IvyPackage>> ivyFiles, EventList<Project> projectUrls,
                                         Config config, String... repositories)
@@ -70,9 +76,14 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
             SubversionIvyFileFinderHandlerTask task = new SubversionIvyFileFinderHandlerTask(file, config, urlHandler, mainFrame, ivyFiles,
                                                                                              projectUrls);
 
-            threadPool.execute(task);
-
-            // task.run();
+            if (useSingleThread)
+            {
+              task.run();
+            }
+            else
+            {
+              threadPool.execute(task);
+            }
           }
         }
         else
@@ -100,7 +111,7 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
 
       if (isChildRoot)
       {
-        if (file.endsWith("/"))
+        if (file.endsWith("/"))  // todo what does this do?
         {
           for (String childFile : childFiles)
           {
@@ -109,9 +120,14 @@ public class SubversionIvyFileFinderHandler extends IvyFileFinderHandler
             SubversionIvyFileFinderHandlerTask task = new SubversionIvyFileFinderHandlerTask(childFile, config, urlHandler, mainFrame, ivyFiles,
                                                                                              projectUrls);
 
-            threadPool.execute(task);
-
-            // task.run();
+            if (useSingleThread)
+            {
+              task.run();
+            }
+            else
+            {
+              threadPool.execute(task);
+            }
           }
         }
       }

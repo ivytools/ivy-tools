@@ -1,9 +1,11 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
+
+import java.util.List;
+
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.util.List;
 
 public class IvyRepositoryFileTableModel implements TableModel
 {
@@ -14,7 +16,7 @@ public class IvyRepositoryFileTableModel implements TableModel
 
   // static final int         SOURCE      = 4;
   private List<IvyRepositoryItem> list;
-  private String[] columnNames = { "Org", "Module", "Revision" };
+  private String[]                columnNames = { "Org", "Module", "Revision" };
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyRepositoryFileTableModel(List<IvyRepositoryItem> list)

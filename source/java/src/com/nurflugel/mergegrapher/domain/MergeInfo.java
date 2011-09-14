@@ -1,6 +1,7 @@
 package com.nurflugel.mergegrapher.domain;
 
 import com.nurflugel.ivybrowser.domain.Revision;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class MergeInfo extends CopyInfo
     {
       revisions.add(getCopyRevision());
     }
+
     // todo merge revisions?
     return revisions;
   }

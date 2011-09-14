@@ -1,11 +1,21 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.Os;
+
+import static com.nurflugel.Os.OS_X;
+
 import com.nurflugel.ivygrapher.OutputFormat;
+
 import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /** Output handler for making the dot file and image. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
@@ -45,7 +55,7 @@ public class OutputHandler
 
     // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's
     // in /usr/local/bin, leave as pdf
-    if ((os == Os.OS_X) && dotExecutablePath.startsWith("/Applications"))
+    if ((os == OS_X) && dotExecutablePath.startsWith("/Applications"))
     {
       outputFormatName = "e" + outputFormatName;
     }

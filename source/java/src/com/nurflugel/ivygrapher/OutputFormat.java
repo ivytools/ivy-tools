@@ -19,7 +19,6 @@ public enum OutputFormat
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   @SuppressWarnings({ "RefusedBequest" })
   public String toString()
@@ -28,7 +27,6 @@ public enum OutputFormat
   }
 
   // --------------------- GETTER / SETTER METHODS ---------------------
-
   public String getDisplayLabel()
   {
     return displayLabel;

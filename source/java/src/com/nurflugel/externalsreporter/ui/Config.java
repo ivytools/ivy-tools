@@ -1,10 +1,14 @@
 package com.nurflugel.externalsreporter.ui;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+
+import javax.swing.JOptionPane;
 
 /** Class to handle configuration persistence for the app. */
 public class Config implements UserConfig
@@ -39,8 +43,10 @@ public class Config implements UserConfig
     dotExecutablePath = preferences.get(DOT_EXECUTABLE, EMPTY_STRING);
     imageDir          = preferences.get(IMAGE_DIR, EMPTY_STRING);
     getRepositories();
-    userName         = preferences.get(USER_NAME, EMPTY_STRING);
-    password         = preferences.get(PASSWORD, EMPTY_STRING);
+    userName = preferences.get(USER_NAME, EMPTY_STRING);
+    password = JOptionPane.showInputDialog("Enter the password for " + userName);
+
+    // this.password = preferences.get(PASSWORD, EMPTY_STRING);
     trimHttpFromUrls = preferences.getBoolean(TRIM_HTTP_FROM_URLS, true);
     showTrunks       = preferences.getBoolean(SHOW_TRUNKS, true);
     showBranches     = preferences.getBoolean(SHOW_BRANCHES, false);

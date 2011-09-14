@@ -42,7 +42,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="9a3af" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="9a3af" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -52,21 +52,16 @@
                 <children>
                   <component id="ebe72" class="javax.swing.JButton" binding="quitButton" default-binding="true">
                     <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="&amp;Quit"/>
                     </properties>
                   </component>
-                  <hspacer id="2c181">
-                    <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </hspacer>
                   <grid id="d1e4a" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="5" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="etched" title="Reports"/>
@@ -98,6 +93,52 @@
                           <text value="Show unused Ivy modules"/>
                         </properties>
                       </component>
+                    </children>
+                  </grid>
+                  <grid id="d867d" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="0" column="1" row-span="6" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <grid id="9a5d5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="etched" title="Load/Save Data"/>
+                        <children>
+                          <component id="1bd97" class="javax.swing.JButton" binding="saveTestDataButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Save data"/>
+                            </properties>
+                          </component>
+                          <component id="90b0c" class="javax.swing.JButton" binding="loadTestDataButton" default-binding="true">
+                            <constraints>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Load Data"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <hspacer id="e4f05">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                      <vspacer id="4435d">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </vspacer>
                     </children>
                   </grid>
                 </children>
@@ -175,7 +216,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <splitpane id="2c6e1">
+          <splitpane id="2c6e1" binding="splitPane">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="200" height="200"/>
@@ -264,17 +305,18 @@
                                       <text value="Select/Unselect all"/>
                                     </properties>
                                   </component>
-                                  <component id="a2a46" class="javax.swing.JCheckBox" binding="projectsShowOnlySelectedProjectsCheckBox">
+                                  <component id="a2a46" class="javax.swing.JCheckBox" binding="showOnlySelectedProjectsCheckBox">
                                     <constraints>
                                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                                     </constraints>
                                     <properties>
+                                      <enabled value="false"/>
                                       <text value="Show only selected projects"/>
                                     </properties>
                                   </component>
                                 </children>
                               </grid>
-                              <grid id="d07f3" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                              <grid id="d07f3" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                                 <margin top="0" left="0" bottom="0" right="0"/>
                                 <constraints>
                                   <grid row="0" column="0" row-span="3" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -308,6 +350,14 @@
                                       <text value="Show tags"/>
                                     </properties>
                                   </component>
+                                  <component id="360ae" class="javax.swing.JCheckBox" binding="recurseCheckBox" default-binding="true">
+                                    <constraints>
+                                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                                    </constraints>
+                                    <properties>
+                                      <text value="Recurse"/>
+                                    </properties>
+                                  </component>
                                 </children>
                               </grid>
                               <vspacer id="62976">
@@ -331,7 +381,9 @@
                         <children>
                           <component id="cf652" class="javax.swing.JTable" binding="projectResultsTable">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <preferredScrollableViewportSize width="450" height="400"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>
@@ -396,11 +448,12 @@
                         <properties/>
                         <border type="etched" title="Ivy options"/>
                         <children>
-                          <component id="2623c" class="javax.swing.JCheckBox" binding="ivyShowOnlySelectedItemsCheckBox">
+                          <component id="2623c" class="javax.swing.JCheckBox" binding="showOnlySelectedIvyItemsCheckBox">
                             <constraints>
                               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
+                              <enabled value="false"/>
                               <text value="Show only selected items"/>
                             </properties>
                           </component>

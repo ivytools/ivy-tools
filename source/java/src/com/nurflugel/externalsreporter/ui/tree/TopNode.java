@@ -16,7 +16,6 @@ public class TopNode extends CheckableNode
   }
 
   // -------------------------- OTHER METHODS --------------------------
-
   @Override
   public void add(CheckableNode node)
   {
