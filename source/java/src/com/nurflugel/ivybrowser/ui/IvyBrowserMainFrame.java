@@ -41,7 +41,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import java.io.File;
 import java.io.IOException;
 
 import java.net.Authenticator;
@@ -70,6 +69,7 @@ import javax.swing.table.TableColumnModel;
 public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 {
   private static final long                                 serialVersionUID    = 8982188831570838035L;
+  public static final String                                IVYBROWSER_DATA_XML = "ivybrowser_data.xml";
   private Cursor                                            busyCursor          = getPredefinedCursor(WAIT_CURSOR);
   private Cursor                                            normalCursor        = getPredefinedCursor(DEFAULT_CURSOR);
   private JButton                                           specifyButton       = new JButton("Specify Repository");
@@ -133,7 +133,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   private boolean doSavedResultsExistForRepository()
   {
-    return (new File("ivybrowser_data.xml")).exists();
+    return (DataSerializer.getDataFile()).exists();
   }
 
   private void initializeComponents()
