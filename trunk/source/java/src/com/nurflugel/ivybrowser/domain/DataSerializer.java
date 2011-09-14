@@ -2,6 +2,8 @@ package com.nurflugel.ivybrowser.domain;
 
 import ca.odell.glazedlists.EventList;
 
+import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVYBROWSER_DATA_XML;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -34,10 +36,9 @@ public class DataSerializer
     try
     {
       // String input = (String) showInputDialog(null, "Enter a base name", "Save data to XML", JOptionPane.PLAIN_MESSAGE, null, null, "");
-
       // if (!isEmpty(input))
       XStream    xstream    = new XStream(new DomDriver());
-      FileWriter fileWriter = new FileWriter(new File("ivybrowser_data.xml"));
+      FileWriter fileWriter = new FileWriter(getDataFile());
 
       xstream.toXML(this, fileWriter);
     }
@@ -47,12 +48,26 @@ public class DataSerializer
     }
   }
 
+  public static File getDataFile()
+  {
+    String userDir  = System.getProperty("user.dir");
+    File   dataFile = new File(userDir, IVYBROWSER_DATA_XML);
+
+    return dataFile;
+  }
+
   public void retrieveFromXml()
   {
+    // Properties properties = System.getProperties();
+    // for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet())
+    // {
+    // System.out.println(objectObjectEntry.getKey()+"   "+ objectObjectEntry.getValue());
+    //
+    // }
     try
     {
       XStream        xstream    = new XStream(new DomDriver());
-      FileReader     fileReader = new FileReader(new File("ivybrowser_data.xml"));
+      FileReader     fileReader = new FileReader(getDataFile());
       Object         o          = xstream.fromXML(fileReader);
       DataSerializer serializer = (DataSerializer) o;
 
