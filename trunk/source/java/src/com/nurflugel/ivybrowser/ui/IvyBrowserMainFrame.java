@@ -104,7 +104,6 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
     boolean parseOnOpen = preferences.getParseOnOpen();
 
-    // parseOnOpen = false;
     parseOnOpenCheckbox.setSelected(parseOnOpen);
 
     if (doSavedResultsExistForRepository())
@@ -114,12 +113,15 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
     if (parseOnOpen)
     {
-      // reparse();
+      reparse();
     }
   }
 
   private void getSavedResults()
   {
+    setStatusLabel("Loading saved results...");
+    startProgressPanel();
+
     EventList<IvyPackage> dibble         = new BasicEventList<IvyPackage>();
     DataSerializer        dataSerializer = new DataSerializer(dibble);
 
@@ -352,7 +354,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   public void setNormalCursor()
   {
     setCursor(normalCursor);
-    statusLabel.setText("");
+    setStatusLabel("");
     adjustColumnWidths();
     libraryField.setEnabled(true);
     libraryField.requestFocus();
@@ -388,6 +390,12 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   {
     progressPanel.stop();
     setNormalCursor();
+  }
+
+  public void startProgressPanel()
+  {
+    progressPanel.start();
+    setBusyCursor();
   }
 
   @Override
