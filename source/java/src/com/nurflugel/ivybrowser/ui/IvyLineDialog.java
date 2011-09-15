@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -277,20 +278,15 @@ public class IvyLineDialog extends JDialog
     ivyTextPanel.updateUI();
     dependenciesPanel.updateUI();
     publicationsPanel.updateUI();
-
-    // ivyTextPanel.doLayout();
-    // ivyTextPanel.setSize(ivyTextPanel.getPreferredSize());
-    // ivyTextPanel.invalidate();
-    // ivyTextPanel.repaint();
-    // pack();
     adjustSize();
-    // centerApp(this);
   }
 
   private void createText(Preferences preferences) throws IOException
   {
-    Set<IvyPackage> dependencies = (Set<IvyPackage>) ivyPackage.getDependencies();
+    List<IvyPackage> dependencies1 = ivyPackage.getDependencies();
+    Set<IvyPackage>  dependencies  = new HashSet<IvyPackage>();
 
+    dependencies.addAll(dependencies1);
     dependenciesPanel.removeAll();
 
     if (dependencies.isEmpty())

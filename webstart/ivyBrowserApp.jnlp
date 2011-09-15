@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp
-        spec="6.0+"
+        spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
         href="ivyBrowserApp.jnlp">
     <information>
