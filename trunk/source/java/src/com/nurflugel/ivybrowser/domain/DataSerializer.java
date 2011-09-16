@@ -1,29 +1,29 @@
 package com.nurflugel.ivybrowser.domain;
 
 import ca.odell.glazedlists.EventList;
-
-import static com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame.IVYBROWSER_DATA_XML;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-
+import org.apache.commons.lang.StringUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
+import static com.nurflugel.ivybrowser.Preferences.IVYBROWSER_DATA_XML;
+import static org.apache.commons.lang.StringUtils.replace;
 
 /** Serializer object for the app. Because XStream has an adverse reaction to the Glazed lists collections. */
 public class DataSerializer
 {
   private List<IvyPackage> ivyPackages;
+  private String           ivyRepositoryPath;
 
-  public DataSerializer(EventList<IvyPackage> ivyRepositoryList)
+  public DataSerializer(String ivyRepositoryPath, EventList<IvyPackage> ivyRepositoryList)
   {
-    ivyPackages = new ArrayList<IvyPackage>(ivyRepositoryList.size());
+    this.ivyRepositoryPath = ivyRepositoryPath;
+    ivyPackages            = new ArrayList<IvyPackage>(ivyRepositoryList.size());
 
     for (IvyPackage ivyPackage : ivyRepositoryList)
     {
@@ -35,11 +35,11 @@ public class DataSerializer
   {
     try
     {
-      // String input = (String) showInputDialog(null, "Enter a base name", "Save data to XML", JOptionPane.PLAIN_MESSAGE, null, null, "");
-      // if (!isEmpty(input))
       XStream    xstream    = new XStream(new DomDriver());
-      FileWriter fileWriter = new FileWriter(getDataFile());
+      File       dataFile   = getDataFile(ivyRepositoryPath);
+      FileWriter fileWriter = new FileWriter(dataFile);
 
+      System.out.println("Saving dataFile = " + dataFile);
       xstream.toXML(this, fileWriter);
     }
     catch (IOException e)
@@ -48,29 +48,46 @@ public class DataSerializer
     }
   }
 
-  public static File getDataFile()
+  public static File getDataFile(String ivyRepositoryPath)
   {
     String userDir  = System.getProperty("user.dir");
-    File   dataFile = new File(userDir, IVYBROWSER_DATA_XML);
+    String path     = cleanCharacters(ivyRepositoryPath);
+    File   dataFile = new File(userDir, path + '_' + IVYBROWSER_DATA_XML);
 
     return dataFile;
   }
 
+  /**
+   * Convert something like this:
+   *
+   * <p>http://subversion/svn/javaexternals/trunk/repository</p>
+   *
+   * <p>to this:</p>
+   *
+   * <p>http___subversion_svn_javaexternals_trunk_repository</p>
+   *
+   * <p>So that the file names won't be wonky</p>
+   */
+  private static String cleanCharacters(String ivyRepositoryUrl)
+  {
+    String newText = replace(ivyRepositoryUrl, ":", "_");
+
+    newText = replace(newText, "/", "_");
+
+    return newText;
+  }
+
   public void retrieveFromXml()
   {
-    // Properties properties = System.getProperties();
-    // for (Map.Entry<Object, Object> objectObjectEntry : properties.entrySet())
-    // {
-    // System.out.println(objectObjectEntry.getKey()+"   "+ objectObjectEntry.getValue());
-    //
-    // }
     try
     {
       XStream        xstream    = new XStream(new DomDriver());
-      FileReader     fileReader = new FileReader(getDataFile());
+      File           dataFile   = getDataFile(ivyRepositoryPath);
+      FileReader     fileReader = new FileReader(dataFile);
       Object         o          = xstream.fromXML(fileReader);
       DataSerializer serializer = (DataSerializer) o;
 
+      System.out.println("Reading dataFile = " + dataFile);
       ivyPackages = serializer.getIvyPackages();
     }
     catch (FileNotFoundException e)
