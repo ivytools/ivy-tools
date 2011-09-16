@@ -1,18 +1,14 @@
 package com.nurflugel.common.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
-
 import com.nurflugel.ivybrowser.Preferences;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -124,14 +120,7 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
 
     // put this at the top of the list so the most recent value always shows first
     locations.add(0, location);
-
-    int i = 0;
-
-    for (String value : locations)
-    {
-      appPreferences.saveIndexedProperty(keyBase, i++, value);
-    }
-
+    appPreferences.saveIndexedProperties(keyBase, locations);
     dispose();
   }
 
