@@ -50,9 +50,16 @@ public class DataSerializer
 
   public static File getDataFile(String ivyRepositoryPath)
   {
-    String userDir  = System.getProperty("user.dir");
+    String userDir = System.getProperty("user.home");
+    File   dataDir = new File(userDir, ".ivyBrowser");
+
+    if (!dataDir.exists())
+    {
+      dataDir.mkdir();
+    }
+
     String path     = cleanCharacters(ivyRepositoryPath);
-    File   dataFile = new File(userDir, path + '_' + IVYBROWSER_DATA_XML);
+    File   dataFile = new File(dataDir, path + '_' + IVYBROWSER_DATA_XML);
 
     return dataFile;
   }
