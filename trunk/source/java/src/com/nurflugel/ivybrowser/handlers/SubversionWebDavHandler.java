@@ -21,14 +21,11 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 /** Subversion flavored handler. Subversion hosted repositories render HTML a bit differently than pure HTML-based repositories. */
 public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
-  private Preferences preferences;
-
   // --------------------------- CONSTRUCTORS ---------------------------
   public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
                                  Map<String, Map<String, Map<String, IvyPackage>>> packageMap, Preferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
-    this.preferences = preferences;
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -104,8 +101,8 @@ public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
       ((IvyTrackerMainFrame) mainFrame).setIvyDone(true);
     }
 
-    // todo if desired, serialize results
-    DataSerializer dataSerializer = new DataSerializer(ivyRepositoryPath, ivyPackages);
+    // serialize results
+    DataSerializer dataSerializer = new DataSerializer(ivyRepositoryPath, ivyPackages, packageMap);
 
     dataSerializer.saveToXml();
     mainFrame.stopProgressPanel();

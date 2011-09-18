@@ -106,8 +106,8 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
       e.printStackTrace();
     }
 
-    // todo if desired, serialize results
-    DataSerializer dataSerializer = new DataSerializer(ivyRepositoryPath, ivyPackages);
+    // serialize results
+    DataSerializer dataSerializer = new DataSerializer(ivyRepositoryPath, ivyPackages, packageMap);
 
     dataSerializer.saveToXml();
     mainFrame.stopProgressPanel();

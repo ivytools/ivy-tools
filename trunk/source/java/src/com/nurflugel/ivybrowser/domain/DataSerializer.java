@@ -10,25 +10,27 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import static com.nurflugel.ivybrowser.Preferences.IVYBROWSER_DATA_XML;
 import static org.apache.commons.lang.StringUtils.replace;
 
 /** Serializer object for the app. Because XStream has an adverse reaction to the Glazed lists collections. */
 public class DataSerializer
 {
-  private List<IvyPackage> ivyPackages;
-  private String           ivyRepositoryPath;
+  private List<IvyPackage>                                  ivyPackages;
+  private String                                            ivyRepositoryPath;
+  private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
 
-  public DataSerializer(String ivyRepositoryPath, EventList<IvyPackage> ivyRepositoryList)
+  public DataSerializer(String ivyRepositoryPath, EventList<IvyPackage> ivyRepositoryList,
+                        Map<String, Map<String, Map<String, IvyPackage>>> packageMapToSave)
   {
     this.ivyRepositoryPath = ivyRepositoryPath;
     ivyPackages            = new ArrayList<IvyPackage>(ivyRepositoryList.size());
-
-    for (IvyPackage ivyPackage : ivyRepositoryList)
-    {
-      ivyPackages.add(ivyPackage);
-    }
+    packageMap             = new HashMap<String, Map<String, Map<String, IvyPackage>>>();
+    ivyPackages.addAll(ivyRepositoryList);
+    packageMap.putAll(packageMapToSave);
   }
 
   public void saveToXml()
@@ -96,6 +98,7 @@ public class DataSerializer
 
       System.out.println("Reading dataFile = " + dataFile);
       ivyPackages = serializer.getIvyPackages();
+      packageMap  = serializer.getPackageMap();
     }
     catch (FileNotFoundException e)
     {
@@ -106,5 +109,10 @@ public class DataSerializer
   public List<IvyPackage> getIvyPackages()
   {
     return ivyPackages;
+  }
+
+  public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
+  {
+    return packageMap;
   }
 }
