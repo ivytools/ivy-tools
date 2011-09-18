@@ -1,13 +1,11 @@
 package com.nurflugel.ivybrowser.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
-
 import com.nurflugel.ivybrowser.Preferences;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
-
+import static javax.swing.JOptionPane.showConfirmDialog;
 import static org.apache.commons.lang.StringUtils.substringBeforeLast;
-
 import java.awt.Component;
 import static java.awt.Cursor.DEFAULT_CURSOR;
 import static java.awt.Cursor.WAIT_CURSOR;
@@ -23,9 +21,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,16 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.BoxLayout;
+import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 
 @SuppressWarnings({ "CallToPrintStackTrace" })
 public class IvyLineDialog extends JDialog
@@ -333,9 +322,17 @@ public class IvyLineDialog extends JDialog
 
               try
               {
-                IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame, preferences);
+                if (newIvyPackage == null)
+                {
+                  mainFrame.showMissingIvyVersionMessage();
+                }
+                else
+                {
+                  IvyLineDialog lineDialog = new IvyLineDialog(newIvyPackage, ivyRepositoryPath, mainFrame, preferences);
 
-                lineDialog.setVisible(true);
+                  lineDialog.setVisible(true);
+                }
+
                 setCursor(getPredefinedCursor(DEFAULT_CURSOR));
               }
               catch (IOException e)

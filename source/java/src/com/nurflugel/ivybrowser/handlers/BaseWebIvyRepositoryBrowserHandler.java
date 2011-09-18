@@ -1,25 +1,18 @@
 package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.common.ui.UiMainFrame;
-
 import com.nurflugel.ivybrowser.Preferences;
 import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
-
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
-
 import static org.apache.commons.lang.StringUtils.substringAfterLast;
 import static org.apache.commons.lang.StringUtils.substringBeforeLast;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,10 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
@@ -51,27 +41,27 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   public static final int NUMBER_OF_THREADS = 5;
 
   // public static final int NUMBER_OF_THREADS = 1;
-  private static final int                                  BLOCK_SIZE        = 1024;
-  protected UiMainFrame                                     mainFrame;
-  protected boolean                                         isTest;
-  protected boolean                                         shouldRun         = true;
-  protected String                                          ivyRepositoryPath;
-  protected EventList<IvyPackage>                           ivyPackages;
-  private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
-  private Map<IvyKey, IvyPackage>                           allPackages       = Collections.synchronizedMap(new HashMap<IvyKey, IvyPackage>());
-  public static final String                                JAVADOC           = "javadoc";
-  public static final String                                SOURCE            = "source";
-  public static final String                                DEFAULT           = "default";
-  public static final String                                INFO              = "info";
-  public static final String                                PUBLICATIONS      = "publications";
-  public static final String                                ARTIFACT          = "artifact";
-  public static final String                                DEPENDENCIES      = "dependencies";
-  public static final String                                NAME              = "name";
-  public static final String                                EXT               = "ext";
-  public static final String                                CONF              = "conf";
-  public static final String                                ORG               = "org";
-  public static final String                                REV               = "rev";
-  ExecutorService                                           threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+  private static final int                                    BLOCK_SIZE        = 1024;
+  protected UiMainFrame                                       mainFrame;
+  protected boolean                                           isTest;
+  protected boolean                                           shouldRun         = true;
+  protected String                                            ivyRepositoryPath;
+  protected EventList<IvyPackage>                             ivyPackages;
+  protected Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
+  private Map<IvyKey, IvyPackage>                             allPackages       = Collections.synchronizedMap(new HashMap<IvyKey, IvyPackage>());
+  public static final String                                  JAVADOC           = "javadoc";
+  public static final String                                  SOURCE            = "source";
+  public static final String                                  DEFAULT           = "default";
+  public static final String                                  INFO              = "info";
+  public static final String                                  PUBLICATIONS      = "publications";
+  public static final String                                  ARTIFACT          = "artifact";
+  public static final String                                  DEPENDENCIES      = "dependencies";
+  public static final String                                  NAME              = "name";
+  public static final String                                  EXT               = "ext";
+  public static final String                                  CONF              = "conf";
+  public static final String                                  ORG               = "org";
+  public static final String                                  REV               = "rev";
+  ExecutorService                                             threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
   protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,

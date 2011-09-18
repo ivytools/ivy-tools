@@ -21,6 +21,9 @@ import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import static java.util.Collections.synchronizedMap;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
@@ -41,16 +44,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.BoxLayout;
+import javax.swing.*;
 import static javax.swing.BoxLayout.Y_AXIS;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -244,15 +239,29 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
       EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
       IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-      IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath, this, preferences);
+
+      if (ivyFile == null)
+      {
+        showMissingIvyVersionMessage();
+      }
+      else
+      {
+        IvyLineDialog dialog = new IvyLineDialog(ivyFile, ivyRepositoryPath, this, preferences);
+
+        dialog.setVisible(true);
+      }
 
       setCursor(DEFAULT_CURSOR);
-      dialog.setVisible(true);
     }
     else
     {
       System.out.println("No row selected...");
     }
+  }
+
+  void showMissingIvyVersionMessage()
+  {
+    showMessageDialog(this, "Missing entry for Ivy file... the Ivy repository doesn't have this version", "Bad mojo", WARNING_MESSAGE);
   }
 
   private void setupTable()
@@ -281,13 +290,19 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
       startProgressPanel();
 
       EventList<IvyPackage> emptyList      = new BasicEventList<IvyPackage>();
-      DataSerializer        dataSerializer = new DataSerializer(ivyRepositoryPath, emptyList);
+      DataSerializer        dataSerializer = new DataSerializer(ivyRepositoryPath, emptyList, packageMap);
 
       dataSerializer.retrieveFromXml();
 
-      List<IvyPackage> ivyPackages = dataSerializer.getIvyPackages();
+      List<IvyPackage>                                  savedPackages   = dataSerializer.getIvyPackages();
+      Map<String, Map<String, Map<String, IvyPackage>>> savedPackageMap = dataSerializer.getPackageMap();
 
-      repositoryList.addAll(ivyPackages);
+      if (savedPackageMap != null)
+      {
+        packageMap.putAll(savedPackageMap);
+      }
+
+      repositoryList.addAll(savedPackages);
       stopProgressPanel();
     }
   }
