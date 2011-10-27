@@ -73,7 +73,8 @@ public abstract class GraphVizHandler
       long end = new Date().getTime();
 
       // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
-      // viewFile(outputFilePath);
+      viewFile(outputFilePath);
+
       if (deleteDotFileOnExit)
       {
         dotFile.deleteOnExit();
