@@ -26,6 +26,7 @@
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/jdom.jar"/>
         <jar href="lib/commons-lang.jar"/>
+        <jar href="lib/commons-io.jar"/>
         <jar href="lib/forms_rt.jar"/>
         <jar href="lib/help.jar"/>
         <extension name="help" href="help.jnlp"/>
