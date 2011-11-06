@@ -2,7 +2,7 @@ package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame;
@@ -93,7 +93,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
   /** Download the actual jar file to wherever the user wants it. */
   public static void downloadFile(JCheckBox fileLabel, String orgName, String moduleName, String version, IvyBrowserMainFrame theFrame,
-                                  String thePath, Preferences preferences) throws IOException
+                                  String thePath, AppPreferences preferences) throws IOException
   {
     String       text            = fileLabel.getText().split(" ")[0];
     String       newText         = substringBeforeLast(text, ".") + '-' + version + '.' + substringAfterLast(text, ".");
@@ -115,7 +115,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
     }
   }
 
-  private static void downloadFile(URL fileUrl, File selectedFile, Preferences preferences) throws IOException
+  private static void downloadFile(URL fileUrl, File selectedFile, AppPreferences preferences) throws IOException
   {
     preferences.setPreferredSaveDir(selectedFile.getParent());
 

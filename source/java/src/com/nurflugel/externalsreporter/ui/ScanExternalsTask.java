@@ -1,16 +1,15 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.EventList;
-
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
-
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.SwingWorker;
 
 /** Background task to get subversion externals so UI can refresh asynchronously. */
@@ -21,7 +20,7 @@ public class ScanExternalsTask extends SwingWorker
   private ExternalsFinderMainFrame            mainFrame;
   private boolean                             shallowSearch;
   private SubversionHandler                   subversionHandler;
-  private HtmlHandler                         urlHandler           = new HtmlHandler();
+  private HtmlHandler                         urlHandler            = new HtmlHandler();
   private boolean                             showBranches;
   private boolean                             showTags;
   private boolean                             showTrunks;
@@ -29,23 +28,25 @@ public class ScanExternalsTask extends SwingWorker
   private EventList<ProjectExternalReference> projectsList;
   private boolean                             isSelectAllExternals;
   private boolean                             isSelectAllProjects;
+  private final ISVNAuthenticationManager     authenticationManager;
 
   public ScanExternalsTask(Set<String> repositoryUrls, ExternalsFinderMainFrame mainFrame, boolean isShallowSearch,
                            SubversionHandler subversionHandler, boolean showBranches, boolean showTags, boolean showTrunks,
                            EventList<External> externalsList, EventList<ProjectExternalReference> projectsList, boolean selectAllExternals,
-                           boolean selectAllProjects)
+                           boolean selectAllProjects, ISVNAuthenticationManager authenticationManager)
   {
-    this.repositoryUrls    = repositoryUrls;
-    this.mainFrame         = mainFrame;
-    shallowSearch          = isShallowSearch;
-    this.subversionHandler = subversionHandler;
-    this.showBranches      = showBranches;
-    this.showTags          = showTags;
-    this.showTrunks        = showTrunks;
-    this.externalsList     = externalsList;
-    this.projectsList      = projectsList;
-    isSelectAllExternals   = selectAllExternals;
-    isSelectAllProjects    = selectAllProjects;
+    this.repositoryUrls        = repositoryUrls;
+    this.mainFrame             = mainFrame;
+    shallowSearch              = isShallowSearch;
+    this.subversionHandler     = subversionHandler;
+    this.showBranches          = showBranches;
+    this.showTags              = showTags;
+    this.showTrunks            = showTrunks;
+    this.externalsList         = externalsList;
+    this.projectsList          = projectsList;
+    isSelectAllExternals       = selectAllExternals;
+    isSelectAllProjects        = selectAllProjects;
+    this.authenticationManager = authenticationManager;
   }
 
   /**
@@ -64,7 +65,8 @@ public class ScanExternalsTask extends SwingWorker
   @Override
   protected Object doInBackground() throws Exception
   {
-    SVNWCClient wcClient = SVNClientManager.newInstance().getWCClient();
+    ISVNOptions options  = SVNWCUtil.createDefaultOptions(true);
+    SVNWCClient wcClient = SVNClientManager.newInstance(options, authenticationManager).getWCClient();
 
     for (String repositoryUrl : repositoryUrls)
     {

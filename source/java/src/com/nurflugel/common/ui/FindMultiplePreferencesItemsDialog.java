@@ -1,7 +1,7 @@
 package com.nurflugel.common.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
-import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.AppPreferences;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -26,12 +26,12 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
   private JButton            buttonCancel;
   private JComboBox          comboBox;
   private JPanel             borderTitlePanel;
-  private Preferences        appPreferences;
+  private AppPreferences     appPreferences;
   private String             keyBase;
   private List<String>       locations;
   private boolean            isOK;
 
-  public FindMultiplePreferencesItemsDialog(Preferences appPreferences, String borderTitle, String keyBase)
+  public FindMultiplePreferencesItemsDialog(AppPreferences appPreferences, String borderTitle, String keyBase)
   {
     this.appPreferences = appPreferences;
     this.keyBase        = keyBase;

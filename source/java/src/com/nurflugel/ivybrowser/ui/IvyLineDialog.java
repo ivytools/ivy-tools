@@ -1,7 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
-import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -49,7 +49,7 @@ public class IvyLineDialog extends JDialog
   private IvyBrowserMainFrame mainFrame;
   private boolean             isOk;
 
-  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame, Preferences preferences) throws IOException
+  public IvyLineDialog(IvyPackage ivyPackage, String ivyRepositoryPath, IvyBrowserMainFrame mainFrame, AppPreferences preferences) throws IOException
   {
     this.ivyPackage        = ivyPackage;
     this.ivyRepositoryPath = ivyRepositoryPath;
@@ -270,7 +270,7 @@ public class IvyLineDialog extends JDialog
     adjustSize();
   }
 
-  private void createText(Preferences preferences) throws IOException
+  private void createText(AppPreferences preferences) throws IOException
   {
     List<IvyPackage> dependencies1 = ivyPackage.getDependencies();
     Set<IvyPackage>  dependencies  = new HashSet<IvyPackage>();
@@ -291,7 +291,7 @@ public class IvyLineDialog extends JDialog
     updatePastedText();
   }
 
-  private void populateDependenciesPanel(Set<IvyPackage> dependencies, final Preferences preferences)
+  private void populateDependenciesPanel(Set<IvyPackage> dependencies, final AppPreferences preferences)
   {
     List<IvyPackageCheckbox> sortedCheckboxes = new ArrayList<IvyPackageCheckbox>();
 
@@ -365,7 +365,7 @@ public class IvyLineDialog extends JDialog
     return aPackage;
   }
 
-  private void populateIncludedJarsPanel(final Preferences preferences)
+  private void populateIncludedJarsPanel(final AppPreferences preferences)
   {
     Collection<String> includedFiles = ivyPackage.getPublications();
     final String       orgName       = ivyPackage.getOrgName();

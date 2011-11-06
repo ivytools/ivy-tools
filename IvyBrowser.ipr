@@ -1425,9 +1425,6 @@
       </TypeToTextMapping>
     </option>
   </component>
-  <component name="GradleSettings">
-    <option name="SDK_HOME" value="$USER_HOME$/Downloads/Gradle/gradle-0.9-rc-3" />
-  </component>
   <component name="GradleUISettings">
     <setting name="root" />
   </component>
@@ -1551,7 +1548,6 @@
           <option name="m_ignoreCloneableDueToInheritance" value="false" />
         </inspection_tool>
         <inspection_tool class="CollectionAddedToSelf" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="CommaExpressionJS" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ComparatorNotSerializable" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ComparisonOfShortAndChar" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="ComparisonToNaN" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -2116,7 +2112,6 @@
           <option name="REPORT_REDUNDANT_INITIALIZER" value="true" />
         </inspection_tool>
         <inspection_tool class="UnusedImport" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="UnusedProperty" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true">
@@ -2309,6 +2304,16 @@
       </item>
     </group>
   </component>
+  <component name="ProjectCodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
+      </value>
+    </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+  </component>
   <component name="ProjectDetails">
     <option name="projectName" value="IvyBrowser" />
   </component>
@@ -2374,13 +2379,7 @@
                 <map>
                   <entry key="https://ivy-tools.googlecode.com/svn/branches">
                     <value>
-                      <list>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1255828894927" />
-                          <option name="revision" value="122" />
-                          <option name="url" value="https://ivy-tools.googlecode.com/svn/branches/2009-10-11-JdomReader" />
-                        </SvnBranchItem>
-                      </list>
+                      <list />
                     </value>
                   </entry>
                 </map>

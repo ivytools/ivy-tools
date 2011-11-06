@@ -1,13 +1,18 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.EventList;
+import com.nurflugel.WebAuthenticator;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager;
 import org.tmatesoft.svn.core.wc.SVNPropertyData;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
+import java.io.File;
+import java.net.Authenticator;
 import java.util.Date;
+import static org.tmatesoft.svn.core.SVNURL.parseURIDecoded;
 import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
 
 /** Handler for all the Subversion tasks. */
@@ -17,6 +22,8 @@ public class SubversionHandler
   public SubversionHandler()
   {
     DAVRepositoryFactory.setup();
+
+    // Authenticator.setDefault(new WebAuthenticator());
   }
   // -------------------------- OTHER METHODS --------------------------
 
@@ -26,10 +33,10 @@ public class SubversionHandler
   {
     try
     {
-      SVNURL          url             = SVNURL.parseURIDecoded(projectBaseUrl);
+      SVNURL          url             = parseURIDecoded(projectBaseUrl);
       String          propertyName    = "svn:externals";
       long            start           = new Date().getTime();
-      SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, propertyName, HEAD, HEAD);
+      SVNPropertyData svnPropertyData = wcClient.doGetProperty(url, propertyName, HEAD, HEAD);  // todo exception here
       long            time            = (new Date().getTime()) - start;
 
       System.out.println("time to get external = " + (((float) time) / 1000.0f) + " seconds");
@@ -75,6 +82,7 @@ public class SubversionHandler
     }
     catch (SVNException e)
     {
+      System.out.println("Error trying to access " + projectBaseUrl);
       e.printStackTrace();
     }
   }

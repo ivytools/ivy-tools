@@ -2,7 +2,7 @@ package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.ivybrowser.Preferences;
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
@@ -23,7 +23,7 @@ public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
   public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
-                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap, Preferences preferences)
+                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap, AppPreferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
   }

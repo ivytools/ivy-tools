@@ -3,7 +3,6 @@ package com.nurflugel.ivybrowser.domain;
 import ca.odell.glazedlists.EventList;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.apache.commons.lang.StringUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static com.nurflugel.ivybrowser.Preferences.IVYBROWSER_DATA_XML;
 import static org.apache.commons.lang.StringUtils.replace;
 
 /** Serializer object for the app. Because XStream has an adverse reaction to the Glazed lists collections. */
@@ -22,6 +20,7 @@ public class DataSerializer
   private List<IvyPackage>                                  ivyPackages;
   private String                                            ivyRepositoryPath;
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
+  public static final String                                IVYBROWSER_DATA_XML = "ivybrowser_data.xml";
 
   public DataSerializer(String ivyRepositoryPath, EventList<IvyPackage> ivyRepositoryList,
                         Map<String, Map<String, Map<String, IvyPackage>>> packageMapToSave)

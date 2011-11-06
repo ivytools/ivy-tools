@@ -10,27 +10,29 @@ import static ca.odell.glazedlists.matchers.TextMatcherEditor.REGULAR_EXPRESSION
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
-
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
-
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
+import static com.nurflugel.Os.findOs;
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.busyCursor;
 import static com.nurflugel.common.ui.Util.center;
 import static com.nurflugel.common.ui.Util.normalCursor;
 import static com.nurflugel.common.ui.Util.setLookAndFeel;
 import com.nurflugel.common.ui.Version;
-
 import com.nurflugel.externalsreporter.ui.tree.ExternalTreeHandler;
-
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.ui.CheckboxCellRenderer;
-
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import static com.nurflugel.externalsreporter.ui.Config.REPOSITORY;
+import static javax.swing.BoxLayout.Y_AXIS;
+import static javax.swing.JFileChooser.FILES_AND_DIRECTORIES;
+import static javax.swing.JTable.AUTO_RESIZE_OFF;
 import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -44,22 +46,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.IOException;
-
 import static java.lang.Math.max;
-
 import java.net.Authenticator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
+import java.util.prefs.Preferences;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -68,6 +65,7 @@ import static javax.swing.JFileChooser.OPEN_DIALOG;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.showMessageDialog;
+import static org.tmatesoft.svn.core.wc.SVNWCUtil.createDefaultAuthenticationManager;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
@@ -120,7 +118,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   private JButton                              clearProjectFilterFieldButton;
   private JButton                              clearExternalFilterFieldButton;
   private JSplitPane                           splitPane;
-  private Os                                   os                                   = Os.findOs();
+  private Os                                   os                                   = findOs();
   private Config                               config                               = new Config();
   private SubversionHandler                    subversionHandler                    = new SubversionHandler();
   private EventList<External>                  externalsList;
@@ -141,7 +139,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     // PasswordAuthentication authentication = webAuthenticator.getPasswordAuthentication();
     // Authenticator.setDefault(webAuthenticator);
     // Authenticator.setDefault(new WebAuthenticator(config));
-    Authenticator.setDefault(new WebAuthenticator());
+    Authenticator.setDefault(new WebAuthenticator(config.getUserName(), config.getPassword()));
 
     // Authenticator.setDefault(new WebAuthenticator());
     initializeUi();
@@ -469,7 +467,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     fileChooser.setDialogType(OPEN_DIALOG);
     fileChooser.setDragEnabled(true);
     fileChooser.setMultiSelectionEnabled(false);
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    fileChooser.setFileSelectionMode(FILES_AND_DIRECTORIES);
 
     int choice = fileChooser.showDialog(this, "Select the DOT executable");
 
@@ -497,7 +495,8 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     String lastRepository = config.getLastRepository();
 
     // FindMultiplePreferencesItemsDialog dialog         = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
-    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(null, "Select Ivy Repository", Config.REPOSITORY);
+    AppPreferences                     appPreferences = new AppPreferences(config.getPreferences());
+    FindMultiplePreferencesItemsDialog dialog         = new FindMultiplePreferencesItemsDialog(appPreferences, "Select Ivy Repository", REPOSITORY);
 
     dialog.setVisible(true);
 
@@ -533,16 +532,19 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
       }
     }
 
-    ScanExternalsTask task = new ScanExternalsTask(repositoryUrls, this, shallowBranchTagsTrunkRadioButton.isSelected(), subversionHandler,
-                                                   showBranchesCheckBox.isSelected(), showTagsCheckBox.isSelected(), showTrunksCheckBox.isSelected(),
-                                                   externalsList, projectsList, externalSelectAllCheckBox.isSelected(),
-                                                   projectSelectAllCheckBox.isSelected());
+    // set the authentication manager credentials
+    ISVNAuthenticationManager authenticationManager = createDefaultAuthenticationManager(config.getUserName(), config.getPassword());
+    ScanExternalsTask         task                  = new ScanExternalsTask(repositoryUrls, this, shallowBranchTagsTrunkRadioButton.isSelected(),
+                                                                            subversionHandler, showBranchesCheckBox.isSelected(),
+                                                                            showTagsCheckBox.isSelected(), showTrunksCheckBox.isSelected(),
+                                                                            externalsList, projectsList, externalSelectAllCheckBox.isSelected(),
+                                                                            projectSelectAllCheckBox.isSelected(), authenticationManager);
 
     try
     {
-      // task.execute();
-      //
-      task.doInBackground();
+      task.execute();
+
+      // task.doInBackground();
     }
     catch (Exception e)
     {
@@ -639,7 +641,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   /** Size the table columns to be just big enough to hold what they need. */
   private void resizeTableColumns(JTable table)
   {
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    table.setAutoResizeMode(AUTO_RESIZE_OFF);
 
     TableColumnModel columnModel = table.getColumnModel();
     int              columnCount = table.getColumnCount();
@@ -709,7 +711,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   /** Size the table columns to be just big enough to hold what they need. */
   public static void sizeTableColumns(JTable table)
   {
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    table.setAutoResizeMode(AUTO_RESIZE_OFF);
 
     TableColumnModel columnModel = table.getColumnModel();
     int              columnCount = table.getColumnCount();
@@ -819,7 +821,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
   {
     repositoryCheckboxPanel = new JPanel();
 
-    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, BoxLayout.Y_AXIS);
+    BoxLayout layout = new BoxLayout(repositoryCheckboxPanel, Y_AXIS);
 
     repositoryCheckboxPanel.setLayout(layout);
   }

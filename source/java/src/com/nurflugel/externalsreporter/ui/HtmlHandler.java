@@ -1,22 +1,17 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.WebAuthenticator;
-
 import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.apache.commons.lang.StringUtils.substringBefore;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.Authenticator;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -80,6 +75,7 @@ public class HtmlHandler
     catch (IOException e)
     {
       System.out.println("Error contacting server at URL " + versionUrl + " " + e.getMessage());
+      e.printStackTrace();
 
       // this gets us around a bad password, but never saves it...
       if (e.getMessage().contains("redirected"))
