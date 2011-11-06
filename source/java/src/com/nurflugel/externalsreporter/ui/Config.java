@@ -177,10 +177,10 @@ public class Config implements UserConfig
 
     if (beginIndex >= 0)
     {
-      for (int i = 0; i < repositories.size(); i++)
+      for (int i = beginIndex; i < repositories.size(); i++)
       {
-        String key   = REPOSITORY + i;
-        String value = repositories.get(i + beginIndex);
+        String key   = REPOSITORY + (i - beginIndex);
+        String value = repositories.get(i);
 
         if (!isEmpty(value))
         {
