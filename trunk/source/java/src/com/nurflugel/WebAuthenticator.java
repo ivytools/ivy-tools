@@ -1,9 +1,7 @@
 package com.nurflugel;
 
 import com.nurflugel.versionfinder.UsernamePasswordDialog;
-
 import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
@@ -26,6 +24,12 @@ public class WebAuthenticator extends Authenticator
   {
     userName = "";
     password = "";
+  }
+
+  public WebAuthenticator(String userName, String password)
+  {
+    this.userName = userName;
+    this.password = password;
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -69,12 +73,12 @@ public class WebAuthenticator extends Authenticator
     return password;
   }
 
-  public void setUserName(String userName)
+  public static void setUserName(String userName)
   {
     WebAuthenticator.userName = userName;
   }
 
-  public void setPassword(String password)
+  public static void setPassword(String password)
   {
     WebAuthenticator.password = password;
   }

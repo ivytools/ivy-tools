@@ -30,6 +30,7 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/unversioned/lib/source/svnkit-src.zip!/" />
+          <root url="jar://$MODULE_DIR$/unversioned/lib/source/svnkit-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

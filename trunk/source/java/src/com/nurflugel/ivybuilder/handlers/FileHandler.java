@@ -1,7 +1,7 @@
-package com.nurflugel.ivybrowser.handlers;
+package com.nurflugel.ivybuilder.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-import com.nurflugel.ivybrowser.ui.BuilderMainFrame;
+import com.nurflugel.ivybuilder.BuilderMainFrame;
 import javax.swing.*;
 import java.io.File;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.List;
                   })
 public class FileHandler extends SwingWorker<Object, Object>
 {
+  public static final String      SVN           = ".svn";
   private List<IvyRepositoryItem> ivyPackages;
   private BuilderMainFrame        mainFrame;
   private File                    repositoryDir;
@@ -40,7 +41,7 @@ public class FileHandler extends SwingWorker<Object, Object>
 
     for (File orgDir : orgDirs)
     {
-      if (orgDir.isDirectory() && !orgDir.getName().equals(".svn"))
+      if (orgDir.isDirectory() && !orgDir.getName().equals(SVN))
       {
         findModules(orgDir);
       }
@@ -53,7 +54,7 @@ public class FileHandler extends SwingWorker<Object, Object>
 
     for (File moduleDir : moduleDirs)
     {
-      if (moduleDir.isDirectory() && !moduleDir.getName().equals(".svn"))
+      if (moduleDir.isDirectory() && !moduleDir.getName().equals(SVN))
       {
         findRevs(orgDir, moduleDir);
       }
@@ -66,7 +67,7 @@ public class FileHandler extends SwingWorker<Object, Object>
 
     for (File revDir : revDirs)
     {
-      if (revDir.isDirectory() && !revDir.getName().equals(".svn"))
+      if (revDir.isDirectory() && !revDir.getName().equals(SVN))
       {
         IvyRepositoryItem ivyPackage = new IvyRepositoryItem(orgDir.getName(), moduleDir.getName(), revDir.getName(), repositoryDir);
 
