@@ -43,8 +43,7 @@ public class Config implements UserConfig
     imageDir          = preferences.get(IMAGE_DIR, EMPTY_STRING);
     getRepositories();
     userName         = preferences.get(USER_NAME, EMPTY_STRING);
-    password         = showInputDialog("Enter the password for " + userName
-                                         + " (it's in clear text\n because if you get it wrong, it'll lock your account)");
+    password         = preferences.get(PASSWORD, EMPTY_STRING);
     trimHttpFromUrls = preferences.getBoolean(TRIM_HTTP_FROM_URLS, true);
     showTrunks       = preferences.getBoolean(SHOW_TRUNKS, true);
     showBranches     = preferences.getBoolean(SHOW_BRANCHES, false);

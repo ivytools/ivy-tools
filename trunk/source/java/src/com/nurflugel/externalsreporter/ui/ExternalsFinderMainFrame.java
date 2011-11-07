@@ -183,6 +183,10 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
       center(this);
       setVisible(true);
 
+      UsernamePasswordDialog passwordDialog = new UsernamePasswordDialog(config);
+
+      passwordDialog.setVisible(true);
+
       // sizeTableColumns(externalsTable);
       // sizeTableColumns(projectsTable);
       addStatus("Enter one or more repository to search...");
