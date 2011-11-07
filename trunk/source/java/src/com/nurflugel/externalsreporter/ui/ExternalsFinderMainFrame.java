@@ -15,6 +15,7 @@ import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
 import com.nurflugel.common.ui.Util;
+import static com.nurflugel.Os.OS_X;
 import static com.nurflugel.Os.findOs;
 import static com.nurflugel.common.ui.Util.addHelpListener;
 import static com.nurflugel.common.ui.Util.busyCursor;
@@ -30,6 +31,7 @@ import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import static com.nurflugel.externalsreporter.ui.Config.REPOSITORY;
 import static javax.swing.BoxLayout.Y_AXIS;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_AND_DIRECTORIES;
 import static javax.swing.JTable.AUTO_RESIZE_OFF;
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -201,7 +203,12 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
     String  path           = dotPath.getName();
     boolean isDotPathValid = dotPath.exists();
 
-    isDotPathValid &= path.startsWith("dot");
+    // this doesn't work on OS X... as some versions of GraphViz don't ohave "dot"
+    if (os != OS_X)
+    {
+      isDotPathValid &= path.startsWith("dot");
+    }
+
     parseRepositoriesButton.setEnabled((repositoryCheckboxPanel.getComponents().length > 0) && isDotPathValid);
     addRepositoryButton.setEnabled(isDotPathValid);
 
@@ -471,7 +478,7 @@ public class ExternalsFinderMainFrame extends JFrame implements UiMainFrame
 
     int choice = fileChooser.showDialog(this, "Select the DOT executable");
 
-    if (choice == JFileChooser.APPROVE_OPTION)
+    if (choice == APPROVE_OPTION)
     {
       File dotExecutableFile = fileChooser.getSelectedFile();
 
