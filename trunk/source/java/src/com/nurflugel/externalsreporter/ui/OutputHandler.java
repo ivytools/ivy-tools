@@ -1,16 +1,12 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.Os;
-
 import static com.nurflugel.Os.OS_X;
-
+import static org.apache.commons.io.FileUtils.writeLines;
 import com.nurflugel.ivygrapher.OutputFormat;
-
 import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -69,7 +65,7 @@ public class OutputHandler
     Runtime runtime = Runtime.getRuntime();
     long    start   = new Date().getTime();
 
-    runtime.exec(command).waitFor();
+    runtime.exec(command);
 
     long end = new Date().getTime();
 
@@ -84,6 +80,7 @@ public class OutputHandler
 
     try
     {
+      mainFrame.setStatus("Opening file " + outputFilePath);
       os.openFile(outputFilePath);
     }
     catch (Exception e)
@@ -116,7 +113,7 @@ public class OutputHandler
     writeDotFileTargetDeclarations(lines, externals, projectsList);
     writeDotFileDependencies(projectsList, lines);
     lines.add(CLOSING_LINE_DOTGRAPH);
-    FileUtils.writeLines(dotFile, lines);
+    writeLines(dotFile, lines);
 
     return dotFile;
   }

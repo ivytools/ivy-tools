@@ -6,6 +6,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
@@ -77,7 +78,10 @@ public class Config implements UserConfig
 
   public File getImageDir()
   {
-    return new File(imageDir);
+    String homeDir     = System.getProperty("user.home");
+    File   homeDirFile = new File(homeDir, ".subversionExternalsFinder");
+
+    return homeDirFile;
   }
 
   public String getLastRepository()

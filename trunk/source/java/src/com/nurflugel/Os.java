@@ -1,21 +1,15 @@
 package com.nurflugel;
 
 import com.nurflugel.common.ui.Util;
-
 import com.nurflugel.ivygrapher.OutputFormat;
 import static com.nurflugel.ivygrapher.OutputFormat.PDF;
 import static com.nurflugel.ivygrapher.OutputFormat.PNG;
-
 import org.apache.commons.lang.SystemUtils;
-
 import java.awt.Component;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +79,7 @@ public enum Os
       Class<?> aClass         = Class.forName("com.apple.eio.FileManager");
       Method   method         = aClass.getMethod("openURL", String.class);
 
+      System.out.println("Opening URL " + fileUrl);
       method.invoke(null, fileUrl);
     }
     else
