@@ -92,6 +92,7 @@ public abstract class GraphVizHandler
   public void viewFile(String outputFilePath) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException,
                                                      ClassNotFoundException
   {
+    // mainFrame.setStatus("Opening file "+outputFilePath);
     os.openFile(outputFilePath);
   }
 
