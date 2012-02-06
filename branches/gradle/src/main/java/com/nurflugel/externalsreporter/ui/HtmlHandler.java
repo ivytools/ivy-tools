@@ -1,8 +1,8 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.WebAuthenticator;
-import org.apache.commons.lang.StringUtils;
-import javax.swing.*;
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /** Class to parse the URL for files and such. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr" })
@@ -73,12 +75,13 @@ public class HtmlHandler
     catch (IOException e)
     {
       System.out.println("Error contacting server at URL " + versionUrl + " " + e.getMessage());
+      e.printStackTrace();
 
       // this gets us around a bad password, but never saves it...
       if (e.getMessage().contains("redirected"))
       {
         Authenticator.setDefault(new WebAuthenticator());
-        JOptionPane.showMessageDialog(null, "Username/password authentication failed, try again", "Nice try", JOptionPane.WARNING_MESSAGE);
+        showMessageDialog(null, "Username/password authentication failed, try again", "Nice try", WARNING_MESSAGE);
       }
     }
 
@@ -93,15 +96,15 @@ public class HtmlHandler
       return false;
     }
 
-    return (line.toUpperCase().contains("A HREF"));
+    return line.toUpperCase().contains("A HREF");
   }
 
   /** Get the link text (the first one). */
   private String getLink(String line)
   {
-    String linkText = StringUtils.substringAfter(line, "a href=\"");
+    String linkText = substringAfter(line, "a href=\"");
 
-    linkText = StringUtils.substringBefore(linkText, "\"");
+    linkText = substringBefore(linkText, "\"");
 
     return linkText;
   }

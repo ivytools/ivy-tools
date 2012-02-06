@@ -1,11 +1,17 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.Os;
+import static com.nurflugel.Os.OS_X;
+import static org.apache.commons.io.FileUtils.writeLines;
 import com.nurflugel.ivygrapher.OutputFormat;
 import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /** Output handler for making the dot file and image. */
 @SuppressWarnings({ "UseOfSystemOutOrSystemErr", "CallToPrintStackTrace" })
@@ -45,7 +51,7 @@ public class OutputHandler
 
     // this is to deal with different versions of Graphviz on OS X - if dot is in applications (old version), preface with an e for epdf.  If it's
     // in /usr/local/bin, leave as pdf
-    if ((os == Os.OS_X) && dotExecutablePath.startsWith("/Applications"))
+    if ((os == OS_X) && dotExecutablePath.startsWith("/Applications"))
     {
       outputFormatName = "e" + outputFormatName;
     }
@@ -59,7 +65,7 @@ public class OutputHandler
     Runtime runtime = Runtime.getRuntime();
     long    start   = new Date().getTime();
 
-    runtime.exec(command).waitFor();
+    runtime.exec(command);
 
     long end = new Date().getTime();
 
@@ -74,6 +80,7 @@ public class OutputHandler
 
     try
     {
+      mainFrame.setStatus("Opening file " + outputFilePath);
       os.openFile(outputFilePath);
     }
     catch (Exception e)
@@ -106,7 +113,7 @@ public class OutputHandler
     writeDotFileTargetDeclarations(lines, externals, projectsList);
     writeDotFileDependencies(projectsList, lines);
     lines.add(CLOSING_LINE_DOTGRAPH);
-    FileUtils.writeLines(dotFile, lines);
+    writeLines(dotFile, lines);
 
     return dotFile;
   }

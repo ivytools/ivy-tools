@@ -1,18 +1,18 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyPackage;
+import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.util.List;
 
 public class IvyRepositoryHtmlTableModel implements TableModel
 {
-  static final int         FILE     = 3;
-  static final int         JAVADOCS = 5;
-  static final int         MODULE   = 1;
-  static final int         ORG      = 0;
-  static final int         REVISION = 2;
-  static final int         SOURCE   = 4;
+  static final int         FILE        = 3;
+  static final int         JAVADOCS    = 5;
+  static final int         MODULE      = 1;
+  static final int         ORG         = 0;
+  static final int         REVISION    = 2;
+  static final int         SOURCE      = 4;
   private List<IvyPackage> list;
   private String[]         columnNames = { "Org", "Module", "Revision", "File", "Source?", "Javadocs?" };
 

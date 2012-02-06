@@ -73,7 +73,8 @@ public abstract class GraphVizHandler
       long end = new Date().getTime();
 
       // logger.debug("Took " + (end - start) + " milliseconds to generate graphic");
-      // viewFile(outputFilePath);
+      viewFile(outputFilePath);
+
       if (deleteDotFileOnExit)
       {
         dotFile.deleteOnExit();
@@ -91,6 +92,7 @@ public abstract class GraphVizHandler
   public void viewFile(String outputFilePath) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException,
                                                      ClassNotFoundException
   {
+    // mainFrame.setStatus("Opening file "+outputFilePath);
     os.openFile(outputFilePath);
   }
 

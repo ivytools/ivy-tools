@@ -21,9 +21,7 @@ public class ProjectBranchItem implements CheckableItem
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface CheckableItem ---------------------
-
   @Override
   public Branch getBranch()
   {
@@ -49,7 +47,6 @@ public class ProjectBranchItem implements CheckableItem
   }
 
   // ------------------------ CANONICAL METHODS ------------------------
-
   @Override
   @SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject" })
   public boolean equals(Object o)

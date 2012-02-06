@@ -363,7 +363,7 @@ public class VersionFinderUi extends JFrame
       printOutput(file, process, jarFile, jarResults);
     }
     catch (IOException e)
-    {
+    {  // todo show a dialog
       e.printStackTrace();
     }
   }

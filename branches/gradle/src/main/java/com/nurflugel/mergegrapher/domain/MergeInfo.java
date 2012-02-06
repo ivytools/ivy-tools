@@ -64,6 +64,7 @@ public class MergeInfo extends CopyInfo
     {
       revisions.add(getCopyRevision());
     }
+
     // todo merge revisions?
     return revisions;
   }

@@ -18,9 +18,7 @@ public class IvyPackageTableFormat implements TableFormat
   private String[] columnNames = { "Org", "Module", "Revision", "Source?", "Javadocs?" };
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

@@ -1,10 +1,14 @@
 package com.nurflugel.externalsreporter.ui;
 
+import com.nurflugel.WebAuthenticator;
+import static javax.swing.JOptionPane.showInputDialog;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.prefs.Preferences;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import javax.swing.JOptionPane;
 
 /** Class to handle configuration persistence for the app. */
 public class Config implements UserConfig
@@ -74,7 +78,10 @@ public class Config implements UserConfig
 
   public File getImageDir()
   {
-    return new File(imageDir);
+    String homeDir     = System.getProperty("user.home");
+    File   homeDirFile = new File(homeDir, ".subversionExternalsFinder");
+
+    return homeDirFile;
   }
 
   public String getLastRepository()
@@ -173,10 +180,10 @@ public class Config implements UserConfig
 
     if (beginIndex >= 0)
     {
-      for (int i = 0; i < repositories.size(); i++)
+      for (int i = beginIndex; i < repositories.size(); i++)
       {
-        String key   = REPOSITORY + i;
-        String value = repositories.get(i + beginIndex);
+        String key   = REPOSITORY + (i - beginIndex);
+        String value = repositories.get(i);
 
         if (!isEmpty(value))
         {

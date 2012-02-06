@@ -11,9 +11,7 @@ public class ProjectComparator implements Comparator, Serializable
   private static final long serialVersionUID = -1887579627945133474L;
 
   // ------------------------ INTERFACE METHODS ------------------------
-
   // --------------------- Interface Comparator ---------------------
-
   @Override
   public int compare(Object o1, Object o2)
   {

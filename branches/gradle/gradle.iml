@@ -14,21 +14,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="groovy-1.7.6" level="application" />
+    <orderEntry type="library" name="gradle" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/javax.help/jhall/jars/jhall-2.0.6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/javax.help/jhall/sources/jhall-2.0.6-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/ca.odell.glazedlists/jdk_1.5/jars/glazedlists-1.8.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.jdom/jdom/1.0/jar/jdom-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -37,133 +28,111 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.jdom/jdom/jars/jdom-1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/56865c09425cc6ecda8606d7e6035ceb/net.java.dev.glazedlists/glazedlists_java15/1.8.0/jar/glazedlists_java15-1.8.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.jdom/jdom/sources/jdom-1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/56865c09425cc6ecda8606d7e6035ceb/net.java.dev.glazedlists/glazedlists_java15/1.8.0/source/glazedlists_java15-1.8.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.codehaus.xstream/xstream/jars/xstream-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.codehaus.xstream/xstream/1.2/jar/xstream-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.codehaus.xstream/xstream/sources/xstream-1.2-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.tmate/svnkit/jars/svnkit-1.3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.tmate/svnkit/1.3.0/jar/svnkit-1.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.tmate/svnkit/sources/svnkit-1.3.0-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/w3c/jtidy/jars/jtidy-04aug2000r7-dev.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/w3c/jtidy/04aug2000r7-dev/jar/jtidy-04aug2000r7-dev.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/w3c/jtidy/sources/jtidy-04aug2000r7-dev-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.ryangrier.ant/version_tool/jars/version_tool-1.1.4_fixed.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/com.ryangrier.ant/version_tool/1.1.4_fixed/jar/version_tool-1.1.4_fixed.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.ryangrier.ant/version_tool/sources/version_tool-1.1.4_fixed-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.nurflugel/buildtasks/jars/buildtasks-1.0-SNAPSHOT.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.apache/commons-lang/2.4/jar/commons-lang-2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.nurflugel/buildtasks/sources/buildtasks-1.0-SNAPSHOT-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.apache/commons-lang/jars/commons-lang-2.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.apache/commons-io/1.4/jar/commons-io-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.apache/commons-lang/sources/commons-lang-2.4-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.apache/commons-io/jars/commons-io-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/com.intellij/forms_rt/9.0.0/jar/forms_rt-9.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.apache/commons-io/sources/commons-io-1.4-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.intellij/forms_rt/jars/forms_rt-9.0.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/com.intellij/javac2/9.0.0/jar/javac2-9.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.intellij/forms_rt/sources/forms_rt-9.0.0-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.intellij/javac2/jars/javac2-9.0.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.testng/testng/5.8-jdk1.5/jar/testng-5.8-jdk1.5.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/com.intellij/javac2/sources/javac2-9.0.0-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.testng/testng/jars/testng-5.8-jdk1.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/org.objectweb.asm/asm/3.1/jar/asm-3.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.testng/testng/sources/testng-5.8-jdk1.5-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.objectweb.asm/asm/jars/asm-3.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-7/artifacts/82edb36bbf122e3ff219f310c59874ca/javax.help/jhall/2.0.6/jar/jhall-2.0.6.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.gradle/cache/org.objectweb.asm/asm/sources/asm-3.1-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

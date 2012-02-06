@@ -1,41 +1,58 @@
 package com.nurflugel.ivybrowser.ui;
 
-import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
-import java.io.File;
-import java.util.*;
-import java.util.List;
-import java.util.prefs.Preferences;
 import static com.nurflugel.common.ui.Util.centerApp;
+import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.LayoutManager;
 import static java.awt.Toolkit.getDefaultToolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.prefs.Preferences;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter", "MethodParameterNamingConvention" })
 public class NewComponentDialog extends JDialog
 {
   /** Use serialVersionUID for interoperability. */
-  private static final long       serialVersionUID                 = 2069426482124193511L;
-  private JPanel                  contentPane;
-  private JButton                 buttonOK;
-  private JButton                 buttonCancel;
-  private JTextField              orgField;
-  private JTextField              moduleField;
-  private JTextField              revField;
-  private JButton                 addFilesToComponentButton;
-  private JButton                 addDependenciesToComponentButton;
-  private JPanel                  dependenciesPanel;
-  private JPanel                  filesPanel;
-  private List<IvyRepositoryItem> ivyPackages                      = new ArrayList<IvyRepositoryItem>();
-  private File                    repositoryDir;
-  private Preferences             preferences;
-  private Map<String, IvyFileCheckbox> filesMap                    = new TreeMap<String, IvyFileCheckbox>();
-  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap   = new TreeMap<String, IvyRepositoryItemCheckbox>();
+  private static final long                      serialVersionUID                 = 2069426482124193511L;
+  private JPanel                                 contentPane;
+  private JButton                                buttonOK;
+  private JButton                                buttonCancel;
+  private JTextField                             orgField;
+  private JTextField                             moduleField;
+  private JTextField                             revField;
+  private JButton                                addFilesToComponentButton;
+  private JButton                                addDependenciesToComponentButton;
+  private JPanel                                 dependenciesPanel;
+  private JPanel                                 filesPanel;
+  private List<IvyRepositoryItem>                ivyPackages                      = new ArrayList<IvyRepositoryItem>();
+  private File                                   repositoryDir;
+  private Preferences                            preferences;
+  private Map<String, IvyFileCheckbox>           filesMap                         = new TreeMap<String, IvyFileCheckbox>();
+  private Map<String, IvyRepositoryItemCheckbox> dependenciesMap                  = new TreeMap<String, IvyRepositoryItemCheckbox>();
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public NewComponentDialog(final List<IvyRepositoryItem> ivyPackages, File repositoryDir, Preferences preferences)

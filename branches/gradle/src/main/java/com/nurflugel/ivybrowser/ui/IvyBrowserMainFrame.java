@@ -11,43 +11,52 @@ import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.common.ui.Util;
-import com.nurflugel.common.ui.Version;
+import static com.nurflugel.common.ui.Util.addHelpListener;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Version.VERSION;
+import static com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame.sizeTableColumns;
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
+import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
+import static java.util.Collections.synchronizedMap;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.SOUTH;
+import java.awt.Component;
+import java.awt.Cursor;
+import static java.awt.Cursor.getPredefinedCursor;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.Authenticator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.*;
+import static javax.swing.BoxLayout.Y_AXIS;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.net.Authenticator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.prefs.Preferences;
-import static com.nurflugel.common.ui.Util.addHelpListener;
-import static com.nurflugel.common.ui.Util.centerApp;
-import static com.nurflugel.common.ui.Util.setLookAndFeel;
-import static com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame.sizeTableColumns;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.Cursor.getPredefinedCursor;
-import static javax.swing.BoxLayout.Y_AXIS;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /** Main UI frame for the Ivy Browser. */
-@SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass" })
+@SuppressWarnings({ "MethodParameterNamingConvention", "CallToPrintStackTrace", "MethodOnlyUsedFromInnerClass", "unchecked" })
 public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 {
   public static final String                                IVY_REPOSITORY      = "IvyRepository";
   private static final long                                 serialVersionUID    = 8982188831570838035L;
-  private static final String                               PARSE_ON_OPEN       = "parseOnOpen";
-  private static final String                               SAVE_DIR            = "saveDir";
-  private Cursor                                            busyCursor          = getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor                                            normalCursor        = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+  private Cursor                                            busyCursor          = getPredefinedCursor(WAIT_CURSOR);
+  private Cursor                                            normalCursor        = getPredefinedCursor(DEFAULT_CURSOR);
   private JButton                                           specifyButton       = new JButton("Specify Repository");
   private JButton                                           reparseButton       = new JButton("Re-parse Repository");
   private JButton                                           quitButton          = new JButton("Quit");
@@ -57,19 +66,20 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   private JCheckBox                                         parseOnOpenCheckbox = new JCheckBox("Parse Repository on Open", false);
   private JTable                                            resultsTable        = new JTable();
   private JTextField                                        libraryField        = new JTextField();
-  private Preferences                                       preferences         = Preferences.userNodeForPackage(IvyBrowserMainFrame.class);
+  private AppPreferences                                    preferences         = new AppPreferences(getClass());
   private EventList<IvyPackage>                             repositoryList      = new BasicEventList<IvyPackage>();
   private JScrollPane                                       scrollPane;
   private JPanel                                            holdingPanel;
   private String                                            ivyRepositoryPath;
   private BaseWebIvyRepositoryBrowserHandler                parsingHandler;
-  private Map<String, Map<String, Map<String, IvyPackage>>> packageMap          = Collections.synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
+  private Map<String, Map<String, Map<String, IvyPackage>>> packageMap          = synchronizedMap(new HashMap<String, Map<String, Map<String, IvyPackage>>>());
   private InfiniteProgressPanel                             progressPanel       = new InfiniteProgressPanel("Accessing the Ivy repository, please be patient - click to cancel",
                                                                                                             this);
 
   // --------------------------- CONSTRUCTORS ---------------------------
   public IvyBrowserMainFrame()
   {
+    ivyRepositoryPath = preferences.getDefaultRepository();
     initializeComponents();
     pack();
     setSize(800, 600);
@@ -78,10 +88,10 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     libraryField.setEnabled(false);
     setVisible(true);
 
-    boolean parseOnOpen = preferences.getBoolean(PARSE_ON_OPEN, false);
+    boolean parseOnOpen = preferences.getParseOnOpen();
 
-    // parseOnOpen = false;
     parseOnOpenCheckbox.setSelected(parseOnOpen);
+    getSavedResults();
 
     if (parseOnOpen)
     {
@@ -96,7 +106,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     setGlassPane(progressPanel);
     setContentPane(mainPanel);
     libraryField.setPreferredSize(new Dimension(200, 25));
-    setTitle("Ivy Repository Browser v. " + Version.VERSION);
+    setAppTitle();
 
     JPanel textPanel   = new JPanel();
     JPanel buttonPanel = new JPanel();
@@ -121,7 +131,13 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     mainPanel.add(statusLabel, SOUTH);
     addListeners();
     setupTable();
-    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+
+    // setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
+  }
+
+  private void setAppTitle()
+  {
+    setTitle("Ivy Repository Browser v. " + VERSION + " --> " + ivyRepositoryPath);
   }
 
   private void addListeners()
@@ -144,7 +160,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
       {
         public void actionPerformed(ActionEvent e)
         {
-          specifyRepository(preferences);
+          specifyRepository();
         }
       });
     resultsTable.addMouseListener(new MouseAdapter()
@@ -177,15 +193,16 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
         {
           boolean isSelected = parseOnOpenCheckbox.isSelected();
 
-          preferences.putBoolean(PARSE_ON_OPEN, isSelected);
+          preferences.saveParseOnOpen(isSelected);
         }
       });
     addHelpListener("ivyBrowserHelp.hs", helpButton, this);
   }
 
-  public void specifyRepository(Preferences appPreferences)
+  @SuppressWarnings({ "LocalVariableHidesMemberVariable" })
+  public void specifyRepository()
   {
-    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(appPreferences, "Select Ivy Repository", IVY_REPOSITORY);
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(preferences, "Select Ivy Repository", IVY_REPOSITORY);
 
     dialog.setVisible(true);
 
@@ -193,10 +210,19 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     {
       String ivyRepositoryPath = dialog.getRepositoryLocation();
 
-      if (!isEmpty(ivyRepositoryPath) && !ivyRepositoryPath.equals(this.ivyRepositoryPath))
+      if (!isEmpty(ivyRepositoryPath))
       {
         this.ivyRepositoryPath = ivyRepositoryPath;
-        reparse();
+        setAppTitle();
+
+        if (doSavedResultsExistForRepository())
+        {
+          getSavedResults();
+        }
+        else
+        {
+          reparse();
+        }
       }
     }
   }
@@ -208,19 +234,33 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
     if (row > -1)
     {
-      setCursor(Cursor.WAIT_CURSOR);
+      setCursor(WAIT_CURSOR);
 
       EventTableModel tableModel = (EventTableModel) resultsTable.getModel();
       IvyPackage      ivyFile    = (IvyPackage) tableModel.getElementAt(row);
-      IvyLineDialog   dialog     = new IvyLineDialog(ivyFile, ivyRepositoryPath, this);
 
-      setCursor(Cursor.DEFAULT_CURSOR);
-      dialog.setVisible(true);
+      if (ivyFile == null)
+      {
+        showMissingIvyVersionMessage();
+      }
+      else
+      {
+        IvyLineDialog dialog = new IvyLineDialog(ivyFile, ivyRepositoryPath, this, preferences);
+
+        dialog.setVisible(true);
+      }
+
+      setCursor(DEFAULT_CURSOR);
     }
     else
     {
       System.out.println("No row selected...");
     }
+  }
+
+  void showMissingIvyVersionMessage()
+  {
+    showMessageDialog(this, "Missing entry for Ivy file... the Ivy repository doesn't have this version", "Bad mojo", WARNING_MESSAGE);
   }
 
   private void setupTable()
@@ -236,29 +276,84 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     TableComparatorChooser<IvyPackage> tableSorter = new TableComparatorChooser<IvyPackage>(resultsTable, sortedPackages, true);
   }
 
+  private boolean doSavedResultsExistForRepository()
+  {
+    return (DataSerializer.getDataFile(ivyRepositoryPath)).exists();
+  }
+
+  private void getSavedResults()
+  {
+    if (doSavedResultsExistForRepository())
+    {
+      setStatusLabel("Loading saved results...");
+      startProgressPanel();
+
+      EventList<IvyPackage> emptyList      = new BasicEventList<IvyPackage>();
+      DataSerializer        dataSerializer = new DataSerializer(ivyRepositoryPath, emptyList, packageMap);
+
+      dataSerializer.retrieveFromXml();
+
+      List<IvyPackage>                                  savedPackages   = dataSerializer.getIvyPackages();
+      Map<String, Map<String, Map<String, IvyPackage>>> savedPackageMap = dataSerializer.getPackageMap();
+
+      if (savedPackageMap != null)
+      {
+        packageMap.putAll(savedPackageMap);
+      }
+
+      repositoryList.addAll(savedPackages);
+      stopProgressPanel();
+    }
+  }
+
+  @Override
+  public void setStatusLabel(String text)
+  {
+    statusLabel.setText(text);
+    progressPanel.setText(text);
+  }
+
+  public void startProgressPanel()
+  {
+    progressPanel.start();
+    setBusyCursor();
+  }
+
+  @Override
+  public void stopProgressPanel()
+  {
+    progressPanel.stop();
+    setNormalCursor();
+  }
+
   private void reparse()
   {
     setBusyCursor();
     holdingPanel.remove(scrollPane);
     progressPanel.start();
-    ivyRepositoryPath = preferences.get(IVY_REPOSITORY + 0, "");
 
     if (isEmpty(ivyRepositoryPath))
     {
-      specifyRepository(preferences);
+      specifyRepository();
     }
 
     if (!isEmpty(ivyRepositoryPath))
     {
       repositoryList.clear();
       packageMap.clear();
-      parsingHandler = HandlerFactory.getIvyRepositoryHandler(this, ivyRepositoryPath, repositoryList, packageMap);
+      parsingHandler = HandlerFactory.getIvyRepositoryHandler(this, ivyRepositoryPath, repositoryList, packageMap, preferences);
       parsingHandler.execute();
       holdingPanel.add(scrollPane);
     }
   }
 
+  @Override
+  public void setBusyCursor()
+  {
+    setCursor(busyCursor);
+  }
   // ------------------------ INTERFACE METHODS ------------------------
+
   // --------------------- Interface UiMainFrame ---------------------
   // tod implement these
   @Override
@@ -292,16 +387,10 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   }
 
   @Override
-  public void setBusyCursor()
-  {
-    setCursor(busyCursor);
-  }
-
-  @Override
   public void setNormalCursor()
   {
     setCursor(normalCursor);
-    statusLabel.setText("");
+    setStatusLabel("");
     adjustColumnWidths();
     libraryField.setEnabled(true);
     libraryField.requestFocus();
@@ -326,22 +415,17 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   }
 
   @Override
-  public void setStatusLabel(String text)
-  {
-    statusLabel.setText(text);
-    progressPanel.setText(text);
-  }
-
-  @Override
-  public void stopProgressPanel()
-  {
-    progressPanel.stop();
-  }
-
-  @Override
   public void resizeTableColumns()
   {
     sizeTableColumns(resultsTable);
+  }
+  // --------------------------------------------------------------------
+
+  // --------------------------- main() method ---------------------------
+  @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
+  public static void main(String[] args)
+  {
+    new IvyBrowserMainFrame();
   }
 
   // -------------------------- OTHER METHODS --------------------------
@@ -369,25 +453,9 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
     }
   }
 
+  // --------------------- GETTER / SETTER METHODS ---------------------
   public Map<String, Map<String, Map<String, IvyPackage>>> getPackageMap()
   {
     return packageMap;
-  }
-
-  public String getPreferredSaveDir()
-  {
-    return preferences.get(SAVE_DIR, null);
-  }
-
-  public void setPreferredSaveDir(String dir)
-  {
-    preferences.put(SAVE_DIR, dir);
-  }
-
-  // --------------------------- main() method ---------------------------
-  @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
-  public static void main(String[] args)
-  {
-    new IvyBrowserMainFrame();
   }
 }

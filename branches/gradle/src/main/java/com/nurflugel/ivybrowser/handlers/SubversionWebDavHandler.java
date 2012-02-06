@@ -2,6 +2,8 @@ package com.nurflugel.ivybrowser.handlers;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
+import com.nurflugel.ivybrowser.AppPreferences;
+import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.SubversionWebDavHandlerTask;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
@@ -11,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,8 +23,8 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
-                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+  public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages,
+                                 Map<String, Map<String, Map<String, IvyPackage>>> packageMap, AppPreferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
   }
@@ -99,6 +102,10 @@ public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
       ((IvyTrackerMainFrame) mainFrame).setIvyDone(true);
     }
 
+    // serialize results
+    DataSerializer dataSerializer = new DataSerializer(ivyRepositoryPath, ivyPackages, packageMap);
+
+    dataSerializer.saveToXml();
     mainFrame.stopProgressPanel();
   }
 

@@ -2,16 +2,6 @@
 <project version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
-    <buildFile url="file://$PROJECT_DIR$/build/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <maximumStackSize value="32" />
-      <properties>
-        <property name="env.USERPROFILE" value="$PROJECT_DIR$/../../../Nike Subversion Projects/userprofile" />
-      </properties>
-    </buildFile>
   </component>
   <component name="BSFConsole">
     <option name="searchOptions">
@@ -41,6 +31,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="jsp">
           <option name="INDENT_SIZE" value="4" />
@@ -50,6 +41,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="xml">
           <option name="INDENT_SIZE" value="4" />
@@ -59,6 +51,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
@@ -527,6 +520,9 @@
         <inspection_tool class="BigDecimalEquals" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="BlockStatementJS" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="BooleanMethodNameMustStartWithQuestion" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreBooleanMethods" value="false" />
+          <option name="ignoreInAnnotationInterface" value="true" />
+          <option name="onlyWarnOnBaseMethods" value="true" />
           <option name="questionString" value="is,can,has,should,could,will,shall,check,contains,equals,add,put,remove,startsWith,endsWith" />
         </inspection_tool>
         <inspection_tool class="BusyWait" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -566,7 +562,7 @@
         </inspection_tool>
         <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ClassWithMultipleLoggers" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="loggerClassName" value="java.util.logging.Logger" />
+          <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger" />
         </inspection_tool>
         <inspection_tool class="CloneCallsConstructors" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="CloneInNonCloneableClass" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -703,9 +699,12 @@
         </inspection_tool>
         <inspection_tool class="FunctionWithMultipleLoopsJS" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="FunctionWithMultipleReturnPointsJS" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="HibernateResource" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="HibernateResource" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="insideTryAllowed" value="false" />
+        </inspection_tool>
         <inspection_tool class="IOResource" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoredTypesString" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringBufferInputStream,java.io.CharArrayWriter,java.io.CharArrayReader,java.io.StringWriter,java.io.StringReader" />
+          <option name="insideTryAllowed" value="false" />
         </inspection_tool>
         <inspection_tool class="IfStatementWithIdenticalBranches" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="IfStatementWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -729,7 +728,9 @@
           <option name="m_maxLength" value="64" />
         </inspection_tool>
         <inspection_tool class="InstanceofCatchParameter" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="InstanceofChain" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="InstanceofChain" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreInstanceofOnLibraryClasses" value="false" />
+        </inspection_tool>
         <inspection_tool class="InstanceofIncompatibleInterface" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="InstanceofThis" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="InstantiationOfUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -740,8 +741,12 @@
         </inspection_tool>
         <inspection_tool class="IteratorHasNextCallsIteratorNext" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="IteratorNextDoesNotThrowNoSuchElementException" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="JDBCResource" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="JNDIResource" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="JDBCResource" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="insideTryAllowed" value="false" />
+        </inspection_tool>
+        <inspection_tool class="JNDIResource" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="insideTryAllowed" value="false" />
+        </inspection_tool>
         <inspection_tool class="JUnitAbstractTestClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_regex" value="[A-Z][A-Za-z]*TestCase" />
           <option name="m_minLength" value="12" />
@@ -780,6 +785,7 @@
           <option name="IGNORE_DEPRECATED" value="false" />
           <option name="IGNORE_JAVADOC_PERIOD" value="true" />
           <option name="IGNORE_DUPLICATED_THROWS" value="false" />
+          <option name="IGNORE_POINT_TO_ITSELF" value="false" />
           <option name="myAdditionalJavadocTags" value="" />
         </inspection_tool>
         <inspection_tool class="JavaLangImport" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -815,6 +821,8 @@
         <inspection_tool class="MethodNamesDifferOnlyByCase" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreMethodsAccessedFromAnonymousClass" value="true" />
+          <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+          <option name="onlyReportStaticMethods" value="false" />
         </inspection_tool>
         <inspection_tool class="MethodOverridesPrivateMethod" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -861,6 +869,8 @@
         <inspection_tool class="NonBlockStatementBodyJS" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="NonBooleanMethodNameMayNotStartWithQuestion" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="questionString" value="is,can,has,should,could,will,shall,check,contains,equals,startsWith,endsWith" />
+          <option name="ignoreBooleanMethods" value="false" />
+          <option name="onlyWarnOnBaseMethods" value="true" />
         </inspection_tool>
         <inspection_tool class="NonCommentSourceStatements" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_limit" value="30" />
@@ -993,7 +1003,9 @@
         <inspection_tool class="SetupIsPublicVoidNoArg" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="SimplifiableJUnitAssertion" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="SleepWhileHoldingLock" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="SocketResource" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="SocketResource" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="insideTryAllowed" value="false" />
+        </inspection_tool>
         <inspection_tool class="StandardVariableNames" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="StatementsPerFunctionJS" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_limit" value="30" />
@@ -1055,7 +1067,10 @@
           <option name="ignoreSupers" value="false" />
         </inspection_tool>
         <inspection_tool class="TestMethodIsPublicVoidNoArg" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="TestMethodWithoutAssertion" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="TestMethodWithoutAssertion" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="assertionMethods" value="org.junit.Assert,assert.*|fail.*,junit.framework.Assert,assert.*|fail.*,org.mockito.Mockito,verify.*" />
+          <option name="assertKeywordIsAssertion" value="false" />
+        </inspection_tool>
         <inspection_tool class="TextLabelInSwitchStatement" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="TextLabelInSwitchStatementJS" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ThreadDeathRethrown" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -1095,7 +1110,9 @@
           <option name="m_ignoreStaticMethodCalls" value="false" />
           <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
         </inspection_tool>
-        <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreSwitchBranches" value="false" />
+        </inspection_tool>
         <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UnnecessaryDefault" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UnnecessaryEnumModifier" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -1119,7 +1136,10 @@
         <inspection_tool class="UnusedProperty" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="ERROR" enabled_by_default="true" />
-        <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreSameClass" value="false" />
+          <option name="ignoreEquals" value="false" />
+        </inspection_tool>
         <inspection_tool class="UseOfJDBCDriverClass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UseOfProcessBuilder" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="UseOfPropertiesAsHashtable" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -1340,6 +1360,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IvyBrowser.iml" filepath="$PROJECT_DIR$/IvyBrowser.iml" />
     </modules>
+  </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/unversioned/classes" />

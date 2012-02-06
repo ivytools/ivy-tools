@@ -1,13 +1,13 @@
 package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.common.ui.Util;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /** Representation of an external and the project that uses it. */
 public class External implements Comparable, Selectable
 {
-  private String url;
+  private String  url;
   private boolean selected = true;
 
   public External(String url, boolean selected)

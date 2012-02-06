@@ -2,6 +2,7 @@ package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.EventList;
 import com.nurflugel.common.ui.UiMainFrame;
+import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.handlers.HtmlHandler;
@@ -29,18 +30,19 @@ public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
   public static BaseWebIvyRepositoryBrowserHandler getIvyRepositoryHandler(UiMainFrame ivyBrowserMainFrame, String ivyRepositoryPath,
-                                                                           EventList<IvyPackage> repositoryList,
-                                                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
+                                                                           List<IvyPackage> repositoryList,
+                                                                           Map<String, Map<String, Map<String, IvyPackage>>> packageMap,
+                                                                           AppPreferences preferences)
   {
     boolean isSubversionRepository = isSubversionRepository(ivyRepositoryPath);
 
     if (isSubversionRepository)
     {
-      return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList, packageMap);
+      return new SubversionWebDavHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList, packageMap, preferences);
     }
     else
     {
-      return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList, packageMap);
+      return new HtmlHandler(ivyBrowserMainFrame, ivyRepositoryPath, repositoryList, packageMap, preferences);
     }
   }
 

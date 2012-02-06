@@ -1,6 +1,10 @@
 package com.nurflugel.ivytracker;
 
-import ca.odell.glazedlists.*;
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.UniqueList;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
@@ -9,33 +13,53 @@ import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
 import com.nurflugel.common.ui.UiMainFrame;
-import com.nurflugel.common.ui.Version;
+import static com.nurflugel.common.ui.Util.centerApp;
+import static com.nurflugel.common.ui.Util.setLookAndFeel;
+import static com.nurflugel.common.ui.Version.VERSION;
+import static com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame.sizeTableColumns;
 import com.nurflugel.ivybrowser.InfiniteProgressPanel;
 import com.nurflugel.ivybrowser.domain.IvyKey;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import com.nurflugel.ivybrowser.ui.CheckboxCellRenderer;
-import com.nurflugel.ivybrowser.ui.HandlerFactory;
+import static com.nurflugel.ivybrowser.ui.HandlerFactory.getIvyFileFinderHandler;
+import static com.nurflugel.ivybrowser.ui.HandlerFactory.getIvyRepositoryHandler;
+import static com.nurflugel.ivytracker.Config.LAST_IVY_REPOSITORY;
+import static com.nurflugel.ivytracker.Config.LAST_SUBVERSION_REPOSITORY;
 import com.nurflugel.ivytracker.domain.*;
 import com.nurflugel.ivytracker.handlers.HtmlIvyHandler;
 import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.Authenticator;
-import java.util.*;
-import java.util.List;
-import static com.nurflugel.common.ui.Util.centerApp;
-import static com.nurflugel.common.ui.Util.setLookAndFeel;
-import static com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame.sizeTableColumns;
-import static com.nurflugel.ivytracker.Config.LAST_IVY_REPOSITORY;
-import static com.nurflugel.ivytracker.Config.LAST_SUBVERSION_REPOSITORY;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import java.awt.Cursor;
 import static java.awt.Cursor.getPredefinedCursor;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.net.Authenticator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
@@ -46,70 +70,72 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
                   })
 public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 {
-  private static final long     serialVersionUID = 8982188831570838035L;
-  private static final String   NEW_LINE         = "\n";
-  private static final String   TAB              = "\t";
-  private InfiniteProgressPanel progressPanel    = new InfiniteProgressPanel("Accessing the repositories, please be patient", this);
-  private boolean               useTestData      = false;  // if true, reads canned data in from a file for
-                                                           // fast testing
-  private boolean               saveTestData     = false;  // if true, reads canned data in from a file for
-                                                           // fast testing
-  private boolean               isTest           = false;  // if true, reads canned data in from a file for
-                                                           // fast testing
-  private Cursor                busyCursor       = getPredefinedCursor(Cursor.WAIT_CURSOR);
-  private Cursor                normalCursor     = getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-  private JButton               quitButton;
-  private JLabel                statusLabel;
-  private EventList<IvyPackage> ivyRepositoryList = new UniqueList<IvyPackage>(new BasicEventList<IvyPackage>());
-  private JPanel                mainPanel;
-  private JTextField            ivyFilterField;
-  private JTable                ivyResultsTable;
-  private JButton               specifySubversionRepositoryButton;
-  private JButton               specifyIvyRepositoryButton;
-  private JButton               showProjectsUsingSelectedButton;
-  private JButton               showIvyModulesUsedButton;
-  private JButton               showUnusedIvyModulesButton;
-  private JTable                projectResultsTable;
-  private JTextField            projectFilterField;
-  private JButton               parseRepositoriesButton;
-  private JPanel                ivyRepositoryPanel;
-  private JPanel                projectRepositoryPanel;
-  private JButton               clearProjectFilterButton;
-  private JButton               clearIvyFilterButton;
-  private JPanel                projectRepositoryHoldingPanel;
-  private JPanel                ivyRepositoryHoldingPanel;
-  private JCheckBox             projectSelectUnselectAllCheckBox;
-  private JCheckBox             ivySelectUnselectAllCheckBox;
-  private JCheckBox             ivyShowOnlySelectedItemsCheckBox;
-  private JCheckBox             projectsShowOnlySelectedProjectsCheckBox;
-  private JCheckBox             showTrunksCheckBox;
-  private JCheckBox             showBranchesCheckBox;
-  private JCheckBox             showTagsCheckBox;
-  private JButton               analyzeSelectedItemsForButton;
-  private IvyFileComparator     ivyFileComparator;
-  private TextComponentMatcherEditor ivyComponentMatcherEditor;
-  private IvyFileTableFormat    ivyFileTableFormat;
-  private ProjectFileTableFormat projectsTableFormat;
-  private Matcher<IvyPackage>   ivyCountValueMatcherEditor;
-  private Matcher<Project>      projectCountValueMatcherEditor;
-
-  // private Map<Project, IvyPackage>          ivyFilesMap=new HashMap<Project, IvyPackage>();
-  private EventList<Project> projectUrls                           = new BasicEventList<Project>();
-  private Set<String>        missingIvyFiles                       = new HashSet<String>();
-  private final Map<Project, List<IvyPackage>> projectIvyFilesMap  = new TreeMap<Project, List<IvyPackage>>();
-  private ProjectComparator  projectFileComparator;
-  private TextComponentMatcherEditor projectComponentMatcherEditor;
-  private Config             config                                = new Config();
-  private static final String SUBVERSION_REPOSITORY                = "Subversion Repository: ";
-  private static final String IVY_REPOSITORY                       = "Ivy Repository: ";
-  private boolean            isProjectsDone;  // false as long as the project parsing is running
-  private boolean            isIvyDone;  // false as long as ivy parsing is running
+  private static final long                    serialVersionUID                  = 8982188831570838035L;
+  private static final String                  NEW_LINE                          = "\n";
+  private static final String                  TAB                               = "\t";
+  private InfiniteProgressPanel                progressPanel                     = new InfiniteProgressPanel("Accessing the repositories, please be patient",
+                                                                                                             this);
+  private Cursor                               busyCursor                        = getPredefinedCursor(WAIT_CURSOR);
+  private Cursor                               normalCursor                      = getPredefinedCursor(DEFAULT_CURSOR);
+  private JButton                              quitButton;
+  private JLabel                               statusLabel;
+  private EventList<IvyPackage>                ivyRepositoryList                 = new UniqueList<IvyPackage>(new BasicEventList<IvyPackage>());
+  private JPanel                               mainPanel;
+  private JTextField                           ivyFilterField;
+  private JTable                               ivyResultsTable;
+  private JButton                              specifySubversionRepositoryButton;
+  private JButton                              specifyIvyRepositoryButton;
+  private JButton                              showProjectsUsingSelectedButton;
+  private JButton                              showIvyModulesUsedButton;
+  private JButton                              showUnusedIvyModulesButton;
+  private JTable                               projectResultsTable;
+  private JTextField                           projectFilterField;
+  private JButton                              parseRepositoriesButton;
+  private JPanel                               ivyRepositoryPanel;
+  private JPanel                               projectRepositoryPanel;
+  private JButton                              clearProjectFilterButton;
+  private JButton                              clearIvyFilterButton;
+  private JPanel                               projectRepositoryHoldingPanel;
+  private JPanel                               ivyRepositoryHoldingPanel;
+  private JCheckBox                            projectSelectUnselectAllCheckBox;
+  private JCheckBox                            ivySelectUnselectAllCheckBox;
+  private JCheckBox                            showOnlySelectedIvyItemsCheckBox;
+  private JCheckBox                            showOnlySelectedProjectsCheckBox;
+  private JCheckBox                            showTrunksCheckBox;
+  private JCheckBox                            showBranchesCheckBox;
+  private JCheckBox                            showTagsCheckBox;
+  private JButton                              analyzeSelectedItemsForButton;
+  private JCheckBox                            recurseCheckBox;
+  private JButton                              saveTestDataButton;
+  private JButton                              loadTestDataButton;
+  private JSplitPane                           splitPane;
+  private IvyFileComparator                    ivyFileComparator;
+  private TextComponentMatcherEditor           ivyComponentMatcherEditor;
+  private IvyFileTableFormat                   ivyFileTableFormat;
+  private ProjectFileTableFormat               projectsTableFormat;
+  private Matcher<IvyPackage>                  ivyCountValueMatcherEditor;
+  private Matcher<Project>                     projectCountValueMatcherEditor;
+  private EventList<Project>                   projectUrls                       = new BasicEventList<Project>();
+  private Set<String>                          missingIvyFiles                   = new HashSet<String>();
+  private final Map<Project, List<IvyPackage>> projectIvyFilesMap                = new TreeMap<Project, List<IvyPackage>>();
+  private ProjectComparator                    projectFileComparator;
+  private TextComponentMatcherEditor           projectComponentMatcherEditor;
+  private Config                               config                            = new Config();
+  private static final String                  SUBVERSION_REPOSITORY             = "Subversion Repository: ";
+  private static final String                  IVY_REPOSITORY                    = "Ivy Repository: ";
+  private boolean                              isProjectsDone;  // false as long as the project parsing is
+                                                                // running
+  private boolean                              isIvyDone;  // false as long as ivy parsing is running
+  public static final boolean                  useSingleThread                   = false;
+  private EventTableModel<Project>             projectTableModel;
+  private EventTableModel<IvyPackage>          ivyPackageEventTableModel;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   @SuppressWarnings({ "unchecked" })
   public IvyTrackerMainFrame()
   {
-    Authenticator.setDefault(new WebAuthenticator());
+    WebAuthenticator webAuthenticator = new WebAuthenticator();
+
     initializeComponents();
     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", this);
     ivyFileComparator             = new IvyFileComparator();
@@ -118,13 +144,28 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     projectComponentMatcherEditor = new TextComponentMatcherEditor(projectFilterField, new ProjectFileFilterator());
     ivyFileTableFormat            = new IvyFileTableFormat();
     projectsTableFormat           = new ProjectFileTableFormat();
-    Authenticator.setDefault(new WebAuthenticator(config));
+
+    // webAuthenticator.showDialog();
+    Authenticator.setDefault(webAuthenticator);
     pack();
-    setSize(1000, 800);
+    setSize(1000, 1000);
     centerApp(this);
     ivyFilterField.setEnabled(false);
     setVisible(true);
     setupTables();
+    splitPane.addPropertyChangeListener(new PropertyChangeListener()
+      {
+        @Override
+        public void propertyChange(PropertyChangeEvent propertyChangeEvent)
+        {
+          // System.out.println("propertyChangeEvent = " + propertyChangeEvent);
+          // resizeTableColumns();
+          // splitPane.layout();
+        }
+      });
+
+    // todo remove
+    readTestData();
   }
 
   private void toggleAllIvyItems(boolean selected, EventList<IvyPackage> ivyRepositoryList)
@@ -132,10 +173,10 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     for (IvyPackage ivyPackage : ivyRepositoryList)
     {
       ivyPackage.setIncluded(selected);
-      ivyRepositoryList.getReadWriteLock().writeLock().lock();
-      ivyRepositoryList.add(ivyPackage);
-      ivyRepositoryList.getReadWriteLock().writeLock().unlock();
     }
+    // hack to make selection show
+
+    ivyResultsTable.repaint();
   }
 
   private void toggleAllProjectItems(boolean selected, EventList<Project> projectUrls)
@@ -143,10 +184,10 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     for (Project projectUrl : projectUrls)
     {
       projectUrl.setIncluded(selected);
-      projectUrls.getReadWriteLock().writeLock().lock();
-      projectUrls.add(projectUrl);
-      projectUrls.getReadWriteLock().writeLock().unlock();
     }
+    // hack to make selection show
+
+    projectResultsTable.repaint();
   }
 
   @SuppressWarnings({ "unchecked" })
@@ -154,65 +195,26 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   {
     try
     {
-      SortedList<IvyPackage>            sortedPackages            = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
-      FilterList<IvyPackage>            filteredPackages          = new FilterList<IvyPackage>(sortedPackages, ivyComponentMatcherEditor);
-      FilterList<IvyPackage>            filteredPackages2         = new FilterList<IvyPackage>(filteredPackages, ivyCountValueMatcherEditor);
-      final EventTableModel<IvyPackage> ivyPackageEventTableModel = new EventTableModel<IvyPackage>(filteredPackages2, ivyFileTableFormat);
+      SortedList<IvyPackage> sortedPackages    = new SortedList<IvyPackage>(ivyRepositoryList, ivyFileComparator);
+      FilterList<IvyPackage> filteredPackages  = new FilterList<IvyPackage>(sortedPackages, ivyComponentMatcherEditor);
+      FilterList<IvyPackage> filteredPackages2 = new FilterList<IvyPackage>(filteredPackages, ivyCountValueMatcherEditor);
 
+      ivyPackageEventTableModel = new EventTableModel<IvyPackage>(filteredPackages2, ivyFileTableFormat);
       ivyResultsTable.setModel(ivyPackageEventTableModel);
       ivyResultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
 
+      // yes, we need this line even through the result is ignored.
       TableComparatorChooser<IvyPackage> tableSorter       = new TableComparatorChooser<IvyPackage>(ivyResultsTable, sortedPackages, true);
       SortedList<Project>                sortedProjects    = new SortedList<Project>(projectUrls, projectFileComparator);
       FilterList<Project>                filteredProjects  = new FilterList<Project>(sortedProjects, projectComponentMatcherEditor);
       FilterList<Project>                filteredProjects2 = new FilterList<Project>(filteredProjects, projectCountValueMatcherEditor);
-      final EventTableModel<Project>     projectTableModel = new EventTableModel<Project>(filteredProjects2, projectsTableFormat);
 
+      projectTableModel = new EventTableModel<Project>(filteredProjects2, projectsTableFormat);
       projectResultsTable.setModel(projectTableModel);
       projectResultsTable.setDefaultRenderer(Object.class, new CheckboxCellRenderer(false));
 
+      // yes, we need this line even through the result is ignored.
       TableComparatorChooser<Project> projectTableSorter = new TableComparatorChooser<Project>(projectResultsTable, sortedProjects, true);
-
-      ivyResultsTable.addMouseListener(new MouseAdapter()
-        {
-          @Override
-          public void mouseClicked(MouseEvent e)
-          {
-            Point origin = e.getPoint();
-            int   row    = ivyResultsTable.rowAtPoint(origin);
-            int   column = ivyResultsTable.columnAtPoint(origin);
-
-            if ((row != -1) && (column == 0))
-            {
-              IvyPackage ivyPackage = ivyPackageEventTableModel.getElementAt(row);
-
-              ivyPackage.setIncluded(!ivyPackage.isIncluded());
-
-              // hack to make selection show
-              ivyRepositoryList.add(ivyPackage);
-            }
-          }
-        });
-      projectResultsTable.addMouseListener(new MouseAdapter()
-        {
-          @Override
-          public void mouseClicked(MouseEvent e)
-          {
-            Point origin = e.getPoint();
-            int   row    = projectResultsTable.rowAtPoint(origin);
-            int   column = projectResultsTable.columnAtPoint(origin);
-
-            if ((row != -1) && (column == 0))
-            {
-              Project project = projectTableModel.getElementAt(row);
-
-              project.setIncluded(!project.isIncluded());
-
-              // hack to make selection show
-              projectUrls.add(project);
-            }
-          }
-        });
     }
     catch (Exception e)
     {
@@ -224,13 +226,14 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   {
     setGlassPane(progressPanel);
     setContentPane(mainPanel);
-    setTitle("Ivy Usage Tracker v. " + Version.VERSION);
+    setTitle("Ivy Usage Tracker v. " + VERSION);
     addListeners();
     setPanelTitle(ivyRepositoryPanel, IVY_REPOSITORY, config.getLastIvyRepository());
     setPanelTitle(projectRepositoryPanel, SUBVERSION_REPOSITORY, config.getLastSubversionRepository());
     showTagsCheckBox.setSelected(config.showTags());
     showBranchesCheckBox.setSelected(config.showBranches());
     showTrunksCheckBox.setSelected(config.showTrunks());
+    recurseCheckBox.setSelected(config.recurseDirs());
   }
 
   private void addListeners()
@@ -240,7 +243,19 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
         @Override
         public void mousePressed(MouseEvent e)
         {
-          int row = ivyResultsTable.getSelectedRow();
+          if (e.getButton() != MouseEvent.BUTTON3)
+          {
+            return;
+          }
+
+          Point origin = e.getPoint();
+          int   row    = ivyResultsTable.rowAtPoint(origin);
+          int   col    = ivyResultsTable.columnAtPoint(origin);
+
+          if (col == 0)
+          {
+            return;
+          }
 
           if (row > -1)
           {
@@ -249,6 +264,44 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
             FindUsingProjectsDialog dialog     = new FindUsingProjectsDialog(ivyPackage, projectIvyFilesMap, ivyRepositoryList);
 
             dialog.setVisible(true);
+          }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          Point origin = e.getPoint();
+          int   row    = ivyResultsTable.rowAtPoint(origin);
+          int   col    = ivyResultsTable.columnAtPoint(origin);
+
+          if ((row != -1) && (col == 0))
+          {
+            IvyPackage ivyPackage = ivyPackageEventTableModel.getElementAt(row);
+
+            ivyPackage.setIncluded(!ivyPackage.isIncluded());
+
+            // hack to make selection show
+            ivyResultsTable.repaint();
+          }
+        }
+      });
+    projectResultsTable.addMouseListener(new MouseAdapter()
+      {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          Point origin = e.getPoint();
+          int   row    = projectResultsTable.rowAtPoint(origin);
+          int   column = projectResultsTable.columnAtPoint(origin);
+
+          if ((row != -1) && (column == 0))
+          {
+            Project project = projectTableModel.getElementAt(row);
+
+            project.setIncluded(!project.isIncluded());
+
+            // hack to make selection show
+            projectResultsTable.repaint();
           }
         }
       });
@@ -274,6 +327,14 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
         public void actionPerformed(ActionEvent e)
         {
           config.setShowBranches(showBranchesCheckBox.isSelected());
+        }
+      });
+    recurseCheckBox.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          config.setRecurseDirs(recurseCheckBox.isSelected());
         }
       });
     specifyIvyRepositoryButton.addActionListener(new ActionListener()
@@ -306,14 +367,6 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
           System.exit(0);
         }
       });
-    ivyResultsTable.addMouseListener(new MouseAdapter()
-      {
-        @Override
-        public void mousePressed(MouseEvent e)
-        {
-          // showIvyLine(e);
-        }
-      });
     addWindowListener(new WindowAdapter()
       {
         @Override
@@ -331,7 +384,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
           toggleAllProjectItems(projectSelectUnselectAllCheckBox.isSelected(), projectUrls);
         }
       });
-    projectsShowOnlySelectedProjectsCheckBox.addActionListener(new ActionListener()
+    showOnlySelectedProjectsCheckBox.addActionListener(new ActionListener()
       {
         @Override
         public void actionPerformed(ActionEvent e)
@@ -339,7 +392,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
           // todo show only selected projects
         }
       });
-    ivyShowOnlySelectedItemsCheckBox.addActionListener(new ActionListener()
+    showOnlySelectedIvyItemsCheckBox.addActionListener(new ActionListener()
       {
         @Override
         public void actionPerformed(ActionEvent e)
@@ -369,10 +422,42 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
         public void actionPerformed(ActionEvent e)
         {
           Map<IvyKey, IvyPackage> dibble = new HashMap<IvyKey, IvyPackage>();
-          ShowProjectsDialog      dialog = new ShowProjectsDialog(ivyRepositoryList, projectIvyFilesMap);  // todo need to add ivy package to project
-                                                                                                           // URL, to follow dependencies...
+          ShowProjectsDialog      dialog = new ShowProjectsDialog(ivyRepositoryList, projectIvyFilesMap);
 
+          // todo need to add ivy package to project URL, to follow dependencies...
           dialog.setVisible(true);
+        }
+      });
+    saveTestDataButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          saveTestData();
+        }
+      });
+    loadTestDataButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          readTestData();
+        }
+      });
+    clearProjectFilterButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          projectFilterField.setText("");
+        }
+      });
+    clearIvyFilterButton.addActionListener(new ActionListener()
+      {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent)
+        {
+          ivyFilterField.setText("");
         }
       });
   }
@@ -381,7 +466,14 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   {
     HtmlIvyHandler handler = new HtmlIvyHandler(this, projectUrls, ivyRepositoryList, missingIvyFiles, projectIvyFilesMap);
 
-    handler.doInBackground();
+    if (useSingleThread)
+    {
+      handler.doInBackground();
+    }
+    else
+    {
+      handler.execute();
+    }
   }
 
   public void doneWithAnalysis()
@@ -398,8 +490,8 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
   public void specifyIvyRepository()
   {
-    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
-                                                                                       LAST_IVY_REPOSITORY);
+    // FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Ivy Repository",
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(null, "Select Ivy Repository", LAST_IVY_REPOSITORY);
 
     dialog.setVisible(true);
 
@@ -417,7 +509,8 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
   public void specifySubversionRepository()
   {
-    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Subversion Repository",
+    // FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(config.getPreferences(), "Select Subversion Repository",
+    FindMultiplePreferencesItemsDialog dialog = new FindMultiplePreferencesItemsDialog(null, "Select Subversion Repository",
                                                                                        LAST_SUBVERSION_REPOSITORY);
 
     dialog.setVisible(true);
@@ -477,12 +570,18 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   /** get all Ivy repository (reuse code). */
   private void getAllIvyRepositoryPackages(Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
-    BaseWebIvyRepositoryBrowserHandler webHandler = HandlerFactory.getIvyRepositoryHandler(this, config.getLastIvyRepository(), ivyRepositoryList,
-                                                                                           packageMap);
+    ivyRepositoryList.clear();
 
-    webHandler.execute();
+    BaseWebIvyRepositoryBrowserHandler webHandler = getIvyRepositoryHandler(this, config.getLastIvyRepository(), ivyRepositoryList, packageMap, null);
 
-    // webHandler.doInBackground();
+    if (useSingleThread)
+    {
+      webHandler.doInBackground();
+    }
+    else
+    {
+      webHandler.execute();
+    }
   }
 
   // ------------------------ INTERFACE METHODS ------------------------
@@ -514,7 +613,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   @Override
   public boolean isTest()
   {
-    return isTest;
+    return false;
   }
 
   @Override
@@ -522,6 +621,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   {
     if (isIvyDone && isProjectsDone)
     {
+      setStatusLabel("");
       stopProgressPanel();
       ivyFilterField.setEnabled(true);
       projectFilterField.setEnabled(true);
@@ -590,18 +690,51 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
 
   private void getAllProjectIvyFilesFromSubversion()
   {
-    // todo add the whole list of projects...
-    String               repositoryBase       = config.getLastSubversionRepository();
-    IvyFileFinderHandler ivyFileFinderHandler = HandlerFactory.getIvyFileFinderHandler(this, projectIvyFilesMap, projectUrls, config, repositoryBase);
+    projectIvyFilesMap.clear();
+    projectUrls.clear();
 
-    // ivyFileFinderHandler.doIt();
-    //
-    ivyFileFinderHandler.execute();
+    String               repositoryBase       = config.getLastSubversionRepository();
+    IvyFileFinderHandler ivyFileFinderHandler = getIvyFileFinderHandler(this, projectIvyFilesMap, projectUrls, config, repositoryBase);
+
+    if (useSingleThread)
+    {
+      ivyFileFinderHandler.doIt();
+    }
+    else
+    {
+      ivyFileFinderHandler.execute();
+    }
   }
 
-  public boolean saveTestData()
+  /** XStream really, really, really doesn't like to save the Glazed lists, so we have to get the raw data and save it separately. */
+  public void saveTestData()
   {
-    return saveTestData;
+    setBusyCursor();
+
+    DataSerializer serializer = new DataSerializer(projectIvyFilesMap, projectUrls, ivyRepositoryList);
+
+    serializer.saveToXml();
+    setNormalCursor();
+  }
+
+  public void readTestData()
+  {
+    setBusyCursor();
+
+    DataSerializer serializer = new DataSerializer(projectIvyFilesMap, projectUrls, ivyRepositoryList);
+
+    serializer.retrieveFromXml();
+    projectIvyFilesMap.clear();
+    projectIvyFilesMap.putAll(serializer.getProjectIvyFilesMap());
+    projectUrls.clear();
+    projectUrls.addAll(serializer.getProjectUrls());
+    ivyRepositoryList.clear();
+    ivyRepositoryList.addAll(serializer.getIvyRepositoryList());
+    resizeTableColumns();
+    isIvyDone      = true;
+    isProjectsDone = true;
+    setReady(true);
+    showNormal();
   }
 
   public void showNormal()
@@ -620,11 +753,6 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
     setCursor(normalCursor);
   }
 
-  public boolean useTestData()
-  {
-    return useTestData;
-  }
-
   // --------------------------- main() method ---------------------------
   @SuppressWarnings({ "ResultOfObjectAllocationIgnored" })
   public static void main(String[] args)
@@ -636,7 +764,7 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   public void resizeTableColumns()
   {
     sizeTableColumns(projectResultsTable);
-    sizeTableColumns(projectResultsTable);
+    sizeTableColumns(ivyResultsTable);
   }
 
   public void setProjectsDone(boolean projectsDone)

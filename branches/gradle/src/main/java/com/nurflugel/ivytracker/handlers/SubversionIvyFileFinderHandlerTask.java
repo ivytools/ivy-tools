@@ -57,7 +57,7 @@ public class SubversionIvyFileFinderHandlerTask implements Runnable
       else if (file.endsWith("trunk/") && config.showTrunks())
       {
         // it's trunk
-        mainFrame.setStatusLabel("Getting externals for " + file);
+        mainFrame.setStatusLabel("Getting Ivy files for  for " + file);
         getIvyFiles(file);
       }
     }
@@ -71,35 +71,60 @@ public class SubversionIvyFileFinderHandlerTask implements Runnable
   /** You're give the root of the repository - give a list back of any and all Ivy files found in the "build" directory. */
   private void getIvyFiles(String root) throws IOException
   {
+    mainFrame.setStatusLabel("Examining " + root);
+
     if (!root.endsWith("/"))
     {
       root += "/";
     }
 
     Project      project = new Project(root);
-    List<String> files   = urlHandler.getFiles(root + "build", false);
+    List<String> dirs    = urlHandler.getFiles(root, true);
 
-    if (!files.isEmpty())  // we found some files
+    for (String dir : dirs)
     {
-      for (String file : files)
+      if (dir.endsWith("repository/") || dir.endsWith("jdk/") || dir.endsWith("ant/"))  // it's an Ivy repository, GTF out!  You'll be in here
+                                                                                        // forever otherwise
       {
-        if (file.endsWith("ivy.xml"))
+        break;
+      }
+
+      if (dir.endsWith("build/"))
+      {
+        List<String> files = urlHandler.getFiles(dir, false);
+
+        if (!files.isEmpty())                                                           // we found some files
         {
-          List<IvyPackage> list = ivyFiles.get(project);
-
-          if (list == null)
+          for (String possibleIvyFile : files)
           {
-            list = new ArrayList<IvyPackage>();
-            ivyFiles.put(project, list);
-            projectUrls.getReadWriteLock().writeLock().lock();
-            projectUrls.add(project);
-            projectUrls.getReadWriteLock().writeLock().unlock();
-            mainFrame.resizeTableColumns();
+            if (possibleIvyFile.endsWith("ivy.xml"))                                    // It's an Ivy file - parse it!
+            {
+              List<IvyPackage> list = ivyFiles.get(project);
+
+              if (list == null)
+              {
+                list = new ArrayList<IvyPackage>();
+                ivyFiles.put(project, list);
+                project.setIvyFile(possibleIvyFile);
+                projectUrls.getReadWriteLock().writeLock().lock();
+                projectUrls.add(project);
+                projectUrls.getReadWriteLock().writeLock().unlock();
+                mainFrame.resizeTableColumns();
+              }
+
+              IvyPackage ivyPackage = new IvyPackage(possibleIvyFile);
+
+              list.add(ivyPackage);
+            }
           }
-
-          IvyPackage ivyPackage = new IvyPackage(file);
-
-          list.add(ivyPackage);
+        }
+      }
+      else                                                                              // it's not a build dir, if recursive is turned on, then
+                                                                                        // drill down through the dirs
+      {
+        if (config.recurseDirs())
+        {
+          getIvyFiles(dir);
         }
       }
     }

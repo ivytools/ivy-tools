@@ -11,7 +11,6 @@ public class IvyRepositoryItemTableFormat implements TableFormat
   // ------------------------ INTERFACE METHODS ------------------------
 
   // --------------------- Interface TableFormat ---------------------
-
   @Override
   public int getColumnCount()
   {

@@ -1,31 +1,37 @@
 package com.nurflugel.common.ui;
 
-import javax.swing.*;
+import static com.nurflugel.common.ui.Util.centerApp;
+import com.nurflugel.ivybrowser.AppPreferences;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
-import static com.nurflugel.common.ui.Util.centerApp;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 import static javax.swing.KeyStroke.getKeyStroke;
 
 public class FindMultiplePreferencesItemsDialog extends JDialog
 {
-  private static final String EMPTY_STRING     = "";
-  private JPanel              contentPane;
-  private JButton             buttonOK;
-  private JButton             buttonCancel;
-  private JComboBox           comboBox;
-  private JPanel              borderTitlePanel;
-  private Preferences         appPreferences;
-  private String              keyBase;
-  private List<String>        locations;
-  private boolean             isOK;
+  public static final String EMPTY_STRING     = "";
+  private JPanel             contentPane;
+  private JButton            buttonOK;
+  private JButton            buttonCancel;
+  private JComboBox          comboBox;
+  private JPanel             borderTitlePanel;
+  private AppPreferences     appPreferences;
+  private String             keyBase;
+  private List<String>       locations;
+  private boolean            isOK;
 
-  public FindMultiplePreferencesItemsDialog(Preferences appPreferences, String borderTitle, String keyBase)
+  public FindMultiplePreferencesItemsDialog(AppPreferences appPreferences, String borderTitle, String keyBase)
   {
     this.appPreferences = appPreferences;
     this.keyBase        = keyBase;
@@ -42,8 +48,7 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
 
     for (int i = 0; i < 10; i++)
     {
-      String key   = keyBase + i;
-      String value = appPreferences.get(key, EMPTY_STRING);
+      String value = appPreferences.getIndexedProperty(keyBase, i);
 
       if (value.equalsIgnoreCase(EMPTY_STRING))
       {
@@ -98,7 +103,7 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
         {
           onCancel();
         }
-      }, getKeyStroke(VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+      }, getKeyStroke(VK_ESCAPE, 0), WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
   }
 
   private void onOK()
@@ -115,14 +120,7 @@ public class FindMultiplePreferencesItemsDialog extends JDialog
 
     // put this at the top of the list so the most recent value always shows first
     locations.add(0, location);
-
-    int i = 0;
-
-    for (String value : locations)
-    {
-      appPreferences.put(keyBase + i++, value);
-    }
-
+    appPreferences.saveIndexedProperties(keyBase, locations);
     dispose();
   }
 
