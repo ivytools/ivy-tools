@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'project-report'
+apply plugin: 'code-quality'
+apply plugin: 'signing'
+
+configurations {
+  compile
+  presigned
+  dist
+  source
+  test
+  reporting
+}
+
+repositories {
+    mavenCentral()
+    ivy {
+      url "http://www.nurflugel.com/Home/repository"
+              layout 'pattern', {
+                  artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[type]"
+                  ivy "[organisation]/[module]/[revision]/[artifact]-[revision].ivy.xml"
+      }
+    }
+}
+
+
+test {
+ useTestNG()
+}
+
+task testFormat {
+   dependsOn "test", "formatTestResults"
+}
