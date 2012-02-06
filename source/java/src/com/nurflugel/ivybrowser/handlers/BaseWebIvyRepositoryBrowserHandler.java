@@ -46,7 +46,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   protected boolean                                           isTest;
   protected boolean                                           shouldRun         = true;
   protected String                                            ivyRepositoryPath;
-  protected EventList<IvyPackage>                             ivyPackages;
+  protected List<IvyPackage>                                  ivyPackages;
   protected Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
   private Map<IvyKey, IvyPackage>                             allPackages       = Collections.synchronizedMap(new HashMap<IvyKey, IvyPackage>());
   public static final String                                  JAVADOC           = "javadoc";
@@ -64,7 +64,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
   ExecutorService                                             threadPool        = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
   @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter" })
-  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, EventList<IvyPackage> ivyPackages, String ivyRepositoryPath,
+  protected BaseWebIvyRepositoryBrowserHandler(UiMainFrame mainFrame, List<IvyPackage> ivyPackages, String ivyRepositoryPath,
                                                Map<String, Map<String, Map<String, IvyPackage>>> packageMap)
   {
     this.mainFrame         = mainFrame;
@@ -275,11 +275,11 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
 
   private void addPackages(List<IvyPackage> localPackages)
   {
-    ivyPackages.getReadWriteLock().writeLock().lock();
+    // ivyPackages.getReadWriteLock().writeLock().lock();
     ivyPackages.addAll(localPackages);
     mainFrame.resizeTableColumns();
-    ivyPackages.getReadWriteLock().writeLock().unlock();
 
+    // ivyPackages.getReadWriteLock().writeLock().unlock();
     for (IvyPackage localPackage : localPackages)
     {
       addPackageToMap(localPackage);

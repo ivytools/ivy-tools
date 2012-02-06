@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +23,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class SubversionWebDavHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
+  public SubversionWebDavHandler(UiMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages,
                                  Map<String, Map<String, Map<String, IvyPackage>>> packageMap, AppPreferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);
