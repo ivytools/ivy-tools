@@ -17,8 +17,7 @@ import java.util.List;
 @SuppressWarnings({ "EnumeratedClassNamingConvention", "EnumeratedConstantNamingConvention" })
 public enum Os
 {
-  OS_X   ("Mac OS X", "build.sh", new String[] {}, "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel",
-          "/Applications/Graphviz_old.app/Contents/MacOS/Graphviz", PDF),
+  OS_X   ("Mac OS X", "build.sh", new String[] {}, "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", "/usr/local/bin/dot", PDF),
   WINDOWS("Windows", "build.cmd", new String[] { "cmd.exe", "/C" }, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
           "\"C:\\Program Files\\Graphviz2.24\\bin\\dot.exe\"", PNG);
 

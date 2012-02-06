@@ -2,6 +2,7 @@ package com.nurflugel.ivybuilder.handlers;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 import com.nurflugel.ivybuilder.BuilderMainFrame;
+import com.nurflugel.ivybuilder.MainFrameDibble;
 import javax.swing.*;
 import java.io.File;
 import java.util.List;
@@ -14,11 +15,11 @@ public class FileHandler extends SwingWorker<Object, Object>
 {
   public static final String      SVN           = ".svn";
   private List<IvyRepositoryItem> ivyPackages;
-  private BuilderMainFrame        mainFrame;
+  private MainFrameDibble         mainFrame;
   private File                    repositoryDir;
 
   // --------------------------- CONSTRUCTORS ---------------------------
-  public FileHandler(BuilderMainFrame mainFrame, File repositoryDir, List<IvyRepositoryItem> ivyPackages)
+  public FileHandler(MainFrameDibble mainFrame, File repositoryDir, List<IvyRepositoryItem> ivyPackages)
   {
     this.mainFrame     = mainFrame;
     this.ivyPackages   = ivyPackages;

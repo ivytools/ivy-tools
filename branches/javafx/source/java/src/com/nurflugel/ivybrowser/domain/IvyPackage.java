@@ -1,15 +1,12 @@
 package com.nurflugel.ivybrowser.domain;
 
+import javafx.beans.property.StringProperty;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.unmodifiableSet;
@@ -82,6 +79,21 @@ public class IvyPackage implements Comparable<IvyPackage>
     {
       e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
     }
+  }
+
+  public StringProperty orgProperty()
+  {
+    return key.orgProperty();
+  }
+
+  public StringProperty moduleProperty()
+  {
+    return key.moduleProperty();
+  }
+
+  public StringProperty versionProperty()
+  {
+    return key.versionProperty();
   }
 
   /**

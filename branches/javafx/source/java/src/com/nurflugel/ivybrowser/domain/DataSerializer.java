@@ -22,7 +22,7 @@ public class DataSerializer
   private Map<String, Map<String, Map<String, IvyPackage>>> packageMap;
   public static final String                                IVYBROWSER_DATA_XML = "ivybrowser_data.xml";
 
-  public DataSerializer(String ivyRepositoryPath, EventList<IvyPackage> ivyRepositoryList,
+  public DataSerializer(String ivyRepositoryPath, List<IvyPackage> ivyRepositoryList,
                         Map<String, Map<String, Map<String, IvyPackage>>> packageMapToSave)
   {
     this.ivyRepositoryPath = ivyRepositoryPath;

@@ -1,17 +1,50 @@
 package com.nurflugel.ivybrowser.domain;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /** Nice key for hash maps, etc. */
 public class IvyKey implements Comparable<IvyKey>
 {
-  private String org;
-  private String module;
-  private String version;
+  private StringProperty org;
+  private StringProperty module;
+  private StringProperty version;
 
   public IvyKey(String org, String module, String version)
   {
-    this.org     = org;
-    this.module  = module;
-    this.version = version;
+    orgProperty().set(org);
+    moduleProperty().set(module);
+    versionProperty().set(version);
+  }
+
+  public StringProperty orgProperty()
+  {
+    if (org == null)
+    {
+      org = new SimpleStringProperty(this, "org");
+    }
+
+    return org;
+  }
+
+  public StringProperty moduleProperty()
+  {
+    if (module == null)
+    {
+      module = new SimpleStringProperty(this, "module");
+    }
+
+    return module;
+  }
+
+  public StringProperty versionProperty()
+  {
+    if (version == null)
+    {
+      version = new SimpleStringProperty(this, "version");
+    }
+
+    return org;
   }
 
   @Override
@@ -25,17 +58,17 @@ public class IvyKey implements Comparable<IvyKey>
 
   public String getOrg()
   {
-    return org;
+    return org.getValue();
   }
 
   public String getModule()
   {
-    return module;
+    return module.getValue();
   }
 
   public String getVersion()
   {
-    return version;
+    return version.getValue();
   }
 
   @Override
