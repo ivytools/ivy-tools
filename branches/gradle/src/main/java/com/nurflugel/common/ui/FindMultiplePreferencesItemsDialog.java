@@ -1,7 +1,11 @@
 package com.nurflugel.common.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import com.nurflugel.ivybrowser.AppPreferences;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -9,13 +13,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.*;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
 import static javax.swing.KeyStroke.getKeyStroke;
 
 public class FindMultiplePreferencesItemsDialog extends JDialog

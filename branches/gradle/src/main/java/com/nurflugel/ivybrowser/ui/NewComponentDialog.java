@@ -2,9 +2,7 @@ package com.nurflugel.ivybrowser.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
+import java.awt.*;
 import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -21,17 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.*;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 
 @SuppressWarnings({ "AssignmentToCollectionOrArrayFieldFromParameter", "MethodParameterNamingConvention" })
 public class NewComponentDialog extends JDialog

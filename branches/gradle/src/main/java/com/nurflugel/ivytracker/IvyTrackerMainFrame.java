@@ -9,6 +9,9 @@ import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import com.nurflugel.Os;
 import com.nurflugel.WebAuthenticator;
 import com.nurflugel.common.ui.FindMultiplePreferencesItemsDialog;
@@ -30,9 +33,8 @@ import com.nurflugel.ivytracker.domain.*;
 import com.nurflugel.ivytracker.handlers.HtmlIvyHandler;
 import com.nurflugel.ivytracker.handlers.IvyFileFinderHandler;
 import static org.apache.commons.lang.StringUtils.isEmpty;
-import java.awt.Cursor;
+import java.awt.*;
 import static java.awt.Cursor.getPredefinedCursor;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -50,16 +52,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 
 /**
  * Created by IntelliJ IDEA. User: douglasbullard Date: May 30, 2008 Time: 11:38:58 AM To change this template use File | Settings | File Templates.
@@ -124,11 +119,12 @@ public class IvyTrackerMainFrame extends JFrame implements UiMainFrame
   private static final String                  SUBVERSION_REPOSITORY             = "Subversion Repository: ";
   private static final String                  IVY_REPOSITORY                    = "Ivy Repository: ";
   private boolean                              isProjectsDone;  // false as long as the project parsing is
-                                                                // running
-  private boolean                              isIvyDone;  // false as long as ivy parsing is running
-  public static final boolean                  useSingleThread                   = false;
-  private EventTableModel<Project>             projectTableModel;
-  private EventTableModel<IvyPackage>          ivyPackageEventTableModel;
+
+  // running
+  private boolean                     isIvyDone;  // false as long as ivy parsing is running
+  public static final boolean         useSingleThread                            = false;
+  private EventTableModel<Project>    projectTableModel;
+  private EventTableModel<IvyPackage> ivyPackageEventTableModel;
 
   // --------------------------- CONSTRUCTORS ---------------------------
   @SuppressWarnings({ "unchecked" })

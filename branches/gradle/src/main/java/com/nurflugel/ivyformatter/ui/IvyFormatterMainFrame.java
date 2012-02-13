@@ -68,7 +68,7 @@ public class IvyFormatterMainFrame extends JFrame
   {
     String text = ivyText;
 
-    if (text.trim().length() == 0)
+    if (text.trim().isEmpty())
     {
       Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 

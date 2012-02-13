@@ -1,7 +1,11 @@
 package com.nurflugel.versionfinder;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import com.nurflugel.common.ui.Util;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class UsernamePasswordDialog extends JDialog

@@ -1,8 +1,12 @@
 apply plugin: 'java'
+//apply plugin: 'application'
 apply plugin: 'idea'
-apply plugin: 'project-report'
-apply plugin: 'code-quality'
-apply plugin: 'signing'
+//apply plugin: 'project-report'
+//apply plugin: 'code-quality'
+//apply plugin: 'signing'
+//apply plugin: 'sonar'
+//apply plugin: 'build-announcements'
+
 
 configurations {
   compile
@@ -11,7 +15,24 @@ configurations {
   source
   test
   reporting
+  javac2
 }
+
+
+println """\
+
+========================================================================================================
+Welcome to Gradle:               $gradle.gradleVersion
+Gradle home is set to:           $gradle.gradleHomeDir
+Gradle user directory is set to: $gradle.gradleUserHomeDir
+
+Base directory:                  $projectDir
+Running script ${relativePath(buildFile)}
+========================================================================================================
+
+"""
+
+
 
 repositories {
     mavenCentral()
@@ -24,6 +45,11 @@ repositories {
     }
 }
 
+dependencies
+{
+   javac2 'com.intellij:javac2:9.0.0',
+          'org.objectweb.asm:asm:3.1'
+}
 
 test {
  useTestNG()
@@ -31,4 +57,23 @@ test {
 
 task testFormat {
    dependsOn "test", "formatTestResults"
+}
+
+
+def titleForDocumentation = archivesBaseName + ' ' + version
+def copyrightString = 'Copyright &#169; 2008&#8211;2012  Douglas Bullard.  All Rights Reserved.'
+def packageTitle = group
+
+// this will fail, but still do what it's supposed to
+javadoc {
+    options.overview('overview.html')
+    options.showAll()
+    options.encoding('UTF-8')
+    options.setUse(true)
+    options.author(true)
+    options.version(true)
+    options.windowTitle(titleForDocumentation)
+    options.docTitle(titleForDocumentation)
+    options.footer(copyrightString)
+
 }

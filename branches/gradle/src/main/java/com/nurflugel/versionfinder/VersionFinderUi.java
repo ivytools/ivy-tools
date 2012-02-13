@@ -3,6 +3,9 @@ package com.nurflugel.versionfinder;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventTableModel;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import org.apache.commons.lang.StringUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -53,6 +56,7 @@ public class VersionFinderUi extends JFrame
 
   public VersionFinderUi()
   {
+    // $$$setupUI$$$();
     String javaVersion = System.getProperty("java.version");
 
     System.out.println("VersionFinderUi.VersionFinderUi::java home version = " + javaVersion);

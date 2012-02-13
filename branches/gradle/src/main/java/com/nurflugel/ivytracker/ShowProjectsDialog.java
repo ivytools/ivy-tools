@@ -5,6 +5,7 @@ import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivytracker.domain.Project;
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;

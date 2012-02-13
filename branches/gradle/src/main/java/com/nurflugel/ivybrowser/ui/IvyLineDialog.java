@@ -1,17 +1,17 @@
 package com.nurflugel.ivybrowser.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.BaseWebIvyRepositoryBrowserHandler;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static org.apache.commons.lang.StringUtils.substringBeforeLast;
-import java.awt.Component;
+import java.awt.*;
 import static java.awt.Cursor.DEFAULT_CURSOR;
 import static java.awt.Cursor.WAIT_CURSOR;
 import static java.awt.Cursor.getPredefinedCursor;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
 import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;

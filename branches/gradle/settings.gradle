@@ -1,1 +1,3 @@
 rootProject.name = 'IvyTools'
+
+mainClassName = "com.nurflugel.RunMe"
