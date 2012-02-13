@@ -3,7 +3,7 @@
 <jnlp
         spec="1.0+"
         codebase="http://ivy-tools.googlecode.com/svn/branches/gradle/webstart/"
-        href="ivyBrowserApp.jnlp">
+        href="ivyBrowserApp2.jnlp">
     <information>
         <title>IvyBrowser</title>
         <vendor>Nurflugel Software</vendor>
