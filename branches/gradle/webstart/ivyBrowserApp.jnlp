@@ -25,7 +25,7 @@
         <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/commons-lang-2.4.jar"/>
-        <jar href="lib/forms_rt.jar-9.0.0"/>
+        <jar href="lib/forms_rt-9.0.0.jar"/>
         <jar href="lib/jdom.jar-1.0"/>
         <jar href="lib/help.jar"/>
         <jar href="lib/glazedlists_java15-1.8.0.jar"/>
