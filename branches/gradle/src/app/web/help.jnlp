@@ -10,7 +10,7 @@
     </information>
     <offline-allowed/>
     <resources>
-        <jar href="lib/jhall.jar"/>
+        <jar href="lib/jhall-2.0.6.jar"/>
     </resources>
     <component-desc/>
 </jnlp>
