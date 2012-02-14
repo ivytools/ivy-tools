@@ -1,5 +1,7 @@
-apply plugin: 'java'
-//apply plugin: 'application'
+import org.apache.tools.ant.filters.ReplaceTokens
+
+//apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'idea'
 //apply plugin: 'project-report'
 //apply plugin: 'code-quality'
@@ -38,10 +40,11 @@ repositories {
     mavenCentral()
     ivy {
       url "http://www.nurflugel.com/Home/repository"
-              layout 'pattern', {
-                  artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[type]"
-                  ivy "[organisation]/[module]/[revision]/[artifact]-[revision].ivy.xml"
+      layout 'pattern', {
+          artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[type]"
+          ivy "[organisation]/[module]/[revision]/[artifact]-[revision].ivy.xml"
       }
+
     }
 }
 
@@ -77,3 +80,109 @@ javadoc {
     options.footer(copyrightString)
 
 }
+
+
+
+task formatTestResults << {
+  ant.xslt(in:  './build/reports/tests/testng-results.xml',
+           out: './build/reports/tests/index.html',
+           style: 'src/main/resources/testng-results.xsl',
+           classpath: '/Users/douglasbullard/Documents/JavaStuff/testng-xslt-1.1.1/lib/saxon-8.7.jar'){
+            param(name:'testNgXslt.testDetailsFilter', expression:"FAIL,SKIP,PASS")
+            param(name:'testNgXslt.outputDir', expression:'$outputDir')
+            param(name:'testNgXslt.sortTestCaseLinks', expression:'true')
+  }
+}
+
+task transform << {
+    def transformer = TransformerFactory.newInstance().newTransformer(in:  './build/reports/tests/testng-results.xml',
+                                                                      out: './build/reports/tests/index.html',
+                                                                      style: 'src/main/resources/testng-results.xsl'
+                                                                      ,classpath: '/Users/douglasbullard/Documents/JavaStuff/testng-xslt-1.1.1/lib/saxon-8.7.jar')
+    transformer.setParamter(name:'testNgXslt.testDetailsFilter', expression:"FAIL,SKIP,PASS")
+    transformer.setParamter(name:'testNgXslt.outputDir', expression:'$outputDir')
+    transformer.setParamter(name:'testNgXslt.sortTestCaseLinks', expression:'true')
+    transformer.transform()
+}
+
+//def factory = TransformerFactory.newInstance()
+//def transformer = factory.newTransformer(new StreamSource(new StringReader(xslt)))
+//transformer.transform(new StreamSource(new StringReader(input)), new StreamResult(System.out))
+
+//  style: '/Users/douglasbullard/Documents/JavaStuff/Google_Code/IvyTools/branches/gradle/testng-results.xsl',
+
+
+//task zipSrc(type: Zip) {
+//    appendix = 'src'
+//    from sourceSets.main.allSource
+//    into('build/dist')
+//}
+
+
+//task(runSimple, dependsOn: 'classes', type: JavaExec) {
+//  main = 'com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame'
+//  classpath = sourceSets.main.runtimeClasspath
+//  args 'DIBBLE'
+//  systemProperty 'simple.message', 'Hello '
+//}
+
+// Note that we have to tell Gradle what's expected to run before this - Gradle doesn't honor dependency order in the tasks as specified below
+task publishWebstart(dependsOn: ['installApp', 'copyResources', 'copyHelp','copyLibs','signJars'], description: 'Create the WebStart distributable.')
+
+// Note that we have to tell Gradle what's expected to run before this - Gradle doesn't honor dependency order in the tasks as specified above
+task copyLibs (type: Copy, dependsOn: ['installApp']) {
+    from('build/install/IvyTools/lib')
+    into('webstart/lib')
+}
+
+//def subversion_branch=   'branches/gradle'
+
+task copyResources(type: Copy) {
+    from('src/app/web')
+    into('webstart')
+    filter(ReplaceTokens, tokens:['subversion.branch': subversion_branch])
+  doFirst(){
+    println 'Value of subversion_branch is ' + subversion_branch
+  }
+}
+
+task copyHelp(type: Copy) {
+    from('src/app/help')
+    into('webstart/html')
+}
+
+File webstartLibs = new File("webstart/lib")
+def jarsToSign = webstartLibs.listFiles()
+jarsToSign.each { File file -> println 'Runtime library: '+ file.name }
+
+
+task signJars(dependsOn: ['installApp'])<< {
+    println 'Properties are:  keystore is ' + keystore
+
+//    from('src/app/help')
+//    into('webstart/html')
+
+  jarsToSign.each {
+    println "Generating classes for package: " + it
+        ant.signjar(jar: it,
+           keypass: keypass,
+           keystore: keystore,
+           alias: alias,
+           storepass: storepass)
+  }
+}
+
+task listRuntimeJars << {
+    configurations.runtime.each { File file -> println file.name }
+}
+
+//task copyThirdPartyLibs(type: Copy) {
+//    from('lib')
+//    into('webstart/lib')
+//    exclude('junit-4.7.jar', 'netty-3.1.5.GA-sources.jar', 'jcsp.jar', 'jcsp-demos-util.jar', 'spock-core*')
+//}
+
+//jar.doAfter {
+//  ant.mkdirs('webstart/lib')
+//}
+

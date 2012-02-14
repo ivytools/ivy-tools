@@ -10,4 +10,5 @@ export JAVA_HOME
 export ANT_OPTS=-Xmx640m
 
 set CLASSPATH=.
-java -cp . WhenceJava $*
+#java -cp . WhenceJava $*
+java -cp webstart/lib/buildtasks-1.0-SNAPSHOT.jar com.nurflugel.buildtasks.WhenceJava $*

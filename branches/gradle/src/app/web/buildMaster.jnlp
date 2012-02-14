@@ -2,7 +2,7 @@
 <!-- JNLP File for BuildmMster client application -->
 <jnlp
         spec="1.0+"
-        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
+        codebase="http://ivy-tools.googlecode.com/svn/@subversion.branch@/webstart/"
         href="buildMaster.jnlp">
     <information>
         <title>BuildMaster</title>

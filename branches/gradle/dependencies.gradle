@@ -8,7 +8,7 @@ dependencies {
     'org.tmate:svnkit:1.3.0',
     'w3c:jtidy:04aug2000r7-dev',
     'com.ryangrier.ant:version_tool:1.1.4_fixed',
-//    'com.nurflugel:buildtasks:1.0-SNAPSHOT',
+    'com.nurflugel:buildtasks:1.0-SNAPSHOT',
     'org.apache:commons-lang:2.4',
     'org.apache:commons-io:1.4',
     'com.intellij:forms_rt:9.0.0',
