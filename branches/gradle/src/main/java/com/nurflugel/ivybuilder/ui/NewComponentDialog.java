@@ -1,7 +1,10 @@
-package com.nurflugel.ivybrowser.ui;
+package com.nurflugel.ivybuilder.ui;
 
 import static com.nurflugel.common.ui.Util.centerApp;
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
+import com.nurflugel.ivybrowser.ui.CreateDependenciesDialog;
+import com.nurflugel.ivybrowser.ui.IvyFileCheckbox;
+import com.nurflugel.ivybrowser.ui.IvyRepositoryItemCheckbox;
 import java.awt.*;
 import static java.awt.Toolkit.getDefaultToolkit;
 import java.awt.datatransfer.StringSelection;
@@ -220,7 +223,7 @@ public class NewComponentDialog extends JDialog
     String module = moduleField.getText();
     String rev    = revField.getText();
 
-    return (org != null) && (org.length() > 0) && (module != null) && (module.length() > 0) && (rev != null) && (rev.length() > 0);
+    return (org != null) && !org.isEmpty() && (module != null) && !module.isEmpty() && (rev != null) && !rev.isEmpty();
   }
 
   private void addFilesToComponent()
