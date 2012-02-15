@@ -26,6 +26,7 @@
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/jdom-1.0.jar"/>
         <jar href="lib/forms_rt-9.0.0.jar"/>
+      <jar href="lib/commons-lang-2.4.jar"/>
         <!--<jar href="lib/help.jar"/>-->
         <extension name="help" href="help.jnlp"/>
     </resources>
