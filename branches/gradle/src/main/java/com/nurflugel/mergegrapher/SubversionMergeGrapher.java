@@ -61,6 +61,7 @@ public class SubversionMergeGrapher
   // private String projectBaseUrl = "http://ivy-tools.googlecode.com/svn";
   private Map<String, Path> pathMap  = new TreeMap<String, Path>();
   private List<CopyInfo>    copyInfo = new ArrayList<CopyInfo>();
+  private String            dirPath;
 
   // --------------------------- main() method ---------------------------
   public static void main(String[] args)
@@ -125,7 +126,7 @@ public class SubversionMergeGrapher
       }
 
       String repositoryName = substringAfterLast(projectBaseUrl, "/");
-      File   file           = graphVizOutput.makeDotFile(pathMap, copyInfo, repositoryName);
+      File   file           = graphVizOutput.makeDotFile(pathMap, copyInfo, repositoryName, dirPath);
 
       return file;
     }
@@ -445,5 +446,10 @@ public class SubversionMergeGrapher
   public void setProjectBaseUrl(String projectBaseUrl)
   {
     this.projectBaseUrl = projectBaseUrl;
+  }
+
+  public void setDirPath(String dirPath)
+  {
+    this.dirPath = dirPath;
   }
 }

@@ -22,7 +22,7 @@ public class GraphVizOutput extends GraphVizHandler
     super(os, outputFormat, deleteDotFileOnExit, dotExecutablePath, concentrateEdges, nodeOrder);
   }
 
-  public File makeDotFile(Map<String, Path> pathMap, List<CopyInfo> copyInfo, String repositoryName) throws IOException
+  public File makeDotFile(Map<String, Path> pathMap, List<CopyInfo> copyInfo, String repositoryName, String dirPath) throws IOException
   {
     String         fileName                = repositoryName + ".dot";
     List<String>   lines                   = new ArrayList<String>();
@@ -45,7 +45,7 @@ public class GraphVizOutput extends GraphVizHandler
     writeRanking(lines, allInterestingRevisions, pathMap);
     lines.add("}");
 
-    File file = new File(fileName);
+    File file = new File(dirPath, fileName);
 
     System.out.println("Writing output file " + file.getAbsolutePath());
     writeLines(file, lines);

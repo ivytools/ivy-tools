@@ -3,8 +3,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 //apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'idea'
-//apply plugin: 'project-report'
-//apply plugin: 'code-quality'
+apply plugin: 'project-report'
+//apply plugin: 'checkstyle'
 //apply plugin: 'signing'
 //apply plugin: 'sonar'
 //apply plugin: 'build-announcements'
@@ -56,6 +56,12 @@ dependencies
 
 test {
  useTestNG()
+  systemProperties "org.uncommons.reportng.stylesheet": "${projectDir}/src/test/resources/hudsonesque.css"
+          options {
+                  listeners << 'org.uncommons.reportng.HTMLReporter'
+                  listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+          }
+          workingDir = 'build/'
 }
 
 task testFormat {
@@ -83,14 +89,14 @@ javadoc {
 
 
 
-task formatTestResults << {
+task formatTestResults  << {
   ant.xslt(in:  './build/reports/tests/testng-results.xml',
            out: './build/reports/tests/index.html',
            style: 'src/main/resources/testng-results.xsl',
            classpath: '/Users/douglasbullard/Documents/JavaStuff/testng-xslt-1.1.1/lib/saxon-8.7.jar'){
-            param(name:'testNgXslt.testDetailsFilter', expression:"FAIL,SKIP,PASS")
             param(name:'testNgXslt.outputDir', expression:'$outputDir')
             param(name:'testNgXslt.sortTestCaseLinks', expression:'true')
+            param(name:'testNgXslt.testDetailsFilter', expression:"FAIL,SKIP,PASS")
   }
 }
 
@@ -119,12 +125,6 @@ task transform << {
 //}
 
 
-//task(runSimple, dependsOn: 'classes', type: JavaExec) {
-//  main = 'com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame'
-//  classpath = sourceSets.main.runtimeClasspath
-//  args 'DIBBLE'
-//  systemProperty 'simple.message', 'Hello '
-//}
 
 // Note that we have to tell Gradle what's expected to run before this - Gradle doesn't honor dependency order in the tasks as specified below
 task publishWebstart(dependsOn: ['installApp', 'copyResources', 'copyHelp','copyLibs','signJars'], description: 'Create the WebStart distributable.')
@@ -176,13 +176,4 @@ task listRuntimeJars << {
     configurations.runtime.each { File file -> println file.name }
 }
 
-//task copyThirdPartyLibs(type: Copy) {
-//    from('lib')
-//    into('webstart/lib')
-//    exclude('junit-4.7.jar', 'netty-3.1.5.GA-sources.jar', 'jcsp.jar', 'jcsp-demos-util.jar', 'spock-core*')
-//}
-
-//jar.doAfter {
-//  ant.mkdirs('webstart/lib')
-//}
 

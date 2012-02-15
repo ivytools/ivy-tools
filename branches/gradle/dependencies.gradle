@@ -31,9 +31,11 @@ dependencies {
     'com.intellij:forms_rt:9.0.0',
     'com.intellij:javac2:9.0.0',
     'org.jdom:jdom:1.0',
-    'org.testng:testng:5.8-jdk1.5',
+//    'org.testng:testng:5.8-jdk1.5',
     'org.objectweb.asm:asm:3.1',
-    'javax.help:jhall:2.0.6'
+    'javax.help:jhall:2.0.6',
+    'org.uncommons:reportng:1.1.2'
+    'org.testng:testng:5.14.2'
 
     runtime 'net.java.dev.glazedlists:glazedlists_java15:1.8.0',
 //  'ca.odell.glazedlists:jdk_1.5:1.8.0',
