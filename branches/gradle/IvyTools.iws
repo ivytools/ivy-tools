@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="41192912-a785-4ebe-9a3a-0ffe4f2bafa3" name="Default" comment="readding ivyBuilder">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/hudsonesque.css" />
+    <list default="true" readonly="true" id="41192912-a785-4ebe-9a3a-0ffe4f2bafa3" name="Default" comment="readding ivyBuilder">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build.cmd" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build.sh" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/IvyTools.jar" afterPath="$PROJECT_DIR$/webstart/lib/IvyTools.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/asm-3.1.jar" afterPath="$PROJECT_DIR$/webstart/lib/asm-3.1.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/buildtasks-1.0-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/webstart/lib/buildtasks-1.0-SNAPSHOT.jar" />
@@ -18,14 +19,47 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/testng-5.8-jdk1.5.jar" afterPath="$PROJECT_DIR$/webstart/lib/testng-5.8-jdk1.5.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/version_tool-1.1.4_fixed.jar" afterPath="$PROJECT_DIR$/webstart/lib/version_tool-1.1.4_fixed.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/lib/xstream-1.2.jar" afterPath="$PROJECT_DIR$/webstart/lib/xstream-1.2.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IvyTools.iml" afterPath="$PROJECT_DIR$/IvyTools.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IvyTools.ipr" afterPath="$PROJECT_DIR$/IvyTools.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IvyTools.iws" afterPath="$PROJECT_DIR$/IvyTools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dependencies.gradle" afterPath="$PROJECT_DIR$/dependencies.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/master-build/master-build.gradle" afterPath="$PROJECT_DIR$/master-build/master-build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.form" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.form" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/GraphVizOutput.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/GraphVizOutput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/SubversionMergeGrapher.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/SubversionMergeGrapher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/nurflugel/mergegrapher/SubversionMergeGrapherTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/nurflugel/mergegrapher/SubversionMergeGrapherTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/buildMaster.jnlp" afterPath="$PROJECT_DIR$/src/app/web/buildMaster.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/externalsFinderApp.jnlp" afterPath="$PROJECT_DIR$/src/app/web/externalsFinderApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/grapherImages.html" afterPath="$PROJECT_DIR$/src/app/web/grapherImages.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/help.jnlp" afterPath="$PROJECT_DIR$/src/app/web/help.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/index.html" afterPath="$PROJECT_DIR$/src/app/web/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/ivyBrowserApp.jnlp" afterPath="$PROJECT_DIR$/src/app/web/ivyBrowserApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/ivyBuilder.jnlp" afterPath="$PROJECT_DIR$/src/app/web/ivyBuilder.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/ivyFormatterApp.jnlp" afterPath="$PROJECT_DIR$/src/app/web/ivyFormatterApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/ivyGrapherApp.jnlp" afterPath="$PROJECT_DIR$/src/app/web/ivyGrapherApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/javaVersionFinderApp.jnlp" afterPath="$PROJECT_DIR$/src/app/web/javaVersionFinderApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/web/jnlp.xsd" afterPath="$PROJECT_DIR$/src/app/web/jnlp.xsd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/common/ui/FindMultiplePreferencesItemsDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/common/ui/FindMultiplePreferencesItemsDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/externalsreporter/ui/ExternalsFinderMainFrame.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/externalsreporter/ui/ExternalsFinderMainFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/externalsreporter/ui/UsernamePasswordDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/externalsreporter/ui/UsernamePasswordDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/CreateDependenciesDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/CreateDependenciesDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/IvyLineDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/IvyLineDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivygrapher/IvyGrapher.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivygrapher/IvyGrapher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivygrapher/NoDotDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivygrapher/NoDotDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/FindUsingProjectsDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/FindUsingProjectsDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/IvyTrackerMainFrame.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/IvyTrackerMainFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/ShowProjectsDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/ivytracker/ShowProjectsDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/versionfinder/UsernamePasswordDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/versionfinder/UsernamePasswordDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nurflugel/versionfinder/VersionFinderUi.java" afterPath="$PROJECT_DIR$/src/main/java/com/nurflugel/versionfinder/VersionFinderUi.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/buildMaster.jnlp" afterPath="$PROJECT_DIR$/webstart/buildMaster.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/externalsFinderApp.jnlp" afterPath="$PROJECT_DIR$/webstart/externalsFinderApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/grapherImages.html" afterPath="$PROJECT_DIR$/webstart/grapherImages.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/help.jnlp" afterPath="$PROJECT_DIR$/webstart/help.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/index.html" afterPath="$PROJECT_DIR$/webstart/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/ivyBrowserApp.jnlp" afterPath="$PROJECT_DIR$/webstart/ivyBrowserApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/ivyBuilder.jnlp" afterPath="$PROJECT_DIR$/webstart/ivyBuilder.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/ivyFormatterApp.jnlp" afterPath="$PROJECT_DIR$/webstart/ivyFormatterApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/ivyGrapherApp.jnlp" afterPath="$PROJECT_DIR$/webstart/ivyGrapherApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webstart/javaVersionFinderApp.jnlp" afterPath="$PROJECT_DIR$/webstart/javaVersionFinderApp.jnlp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/whencejava.sh" afterPath="$PROJECT_DIR$/whencejava.sh" />
     </list>
     <ignored path="IvyTools.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -85,26 +119,8 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="master-build.gradle" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/master-build/master-build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="129" column="20" selection-start="4172" selection-end="4187" vertical-scroll-proportion="0.6323185">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SubversionMergeGrapherTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/com/nurflugel/mergegrapher/SubversionMergeGrapherTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="48" selection-start="390" selection-end="390" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hudsonesque.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/resources/hudsonesque.css">
+      <file leaf-file-name="settings.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/settings.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
@@ -112,51 +128,76 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dependencies.gradle" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dependencies.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="22" selection-start="1174" selection-end="1174" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="0" selection-start="81" selection-end="81" vertical-scroll-proportion="0.0">
+            <state line="38" column="9" selection-start="921" selection-end="921" vertical-scroll-proportion="0.69427526">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BuilderMainFrame.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/BuilderMainFrame.java">
+      <file leaf-file-name="whencejava.sh" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/whencejava.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="30" selection-start="2153" selection-end="2153" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#1752#1771#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NewComponentDialog.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="44" selection-start="1752" selection-end="1752" vertical-scroll-proportion="0.0">
+            <state line="14" column="0" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FileHandler.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/handlers/FileHandler.java">
+      <file leaf-file-name="master-build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/master-build/master-build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="59" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
+            <state line="34" column="9" selection-start="812" selection-end="812" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="externalsFinderApp.jnlp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webstart/externalsFinderApp.jnlp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="80" selection-start="1447" selection-end="1447" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ivyBrowserApp.jnlp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webstart/ivyBrowserApp.jnlp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="77" selection-start="1402" selection-end="1402" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IvyBrowserMainFrame.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/IvyBrowserMainFrame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="53" column="13" selection-start="2340" selection-end="2340" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IvyFormatterMainFrame.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="0" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="imports" expanded="true" />
+                <marker date="1329631279000" expanded="true" signature="4649:4654" placeholder="{...}" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Util.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/common/ui/Util.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="126" column="21" selection-start="4392" selection-end="4392" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -179,22 +220,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
+        <option value="$PROJECT_DIR$/webstart/ivyGrapherApp.jnlp" />
+        <option value="$PROJECT_DIR$/src/app/web/jnlp.xsd" />
+        <option value="$PROJECT_DIR$/src/app/web/buildMaster.jnlp" />
+        <option value="$PROJECT_DIR$/src/app/web/externalsFinderApp.jnlp" />
+        <option value="$PROJECT_DIR$/src/app/web/grapherImages.html" />
+        <option value="$PROJECT_DIR$/src/app/web/help.jnlp" />
+        <option value="$PROJECT_DIR$/src/app/web/index.html" />
+        <option value="$PROJECT_DIR$/src/app/web/ivyBrowserApp.jnlp" />
         <option value="$PROJECT_DIR$/src/app/web/ivyBuilder.jnlp" />
         <option value="$PROJECT_DIR$/src/app/web/ivyFormatterApp.jnlp" />
         <option value="$PROJECT_DIR$/src/app/web/ivyGrapherApp.jnlp" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/app/web/javaVersionFinderApp.jnlp" />
-        <option value="$PROJECT_DIR$/src/app/web/help.jnlp" />
-        <option value="$PROJECT_DIR$/webstart/help.jnlp" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/handlers/FileHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/BuilderMainFrame.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.java" />
-        <option value="$PROJECT_DIR$/dependencies.gradle" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.form" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/GraphVizOutput.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/SubversionMergeGrapher.java" />
-        <option value="$PROJECT_DIR$/src/test/java/com/nurflugel/mergegrapher/SubversionMergeGrapherTest.java" />
         <option value="$PROJECT_DIR$/master-build/master-build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.java" />
+        <option value="$PROJECT_DIR$/whencejava.sh" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -203,10 +244,10 @@
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="104" />
+    <option name="x" value="84" />
     <option name="y" value="22" />
-    <option name="width" value="1333" />
-    <option name="height" value="1024" />
+    <option name="width" value="1635" />
+    <option name="height" value="1389" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -239,6 +280,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -302,12 +344,22 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -325,7 +377,71 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nurflugel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nurflugel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="versionfinder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -359,7 +475,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -375,63 +491,79 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
+              <option name="myItemId" value="ivytracker" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nurflugel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ivygrapher" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nurflugel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ivyformatter" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="ui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IvyTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IvyTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="nurflugel" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -499,47 +631,45 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ivybuilder" />
+              <option name="myItemId" value="ivybrowser" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IvyTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nurflugel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ivybrowser" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="ui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IvyTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IvyTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -574,7 +704,6 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -592,9 +721,9 @@
     <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -615,129 +744,6 @@
     <option name="referenceOn" value="false" />
     <option name="referencePos" value="0" />
     <option name="showLabels" value="true" />
-  </component>
-  <component name="RestoreUpdateTree">
-    <UpdateInfo date="Moments ago" ActionInfo="_Update">
-      <UpdatedFiles>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated from server" />
-          <option name="myStatusName" value="Changed on server" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CHANGED_ON_SERVER" />
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Updated" />
-            <option name="myStatusName" value="Changed" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="UPDATED" />
-            <PATH vcs="svn" revision="252">$PROJECT_DIR$</PATH>
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Created" />
-            <option name="myStatusName" value="Created" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="CREATED" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Deleted" />
-            <option name="myStatusName" value="Deleted" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="true" />
-            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Restored" />
-            <option name="myStatusName" value="Will be restored" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="RESTORED" />
-          </FILE-GROUP>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Modified" />
-          <option name="myStatusName" value="Modified" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MODIFIED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Skipped" />
-          <option name="myStatusName" value="Skipped" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SKIPPED" />
-          <PATH vcs="svn" revision="252">$PROJECT_DIR$/build/master-build</PATH>
-          <PATH vcs="svn" revision="252">$PROJECT_DIR$/build/ivy</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with conflicts" />
-          <option name="myStatusName" value="Will be merged with conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_CONFLICTS" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with tree conflicts" />
-          <option name="myStatusName" value="Merged with tree conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged" />
-          <option name="myStatusName" value="Will be merged" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Not in repository" />
-          <option name="myStatusName" value="Not in repository" />
-          <option name="mySupportsDeletion" value="true" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UNKNOWN" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally added" />
-          <option name="myStatusName" value="Locally added" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_ADDED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally removed" />
-          <option name="myStatusName" value="Locally removed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_REMOVED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Switched" />
-          <option name="myStatusName" value="Switched" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SWITCHED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with property conflicts" />
-          <option name="myStatusName" value="Will be merged with property conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Externals" />
-          <option name="myStatusName" value="Externals" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="external" />
-          <PATH vcs="svn" revision="252">$PROJECT_DIR$/build/master-build</PATH>
-          <PATH vcs="svn" revision="252">$PROJECT_DIR$/build/ivy</PATH>
-        </FILE-GROUP>
-      </UpdatedFiles>
-    </UpdateInfo>
   </component>
   <component name="RunManager" selected="TestNG.SubversionMergeGrapherTest.testGrapher03">
     <configuration default="false" name="SubversionMergeGrapherTest.testGrapher03" type="TestNG" factoryName="TestNG" temporary="true">
@@ -787,24 +793,6 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -831,6 +819,24 @@
       <envs />
       <properties />
       <listeners />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -910,6 +916,7 @@
     <option name="FORCE_UPDATE" value="false" />
     <configuration useDefault="true">$USER_HOME$/.subversion_IDEA</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+    <supportedVersion>125</supportedVersion>
   </component>
   <component name="SvnFileUrlMappingImpl">
     <option name="myMappingRoots">
@@ -938,14 +945,13 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="104" y="22" width="1333" height="1024" extended-state="0" />
+    <frame x="84" y="22" width="1635" height="1389" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944834" sideWeight="0.67169" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294031" sideWeight="0.67169" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31431648" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944834" sideWeight="0.67169" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3196986" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294031" sideWeight="0.67169" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Navigate" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -956,19 +962,20 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298872" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="simpleUML" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Jalopy" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32831" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="SVN Repositories" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298872" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32766616" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27816626" sideWeight="0.67169" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22432262" sideWeight="0.67233384" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921174" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Regex" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="SVN Repositories" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4443586" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="SVN Properties" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="SVN Properties" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3196986" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1006,7 +1013,7 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <option name="CREATE_PATCH_EXPAND_DETAILS_DEFAULT" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="readding ivyBuilder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bypassing javac2 in Gradle" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1025,7 +1032,11 @@
     <MESSAGE value="Versioned build working with jars (still want to get rid of the version number).  Got Subversion dir listed as a replaceable parameter" />
     <MESSAGE value="Cleanup" />
     <MESSAGE value="Added jhall version" />
+    <MESSAGE value="Formatting unit tests, trying to get unit tests to run in Gradle paths" />
+    <MESSAGE value="Adding missing mime types to jnlp" />
+    <MESSAGE value="Adding missing jar to dist" />
     <MESSAGE value="readding ivyBuilder" />
+    <MESSAGE value="Bypassing javac2 in Gradle" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1035,116 +1046,116 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/webstart/ivyBrowserApp.jnlp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/web/javaVersionFinderApp.jnlp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="21" selection-start="658" selection-end="658" vertical-scroll-proportion="0.0">
+        <state line="16" column="18" selection-start="699" selection-end="699" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webstart/javaVersionFinderApp.jnlp">
+    <entry file="file://$PROJECT_DIR$/gpars/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="1299" selection-end="1299" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/web/help.jnlp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="34" selection-start="431" selection-end="437" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webstart/help.jnlp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="489" selection-end="489" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/handlers/FileHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="59" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
+        <state line="318" column="36" selection-start="12220" selection-end="12220" vertical-scroll-proportion="0.543379">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#0#51#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/BuilderMainFrame.java">
+    <entry file="file://$PROJECT_DIR$/src/app/web/jnlp.xsd">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="30" selection-start="2153" selection-end="2153" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#1752#1771#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="44" selection-start="1752" selection-end="1752" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="81" selection-end="81" vertical-scroll-proportion="0.0">
+        <state line="467" column="28" selection-start="12943" selection-end="12950" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dependencies.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="22" selection-start="1174" selection-end="1174" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/resources/hudsonesque.css">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/externalsreporter/ui/ExternalsFinderMainFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="71" column="13" selection-start="3269" selection-end="3269" vertical-scroll-proportion="-1.0016528">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webstart/externalsFinderApp.jnlp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="80" selection-start="1447" selection-end="1447" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webstart/ivyBrowserApp.jnlp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="77" selection-start="1402" selection-end="1402" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybrowser/ui/IvyBrowserMainFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="13" selection-start="2340" selection-end="2340" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivybuilder/ui/NewComponentDialog.form">
-      <provider selected="true" editor-type-id="ui-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/GraphVizOutput.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/common/ui/Util.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="114" selection-start="1012" selection-end="1012" vertical-scroll-proportion="0.09756097">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/mergegrapher/SubversionMergeGrapher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="22" selection-start="3057" selection-end="3057" vertical-scroll-proportion="0.33275262">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/com/nurflugel/mergegrapher/SubversionMergeGrapherTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="48" selection-start="390" selection-end="390" vertical-scroll-proportion="0.0">
+        <state line="126" column="21" selection-start="4392" selection-end="4392" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/master-build/master-build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="20" selection-start="4172" selection-end="4187" vertical-scroll-proportion="0.6323185">
+        <state line="34" column="9" selection-start="812" selection-end="812" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.form">
+      <provider selected="true" editor-type-id="ui-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/nurflugel/ivyformatter/ui/IvyFormatterMainFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1329631279000" expanded="true" signature="4649:4654" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../../../Nike_Subversion_Projects/java3rdpartylib/jdk/src/src.zip!/java/net/URLClassLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="82" column="11" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.57831323">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/whencejava.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="9" selection-start="921" selection-end="921" vertical-scroll-proportion="0.69427526">
           <folding />
         </state>
       </provider>
