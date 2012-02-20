@@ -1,7 +1,6 @@
 package com.nurflugel.mergegrapher.domain;
 
 import com.nurflugel.ivybrowser.domain.Revision;
-
 import java.util.ArrayList;
 import java.util.List;
 

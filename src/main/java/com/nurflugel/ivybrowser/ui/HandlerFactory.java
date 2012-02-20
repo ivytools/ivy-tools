@@ -30,7 +30,7 @@ public class HandlerFactory
 {
   // -------------------------- STATIC METHODS --------------------------
   public static BaseWebIvyRepositoryBrowserHandler getIvyRepositoryHandler(UiMainFrame ivyBrowserMainFrame, String ivyRepositoryPath,
-                                                                           EventList<IvyPackage> repositoryList,
+                                                                           List<IvyPackage> repositoryList,
                                                                            Map<String, Map<String, Map<String, IvyPackage>>> packageMap,
                                                                            AppPreferences preferences)
   {

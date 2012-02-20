@@ -1,9 +1,7 @@
 package com.nurflugel.ivybrowser.ui;
 
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
-
 import java.util.List;
-
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 

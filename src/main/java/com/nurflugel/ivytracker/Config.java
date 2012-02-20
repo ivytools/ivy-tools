@@ -1,9 +1,7 @@
 package com.nurflugel.ivytracker;
 
 import com.nurflugel.externalsreporter.ui.UserConfig;
-
 import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;

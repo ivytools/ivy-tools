@@ -1,32 +1,24 @@
 package com.nurflugel.mergegrapher;
 
 import com.nurflugel.Os;
-
 import static com.nurflugel.Os.findOs;
-
 import com.nurflugel.WebAuthenticator;
-
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
-
 import com.nurflugel.ivybrowser.domain.Revision;
-
 import static com.nurflugel.ivygrapher.NodeOrder.TOP_TO_BOTTOM;
 import static com.nurflugel.ivygrapher.OutputFormat.PDF;
-
 import com.nurflugel.mergegrapher.domain.CopyInfo;
 import com.nurflugel.mergegrapher.domain.Path;
 import com.nurflugel.mergegrapher.domain.Type;
 import static com.nurflugel.mergegrapher.domain.Type.A;
 import static com.nurflugel.mergegrapher.domain.Type.D;
 import static com.nurflugel.mergegrapher.domain.Type.findByValue;
-
 import org.apache.commons.lang.StringUtils;
 import static org.apache.commons.lang.StringUtils.countMatches;
 import static org.apache.commons.lang.StringUtils.equals;
 import static org.apache.commons.lang.StringUtils.remove;
 import static org.apache.commons.lang.StringUtils.substringAfterLast;
 import static org.apache.commons.lang.StringUtils.substringBeforeLast;
-
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -40,12 +32,9 @@ import org.tmatesoft.svn.core.wc.SVNPropertyData;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import static org.tmatesoft.svn.core.wc.SVNRevision.HEAD;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.net.Authenticator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +61,7 @@ public class SubversionMergeGrapher
   // private String projectBaseUrl = "http://ivy-tools.googlecode.com/svn";
   private Map<String, Path> pathMap  = new TreeMap<String, Path>();
   private List<CopyInfo>    copyInfo = new ArrayList<CopyInfo>();
+  private String            dirPath;
 
   // --------------------------- main() method ---------------------------
   public static void main(String[] args)
@@ -136,7 +126,7 @@ public class SubversionMergeGrapher
       }
 
       String repositoryName = substringAfterLast(projectBaseUrl, "/");
-      File   file           = graphVizOutput.makeDotFile(pathMap, copyInfo, repositoryName);
+      File   file           = graphVizOutput.makeDotFile(pathMap, copyInfo, repositoryName, dirPath);
 
       return file;
     }
@@ -456,5 +446,10 @@ public class SubversionMergeGrapher
   public void setProjectBaseUrl(String projectBaseUrl)
   {
     this.projectBaseUrl = projectBaseUrl;
+  }
+
+  public void setDirPath(String dirPath)
+  {
+    this.dirPath = dirPath;
   }
 }

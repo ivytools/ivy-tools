@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp
-        spec="1.0+"
-        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
-        href="externalsFinderApp.jnlp">
+<jnlp spec="1.0+"
+      codebase="http://ivy-tools.googlecode.com/svn/branches/gradle/webstart/"
+      href="externalsFinderApp.jnlp">
     <information>
         <title>Subversion Externals Finder</title>
         <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
         <description>Find externals in your Subversion repositories</description>
         <icon href="images/ExternalsFinder-small.png"/>
-        <icon kind="splash" href="images/ExternalsFinder-splash.jpg"/>
+        <icon kind="splash"
+              href="images/ExternalsFinder-splash.jpg"/>
         <offline-allowed/>
         <shortcut online="true">
            <desktop/>
@@ -19,18 +19,22 @@
     <security>
         <all-permissions/>
     </security>
-    <update check="timeout" policy="always"/>
+    <update check="timeout"
+            policy="always"/>
     <resources>
-        <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
-        <jar href="lib/IvyBrowser.jar"/>
-        <jar href="lib/xstream.jar"/>
-        <jar href="lib/svnkit.jar"/>
-        <jar href="lib/glazedlists.jar"/>
-        <jar href="lib/forms_rt.jar"/>
-        <jar href="lib/commons-lang.jar"/>
-        <jar href="lib/commons-io.jar"/>
-        <jar href="lib/help.jar"/>
-        <extension name="help" href="help.jnlp"/>
+        <j2se version="1.6+"
+              initial-heap-size="64m"
+              max-heap-size="512m"/>
+        <jar href="lib/IvyTools.jar"/>
+        <jar href="lib/xstream-1.2.jar"/>
+        <jar href="lib/svnkit-1.3.0.jar"/>
+        <jar href="lib/glazedlists_java15-1.8.0.jar"/>
+        <jar href="lib/forms_rt-9.0.0.jar"/>
+        <jar href="lib/commons-lang-2.4.jar"/>
+        <jar href="lib/commons-io-1.4.jar"/>
+      <!--<jar href="lib/help.jar"/>-->
+      <extension name="help"
+                 href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.externalsreporter.ui.ExternalsFinderMainFrame"/>
 </jnlp>

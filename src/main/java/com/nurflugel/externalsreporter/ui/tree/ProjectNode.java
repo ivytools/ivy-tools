@@ -1,7 +1,6 @@
 package com.nurflugel.externalsreporter.ui.tree;
 
 import com.nurflugel.BuildableProjects;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.nurflugel.ivytracker.domain;
 
 import java.io.Serializable;
-
 import java.util.Comparator;
 
 /**

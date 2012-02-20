@@ -2,7 +2,6 @@ package com.nurflugel.externalsreporter.ui;
 
 import com.nurflugel.common.ui.Util;
 import static com.nurflugel.common.ui.Util.getUrlNoTrailingSlash;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /** Representation of an external and the project that uses it. */

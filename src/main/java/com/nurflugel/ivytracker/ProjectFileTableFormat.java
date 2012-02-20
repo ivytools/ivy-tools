@@ -1,7 +1,6 @@
 package com.nurflugel.ivytracker;
 
 import ca.odell.glazedlists.gui.TableFormat;
-
 import com.nurflugel.ivytracker.domain.Project;
 
 /** Table format to determine how the Project table gets displayed. */

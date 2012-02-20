@@ -1,9 +1,7 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.TextFilterator;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-
 import java.util.List;
 
 /**

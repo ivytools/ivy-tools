@@ -2,7 +2,6 @@ package com.nurflugel.externalsreporter.ui.tree;
 
 import com.nurflugel.Branch;
 import com.nurflugel.BuildableProjects;
-
 import com.nurflugel.common.ui.tree.CheckableItem;
 
 /**

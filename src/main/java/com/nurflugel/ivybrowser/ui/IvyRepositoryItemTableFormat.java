@@ -1,7 +1,6 @@
 package com.nurflugel.ivybrowser.ui;
 
 import ca.odell.glazedlists.gui.TableFormat;
-
 import com.nurflugel.ivybrowser.domain.IvyRepositoryItem;
 
 /**

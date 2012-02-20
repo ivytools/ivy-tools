@@ -1,95 +1,79 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head>
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META NAME="Author" CONTENT="Douglas Bullard">
+<META NAME="Generator" CONTENT="NetObjects Fusion 7 for Windows">
+<META NAME="Keywords" CONTENT="Nurflugel, Ant, GraphViz">
+<TITLE>using_ant_script_visualizer</TITLE>
+<!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
 
-
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta name="Author" content="Douglas Bullard">
-<meta name="Generator" content="NetObjects Fusion 7 for Windows">
-<meta name="Keywords" content="Nurflugel, Ant, GraphViz"><title>Using Ivy Browser</title><!-- DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" -->
-
-
-
-<link rel="STYLESHEET" type="text/css" href="../html/style.css">
-<link rel="STYLESHEET" type="text/css" href="../html/site.css">
-<style>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/style.css">
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../html/site.css">
+<STYLE>
 :link { color: rgb(0,51,204);}
 :visited { color: rgb(153,0,153);}
 :active { color: rgb(255,0,0);}
 BODY { color: rgb(0,0,0);}
-</style></head><body style="background-color: rgb(255, 255, 255); background-image: url(../assets/images/wing1.jpg);">
+</STYLE>
+</HEAD>
+<BODY  STYLE="background-color: rgb(255,255,255); background-image: url('../assets/images/wing1.jpg');" >
 <!--<BODY  STYLE="background-color: rgb(255,255,255); " >-->
-<p style="text-align: center;"><b><span style="font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,Sans-serif,sans-serif; font-size: x-large;">Ivy Browser</span></b></p>
-<p style="text-align: left;"><b><span style="font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,Sans-serif,sans-serif; font-size: large;">Using Ivy Browser</span></b></p>
-<span style="font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,Sans-serif,sans-serif;">
+<P STYLE="text-align: center;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: x-large;">Ivy Browser</SPAN></B></P>
+<P STYLE="text-align: left;"><B><SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif; font-size: large;">Using Ivy Browser</SPAN></B></P>
+<SPAN STYLE="font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, Helvetica, Sans-serif, sans-serif;">
 
-    If you fired up the program, you should see the following: <br>
-    <img src="../assets/images/browser/11-mainframe.png" alt="" border="1">
+    If you fired up the program, you should see the following: <BR>
+    <IMG SRC="../assets/images/browser/11-mainframe.png"  BORDER=1 ALT="">
 
-<p>
-The first time you run the app, you need to set the location of the Ivy
-repository or repositories (yes, you can have more than one, but you
-can only use one at a time). Click on the "Specify Repository" button:
+<P>
+The first time you run the app, you need to set the location of the Ivy repository or repositories (yes, you can have more than one).  Click on the
+    "Specify Repository" button:
 <br>
-    <img src="../assets/images/browser/14-specifyRepository.png" alt="" border="1">
-   </p><p>Enter
-a URL for your repository. You can either select an existing value in
-the dropdown if needed, or type a new one, which will get added to the
-dropdown.</p><p> Once you've added your repository location, you
-don't need to change it, unless you switch repositories. It will
-persist across invocations. </p><p>
-Click the "OK" button to start parsing the repository. This may take
-some time, depnding on the size of the repository and network speed.
-It's multithreaded, so on a local network it really flies. <br>
-</p>
-<p>You'll see the spinner go as it parses entries, and the entries are listed on the status bar at the bottom:<br>
-
-    <img src="../assets/images/browser/16-parsingRepository.png" alt="" border="1">
-    </p>
-<p> Once the respository has been parsed, it's contents are visible in
-the table. The results are cached on the hard drive, so the next time
-it runs it'll open after only a second or two.<br>
-</p>
-<p>Note the "Parse Repository on Open" checkbox - you'll probably want
-this unchecked, unless you want to always get all the new items in the
-repository on load (I've got a todo for doing that in the
-background).&nbsp; Of course, you can always get the latest results by
-clicking on the "Re-parse Repository" button.<br>
-    <img src="../assets/images/browser/17-repository.png" alt="" border="1">
-    </p>
-<p>
+    <IMG SRC="../assets/images/browser/14-specifyRepository.png"  BORDER=1 ALT="">
+   <P>
+Enter a URL for your repository.  You can either select an existing value in the dropdown if needed, or type a new one, which will get added to the
+    dropdown.<p>
+    Once you've added your repository location, you don't need to change it, unless you switch repositories.  It will persist across invocations.
+    <p>
+Click the "OK" button to start parsing the repository.  This may take some time, depnding on the size of the repository and network speed.  It's multithreaded, so
+    on a local network it really flies.  You'll see the spinner go as it parses entries, and the entries are listed on the status bar at the bottom:<br>
+    <IMG SRC="../assets/images/browser/16-parsingRepository.png"  BORDER=1 ALT="">
+    <P>
+    Once the respository has been parsed, it's contents are visible in the table.  Note the "Parse Repository on Open" checkbox - you'll probably want
+    this checked so that the repository will parse as soon as the program opens if you've only got one repository.  If you have to switch often, you'll want to
+    leave it unchecked so you won't parse a repository you aren't using.<br>
+    <IMG SRC="../assets/images/browser/17-repository.png"  BORDER=1 ALT="">
+    <P>
 As nice as this looks, it isn't very navigable.  Type some key words in the "Find library" textbox, like "commons lang"<br>
-    <img src="../assets/images/browser/18-filteredRepository.png" alt="" border="1">
-    </p><p>
-Note that just the items with "commons" or "lang" are visible.  You can filter off of org, module, or revision.</p><p>
-Now the fun begins - click on a row (in this case, commons-lang 2.4) -
-you get a dialog showing you what's in Ivy, and all the jars that will
-be brought in:<br>
-    <img src="../assets/images/browser/19-commons-lang.png" alt="" border="1">
-    </p><p>
-Clicking on the "OK" button closes the dialog, and you've now got that
-entire line of XML in your copy/paste buffer, ready to paste into your
-Ivy file!</p><p>
+    <IMG SRC="../assets/images/browser/18-filteredRepository.png"  BORDER=1 ALT="">
+    <P>
+Note that just the items with "commons" or "lang" are visible.  You can filter off of org, module, or revision.<P>
+    Now the fun begins - click on a row (in this case, commons-lang 2.4) - you get a dialog showing you what's in Ivy, and all the jars that will be brought in:<br>
+    <IMG SRC="../assets/images/browser/19-commons-lang.png"  BORDER=1 ALT="">
+    <P>
+Clicking on the "OK" button closes the dialog, and you've now got that entire line of XML in your copy/paste buffer, ready to paste into your Ivy file!<P>
     Selecting the "Force this version" checkbox adds the "force=true" snippet:<br>
-    <img src="../assets/images/browser/20-forced.png" alt="" border="1">
-    </p><p>
-But wait, there's more!</p><p>
+    <IMG SRC="../assets/images/browser/20-forced.png"  BORDER=1 ALT="">
+    <P>
+But wait, there's more!<p>
     Let's select "hibernate 3.2.0", and see the dialog:<br>
-    <img src="../assets/images/browser/23-hibernateAll.png" alt="" border="1">
-    </p><p>
-We can now see all depencencies that Hibernate brings in, and there are
-there are a bunch of things we don't want in there - we only want one
-cache implementation. We just have to unselect the checkbox for the
-ones we don't want, and the XML will reflect that:<br>
-    <img src="../assets/images/browser/24-hibernateFiltered.png" alt="" border="1">
-    </p><p>
-    But wait, there's still more!</p><p>
+    <IMG SRC="../assets/images/browser/23-hibernateAll.png"  BORDER=1 ALT="">
+    <P>
+    We can now see all depencencies that Hibernate brings in, and there are there are a bunch of things we don't want in there -
+    we only want one cache implementation.  We just have to unselect the checkbox for the ones we don't want, and the XML will reflect that:<br>
+    <IMG SRC="../assets/images/browser/24-hibernateFiltered.png"  BORDER=1 ALT="">
+    <P>
+    But wait, there's still more!<p>
         <i>Right</i> click on the line for swarmcache, and another dialog comes up for it, so you can see what it brings in:<br>
-        <img src="../assets/images/browser/26-drillDown.png" alt="" border="1">
-        </p><p>
-        </p><p>
-        </p><p>
+        <IMG SRC="../assets/images/browser/26-drillDown.png"  BORDER=1 ALT="">
+        <P>
+        <P>
+        <P>
 
     Wasn't that easy?
     
-   </p></span>
-   </body></html>
+   </Span>
+   </BODY>
+</HTML>
+ 

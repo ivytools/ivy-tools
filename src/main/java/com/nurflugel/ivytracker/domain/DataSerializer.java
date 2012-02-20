@@ -1,25 +1,19 @@
 package com.nurflugel.ivytracker.domain;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-
 import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showInputDialog;
 
