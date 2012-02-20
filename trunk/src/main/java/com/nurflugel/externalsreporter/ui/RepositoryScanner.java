@@ -1,13 +1,9 @@
 package com.nurflugel.externalsreporter.ui;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
-
 import org.tmatesoft.svn.core.wc.SVNWCClient;
-
 import java.io.IOException;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

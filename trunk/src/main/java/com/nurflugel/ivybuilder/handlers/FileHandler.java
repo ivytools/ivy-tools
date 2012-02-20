@@ -12,7 +12,7 @@ import java.util.List;
                   })
 public class FileHandler extends SwingWorker<Object, Object>
 {
-  public static final String      SVN           = ".svn";
+  private static final String     SVN           = ".svn";
   private List<IvyRepositoryItem> ivyPackages;
   private BuilderMainFrame        mainFrame;
   private File                    repositoryDir;

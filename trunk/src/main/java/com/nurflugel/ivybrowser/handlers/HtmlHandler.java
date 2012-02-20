@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -27,7 +28,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 {
   // --------------------------- CONSTRUCTORS ---------------------------
-  public HtmlHandler(UiMainFrame mainFrame, String ivyRepositoryPath, EventList<IvyPackage> ivyPackages,
+  public HtmlHandler(UiMainFrame mainFrame, String ivyRepositoryPath, List<IvyPackage> ivyPackages,
                      Map<String, Map<String, Map<String, IvyPackage>>> packageMap, AppPreferences preferences)
   {
     super(mainFrame, ivyPackages, ivyRepositoryPath, packageMap);

@@ -1,18 +1,12 @@
 package com.nurflugel.ivytracker.handlers;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.common.ui.UiMainFrame;
-
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-
 import com.nurflugel.ivytracker.Config;
 import com.nurflugel.ivytracker.domain.Project;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +83,8 @@ public class SubversionIvyFileFinderHandlerTask implements Runnable
 
     for (String dir : dirs)
     {
-      if (dir.endsWith("repository/") || dir.endsWith("jdk/") || dir.endsWith("ant/"))     // it's an Ivy repository, GTF out!  You'll be in here
-                                                                                           // forever otherwise
+      if (dir.endsWith("repository/") || dir.endsWith("jdk/") || dir.endsWith("ant/"))  // it's an Ivy repository, GTF out!  You'll be in here
+                                                                                        // forever otherwise
       {
         break;
       }
@@ -99,11 +93,11 @@ public class SubversionIvyFileFinderHandlerTask implements Runnable
       {
         List<String> files = urlHandler.getFiles(dir, false);
 
-        if (!files.isEmpty())                                                              // we found some files
+        if (!files.isEmpty())                                                           // we found some files
         {
           for (String possibleIvyFile : files)
           {
-            if (possibleIvyFile.endsWith("ivy.xml"))                                       // It's an Ivy file - parse it!
+            if (possibleIvyFile.endsWith("ivy.xml"))                                    // It's an Ivy file - parse it!
             {
               List<IvyPackage> list = ivyFiles.get(project);
 
@@ -125,8 +119,8 @@ public class SubversionIvyFileFinderHandlerTask implements Runnable
           }
         }
       }
-      else                                                                                 // it's not a build dir, if recursive is turned on, then
-                                                                                           // drill down through the dirs
+      else                                                                              // it's not a build dir, if recursive is turned on, then
+                                                                                        // drill down through the dirs
       {
         if (config.recurseDirs())
         {

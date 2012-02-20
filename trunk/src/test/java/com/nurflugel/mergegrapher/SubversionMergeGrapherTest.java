@@ -16,13 +16,15 @@ public class SubversionMergeGrapherTest
   @BeforeClass(groups = "mergeGrapher")
   public void setUp()
   {
-    grapher        = new SubversionMergeGrapher();
+    grapher = new SubversionMergeGrapher();
+    grapher.setDirPath("build/testOut");
     graphVizOutput = grapher.getGraphVizOutput();
   }
 
   @Test(groups = "mergeGrapher")
   public void testGrapher03() throws IOException
   {
+    setUp();
     doDotTest("grapher03");
   }
 
@@ -33,7 +35,7 @@ public class SubversionMergeGrapherTest
     File dotFile = grapher.generateDotFile(graphVizOutput);
 
     // todo compare dot file with some expected value
-    assertEquals(readLines(dotFile), readLines(new File("source/java/test/data/" + name + "_expected.dot")), "Should have got expected results");
+    assertEquals(readLines(dotFile), readLines(new File("build/resources/test/" + name + "_expected.dot")), "Should have got expected results");
   }
 
   @Test(groups = "mergeGrapher")

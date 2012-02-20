@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- JNLP File for PictureBrowserServlet client application -->
-<jnlp
-        spec="1.0+"
-        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
-        href="javaVersionFinderApp.jnlp">
+<?xml version="1.0" encoding="utf-8"?><!-- JNLP File for PictureBrowserServlet client application -->
+<jnlp spec="1.0+"
+      codebase="http://ivy-tools.googlecode.com/svn/@subversion.branch@/webstart/"
+      href="javaVersionFinderApp.jnlp">
     <information>
         <title>Java Version Finder</title>
         <vendor>Nurflugel Software</vendor>
         <homepage href="index.html"/>
         <description>Java Version Finder</description>
         <icon href="images/VersionFinder-small.jpg"/>
-        <icon kind="splash" href="images/VersionFinder-splash.jpg"/>
+        <icon kind="splash"
+              href="images/VersionFinder-splash.jpg"/>
         <offline-allowed/>
         <shortcut online="true">
            <desktop/>
@@ -20,15 +19,19 @@
     <security>
         <all-permissions/>
     </security>
-    <update check="timeout" policy="always"/>
+    <update check="timeout"
+            policy="always"/>
     <resources>
-        <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
-        <jar href="lib/IvyBrowser.jar"/>
-        <jar href="lib/commons-lang.jar"/>
-        <jar href="lib/help.jar"/>
-        <jar href="lib/forms_rt.jar"/>
-        <jar href="lib/glazedlists.jar"/>
-        <extension name="help" href="help.jnlp"/>
+        <j2se version="1.6+"
+              initial-heap-size="64m"
+              max-heap-size="512m"/>
+        <jar href="lib/IvyTools.jar"/>
+        <jar href="lib/commons-lang-2.4.jar"/>
+      <!--<jar href="lib/help.jar"/>-->
+      <jar href="lib/forms_rt-9.0.0.jar"/>
+        <jar href="lib/glazedlists_java15-1.8.0.jar"/>
+        <extension name="help"
+                   href="help.jnlp"/>
     </resources>
     <application-desc main-class="com.nurflugel.versionfinder.VersionFinderUi"/>
 </jnlp>

@@ -1,15 +1,22 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 <!-- Schema for a JNLP 6.0 -->
-<!-- mechanically generated from DTD.  Needs tweaking, reorg and comments to make it more comprehensible -->
+  <!-- mechanically generated from DTD.  Needs tweaking, reorg and comments to make it more comprehensible -->
 
- <xs:element name="jnlp">
+  <xs:element name="jnlp">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="information" maxOccurs="unbounded"/>
-    <xs:element ref="security" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="update" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="resources" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="information"
+                maxOccurs="unbounded"/>
+    <xs:element ref="security"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="update"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="resources"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
     <xs:choice>
      <xs:element ref="application-desc"/>
      <xs:element ref="applet-desc"/>
@@ -17,10 +24,18 @@
      <xs:element ref="installer-desc"/>
     </xs:choice>
    </xs:sequence>
-   <xs:attribute name="spec" type="xs:string" use="optional"/>
-   <xs:attribute name="version" type="xs:string" use="optional"/>
-   <xs:attribute name="codebase" type="xs:string" use="optional"/>
-   <xs:attribute name="href" type="xs:string" use="optional"/>
+   <xs:attribute name="spec"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="codebase"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
@@ -29,30 +44,56 @@
    <xs:sequence>
     <xs:element ref="title"/>
     <xs:element ref="vendor"/>
-    <xs:element ref="homepage" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="description" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element ref="icon" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element ref="offline-allowed" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="shortcut" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="association" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="related-content" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="homepage"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="description"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
+    <xs:element ref="icon"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
+    <xs:element ref="offline-allowed"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="shortcut"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="association"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="related-content"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="os" type="xs:string" use="optional"/>
-   <xs:attribute name="arch" type="xs:string" use="optional"/>
-   <xs:attribute name="platform" type="xs:string" use="optional"/>
-   <xs:attribute name="locale" type="xs:string" use="optional"/>
+   <xs:attribute name="os"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="arch"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="platform"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="locale"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
- <xs:element name="title" type="xs:string">
+ <xs:element name="title"
+             type="xs:string">
  </xs:element>
 
- <xs:element name="vendor" type="xs:string">
+ <xs:element name="vendor"
+             type="xs:string">
  </xs:element>
 
  <xs:element name="homepage">
   <xs:complexType>
-   <xs:attribute name="href" type="xs:string" use="required"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
@@ -60,7 +101,8 @@
   <xs:complexType>
   <xs:simpleContent>
   <xs:extension base="xs:string">
-   <xs:attribute name="kind" use="optional">
+   <xs:attribute name="kind"
+                 use="optional">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="one-line"/>
@@ -76,13 +118,27 @@
 
  <xs:element name="icon">
   <xs:complexType>
-   <xs:attribute name="href" type="xs:string" use="required"/>
-   <xs:attribute name="version" type="xs:string" use="optional"/>
-   <xs:attribute name="width" type="xs:string" use="optional"/>
-   <xs:attribute name="height" type="xs:string" use="optional"/>
-   <xs:attribute name="kind" type="xs:string" use="optional"/>
-   <xs:attribute name="depth" type="xs:string" use="optional"/>
-   <xs:attribute name="size" type="xs:string" use="optional"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="width"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="height"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="kind"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="depth"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="size"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
@@ -93,8 +149,12 @@
  <xs:element name="security">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="all-permissions" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="j2ee-application-client-permissions" minOccurs="0" maxOccurs="1"/>
+    <xs:element ref="all-permissions"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="j2ee-application-client-permissions"
+                minOccurs="0"
+                maxOccurs="1"/>
    </xs:sequence>
   </xs:complexType>
  </xs:element>
@@ -109,7 +169,8 @@
 
  <xs:element name="update">
   <xs:complexType>
-   <xs:attribute name="check" default="timeout">
+   <xs:attribute name="check"
+                 default="timeout">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="always"/>
@@ -118,7 +179,8 @@
      </xs:restriction>
     </xs:simpleType>
    </xs:attribute>
-   <xs:attribute name="policy" default="always">
+   <xs:attribute name="policy"
+                 default="always">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="always"/>
@@ -132,7 +194,8 @@
 
  <xs:element name="resources">
   <xs:complexType>
-   <xs:choice minOccurs="0" maxOccurs="unbounded">
+   <xs:choice minOccurs="0"
+              maxOccurs="unbounded">
     <xs:element ref="java"/>
     <xs:element ref="j2se"/>
     <xs:element ref="jar"/>
@@ -141,43 +204,78 @@
     <xs:element ref="property"/>
     <xs:element ref="package"/>
    </xs:choice>
-   <xs:attribute name="os" type="xs:string" use="optional"/>
-   <xs:attribute name="arch" type="xs:string" use="optional"/>
-   <xs:attribute name="locale" type="xs:string" use="optional"/>
+   <xs:attribute name="os"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="arch"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="locale"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="java">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="resources" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="resources"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="version" type="xs:string" use="required"/>
-   <xs:attribute name="href" type="xs:string" use="optional"/>
-   <xs:attribute name="initial-heap-size" type="xs:string" use="optional"/>
-   <xs:attribute name="max-heap-size" type="xs:string" use="optional"/>
-   <xs:attribute name="java-vm-args" type="xs:string" use="optional"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="initial-heap-size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="max-heap-size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="java-vm-args"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="j2se">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="resources" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="resources"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="version" type="xs:string" use="required"/>
-   <xs:attribute name="href" type="xs:string" use="optional"/>
-   <xs:attribute name="initial-heap-size" type="xs:string" use="optional"/>
-   <xs:attribute name="max-heap-size" type="xs:string" use="optional"/>
-   <xs:attribute name="java-vm-args" type="xs:string" use="optional"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="initial-heap-size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="max-heap-size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="java-vm-args"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="jar">
   <xs:complexType>
-   <xs:attribute name="href" type="xs:string" use="required"/>
-   <xs:attribute name="version" type="xs:string" use="optional"/>
-   <xs:attribute name="main" default="false">
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="main"
+                 default="false">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="true"/>
@@ -185,7 +283,8 @@
      </xs:restriction>
     </xs:simpleType>
    </xs:attribute>
-   <xs:attribute name="download" default="eager">
+   <xs:attribute name="download"
+                 default="eager">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="eager"/>
@@ -193,16 +292,25 @@
      </xs:restriction>
     </xs:simpleType>
    </xs:attribute>
-   <xs:attribute name="size" type="xs:string" use="optional"/>
-   <xs:attribute name="part" type="xs:string" use="optional"/>
+   <xs:attribute name="size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="part"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="nativelib">
   <xs:complexType>
-   <xs:attribute name="href" type="xs:string" use="required"/>
-   <xs:attribute name="version" type="xs:string" use="optional"/>
-   <xs:attribute name="download" default="eager">
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="download"
+                 default="eager">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="eager"/>
@@ -210,26 +318,41 @@
      </xs:restriction>
     </xs:simpleType>
    </xs:attribute>
-   <xs:attribute name="size" type="xs:string" use="optional"/>
-   <xs:attribute name="part" type="xs:string" use="optional"/>
+   <xs:attribute name="size"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="part"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="extension">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="ext-download" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="ext-download"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="version" type="xs:string" use="optional"/>
-   <xs:attribute name="name" type="xs:string" use="optional"/>
-   <xs:attribute name="href" type="xs:string" use="required"/>
+   <xs:attribute name="version"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="name"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="ext-download">
   <xs:complexType>
-   <xs:attribute name="ext-part" type="xs:string" use="required"/>
-   <xs:attribute name="download" default="eager">
+   <xs:attribute name="ext-part"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="download"
+                 default="eager">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="lazy"/>
@@ -237,22 +360,33 @@
      </xs:restriction>
     </xs:simpleType>
    </xs:attribute>
-   <xs:attribute name="part" type="xs:string" use="optional"/>
+   <xs:attribute name="part"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="property">
   <xs:complexType>
-   <xs:attribute name="name" type="xs:string" use="required"/>
-   <xs:attribute name="value" type="xs:string" use="required"/>
+   <xs:attribute name="name"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="value"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="package">
   <xs:complexType>
-   <xs:attribute name="name" type="xs:string" use="required"/>
-   <xs:attribute name="part" type="xs:string" use="required"/>
-   <xs:attribute name="recursive" default="false">
+   <xs:attribute name="name"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="part"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="recursive"
+                 default="false">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="true"/>
@@ -266,32 +400,53 @@
  <xs:element name="application-desc">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="argument" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="argument"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="main-class" type="xs:string" use="optional"/>
+   <xs:attribute name="main-class"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
- <xs:element name="argument" type="xs:string">
+ <xs:element name="argument"
+             type="xs:string">
  </xs:element>
 
  <xs:element name="applet-desc">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element ref="param"
+                minOccurs="0"
+                maxOccurs="unbounded"/>
    </xs:sequence>
-   <xs:attribute name="documentbase" type="xs:string" use="optional"/>
-   <xs:attribute name="main-class" type="xs:string" use="required"/>
-   <xs:attribute name="name" type="xs:string" use="required"/>
-   <xs:attribute name="width" type="xs:string" use="required"/>
-   <xs:attribute name="height" type="xs:string" use="required"/>
+   <xs:attribute name="documentbase"
+                 type="xs:string"
+                 use="optional"/>
+   <xs:attribute name="main-class"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="name"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="width"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="height"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="param">
   <xs:complexType>
-   <xs:attribute name="name" type="xs:string" use="required"/>
-   <xs:attribute name="value" type="xs:string" use="required"/>
+   <xs:attribute name="name"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="value"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
@@ -301,17 +456,24 @@
 
  <xs:element name="installer-desc">
   <xs:complexType>
-   <xs:attribute name="main-class" type="xs:string" use="optional"/>
+   <xs:attribute name="main-class"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="shortcut">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="desktop" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="menu" minOccurs="0" maxOccurs="1"/>
+    <xs:element ref="desktop"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="menu"
+                minOccurs="0"
+                maxOccurs="1"/>
    </xs:sequence>
-   <xs:attribute name="online" default="true">
+   <xs:attribute name="online"
+                 default="true">
     <xs:simpleType>
      <xs:restriction base="xs:string">
       <xs:enumeration value="true"/>
@@ -328,29 +490,47 @@
 
  <xs:element name="menu">
   <xs:complexType>
-   <xs:attribute name="submenu" type="xs:string" use="optional"/>
+   <xs:attribute name="submenu"
+                 type="xs:string"
+                 use="optional"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="association">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="description" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="icon" minOccurs="0" maxOccurs="1"/>
+    <xs:element ref="description"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="icon"
+                minOccurs="0"
+                maxOccurs="1"/>
    </xs:sequence>
-   <xs:attribute name="extensions" type="xs:string" use="required"/>
-   <xs:attribute name="mime-type" type="xs:string" use="required"/>
+   <xs:attribute name="extensions"
+                 type="xs:string"
+                 use="required"/>
+   <xs:attribute name="mime-type"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 
  <xs:element name="related-content">
   <xs:complexType>
    <xs:sequence>
-    <xs:element ref="title" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="description" minOccurs="0" maxOccurs="1"/>
-    <xs:element ref="icon" minOccurs="0" maxOccurs="1"/>
+    <xs:element ref="title"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="description"
+                minOccurs="0"
+                maxOccurs="1"/>
+    <xs:element ref="icon"
+                minOccurs="0"
+                maxOccurs="1"/>
    </xs:sequence>
-   <xs:attribute name="href" type="xs:string" use="required"/>
+   <xs:attribute name="href"
+                 type="xs:string"
+                 use="required"/>
   </xs:complexType>
  </xs:element>
 </xs:schema>

@@ -3,13 +3,9 @@ package com.nurflugel.ivybrowser.domain;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.unmodifiableSet;

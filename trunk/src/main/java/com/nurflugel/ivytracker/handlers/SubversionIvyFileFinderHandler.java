@@ -1,17 +1,13 @@
 package com.nurflugel.ivytracker.handlers;
 
 import ca.odell.glazedlists.EventList;
-
 import com.nurflugel.externalsreporter.ui.HtmlHandler;
 import com.nurflugel.externalsreporter.ui.ScanExternalsTask;
-
 import com.nurflugel.ivybrowser.domain.IvyPackage;
-
 import com.nurflugel.ivytracker.Config;
 import com.nurflugel.ivytracker.IvyTrackerMainFrame;
 import static com.nurflugel.ivytracker.IvyTrackerMainFrame.useSingleThread;
 import com.nurflugel.ivytracker.domain.Project;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;

@@ -1,7 +1,6 @@
 package com.nurflugel.externalsreporter.ui;
 
 import java.awt.Component;
-
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;

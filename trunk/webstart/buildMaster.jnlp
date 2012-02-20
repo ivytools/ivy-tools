@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- JNLP File for BuildmMster client application -->
-<jnlp
-        spec="1.0+"
-        codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
-        href="buildMaster.jnlp">
+<?xml version="1.0" encoding="utf-8"?><!-- JNLP File for BuildmMster client application -->
+<jnlp spec="1.0+"
+      codebase="http://ivy-tools.googlecode.com/svn/branches/gradle/webstart/"
+      href="buildMaster.jnlp">
     <information>
         <title>BuildMaster</title>
         <vendor>Enterprise Services Applications Engineering</vendor>
         <homepage href="index.html"/>
         <description>BuildMaster Build and Deploy Tool</description>
         <icon href="images/ES-64x.jpg"/>
-        <icon kind="splash" href="images/Buildmaster-splash.jpg"/>
+        <icon kind="splash"
+              href="images/Buildmaster-splash.jpg"/>
         <shortcut online="false">
 	      <desktop/>
     	</shortcut>
@@ -19,7 +18,9 @@
         <all-permissions/>
     </security>
     <resources>
-        <j2se version="1.6+" initial-heap-size="64m" max-heap-size="512m"/>
+        <j2se version="1.6+"
+              initial-heap-size="64m"
+              max-heap-size="512m"/>
         <jar href="lib/IvyBrowser.jar"/>
         <jar href="lib/svnkit.jar"/>
         <jar href="lib/swing-worker.jar"/>
