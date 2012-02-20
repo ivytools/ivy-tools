@@ -1,0 +1,39 @@
+apply from: 'master-gradle/master-build.gradle'
+apply from: 'dependencies.gradle'
+
+//version = "0.1-SNAPSHOT"  //used to set Ivy version if we're going to publish
+sourceCompatibility = 1.6
+
+//mainClassName = "com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame"
+mainClassName = "com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame"
+
+
+configurations
+    {
+      javac2
+    }
+
+dependencies
+    {
+      javac2 'com.intellij:javac2:9.0.0'
+    }
+def javac2Config = configurations.javac2
+
+//subprojects
+//    {
+//      compileJava.doFirst { ant.taskdef(name: 'javac', classname: 'com.intellij.ant.Javac2', classpath: javac2Config.asPath) }
+//    }
+
+def cl = new URLClassLoader(javac2Config.collect { it.toURI().toURL() } as URL[],
+                            buildscript.classLoader)
+
+
+Class javac2Class = cl.loadClass('com.intellij.ant.Javac2')
+
+subprojects {
+  ant.antProject.addTaskDefinition('javac', javac2Class)
+
+}
+
+
+//compileJava.doAfter(println('***************After compliation!'))
