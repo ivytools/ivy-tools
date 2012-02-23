@@ -180,6 +180,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="groovy-1.7.6" level="application" />
   </component>
 </module>
 
