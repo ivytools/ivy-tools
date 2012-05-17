@@ -27,9 +27,9 @@
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/commons-lang-2.4.jar"/>
+        <jar href="lib/forms_rt-9.0.0.jar"/>
+        <jar href="lib/glazedlists-1.8.0.jar"/>
       <!--<jar href="lib/help.jar"/>-->
-      <jar href="lib/forms_rt-9.0.0.jar"/>
-        <jar href="lib/glazedlists_java15-1.8.0.jar"/>
         <extension name="help"
                    href="help.jnlp"/>
     </resources>

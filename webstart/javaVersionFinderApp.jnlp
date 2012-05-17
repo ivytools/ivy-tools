@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp spec="1.0+"
-      codebase="http://ivy-tools.googlecode.com/svn/branches/gradle/webstart/"
+      codebase="http://ivy-tools.googlecode.com/svn/@subversion.branch@/webstart/"
       href="javaVersionFinderApp.jnlp">
     <information>
         <title>Java Version Finder</title>
@@ -27,9 +27,9 @@
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/commons-lang-2.4.jar"/>
+        <jar href="lib/forms_rt-9.0.0.jar"/>
+        <jar href="lib/glazedlists-1.8.0.jar"/>
       <!--<jar href="lib/help.jar"/>-->
-      <jar href="lib/forms_rt-9.0.0.jar"/>
-        <jar href="lib/glazedlists_java15-1.8.0.jar"/>
         <extension name="help"
                    href="help.jnlp"/>
     </resources>

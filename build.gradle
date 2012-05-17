@@ -1,3 +1,4 @@
+//apply from: 'http://ant-master-build-scripts.googlecode.com/svn/trunk/build/master-gradle/master-build.gradle'
 apply from: 'master-gradle/master-build.gradle'
 apply from: 'dependencies.gradle'
 
@@ -24,16 +25,18 @@ def javac2Config = configurations.javac2
 //      compileJava.doFirst { ant.taskdef(name: 'javac', classname: 'com.intellij.ant.Javac2', classpath: javac2Config.asPath) }
 //    }
 
-def cl = new URLClassLoader(javac2Config.collect { it.toURI().toURL() } as URL[],
-                            buildscript.classLoader)
+//def cl = new URLClassLoader(javac2Config.collect { it.toURI().toURL() } as URL[],
+//                            buildscript.classLoader)
+//
+//
+//Class javac2Class = cl.loadClass('com.intellij.ant.Javac2')
+//
+//subprojects {
+//  ant.antProject.addTaskDefinition('javac', javac2Class)
+//
+//}
 
 
-Class javac2Class = cl.loadClass('com.intellij.ant.Javac2')
-
-subprojects {
-  ant.antProject.addTaskDefinition('javac', javac2Class)
-
-}
 
 
 //compileJava.doAfter(println('***************After compliation!'))

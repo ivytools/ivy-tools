@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- JNLP File for PictureBrowserServlet client application -->
 <jnlp spec="1.0+"
-      codebase="http://ivy-tools.googlecode.com/svn/branches/gradle/webstart/"
+      codebase="http://ivy-tools.googlecode.com/svn/@subversion.branch@/webstart/"
       href="ivyBuilder.jnlp">
     <information>
         <title>IvyBuilder</title>
@@ -28,7 +28,7 @@
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/commons-lang-2.4.jar"/>
         <jar href="lib/jdom-1.0.jar"/>
-        <jar href="lib/glazedlists_java15-1.8.0.jar"/>
+        <jar href="lib/glazedlists-1.8.0.jar"/>
       <!--<jar href="lib/help.jar"/>-->
       <extension name="help"
                  href="help.jnlp"/>
