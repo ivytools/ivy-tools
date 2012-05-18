@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+"
-      codebase="http://ivy-tools.googlecode.com/svn/@subversion.branch@/webstart/"
+      codebase="http://ivy-tools.googlecode.com/svn/trunk/webstart/"
       href="externalsFinderApp.jnlp">
     <information>
         <title>Subversion Externals Finder</title>
