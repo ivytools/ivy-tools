@@ -35,9 +35,9 @@
        <jar href="lib/jdom-1.0.jar"/>
        <jar href="lib/glazedlists-1.8.0.jar"/>
 
-      <jar href="lib/help.jar"/>
-      <extension name="help"
-                 href="help.jnlp"/>
+      <!--<jar href="lib/help.jar"/>-->
+      <!--<extension name="help"-->
+                 <!--href="help.jnlp"/>-->
     </resources>
     <application-desc main-class="com.nurflugel.ivybuilder.BuilderMainFrame"/>
 </jnlp>

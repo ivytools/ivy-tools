@@ -26,7 +26,7 @@
               initial-heap-size="64m"
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
-        <jar href="lib/help.jar"/>
+        <!--<jar href="lib/help.jar"/>-->
 
         <jar href="lib/asm-@asm@.jar"/>
         <jar href="lib/commons-lang-@commons_lang@.jar"/>
@@ -36,9 +36,8 @@
         <jar href="lib/log4j-@log4j@.jar"/>
         <jar href="lib/xstream-@xstream@.jar"/>
 
-      <!--<jar href="lib/help.jar"/>-->
-      <extension name="help"
-                 href="help.jnlp"/>
+      <!--<extension name="help"-->
+                 <!--href="help.jnlp"/>-->
     </resources>
     <application-desc main-class="com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame"/>
 </jnlp>

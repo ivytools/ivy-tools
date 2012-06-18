@@ -26,7 +26,7 @@
               initial-heap-size="64m"
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
-        <jar href="lib/help.jar"/>
+        <!--<jar href="lib/help.jar"/>-->
 
         <jar href="lib/asm-@asm@.jar"/>
         <jar href="lib/commons-io-@commons_io@.jar"/>
@@ -35,8 +35,8 @@
         <jar href="lib/jdom-@jdom@.jar"/>
 
 
-      <extension name="help"
-                 href="help.jnlp"/>
+      <!--<extension name="help"-->
+                 <!--href="help.jnlp"/>-->
     </resources>
     <application-desc main-class="com.nurflugel.ivygrapher.IvyGrapher"/>
 </jnlp>
