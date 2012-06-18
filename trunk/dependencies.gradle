@@ -1,21 +1,21 @@
 ext.libraryVersions = [
-    jdom:                '1.0',
-    glazedLists:         '1.8.0',
-    xstream:             '1.2',
-    svnkit:              '1.7.4-v1',
-    jtidy:               '04aug2000r7-dev',
-    version_tool:        '1.1.4_fixed',
+    ant:                 '1.8.4',
+    asm:                 '3.1',
     buildtasks:          '1.0-SNAPSHOT',
-    commons_logging:     '1.0.4',
-    commons_lang:        '2.4',
     commons_collections: '3.2.1',
     commons_io:          '2.2',
+    commons_lang:        '2.4',
+    commons_logging:     '1.0.4',
     forms_rt:            '11.0.3',
-    log4j:               '1.2.15',
-    testng:              '6.4',
-    asm:                 '3.1',
+    glazedLists:         '1.8.0',
+    jdom:                '1.0',
     jhall:               '2.0.6',
-    ant:                 '1.8.4'
+    jtidy:               '04aug2000r7-dev',
+    log4j:               '1.2.15',
+    svnkit:              '1.7.4-v1',
+    testng:              '6.4',
+    version_tool:        '1.1.4_fixed',
+    xstream:             '1.2'
 ]
 
 configurations {
