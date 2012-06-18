@@ -35,7 +35,7 @@
        <jar href="lib/jdom-@jdom@.jar"/>
        <jar href="lib/glazedlists-@glazedLists@.jar"/>
 
-      <!--<jar href="lib/help.jar"/>-->
+      <jar href="lib/help.jar"/>
       <!--<extension name="help"-->
                  <!--href="help.jnlp"/>-->
     </resources>
