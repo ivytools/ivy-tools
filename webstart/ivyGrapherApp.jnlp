@@ -28,7 +28,7 @@
         <jar href="lib/IvyTools.jar"/>
         <jar href="lib/help.jar"/>
 
-        <jar href="lib/asm-3.3.1.jar"/>
+        <jar href="lib/asm-3.1.jar"/>
         <jar href="lib/commons-io-2.2.jar"/>
         <jar href="lib/commons-lang-2.4.jar"/>
         <jar href="lib/forms_rt-11.0.3.jar"/>

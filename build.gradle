@@ -11,5 +11,4 @@ targetCompatibility = 1.6
 //mainClassName = "com.nurflugel.ivybrowser.ui.IvyBrowserMainFrame"
 //mainClassName = "com.nurflugel.ivyformatter.ui.IvyFormatterMainFrame"
 //mainClassName = "com.nurflugel.versionfinder.VersionFinderUi"
-mainClassName = "com.nurflugel.ivygrapher.IvyGrapher"
 
