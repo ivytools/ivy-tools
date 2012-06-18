@@ -127,22 +127,14 @@ public class Util
   public static void addHelpListener(String helpSetName, JButton helpButton, JFrame theFrame)
   {
     ClassLoader classLoader = theFrame.getClass().getClassLoader();
-
-    try
-    {
-      URL                       hsURL                 = HelpSet.findHelpSet(classLoader, helpSetName);
-      HelpSet                   helpSet               = new HelpSet(null, hsURL);
-      HelpBroker                helpBroker            = helpSet.createHelpBroker();
-      CSH.DisplayHelpFromSource displayHelpFromSource = new CSH.DisplayHelpFromSource(helpBroker);
-
-      helpButton.addActionListener(displayHelpFromSource);
-    }
-    catch (HelpSetException ee)
-    {  // Say what the exception really is
-      System.out.println("Exception! " + ee.getMessage());
-      // LOGGER.error("HelpSet " + ee.getMessage());
-      // LOGGER.error("HelpSet " + HELP_HS + " not found");
-    }
+    // todo uncomment when we get help working via JNLP again... try { URL                       hsURL                 =
+    // HelpSet.findHelpSet(classLoader, helpSetName); HelpSet                   helpSet               = new HelpSet(null, hsURL); HelpBroker
+    // helpBroker            = helpSet.createHelpBroker(); CSH.DisplayHelpFromSource displayHelpFromSource = new
+    // CSH.DisplayHelpFromSource(helpBroker);
+    //
+    // helpButton.addActionListener(displayHelpFromSource); } catch (HelpSetException ee) {  // Say what the exception really is
+    // System.out.println("Exception! " + ee.getMessage()); // LOGGER.error("HelpSet " + ee.getMessage()); // LOGGER.error("HelpSet " + HELP_HS + "
+    // not found"); }
   }
 
   /** True recursive file deletes - will get rid of this file or dir, and everything in it. */
