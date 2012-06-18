@@ -278,7 +278,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
 
   private boolean doSavedResultsExistForRepository()
   {
-    return (DataSerializer.getDataFile(ivyRepositoryPath)).exists();
+    return DataSerializer.getDataFile(ivyRepositoryPath).exists();
   }
 
   private void getSavedResults()
@@ -411,6 +411,7 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   @Override
   public void stopThreads()
   {
+    parsingHandler.halt();
     parsingHandler.halt();
   }
 

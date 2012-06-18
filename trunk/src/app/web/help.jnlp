@@ -8,7 +8,7 @@
     </information>
     <offline-allowed/>
     <resources>
-        <jar href="lib/jhall-2.0.6.jar"/>
+        <jar href="lib/jhall-@jhall@.jar"/>
     </resources>
     <component-desc/>
 </jnlp>

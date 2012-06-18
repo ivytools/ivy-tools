@@ -7,7 +7,7 @@
         <vendor>Enterprise Services Applications Engineering</vendor>
         <homepage href="index.html"/>
         <description>BuildMaster Build and Deploy Tool</description>
-        <icon href="images/ES-64x.jpg"/>
+        <icon href="images/wing.jpg"/>
         <icon kind="splash"
               href="images/Buildmaster-splash.jpg"/>
         <shortcut online="false">
