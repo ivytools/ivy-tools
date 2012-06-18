@@ -26,13 +26,15 @@
               initial-heap-size="64m"
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
-        <jar href="lib/forms_rt-9.0.0.jar"/>
-        <jar href="lib/glazedlists-1.8.0.jar"/>
-        <jar href="lib/commons-lang-2.4.jar"/>
-        <jar href="lib/commons-io-2.2.jar"/>
-        <jar href="lib/svnkit-1.3.7.jar"/>
-        <jar href="lib/xstream-1.2.jar"/>
-      <!--<jar href="lib/help.jar"/>-->
+        <jar href="lib/help.jar"/>
+
+        <jar href="lib/asm-@asm@.jar"/>
+        <jar href="lib/commons-io-@commons_io@.jar"/>
+        <jar href="lib/commons-lang-@commons_lang@.jar"/>
+        <jar href="lib/forms_rt-@forms_rt@.jar"/>
+        <jar href="lib/glazedlists-@glazedLists@.jar"/>
+        <jar href="lib/svnkit-@svnkit@.jar"/>
+        <jar href="lib/xstream-@xstream@.jar"/>
       <extension name="help"
                  href="help.jnlp"/>
     </resources>

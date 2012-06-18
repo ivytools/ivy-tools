@@ -26,11 +26,15 @@
               initial-heap-size="64m"
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
-        <jar href="lib/commons-lang-2.4.jar"/>
+        <jar href="lib/help.jar"/>
+
+        <jar href="lib/asm-3.3.1.jar"/>
         <jar href="lib/commons-io-2.2.jar"/>
-        <jar href="lib/forms_rt-9.0.0.jar"/>
+        <jar href="lib/commons-lang-2.4.jar"/>
+        <jar href="lib/forms_rt-11.0.3.jar"/>
         <jar href="lib/jdom-1.0.jar"/>
-      <!--<jar href="lib/help.jar"/>-->
+
+
       <extension name="help"
                  href="help.jnlp"/>
     </resources>
