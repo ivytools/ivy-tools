@@ -26,7 +26,7 @@
               initial-heap-size="64m"
               max-heap-size="512m"/>
         <jar href="lib/IvyTools.jar"/>
-        <!--<jar href="lib/help.jar"/>-->
+        <jar href="lib/help.jar"/>
 
         <jar href="lib/asm-@asm@.jar"/>
         <jar href="lib/commons-lang-@commons_lang@.jar"/>
