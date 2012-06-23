@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import static org.apache.commons.lang.StringUtils.substringBeforeLast;
 
 /** Util class. */
 public class Util
@@ -179,14 +180,8 @@ public class Util
   /** Returns the text with no trailing "/". */
   public static String getUrlNoTrailingSlash(String text)
   {
-    if (text.endsWith(SLASH))
-    {
-      return StringUtils.substringBeforeLast(text, SLASH);
-    }
-    else
-    {
-      return text;
-    }
+    return text.endsWith(SLASH) ? substringBeforeLast(text, SLASH)
+                                : text;
   }
 
   private Util() {}

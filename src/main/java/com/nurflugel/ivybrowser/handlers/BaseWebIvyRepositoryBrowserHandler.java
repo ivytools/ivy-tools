@@ -336,7 +336,7 @@ public abstract class BaseWebIvyRepositoryBrowserHandler extends SwingWorker<Obj
     boolean isHref     = lowerLine.contains("href");
     boolean isUp       = lowerLine.contains("..") || lowerLine.contains("parent directory");
     boolean isPre      = lowerLine.startsWith("<pre");
-    boolean isDir      = lowerLine.contains("[dir]");
+    boolean isDir      = lowerLine.contains("[dir]") || lowerLine.contains("/");
     boolean hasDirLink = isHref && !isUp && !isPre && isDir;
 
     return hasDirLink;

@@ -6,6 +6,7 @@ import com.nurflugel.ivybrowser.AppPreferences;
 import com.nurflugel.ivybrowser.domain.DataSerializer;
 import com.nurflugel.ivybrowser.domain.IvyPackage;
 import com.nurflugel.ivybrowser.handlers.tasks.HtmlHandlerTask;
+import org.apache.commons.io.IOUtils;
 import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.apache.commons.lang.StringUtils.substringBefore;
 import java.io.BufferedReader;
@@ -42,18 +43,12 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 
     try
     {
-      Date          startTime     = new Date();
-      URL           repositoryUrl = new URL(ivyRepositoryPath);
-      URLConnection urlConnection = repositoryUrl.openConnection();
+      Date     startTime     = new Date();
+      URL      repositoryUrl = new URL(ivyRepositoryPath);
+      String   allLines      = IOUtils.toString(repositoryUrl);
+      String[] lines         = allLines.split("\n");
 
-      urlConnection.setAllowUserInteraction(true);
-      urlConnection.connect();
-
-      InputStream    in          = urlConnection.getInputStream();
-      BufferedReader reader      = new BufferedReader(new InputStreamReader(in));
-      String         packageLine = reader.readLine();
-
-      while (packageLine != null)
+      for (String packageLine : lines)
       {
         String  lowerLine  = packageLine.toLowerCase();
         boolean hasDirLink = isDirLink(lowerLine);
@@ -71,10 +66,10 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
 
           if (!orgName.equalsIgnoreCase("/Home/") && !orgName.contains("Parent Directory"))
           {
-            HtmlHandlerTask task = new HtmlHandlerTask(this, repositoryUrl, orgName);
+            Runnable task = new HtmlHandlerTask(this, repositoryUrl, orgName);
 
-            task.run();
-            // threadPool.execute(task);
+            // task.run();
+            threadPool.execute(task);
 
             // if left in, this populates the display real time
             // if(somePackages.size()>0)mainFrame.populateTable(ivyPackages);
@@ -84,11 +79,8 @@ public class HtmlHandler extends BaseWebIvyRepositoryBrowserHandler
             }
           }
         }
+      }
 
-        packageLine = reader.readLine();
-      }  // end while
-
-      reader.close();
       threadPool.shutdown();
 
       // block until all threads are done, or until time limit is reached

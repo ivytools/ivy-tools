@@ -411,8 +411,11 @@ public class IvyBrowserMainFrame extends JFrame implements UiMainFrame
   @Override
   public void stopThreads()
   {
-    parsingHandler.halt();
-    parsingHandler.halt();
+    if (parsingHandler != null)
+    {
+      parsingHandler.halt();
+      parsingHandler.halt();
+    }
   }
 
   @Override
