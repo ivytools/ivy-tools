@@ -63,7 +63,7 @@ public class HandlerFactory
       while (line != null)
       {
         boolean isSubversion = line.contains("Powered by") && line.contains("Subversion");
-
+        // boolean isSubversion = true;
         if (isSubversion)
         {
           return true;
