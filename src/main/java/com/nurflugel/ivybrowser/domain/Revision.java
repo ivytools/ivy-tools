@@ -6,6 +6,8 @@ public class Revision implements Comparable
   public static final Revision NO_REVISION    = new Revision(-1);
   private long                 revisionNumber;
 
+  public Revision() {}
+
   public Revision(long revisionNumber)
   {
     this.revisionNumber = revisionNumber;

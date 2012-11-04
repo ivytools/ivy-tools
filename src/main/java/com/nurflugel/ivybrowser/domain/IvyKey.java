@@ -7,6 +7,8 @@ public class IvyKey implements Comparable<IvyKey>
   private String module;
   private String version;
 
+  public IvyKey() {}
+
   public IvyKey(String org, String module, String version)
   {
     this.org     = org;
