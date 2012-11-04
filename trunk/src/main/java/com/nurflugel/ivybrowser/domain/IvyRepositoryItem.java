@@ -2,14 +2,19 @@ package com.nurflugel.ivybrowser.domain;
 
 import org.jdom.Document;
 import org.jdom.Element;
+
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+
 import java.io.*;
+
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +36,10 @@ public class IvyRepositoryItem
   private List<IvyRepositoryItem> dependencies;
   private File                    repositoryDir;
   private DateFormat              dateFormat = new SimpleDateFormat("yyyyMMDDHHmmss");
-
   // --------------------------- CONSTRUCTORS ---------------------------
+
+  public IvyRepositoryItem() {}
+
   public IvyRepositoryItem(String orgName, String moduleName, String rev, File repositoryDir)
   {
     this.repositoryDir = repositoryDir;
