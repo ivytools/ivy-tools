@@ -3,9 +3,13 @@ package com.nurflugel.ivybrowser.domain;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+
 import org.jdom.input.SAXBuilder;
+
 import java.io.IOException;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.unmodifiableSet;
@@ -35,8 +39,9 @@ public class IvyPackage implements Comparable<IvyPackage>
   {
     return new IvyKey(org, module, version);
   }
-
   // --------------------------- CONSTRUCTORS ---------------------------
+  public IvyPackage() {}
+
   public IvyPackage(String orgName, String moduleName, String version)
   {
     key = new IvyKey(orgName, moduleName, version);
